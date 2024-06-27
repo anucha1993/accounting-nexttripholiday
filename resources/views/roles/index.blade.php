@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.template')
 
 @section('content')
 <div class="card">
@@ -25,16 +25,16 @@
                             @csrf
                             @method('DELETE')
 
-                            <a href="{{ route('roles.show', $role->id) }}" class="btn btn-warning btn-sm"><i class="bi bi-eye"></i> Show</a>
+                            <a href="{{ route('roles.show', $role->id) }}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Show</a>
 
                             @if ($role->name!='Super Admin')
                                 @can('edit-role')
-                                    <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i> Edit</a>   
+                                    <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-primary btn-sm"><i class="fas fa-pencil-alt"></i> Edit</a>   
                                 @endcan
 
                                 @can('delete-role')
                                     @if ($role->name!=Auth::user()->hasRole($role->name))
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Do you want to delete this role?');"><i class="bi bi-trash"></i> Delete</button>
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Do you want to delete this role?');"><i class="fas fa-trash"></i> Delete</button>
                                     @endif
                                 @endcan
                             @endif

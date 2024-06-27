@@ -35,9 +35,13 @@ class RoleController extends Controller
      */
     public function create(): View
     {
-        return view('roles.create', [
-            'permissions' => Permission::get()
-        ]);
+
+        $permissionsRole = Permission::where('group','role')->get();
+        $permissionsUser = Permission::where('group','user')->get();
+        return view('roles.create',compact('permissionsRole','permissionsUser'));
+        // return view('roles.create', [
+        //     'permissions' => Permission::get()
+        // ]);
     }
 
     /**
@@ -45,6 +49,9 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request): RedirectResponse
     {
+
+        //dd($request);
+        
         $role = Role::create(['name' => $request->name]);
 
         $permissions = Permission::whereIn('id', $request->permissions)->get(['name'])->toArray();
@@ -75,19 +82,19 @@ class RoleController extends Controller
      */
     public function edit(Role $role): View
     {
+        $permissionsRole = Permission::where('group','role')->get();
+        $permissionsUser = Permission::where('group','user')->get();
+
         if($role->name=='Super Admin'){
             abort(403, 'SUPER ADMIN ROLE CAN NOT BE EDITED');
         }
-
+        $permissions = Permission::get();
         $rolePermissions = DB::table("role_has_permissions")->where("role_id",$role->id)
             ->pluck('permission_id')
             ->all();
 
-        return view('roles.edit', [
-            'role' => $role,
-            'permissions' => Permission::get(),
-            'rolePermissions' => $rolePermissions
-        ]);
+       return view('roles.edit',compact('role','rolePermissions','permissions','permissionsRole','permissionsUser'));
+     
     }
 
     /**

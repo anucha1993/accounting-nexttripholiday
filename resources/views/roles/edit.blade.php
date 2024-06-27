@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.template')
 
 @section('content')
 
@@ -29,6 +29,46 @@
                         </div>
                     </div>
 
+                    <hr>
+                    <div class="mb-3 row">
+                        <h6>ระบบสมาชิก</h6>
+
+                        <label for="permissions"
+                        class="col-md-4 col-form-label text-md-end text-start">สมาชิก</label>
+
+                    <div class="col-md-6">
+                        @forelse ($permissionsUser as $role)
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input success" name="permissions[]" type="checkbox"  {{ in_array($role->id, $rolePermissions ?? []) ? 'checked' : '' }}
+                                    id="success-check" value="{{ $role->id }}">
+                                <label class="form-check-label" for="success-check">{{ $role->label }}</label>
+                            </div>
+
+                        @empty
+                        @endforelse
+                    </div>
+
+
+                        <label for="permissions"
+                            class="col-md-4 col-form-label text-md-end text-start">กำหนดสิทธิ์</label>
+                        <div class="col-md-6">
+                            @forelse ($permissionsRole as $role)
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input success" name="permissions[]" type="checkbox"   {{ in_array($role->id, $rolePermissions ?? []) ? 'checked' : '' }}
+                                        id="success-check" value="{{ $role->id }}">
+                                    <label class="form-check-label" for="success-check">{{ $role->label }}</label>
+                                </div>
+                            @empty
+                            @endforelse
+                        </div>
+                  
+                      
+              
+
+                    </div>
+                    <hr>
+
+{{-- 
                     <div class="mb-3 row">
                         <label for="permissions" class="col-md-4 col-form-label text-md-end text-start">Permissions</label>
                         <div class="col-md-6">           
@@ -45,7 +85,7 @@
                                 <span class="text-danger">{{ $errors->first('permissions') }}</span>
                             @endif
                         </div>
-                    </div>
+                    </div> --}}
                     
                     <div class="mb-3 row">
                         <input type="submit" class="col-md-3 offset-md-5 btn btn-primary" value="Update Role">

@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -19,6 +20,7 @@ class UserController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('permission:create-user|edit-user|delete-user', ['only' => ['index','show']]);
+        
         $this->middleware('permission:create-user', ['only' => ['create','store']]);
         $this->middleware('permission:edit-user', ['only' => ['edit','update']]);
         $this->middleware('permission:delete-user', ['only' => ['destroy']]);
@@ -27,10 +29,21 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
+        $keyword = $request->input('search');
+        $users = User::latest('id');
+        if (!empty($keyword)) {
+            $users = $users->where(function ($query) use ($keyword) {
+                $query->where('users.name', 'LIKE', "%$keyword%")
+                    ->orWhere('users.email', 'LIKE', "%$keyword%");
+            });
+        }
+
+        $users = $users->paginate(10);
+
         return view('users.index', [
-            'users' => User::latest('id')->paginate(3)
+            'users' => $users
         ]);
     }
 
