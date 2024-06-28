@@ -1558,7 +1558,7 @@
                  </li>
                </ul>
              </li>
-             
+
             <li class="nav-small-cap">
               <i class="mdi mdi-dots-horizontal"></i>
               <span class="hide-menu">Charts</span>
@@ -1684,14 +1684,32 @@
       <!-- ============================================================== -->
       <!-- Bread crumb and right sidebar toggle -->
       <!-- ============================================================== -->
-      
+
       <!-- ============================================================== -->
       <!-- End Bread crumb and right sidebar toggle -->
       <!-- ============================================================== -->
       <!-- -------------------------------------------------------------- -->
       <!-- Container fluid  -->
       <!-- -------------------------------------------------------------- -->
+
+
       <div class="container-fluid page-content">
+        @if (session('success'))
+        <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show"
+        role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <strong>Success - </strong>{{session('success')}}
+        </div>
+        @endif
+
+        @if (session('error'))
+        <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show"
+        role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <strong>Error - </strong>{{session('success')}}
+        </div>
+        @endif
+
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
         <!-- -------------------------------------------------------------- -->
@@ -1699,7 +1717,7 @@
 
         @yield('content')
 
-        
+
         <!-- -------------------------------------------------------------- -->
         <!-- End PAge Content -->
         <!-- -------------------------------------------------------------- -->

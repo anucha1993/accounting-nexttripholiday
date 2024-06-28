@@ -9,8 +9,9 @@
             </h6>
             <hr>
 
-            <form action="">
-
+            <form action="{{route('wholesale.update',$wholesaleModel->id)}}" method="post">
+                @method('put')
+                @csrf
                 <div class="row">
                     <div class="col-md-6">
                         <div class="col-md-12 mb-3">
@@ -41,19 +42,19 @@
                     <div class="col-md-6">
                         <div class="col-md-12 mb-3">
                             <label class="form-label">Email </label>
-                            <input type="Email" class="form-control" name="contact_person"
+                            <input type="Email" class="form-control" name="email"
                                 placeholder="Email@Mail.com" value="{{ $wholesaleModel->email }}">
                         </div>
 
                         <div class="col-md-12 mb-3">
                             <label class="form-label">เลขประจําตัวผู้เสียภาษีอากร </label>
-                            <input type="text" class="form-control" name="contact_person"
+                            <input type="text" class="form-control" name="textid"
                                 placeholder="เลขประจําตัวผู้เสียภาษีอากร" value="{{ $wholesaleModel->textid }}">
                         </div>
 
                         <div class="col-md-12 mb-3">
                             <label class="form-label">ที่อยู่ </label>
-                            <textarea name="address" class="form-control" cols="30" rows="5" placeholder="ที่อยู่"></textarea>
+                            <textarea name="address" class="form-control" cols="30" rows="5" placeholder="ที่อยู่">{{$wholesaleModel->address}}</textarea>
                         </div>
 
 

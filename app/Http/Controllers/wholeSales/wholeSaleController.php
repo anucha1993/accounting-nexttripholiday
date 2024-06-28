@@ -34,12 +34,18 @@ class wholeSaleController extends Controller
             });
         }
         $wholesales =  $wholesales->paginate(10);
-      
+
         return view('wholesales.index',compact('wholesales'));
     }
 
     public function edit(wholesaleModel $wholesaleModel)
     {
         return view('wholesales.edit-wholesale',compact('wholesaleModel'));
+    }
+
+    public function update(wholesaleModel $wholesaleModel, Request $request)
+    {
+        $wholesaleModel->update($request->all());
+        return redirect()->route('wholesale.index')->with('success','Updated Wholesale Successfully!');
     }
 }

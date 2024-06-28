@@ -18,5 +18,8 @@ class wholesaleModel extends Model
         'tel',
         'contact_person',
         'status',
+        'email',
+        'textid',
+        'address',
     ];
 }
