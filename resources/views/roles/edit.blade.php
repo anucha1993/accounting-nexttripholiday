@@ -67,6 +67,26 @@
 
                     </div>
                     <hr>
+                    <div class="mb-3 row">
+                        <h6>ข้อมูลระบบ</h6>
+
+                        <label for="permissions"
+                        class="col-md-4 col-form-label text-md-end text-start">ข้อมูลโฮลเซลล์</label>
+
+                    <div class="col-md-6">
+                        @forelse ($permissionsWholesale as $wholesale)
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input success" name="permissions[]" type="checkbox"  {{ in_array($wholesale->id, $rolePermissions ?? []) ? 'checked' : '' }}
+                                    id="success-check" value="{{ $wholesale->id }}">
+                                <label class="form-check-label" for="success-check">{{ $wholesale->label }}</label>
+                            </div>
+
+                        @empty
+                        @endforelse
+                    </div>
+                    </div>
+                    
+                    
 
 {{-- 
                     <div class="mb-3 row">

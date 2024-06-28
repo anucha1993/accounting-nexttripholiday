@@ -27,8 +27,9 @@ Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-
+//wholesale
 Route::get('/wholesale',[wholeSaleController::class,'index'])->name('wholesale.index');
+Route::get('/wholesale/edit/{wholesaleModel}',[wholeSaleController::class,'edit'])->name('wholesale.edit');
 
 
 Route::resources([

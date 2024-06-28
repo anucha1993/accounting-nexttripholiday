@@ -1276,9 +1276,9 @@
             </li>
             <li class="sidebar-item">
               <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"
-                aria-expanded="false"><i class="mdi mdi-table"></i><span class="hide-menu">Tables</span></a>
+                aria-expanded="false"><i class="mdi mdi-table"></i><span class="hide-menu">ข้อมูลทั่วไป</span></a>
               <ul aria-expanded="false" class="collapse first-level">
-                <li class="sidebar-item">
+                {{-- <li class="sidebar-item">
                   <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"
                     aria-expanded="false"><i class="mdi mdi-border-none"></i><span class="hide-menu">Bootstrap
                       Tables</span></a>
@@ -1304,8 +1304,8 @@
                           Layout</span></a>
                     </li>
                   </ul>
-                </li>
-                <li class="sidebar-item">
+                </li> --}}
+                {{-- <li class="sidebar-item">
                   <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"
                     aria-expanded="false"><i class="mdi mdi-border-inside"></i><span
                       class="hide-menu">Datatables</span></a>
@@ -1328,12 +1328,13 @@
                           Initialisation</span></a>
                     </li>
                   </ul>
-                </li>
+                </li> --}}
+                @canany(['create-wholesale', 'edit-wholesale', 'delete-wholesale'])
                 <li class="sidebar-item">
-                  <a class="sidebar-link waves-effect waves-dark sidebar-link" href="table-jsgrid.html"
-                    aria-expanded="false"><i class="mdi mdi-border-top"></i><span class="hide-menu">Table
-                      Jsgrid</span></a>
+                  <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('wholesale.index')}}"
+                    aria-expanded="false"><i class="mdi mdi-border-top"></i><span class="hide-menu">ข้อมูลโฮลเซลล์</span></a>
                 </li>
+                @endcanany
                 <li class="sidebar-item">
                   <a class="sidebar-link waves-effect waves-dark sidebar-link" href="table-responsive.html"
                     aria-expanded="false"><i class="mdi mdi-border-style"></i><span class="hide-menu">Table
