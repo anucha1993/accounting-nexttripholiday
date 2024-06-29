@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\airline\airlineController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -31,7 +32,13 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/wholesale',[wholeSaleController::class,'index'])->name('wholesale.index');
 Route::get('/wholesale/edit/{wholesaleModel}',[wholeSaleController::class,'edit'])->name('wholesale.edit');
 Route::put('/wholesale/update/{wholesaleModel}',[wholeSaleController::class,'update'])->name('wholesale.update');
+Route::get('/wholesale/create',[wholeSaleController::class,'create'])->name('wholesale.create');
+Route::post('/wholesale/store',[wholeSaleController::class,'store'])->name('wholesale.store');
+Route::get('/wholesale/delete/{wholesaleModel}',[wholeSaleController::class,'destroy'])->name('wholesale.destroy');
 
+
+//airline
+Route::get('/airline',[airlineController::class,'index'])->name('wholesale.index');
 
 Route::resources([
     'roles' => RoleController::class,

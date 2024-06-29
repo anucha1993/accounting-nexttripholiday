@@ -3,12 +3,10 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <h4 class="card-title">Wholesales</h4>
-            <h6 class="card-subtitle lh-base">
-                รายชื่อโฮลเซลล์ทั้งหมด
-
+            <h4 class="card-title">รายชื่อสายการบินทั้งหมด </h4>
+           
                 <a href="{{route('wholesale.create')}}" class="btn btn-info btn-sm float-end mb-3"><i class="fas fa-plus"></i> เพิ่มข้อมูล</a>
-            </h6>
+          
             <form action="" method="GET">
                <div class="input-group mb-3 pull-right">
                    <input type="text" class="form-control" placeholder="ค้นหาข้อมูล..." name="search" value="{{ request('search') }}">
@@ -25,23 +23,19 @@
                 <thead class="table-light">
                     <tr>
                         <th>ลำดับ</th>
-                        <th>รหัส</th>
-                        <th>ชื่อ โฮลเซลล์</th>
-                        <th>เบอร์โทรศัพท์</th>
-                        <th>ชื่อผู้ติดต่อ</th>
+                        <th>รหัสสายการบิน</th>
+                        <th>ชื่อสายการบิน</th>
                         <th>สถานะ</th>
-                        <th>วันที่อัพเดท</th>
+                        <th>อัพเดทล่าสุด</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($wholesales as $key => $item)
+                    @forelse ($airline as $key => $item)
                         <tr>
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $item->code }}</td>
-                            <td>{{ $item->wholesale_name_th }}</td>
-                            <td>{{ $item->tel ?: '-' }}</td>
-                            <td>{{ $item->contact_person ?: '-' }}</td>
+                            <td>{{ $item->travel_name ?: '-' }}</td>
                             <td>
                                 @if ($item->status === 'on')
                                     <span class="badge rounded-pill bg-success">เปิดใช้งาน</span>
@@ -51,7 +45,7 @@
                             </td>
                             <td>{{ date('d-m-Y', strtotime($item->updated_at)) }}</td>
                             <td>
-                              @canany(['edit-wholesale'])
+                              {{-- @canany(['edit-wholesale'])
                               <a href="{{route('wholesale.edit',$item->id)}}" class="ml-3"><i class=" fas fa-edit "> </i> แก้ไข</a>
                               @endcanany
 
@@ -59,7 +53,7 @@
                            
                               <a href="{{ route('wholesale.destroy', $item->id) }}" type="submit" class="text-danger mx-3" onclick="return confirm('Do you want to delete this Wholesale?');"><i class=" fas fa-trash"> </i> ลบ</a>
                              
-                              @endcanany
+                              @endcanany --}}
 
                             </td>
                         </tr>
@@ -69,7 +63,7 @@
                 </tbody>
             </table>
             <br>
-            {!! $wholesales->withQueryString()->links('pagination::bootstrap-5') !!}
+            {!! $airline->withQueryString()->links('pagination::bootstrap-5') !!}
         </div>
     </div>
 @endsection

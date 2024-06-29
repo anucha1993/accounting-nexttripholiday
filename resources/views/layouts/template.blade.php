@@ -1337,8 +1337,7 @@
                 @endcanany
                 <li class="sidebar-item">
                   <a class="sidebar-link waves-effect waves-dark sidebar-link" href="table-responsive.html"
-                    aria-expanded="false"><i class="mdi mdi-border-style"></i><span class="hide-menu">Table
-                      Responsive</span></a>
+                    aria-expanded="false"><i class="mdi mdi-border-style"></i><span class="hide-menu">ข้อมูลสายการบิน</span></a>
                 </li>
                 <li class="sidebar-item">
                   <a class="sidebar-link waves-effect waves-dark sidebar-link" href="table-footable.html"
@@ -1706,7 +1705,7 @@
         <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show"
         role="alert">
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        <strong>Error - </strong>{{session('success')}}
+        <strong>Error - </strong>{{session('error')}}
         </div>
         @endif
 

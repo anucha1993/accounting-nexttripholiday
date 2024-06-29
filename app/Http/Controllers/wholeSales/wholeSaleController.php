@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\wholeSales;
 
-use App\Http\Controllers\Controller;
-use App\Models\wholesale\wholesaleModel;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\wholesale\wholesaleModel;
 
 class wholeSaleController extends Controller
 {
@@ -33,7 +34,7 @@ class wholeSaleController extends Controller
                     ->orWhere('tel', 'LIKE', "%$keyword%");
             });
         }
-        $wholesales =  $wholesales->paginate(10);
+        $wholesales = $wholesales->orderBy('id', 'DESC')->paginate(10);
 
         return view('wholesales.index',compact('wholesales'));
     }
@@ -43,9 +44,41 @@ class wholeSaleController extends Controller
         return view('wholesales.edit-wholesale',compact('wholesaleModel'));
     }
 
+    public function create()
+    {
+        return view('wholesales.create-wholesale');
+    }
+
     public function update(wholesaleModel $wholesaleModel, Request $request)
     {
+
+        
         $wholesaleModel->update($request->all());
         return redirect()->route('wholesale.index')->with('success','Updated Wholesale Successfully!');
+    }
+
+    public function store(Request $request) 
+    {
+        try {
+            // บันทึกข้อมูลใหม่ในโมเดล
+            WholesaleModel::create($request->all());
+            return redirect()->route('wholesale.index')->with('success', 'Created Wholesale Successfully!');
+        } catch (Exception $e) {
+            // เก็บข้อผิดพลาดใน session
+            return redirect()->route('wholesale.index')->with('error', 'Error Creating Wholesale: ' . $e->getMessage());
+        }
+    }
+
+    public function destroy(wholesaleModel $wholesaleModel)
+    {
+        
+        try {
+            $wholesaleModel->delete();
+            return redirect()->back()->with('success','Deleted Wholesale Successfully!');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error','delete Wholesale error!');
+        }
+        
+        
     }
 }

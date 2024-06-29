@@ -9,69 +9,60 @@
             </h6>
             <hr>
 
-            <form action="{{route('wholesale.update',$wholesaleModel->id)}}" method="post">
-                @method('put')
+            <form action="{{route('wholesale.store')}}" method="post">
+                @method('post')
                 @csrf
                 <div class="row">
                     <div class="col-md-6">
                         <div class="col-md-12 mb-3">
                             <label class="form-label">รหัส-โฮลเซลล์ <span class="text-danger"> *</span></label>
-                            <input type="text" class="form-control" name="code" value="{{ $wholesaleModel->code }}"
+                            <input type="text" class="form-control" name="code" placeholder="รหัส-โฮลเซลล์"
                                 required>
                         </div>
                         <div class="col-md-12 mb-3">
                             <label class="form-label">ชื่อภาษาไทย<span class="text-danger"> *</span></label>
                             <input type="text" class="form-control" name="wholesale_name_th" required
-                                value="{{ $wholesaleModel->wholesale_name_th }}">
+                                placeholder="ชื่อภาษาไทย">
                         </div>
                         <div class="col-md-12 mb-3">
                             <label class="form-label">ชื่อภาษาอังกฤษ<span class="text-danger"> *</span></label>
                             <input type="text" class="form-control" name="wholesale_name_en" required
-                                value="{{ $wholesaleModel->wholesale_name_en }}">
+                               placeholder="ชื่อภาษาอังกฤษ">
                         </div>
                         <div class="col-md-12 mb-3">
                             <label class="form-label">เบอร์โทรศัพท์ </label>
-                            <input type="text" class="form-control" name="tel" value="{{ $wholesaleModel->tel }}">
+                            <input type="text" class="form-control" name="tel" placeholder="เบอร์โทรศัพท์">
                         </div>
                         <div class="col-md-12 mb-3">
                             <label class="form-label">ชื่อผู้ติดต่อ </label>
                             <input type="text" class="form-control" name="contact_person"
-                                value="{{ $wholesaleModel->contact_person }}">
+                                placeholder="ชื่อผู้ติดต่อ">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="col-md-12 mb-3">
                             <label class="form-label">Email </label>
                             <input type="Email" class="form-control" name="email"
-                                placeholder="Email@Mail.com" value="{{ $wholesaleModel->email }}">
+                                placeholder="Email@Mail.com">
                         </div>
 
                         <div class="col-md-12 mb-3">
                             <label class="form-label">เลขประจําตัวผู้เสียภาษีอากร </label>
                             <input type="number" class="form-control" name="textid"
-                                placeholder="เลขประจําตัวผู้เสียภาษีอากร" value="{{ $wholesaleModel->textid }}">
+                                placeholder="เลขประจําตัวผู้เสียภาษีอากร" >
                         </div>
 
                         <div class="col-md-12 mb-3">
                             <label class="form-label">ที่อยู่ </label>
-                            <textarea name="address" class="form-control" cols="30" rows="5" placeholder="ที่อยู่">{{$wholesaleModel->address}}</textarea>
+                            <textarea name="address" class="form-control" cols="30" rows="5" placeholder="ที่อยู่"></textarea>
                         </div>
                         <br>
 
                         <div class="col-md-12 mb-3">
                             
-                           
-                        
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input success" type="radio" {{$wholesaleModel->status === 'on'? 'checked' : ''}} name="status" id="success-radio" value="on">
-                                <label class="form-check-label" for="success-radio">เปิดใช้งาน</label>
-                              </div>
-                              <div class="form-check form-check-inline">
-                                <input class="form-check-input success" type="radio" {{$wholesaleModel->status === 'off'? 'checked' : ''}} name="status" id="success2-radio" value="off">
-                                <label class="form-check-label" for="success2-radio">ปิดใช้งาน</label>
-                              </div>
+                            <input type="checkbox" name="status" value="on"> 
+                            <label class="form-label">เปิดใช้งาน </label>
                         </div>
-                        
 
 
                     </div>
