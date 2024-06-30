@@ -1,11 +1,30 @@
 @extends('layouts.template')
 
 @section('content')
+<div class="container-fluid page-content">
+
+    @if (session('success'))
+    <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show"
+    role="alert">
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <strong>Success - </strong>{{session('success')}}
+    </div>
+    @endif
+
+    @if (session('error'))
+    <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show"
+    role="alert">
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <strong>Error - </strong>{{session('error')}}
+    </div>
+    @endif
+    
+
     <div class="card">
         <div class="card-body">
             <h4 class="card-title">รายชื่อสายการบินทั้งหมด </h4>
            
-                <a href="{{route('wholesale.create')}}" class="btn btn-info btn-sm float-end mb-3"><i class="fas fa-plus"></i> เพิ่มข้อมูล</a>
+                <a href="{{route('airline.create')}}" class="btn btn-info btn-sm float-end mb-3"><i class="fas fa-plus"></i> เพิ่มข้อมูล</a>
           
             <form action="" method="GET">
                <div class="input-group mb-3 pull-right">
@@ -45,15 +64,15 @@
                             </td>
                             <td>{{ date('d-m-Y', strtotime($item->updated_at)) }}</td>
                             <td>
-                              {{-- @canany(['edit-wholesale'])
-                              <a href="{{route('wholesale.edit',$item->id)}}" class="ml-3"><i class=" fas fa-edit "> </i> แก้ไข</a>
+                              @canany(['edit-airline'])
+                              <a href="{{route('airline.edit',$item->id)}}" class="ml-3"><i class=" fas fa-edit "> </i> แก้ไข</a>
                               @endcanany
 
-                              @canany(['delete-wholesale'])
+                              @canany(['delete-airline'])
                            
-                              <a href="{{ route('wholesale.destroy', $item->id) }}" type="submit" class="text-danger mx-3" onclick="return confirm('Do you want to delete this Wholesale?');"><i class=" fas fa-trash"> </i> ลบ</a>
+                              <a href="{{ route('airline.destroy', $item->id) }}" type="submit" class="text-danger mx-3" onclick="return confirm('Do you want to delete this Airline?');"><i class=" fas fa-trash"> </i> ลบ</a>
                              
-                              @endcanany --}}
+                              @endcanany
 
                             </td>
                         </tr>
@@ -65,5 +84,6 @@
             <br>
             {!! $airline->withQueryString()->links('pagination::bootstrap-5') !!}
         </div>
+    </div>
     </div>
 @endsection

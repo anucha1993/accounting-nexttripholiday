@@ -2,6 +2,24 @@
 
 @section('content')
 
+<div class="container-fluid page-content">
+
+    @if (session('success'))
+    <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show"
+    role="alert">
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <strong>Success - </strong>{{session('success')}}
+    </div>
+    @endif
+
+    @if (session('error'))
+    <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show"
+    role="alert">
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <strong>Error - </strong>{{session('error')}}
+    </div>
+    @endif
+    
 <div class="row justify-content-center">
     <div class="col-md-8">
 
@@ -84,6 +102,21 @@
                         @empty
                         @endforelse
                     </div>
+
+                    <label for="permissions"
+                    class="col-md-4 col-form-label text-md-end text-start">ข้อมูลสายการบิน</label>
+                    <div class="col-md-6">
+                        @forelse ($permissionsAirline as $airline)
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input success" name="permissions[]" type="checkbox"  {{ in_array($airline->id, $rolePermissions ?? []) ? 'checked' : '' }}
+                                    id="success-check" value="{{ $airline->id }}">
+                                <label class="form-check-label" for="success-check">{{ $airline->label }}</label>
+                            </div>
+
+                        @empty
+                        @endforelse
+                    </div>
+
                     </div>
                     
                     
@@ -115,6 +148,7 @@
             </div>
         </div>
     </div>    
+</div>
 </div>
     
 @endsection

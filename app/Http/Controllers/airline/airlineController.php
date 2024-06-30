@@ -10,6 +10,15 @@ class airlineController extends Controller
 {
     //
 
+    public function __construct()
+    {
+       $this->middleware('auth');
+       $this->middleware('permission:create-airline|edit-airline|delete-airline|view-airline', ['only' => ['index','show']]);
+       $this->middleware('permission:create-airline', ['only' => ['create','store']]);
+       $this->middleware('permission:edit-airline', ['only' => ['edit','update']]);
+       $this->middleware('permission:delete-airline', ['only' => ['destroy']]);
+    }
+
     public function index(Request $request)
     {
         $keyword = $request->input('search');
@@ -25,4 +34,52 @@ class airlineController extends Controller
 
         return view('airline.index',compact('airline'));
     }
+
+    public function edit(airlineModel $airlineModel)
+    {
+        return view('airline.edit-airline',compact('airlineModel'));
+    }
+
+    public function create()
+    {
+        return view('airline.create-airline');
+    }
+
+    public function update(airlineModel $airlineModel, Request $request)
+    {
+        //dd($request);
+       $check =  $airlineModel->update($request->all());
+       if($check){
+        return redirect()->route('airline.index')->with('success','Updated Airline Successfully');
+       }else{
+        return redirect()->route('airline.index')->with('error','Updated Airline Error');
+       }
+        
+    }
+
+    public function store( Request $request)
+    {
+        //dd($request);
+       $check = airlineModel::create($request->all());
+       if($check){
+        return redirect()->route('airline.index')->with('success','Created Airline Successfully');
+       }else{
+        return redirect()->route('airline.index')->with('error','Created Airline Error');
+       }
+        
+    }
+
+    public function destroy(airlineModel $airlineModel)
+    {
+        //dd($request);
+       $check =  $airlineModel->delete();
+       if($check){
+        return redirect()->route('airline.index')->with('success','Deleted Airline Successfully');
+       }else{
+        return redirect()->route('airline.index')->with('error','Deleted Airline Error');
+       }
+        
+    }
+
+    
 }

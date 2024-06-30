@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\airline\airlineController;
+use App\Http\Controllers\booking\BookingController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -38,7 +39,15 @@ Route::get('/wholesale/delete/{wholesaleModel}',[wholeSaleController::class,'des
 
 
 //airline
-Route::get('/airline',[airlineController::class,'index'])->name('wholesale.index');
+Route::get('/airline',[airlineController::class,'index'])->name('airline.index');
+Route::get('/airline/edit/{airlineModel}',[airlineController::class,'edit'])->name('airline.edit');
+Route::put('/airline/edit/{airlineModel}',[airlineController::class,'update'])->name('airline.update');
+Route::post('/airline/store',[airlineController::class,'store'])->name('airline.store');
+Route::get('/airline/create',[airlineController::class,'create'])->name('airline.create');
+Route::get('/airline/delete/{airlineModel}',[airlineController::class,'destroy'])->name('airline.destroy');
+
+//Booking
+Route::get('/booking',[BookingController::class,'index'])->name('booking.index');
 
 Route::resources([
     'roles' => RoleController::class,
