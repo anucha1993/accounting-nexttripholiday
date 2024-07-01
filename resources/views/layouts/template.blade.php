@@ -12,7 +12,7 @@
     content="wrappixel, admin dashboard, html css dashboard, web dashboard, bootstrap 5 admin, bootstrap 5, css3 dashboard, bootstrap 5 dashboard, ample admin admin bootstrap 5 dashboard, frontend, responsive bootstrap 5 admin template, material design, material dashboard bootstrap 5 dashboard template" />
   <meta name="description" content="Admin Pro is powerful and clean admin dashboard template" />
   <meta name="robots" content="noindex,nofollow" />
-  <title>Ample admin Template by WrapPixel</title>
+  <title>Accounting Nexttripholiday </title>
   <link rel="canonical" href="https://www.wrappixel.com/templates/ampleadmin/" />
   <!-- Favicon icon -->
   <link rel="icon" type="image/png" sizes="16x16" href="{{URL::asset('template/assets/images/favicon.png')}}" />
@@ -1731,7 +1731,7 @@
   <!-- -------------------------------------------------------------- -->
   <!-- customizer Panel -->
   <!-- -------------------------------------------------------------- -->
-  <aside class="customizer">
+  {{-- <aside class="customizer">
     <a href="javascript:void(0)" class="service-panel-toggle"><i class="fa fa-spin fa-cog"></i></a>
     <div class="customizer-body">
       <ul class="nav customizer-tab" role="tablist">
@@ -1748,6 +1748,8 @@
             aria-controls="pills-contact" aria-selected="false"><i class="mdi mdi-star-circle fs-6"></i></a>
         </li>
       </ul>
+
+      
       <div class="tab-content" id="pills-tabContent">
         <!-- Tab 1 -->
         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
@@ -2118,7 +2120,7 @@
         <!-- End Tab 3 -->
       </div>
     </div>
-  </aside>
+  </aside> --}}
   <div class="chat-windows"></div>
   <!-- -------------------------------------------------------------- -->
   <!-- All Jquery -->
