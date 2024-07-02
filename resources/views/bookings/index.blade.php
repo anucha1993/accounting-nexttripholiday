@@ -150,6 +150,14 @@
                                     <input type="hidden" name="booking_number" value="{{$item->code}}">
                                     <input type="hidden" name="booking_sale" value="{{$item->sale_name}}">
                                     <input type="hidden" name="booking_tour_number" value="{{$item->tour_code}}">
+                                     
+                                    <input type="hidden" name="product[0]" value="จำนวนผู้ใหญ่">
+                                    <input type="hidden" name="qty[0]" value="{{$item->num_twin}}">
+                                    <input type="hidden" name="price[0]" value="{{$item->price1}}">
+                                    <input type="hidden" name="sum[0]" value="{{$item->sum_price1}}">
+
+                                   
+
                                     <button type="submit" class="mx-3 btn btn-sm btn-primary"><i class=" fas fa-redo " ></i> Convert</button>
 
                                     @can('edit-booking')

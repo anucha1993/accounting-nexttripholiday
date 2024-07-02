@@ -206,7 +206,32 @@
                     <br>
 
                     <div class="row" style="background-color: #cfcfcf23; padding: 20px; border-radius: 50px;">
-                        s
+                        
+                        <h4>รายการสินค้าและบริการ</h4>
+                       <hr>
+                       <table class="table customize-table table-hover mb-0 v-middle table-striped">
+                        <thead class="table-based border  ">
+                            <tr>
+                                <th>#</th>
+                                <th>ลำดับ</th>
+                                <th>รายละเอียด / Description</th>
+                                <th>จำนวน </br>Quantit</th>
+                                <th>ราคา:หน่วย </br>Unit Price</th>
+                                <th>ยอดรวม</br>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{-- @forelse ($request->product as $key => $item)
+                                <tr>
+                                    <td>ลบ</td>
+                                    <td>{{$key+1}}</td>
+                                    <td>{{$item->product}}</td>
+                                </tr>
+                            @empty
+                                No found product
+                            @endforelse --}}
+                        </tbody>
+                       </table>
                     </div>
                 </form>
 
