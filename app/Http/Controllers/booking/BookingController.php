@@ -12,6 +12,17 @@ use function Laravel\Prompts\table;
 class BookingController extends Controller
 {
     //
+
+    public function __construct()
+    {
+       $this->middleware('auth');
+       $this->middleware('permission:create-booking|edit-booking|delete-booking|view-booking', ['only' => ['index','show']]);
+       $this->middleware('permission:create-booking', ['only' => ['create','store']]);
+       $this->middleware('permission:edit-booking', ['only' => ['edit','update']]);
+       $this->middleware('permission:delete-booking', ['only' => ['destroy']]);
+    }
+
+
     public function index(Request $request)
     {
         $keyword_name = $request->input('search_name');

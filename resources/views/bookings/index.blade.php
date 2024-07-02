@@ -146,11 +146,18 @@
                                     <input type="hidden" name="customer_name" value="{{$item->name.' '.$item->surname}}">
                                     <input type="hidden" name="customer_email" value="{{$item->email}}">
                                     <input type="hidden" name="customer_tel" value="{{$item->phone}}">
+
+                                    <input type="hidden" name="booking_number" value="{{$item->code}}">
+                                    <input type="hidden" name="booking_sale" value="{{$item->sale_name}}">
+                                    <input type="hidden" name="booking_tour_number" value="{{$item->tour_code}}">
                                     <button type="submit" class="mx-3 btn btn-sm btn-primary"><i class=" fas fa-redo " ></i> Convert</button>
 
-
+                                    @can('edit-booking')
                                     <a href="#" class="  mx-3"><i class="fas fa-edit"></i> แก้ไข</a>
+                                    @endcan
+                                    @can('delete-booking')
                                     <a href="#" class="text-danger  mx-3"><i class="fas fa-trash"></i> ลบ</a>
+                                    @endcan
                                 </form>
                             
 

@@ -40,8 +40,7 @@
 
                             <div class="mb-3 row">
                                 <label for="example-text-input text-right"
-                                    class="col-sm-4 text-end control-label col-form-label">ชื่อลูกค้า /
-                                    FullName:</label>
+                                    class="col-sm-4 text-end control-label col-form-label">ชื่อลูกค้า:</label>
                                 <div class="col-md-8">
                                     <input type="text" class="form-control" name="customer_name" placeholder="ชื่อลูกค้า"
                                     value="{{$request->customer_name }}"
@@ -55,7 +54,7 @@
 
                             <div class="mb-3 row">
                                 <label for="example-text-input"
-                                    class="col-sm-4 text-end control-label col-form-label">อีเมล์ / Email:</label>
+                                    class="col-sm-4 text-end control-label col-form-label">อีเมล์:</label>
                                 <div class="col-md-8">
                                     <input type="email" class="form-control" name="customer_email"
                                      value="{{$request->customer_email}}"
@@ -68,16 +67,16 @@
 
                             <div class="mb-3 row">
                                 <label for="example-text-input"
-                                    class="col-sm-4 text-end control-label col-form-label">ที่อยู่ / Address:</label>
+                                    class="col-sm-4 text-end control-label col-form-label">ที่อยู่:</label>
                                 <div class="col-md-8">
-                                    <textarea name="customer_address" id="address" class="form-control" cols="30" rows="2"
+                                    <textarea name="customer_address" id="address" class="form-control" cols="30" rows="4"
                                         placeholder="ที่อยู่" required>{{$checkCustomer? $checkCustomer->customer_address : ''}}</textarea>
                                 </div>
                             </div>
 
                             <div class="mb-3 row">
                                 <label for="example-text-input"
-                                    class="col-sm-4 text-end control-label col-form-label">เลขผู้เสียภาษี / TaxID:</label>
+                                    class="col-sm-4 text-end control-label col-form-label">เลขผู้เสียภาษี:</label>
                                 <div class="col-md-8">
                                     <input type="text" id="texid" class="form-control" name="customer_texid" mix="13"
                                     value="{{$checkCustomer? $checkCustomer->customer_texid : ''}}"
@@ -87,7 +86,7 @@
 
                             <div class="mb-3 row">
                                 <label for="example-text-input"
-                                    class="col-sm-4 text-end control-label col-form-label">เบอร์โทรศัพท์ / Phone No:</label>
+                                    class="col-sm-4 text-end control-label col-form-label">เบอร์โทรศัพท์ :</label>
                                 <div class="col-md-8">
                                     <input type="text" class="form-control" name="customer_tel"
                                     value="{{$request->customer_tel }}"
@@ -99,7 +98,7 @@
                             </div>
                             <div class="mb-3 row">
                                 <label for="example-text-input"
-                                    class="col-sm-4 text-end control-label col-form-label">เบอร์โทรสาร / FAX:</label>
+                                    class="col-sm-4 text-end control-label col-form-label">เบอร์โทรสาร :</label>
                                 <div class="col-md-8">
                                     <input type="text" class="form-control" id="fax" name="customer_fax"
                                        value="{{$checkCustomer? $checkCustomer->customer_fax : ''}}"
@@ -114,29 +113,31 @@
 
                             <div class="mb-3 row">
                                 <label for="example-text-input"
-                                    class="col-sm-4 text-end control-label col-form-label">เลขที่ / IVS No : </label>
+                                    class="col-sm-4 text-end control-label col-form-label">วันที่ออกใบแจ้งหนี้ : </label>
 
                                     <div class="col-md-8">
                                              <input type="text" class="form-control" name="invoice_number" placeholder="Pending" readonly
-                                             value="IVS{{date('Yd',strtotime(now())).'-????'}}">
+                                             value="{{date('d/m/Y',strtotime(now()))}}">
                                          </div>
 
                             </div>
                             <div class="mb-3 row">
                                 <label for="example-text-input"
-                                    class="col-sm-4 text-end control-label col-form-label">วันที่ / IVS Date:</label>
+                                    class="col-sm-4 text-end control-label col-form-label">วันที่จองแพคเกจ :</label>
                                 <div class="col-md-8">
                                     <input type="date" class="form-control" name="customer_date" value="{{date('Y-m-d',strtotime(now()))}}"
                                         required aria-describedby="basic-addon1">
                                 </div>
 
                             </div>
+                          
 
                             <div class="mb-3 row">
                               <label for="example-text-input"
-                                  class="col-sm-4 text-end control-label col-form-label">เลขที่อ้างอิง / IV Ref:</label>
+                                  class="col-sm-4 text-end control-label col-form-label">ชื่อแพคเกจทัวร์ :</label>
                               <div class="col-md-8">
-                                  <input type="text" class="form-control" name="booking_tour_code" placeholder="เลขที่อ้างอิงใบจองทัวร์" readonly
+                                  <input type="text" class="form-control" name="booking_tour_code" placeholder="ชื่อแพคเกจทัวร์" readonly
+                                  value=""
                                       required aria-describedby="basic-addon1">
                               </div>
 
@@ -144,9 +145,10 @@
 
                           <div class="mb-3 row">
                               <label for="example-text-input"
-                                  class="col-sm-4 text-end control-label col-form-label">รหัสทัวร์ / Tore Code : </label>
+                                  class="col-sm-4 text-end control-label col-form-label">ระยะเวลาทัวร์ (วัน/คืน) : </label>
                               <div class="col-md-8">
-                                  <input type="text" class="form-control" name="booking_tour_number" placeholder="เลขที่อ้างอิงใบจองทัวร์" readonly
+                                  <input type="text" class="form-control" name="booking_tour_number" placeholder="ระยะเวลาทัวร์" readonly
+                                  value=""
                                       required aria-describedby="basic-addon1">
                               </div>
 
@@ -154,28 +156,57 @@
 
                           <div class="mb-3 row">
                               <label for="example-text-input"
-                                  class="col-sm-4 text-end control-label col-form-label">เลขที่จอง / Booking Code: </label>
+                                  class="col-sm-4 text-end control-label col-form-label">ประเทศที่เดินทาง : </label>
                               <div class="col-md-8">
                                   <input type="text" class="form-control" name="booking_number" placeholder="เลขที่จองทัวร์" readonly
+                                  value=""
+                                      required aria-describedby="basic-addon1">
+                              </div>
+                          </div>
+
+                          <div class="mb-3 row">
+                              <label for="example-text-input"
+                                  class="col-sm-4 text-end control-label col-form-label">โฮลเซลล์: </label>
+                              <div class="col-md-8">
+                                  <input type="text" class="form-control" name="booking_sale" placeholder="พนักงานขาย" readonly
+                                  value=""
                                       required aria-describedby="basic-addon1">
                               </div>
 
                           </div>
 
                           <div class="mb-3 row">
-                              <label for="example-text-input"
-                                  class="col-sm-4 text-end control-label col-form-label">พนักงานขาย / Saleman: </label>
-                              <div class="col-md-8">
-                                  <input type="text" class="form-control" name="booking_sale" placeholder="พนักงานขาย" readonly
-                                      required aria-describedby="basic-addon1">
-                              </div>
+                            <label for="example-text-input"
+                                class="col-sm-4 text-end control-label col-form-label">สายการบิน : </label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" name="booking_sale" placeholder="สายการบิน" readonly
+                                value=""
+                                    required aria-describedby="basic-addon1">
+                            </div>
 
-                          </div>
+                        </div>
+
+
+                        <div class="mb-3 row">
+                            <label for="example-text-input"
+                                class="col-sm-4 text-end control-label col-form-label">วันที่ออกเดินทาง : </label>
+                            <div class="col-md-8">
+                                <input type="date" class="form-control" name="booking_sale" placeholder="สายการบิน" readonly
+                                value=""
+                                    required aria-describedby="basic-addon1">
+                            </div>
+
+                        </div>
 
 
 
 
                         </div>
+                    </div>
+                    <br>
+
+                    <div class="row" style="background-color: #cfcfcf23; padding: 20px; border-radius: 50px;">
+                        s
                     </div>
                 </form>
 
