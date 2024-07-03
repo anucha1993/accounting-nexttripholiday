@@ -27,10 +27,10 @@
                         <div class="col-md-6">
                             <label class="text-danger">สถานะ <span class="text-danger"> *</span></label>
                             <select name="status" id="status" class="form-select" placeholder="status" required>
-                                <option value="Booked">Booked</option>
-                                <option value="Wait List">Wait List</option>
-                                <option value="Success">Success</option>
-                                <option value="Success">Cancel</option>
+                                <option @if($bookingModel->status === 'Booked') selected @endif value="Booked">Booked</option>
+                                <option @if($bookingModel->status === 'Wait List') selected @endif value="Wait List">Wait List</option>
+                                <option @if($bookingModel->status === 'Success') selected @endif value="Success">Success</option>
+                                <option @if($bookingModel->status === 'Cancel') selected @endif value="Cancel">Cancel</option>
                             </select>
                         </div>
 
@@ -42,12 +42,25 @@
 
                             <select name="tour_id" id="tour-id" class="form-select" required>
                                 <option value="">เลือกหนึ่งรายการ</option>
+
+                            @forelse ($tours as $item)
+                            <option @if($item->id === $bookingModel->tour_id ) selected @endif value="{{$item->id}}">{{$item->name}}</option>
+                            @empty
+                                No found data
+                            @endforelse
                             </select>
                         </div>
                         <div class="col-md-6 mb-2">
                             <label>วันที่เดินทาง <span class="text-danger"> *</span></label>
                             <select name="date_tour" id="date-tour" class="form-select" required>
                                 <option value="">เลือกหนึ่งรายการ</option>
+
+                                @forelse ($periods as $item)
+                                <option  @if($item->id === $bookingModel->period_id ) selected @endif value="">{{date('d/m/Y',strtotime($item->start_date)).' - '.date('d/m/Y',strtotime($item->end_date))}}</option>
+
+                                @empty
+                                No found data
+                                @endforelse
                             </select>
                         </div>
                     </div>
@@ -190,4 +203,22 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready( function() {
+            $('#tour-id').on('change',function () {
+                var tour = $(this).val();
+                $.ajax({
+                    url: '/',
+                    method: 'GET',
+                    data: {
+                        tour: tour
+                    },
+                    success: function(){
+                       log('test');
+                    }
+                })
+            });
+        });
+    </script>
 @endsection

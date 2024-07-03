@@ -161,6 +161,9 @@ class BookingController extends Controller
     public function edit(bookingModel $bookingModel)
     {
         $sales = saleModel::whereNot('role',1)->get();
-        return view('bookings.edit-booking',compact('bookingModel','sales'));
+        $tours = DB::connection('mysql2')->table('tb_tour')->where('status','on')->get();
+        $periods = DB::connection('mysql2')->table('tb_tour_period')->where('tour_id',$bookingModel->tour_id)->get();
+       
+        return view('bookings.edit-booking',compact('bookingModel','sales','tours','periods'));
     }
 }
