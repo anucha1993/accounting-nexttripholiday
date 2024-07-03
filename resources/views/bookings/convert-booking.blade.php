@@ -38,7 +38,7 @@
                     <div class="row" style="background-color: #cfcfcf23; padding: 20px; border-radius: 50px;">
                         <div class="col-md-6">
 
-                            <div class="mb-3 row">
+                            <div class="mb-1 row">
                                 <label for="example-text-input text-right"
                                     class="col-sm-4 text-end control-label col-form-label">ชื่อลูกค้า:</label>
                                 <div class="col-md-8">
@@ -52,7 +52,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3 row">
+                            <div class="mb-1 row">
                                 <label for="example-text-input"
                                     class="col-sm-4 text-end control-label col-form-label">อีเมล์:</label>
                                 <div class="col-md-8">
@@ -65,7 +65,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3 row">
+                            <div class="mb-1 row">
                                 <label for="example-text-input"
                                     class="col-sm-4 text-end control-label col-form-label">ที่อยู่:</label>
                                 <div class="col-md-8">
@@ -74,7 +74,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3 row">
+                            <div class="mb-1 row">
                                 <label for="example-text-input"
                                     class="col-sm-4 text-end control-label col-form-label">เลขผู้เสียภาษี:</label>
                                 <div class="col-md-8">
@@ -84,7 +84,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3 row">
+                            <div class="mb-1 row">
                                 <label for="example-text-input"
                                     class="col-sm-4 text-end control-label col-form-label">เบอร์โทรศัพท์ :</label>
                                 <div class="col-md-8">
@@ -96,7 +96,7 @@
                                         @endif
                                 </div>
                             </div>
-                            <div class="mb-3 row">
+                            <div class="mb-1 row">
                                 <label for="example-text-input"
                                     class="col-sm-4 text-end control-label col-form-label">เบอร์โทรสาร :</label>
                                 <div class="col-md-8">
@@ -111,7 +111,7 @@
 
                         <div class="col-md-6">
 
-                            <div class="mb-3 row">
+                            <div class="mb-1 row">
                                 <label for="example-text-input"
                                     class="col-sm-4 text-end control-label col-form-label">วันที่ออกใบแจ้งหนี้ : </label>
 
@@ -121,7 +121,7 @@
                                          </div>
 
                             </div>
-                            <div class="mb-3 row">
+                            <div class="mb-1 row">
                                 <label for="example-text-input"
                                     class="col-sm-4 text-end control-label col-form-label">วันที่จองแพคเกจ :</label>
                                 <div class="col-md-8">
@@ -132,67 +132,67 @@
                             </div>
                           
 
-                            <div class="mb-3 row">
+                            <div class="mb-1 row">
                               <label for="example-text-input"
                                   class="col-sm-4 text-end control-label col-form-label">ชื่อแพคเกจทัวร์ :</label>
                               <div class="col-md-8">
                                   <input type="text" class="form-control" name="booking_tour_code" placeholder="ชื่อแพคเกจทัวร์" readonly
-                                  value=""
+                                  value="{{$request->booking_tour_name}}"
                                       required aria-describedby="basic-addon1">
                               </div>
 
                           </div>
 
-                          <div class="mb-3 row">
+                          <div class="mb-1 row">
                               <label for="example-text-input"
                                   class="col-sm-4 text-end control-label col-form-label">ระยะเวลาทัวร์ (วัน/คืน) : </label>
                               <div class="col-md-8">
                                   <input type="text" class="form-control" name="booking_tour_number" placeholder="ระยะเวลาทัวร์" readonly
-                                  value=""
+                                  value="{{$request->num_day}}"
                                       required aria-describedby="basic-addon1">
                               </div>
 
                           </div>
 
-                          <div class="mb-3 row">
+                          <div class="mb-1 row">
                               <label for="example-text-input"
                                   class="col-sm-4 text-end control-label col-form-label">ประเทศที่เดินทาง : </label>
                               <div class="col-md-8">
                                   <input type="text" class="form-control" name="booking_number" placeholder="เลขที่จองทัวร์" readonly
-                                  value=""
+                                  value="{{$country_name}}"
                                       required aria-describedby="basic-addon1">
                               </div>
                           </div>
 
-                          <div class="mb-3 row">
+                          <div class="mb-1 row">
                               <label for="example-text-input"
                                   class="col-sm-4 text-end control-label col-form-label">โฮลเซลล์: </label>
                               <div class="col-md-8">
                                   <input type="text" class="form-control" name="booking_sale" placeholder="พนักงานขาย" readonly
-                                  value=""
+                                  value="{{$request->wholesale_name_th}}"
                                       required aria-describedby="basic-addon1">
                               </div>
 
                           </div>
 
-                          <div class="mb-3 row">
+                          <div class="mb-1 row">
                             <label for="example-text-input"
                                 class="col-sm-4 text-end control-label col-form-label">สายการบิน : </label>
                             <div class="col-md-8">
                                 <input type="text" class="form-control" name="booking_sale" placeholder="สายการบิน" readonly
-                                value=""
+                                value="{{$request->airline_name}}"
                                     required aria-describedby="basic-addon1">
                             </div>
 
                         </div>
 
 
-                        <div class="mb-3 row">
+                        <div class="mb-1 row">
                             <label for="example-text-input"
                                 class="col-sm-4 text-end control-label col-form-label">วันที่ออกเดินทาง : </label>
                             <div class="col-md-8">
-                                <input type="date" class="form-control" name="booking_sale" placeholder="สายการบิน" readonly
-                                value=""
+                                <input type="text" class="form-control" name="booking_sale" placeholder="วันที่ออกเดินทาง" readonly
+                                value="{{date('d/m/Y',strtotime($request->start_date)).' - '.date('d/m/Y',strtotime($request->end_date))}}"
                                     required aria-describedby="basic-addon1">
                             </div>
 
@@ -205,6 +205,7 @@
                     </div>
                     <br>
 
+                
                     <div class="row" style="background-color: #cfcfcf23; padding: 20px; border-radius: 50px;">
                         
                         <h4>รายการสินค้าและบริการ</h4>
@@ -212,27 +213,55 @@
                        <table class="table customize-table table-hover mb-0 v-middle table-striped">
                         <thead class="table-based border  ">
                             <tr>
-                                <th>#</th>
-                                <th>ลำดับ</th>
-                                <th>รายละเอียด / Description</th>
+
+                                <th>ลำดับ  </br> No.</th>
+                                <th>รายละเอียด  </br> Description</th>
                                 <th>จำนวน </br>Quantit</th>
                                 <th>ราคา:หน่วย </br>Unit Price</th>
                                 <th>ยอดรวม</br>Amount</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- @forelse ($request->product as $key => $item)
-                                <tr>
-                                    <td>ลบ</td>
-                                    <td>{{$key+1}}</td>
-                                    <td>{{$item->product}}</td>
-                                </tr>
-                            @empty
-                                No found product
-                            @endforelse --}}
+                            @php
+                                $total = 0;
+                            @endphp
+                            @forelse ($request->products as $key => $item)
+                            @if ($item['qty'] > 0)
+                             
+                              @php
+                                  $total += $item['sum']
+                              @endphp
+                            <tr>
+                                <td>{{ $key + 1 }}</td>
+                                <td>{{ $item['name'] }}</td>
+                                <td>{{ $item['qty'] }}</td>
+                                <td>{{ number_format($item['price'], 2, '.', ',');  }}</td>
+                                <td>{{ number_format($item['sum'], 2, '.', ',');  }}</td>
+                            </tr>
+                            @endif
+
+                          
+                           
+                        @empty
+
+                            <tr class="">
+                                <td colspan="3">No found product</td>
+                            </tr>
+                        @endforelse
+                        <tr >
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="text-danger"><b><u style="border-bottom: 1px solid;">ราคารวม</u></b></td>
+                            <td>{{ number_format($total, 2, '.', ','); }}</td>
+                        </tr>
                         </tbody>
                        </table>
+                      
+
+                       
                     </div>
+                    
                 </form>
 
             </div>

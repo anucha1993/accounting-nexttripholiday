@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\booking\bookingModel;
+use App\Models\sales\saleModel;
 
 use function Laravel\Prompts\table;
 
@@ -43,10 +45,12 @@ class BookingController extends Controller
         $booking = DB::connection('mysql2')
             ->table('tb_booking_form')
             ->select(
+                'tb_booking_form.id',
                 'tb_booking_form.code',
                 'tb_booking_form.name',
                 'tb_booking_form.surname',
                 'tb_booking_form.start_date',
+                'tb_booking_form.end_date',
                 'tb_booking_form.total_qty',
                 'tb_booking_form.status',
                 'tb_booking_form.created_at',
@@ -66,6 +70,9 @@ class BookingController extends Controller
                 'tb_booking_form.price2',
                 //ราคาต่อคนผู้ใหญ่พักเดี่ยว
                 'tb_booking_form.sum_price2',
+
+                //จำนวนเด็กมีเตียง
+                'tb_booking_form.num_child',
                 //ราคาต่อคนเด็กมีเตียง
                 'tb_booking_form.price3',
                 //ราคารวมเด็กมีเตียง
@@ -84,12 +91,20 @@ class BookingController extends Controller
                 //tb_tour
                 'tb_tour.code as tour_code',
                 'tb_tour.name as tour_name',
+                'tb_tour.country_id as tour_country',
+                'tb_tour.num_day',
                 //sales
                 'users.name as sale_name',
                 'users.id as sale_id',
+                 //wholesale
+                 'tb_wholesale.wholesale_name_th as wholesale_name_th',
+                 //airline
+                 'tb_travel_type.travel_name as airline_name'
             )
             ->leftJoin('tb_tour', 'tb_tour.id', 'tb_booking_form.tour_id')
             ->leftJoin('users', 'users.id', 'tb_booking_form.sale_id')
+            ->leftJoin('tb_wholesale', 'tb_wholesale.id', 'tb_tour.wholesale_id')
+            ->leftJoin('tb_travel_type', 'tb_travel_type.id', 'tb_tour.airline_id')
             ->where('tb_booking_form.status', 'Success');
 
         if (!empty($keyword_name)) {
@@ -116,6 +131,8 @@ class BookingController extends Controller
             });
         }
 
+
+
         $booking = $booking->paginate(10);
         return view('bookings.index', compact('booking', 'sales', 'keyword_sale'));
     }
@@ -126,6 +143,24 @@ class BookingController extends Controller
             ->table('customer')
             ->where('customer_name', $request->customer_name)
             ->first();
-        return view('bookings.convert-booking', compact('checkCustomer', 'request'));
+        $country_name = '';
+
+        $array = json_decode($request->tour_country);
+
+       
+        $country_ids = explode(',', $request->tour_country);
+        $countrys =  DB::connection('mysql2')->table('tb_country')->whereIn('id', $array)->get();
+
+        foreach ($countrys as $country) {
+            $country_name .= $country->country_name_th . ' ';
+        }
+       // dd($country_name);
+        return view('bookings.convert-booking', compact('checkCustomer', 'request', 'country_name'));
+    }
+
+    public function edit(bookingModel $bookingModel)
+    {
+        $sales = saleModel::whereNot('role',1)->get();
+        return view('bookings.edit-booking',compact('bookingModel','sales'));
     }
 }

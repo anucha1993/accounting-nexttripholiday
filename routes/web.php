@@ -49,6 +49,7 @@ Route::get('/airline/delete/{airlineModel}',[airlineController::class,'destroy']
 //Booking
 Route::get('/booking',[BookingController::class,'index'])->name('booking.index');
 Route::get('/booking/convert',[BookingController::class,'convert'])->name('booking.convert');
+Route::get('/booking/edit/{bookingModel}',[BookingController::class,'edit'])->name('booking.edit');
 
 Route::resources([
     'roles' => RoleController::class,
