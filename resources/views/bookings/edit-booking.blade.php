@@ -24,6 +24,9 @@
                 <span>Ref.Booking : <b class="text-info">{{ $bookingModel->code }}</b></span>
                 <span class="float-end">วันที่จอง : <b
                         class="text-info">{{ date('d/m/Y', strtotime($bookingModel->created_at)) }}</b></span>
+                        
+              <button type="submit" form="form2" class="mx-3 btn btn-sm btn-primary"><i class=" fas fa-redo "></i> Convert</button>
+
             </div>
 
             <div class="card-body">
@@ -248,7 +251,7 @@
 
     {{-- Convert --}}
 
-    <form action="{{ route('booking.convert') }}" method="get">
+    <form action="{{ route('booking.convert') }}" id="form2" method="get">
 
         <input type="hidden" name="customer_name"
             value="{{ $bookingModel->name . ' ' . $bookingModel->surname }}">
@@ -259,13 +262,13 @@
         <input type="hidden" name="booking_sale" value="{{ $sale->name }}">
 
         <input type="hidden" name="booking_tour_number" value="{{ $bookingModel->tour_code }}">
-        <input type="hidden" name="booking_tour_name" value="{{ $bookingModel->tour_name }}">
-        <input type="hidden" name="tour_country" value="{{ $bookingModel->tour_country }}">
-        <input type="hidden" name="wholesale_name_th" value="{{ $bookingModel->wholesale_name_th }}">
-        <input type="hidden" name="airline_name" value="{{ $bookingModel->airline_name }}">
+        <input type="hidden" name="booking_tour_name" value="{{ $tour->tour_name }}">
+        <input type="hidden" name="tour_country" value="{{ $tour->country_id }}">
+        <input type="hidden" name="wholesale_name_th" value="{{ $tour->wholesale_name_th }}">
+        <input type="hidden" name="airline_name" value="{{ $tour->airline_name }}">
         <input type="hidden" name="start_date" value="{{ $bookingModel->start_date }}">
         <input type="hidden" name="end_date" value="{{ $bookingModel->end_date }}">
-        <input type="hidden" name="num_day" value="{{ $bookingModel->num_day }}">
+        <input type="hidden" name="num_day" value="{{ $tour->num_day }}">
 
 
         @php
@@ -306,9 +309,8 @@
 
 
 
-        <button type="submit" class="mx-3 btn btn-sm btn-primary"><i class=" fas fa-redo "></i> Convert</button>
 
-
+    
     </form>
 
 

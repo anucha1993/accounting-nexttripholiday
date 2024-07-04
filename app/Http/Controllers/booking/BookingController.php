@@ -145,11 +145,9 @@ class BookingController extends Controller
             ->table('customer')
             ->where('customer_name', $request->customer_name)
             ->first();
+
         $country_name = '';
-
         $array = json_decode($request->tour_country);
-
-       
         $country_ids = explode(',', $request->tour_country);
         $countrys =  DB::connection('mysql2')->table('tb_country')->whereIn('id', $array)->get();
 
@@ -167,8 +165,15 @@ class BookingController extends Controller
         $tours = DB::connection('mysql2')->table('tb_tour')->where('status','on')->get();
         $periods = DB::connection('mysql2')->table('tb_tour_period')->where('tour_id',$bookingModel->tour_id)->get();
         $sale =  DB::connection('mysql2')->table('users')->where('id',$bookingModel->sale_id)->first();
-       
-        return view('bookings.edit-booking',compact('bookingModel','sales','tours','periods','sale'));
+
+        $tour = DB::connection('mysql2')->table('tb_tour')
+        ->select('tb_tour.country_id','tb_tour.name as tour_name', 'tb_wholesale.wholesale_name_th as wholesale_name_th','tb_tour.num_day','tb_travel_type.travel_name as airline_name')
+        ->leftJoin('tb_wholesale', 'tb_wholesale.id', 'tb_tour.wholesale_id')
+        ->leftJoin('tb_travel_type', 'tb_travel_type.id', 'tb_tour.airline_id')
+        ->where('tb_tour.id',$bookingModel->tour_id)->first();
+        //dd($tour);
+        
+        return view('bookings.edit-booking',compact('bookingModel','sales','tours','periods','sale','tour'));
     }
 
     public function update(bookingModel $bookingModel, Request $request)
