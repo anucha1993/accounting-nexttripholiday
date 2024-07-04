@@ -20,23 +20,23 @@
 
         <div class="card">
             <div class="card-header">
-                <h4>แก้ไขข้อมูลใบจองทัวร์</h4>
-                <span>Ref.Booking : <b class="text-info">{{ $bookingModel->code }}</b></span>
+                <h4>เพิ่มข้อมูลใบจองทัวร์</h4>
+                <span>Ref.Booking : <b class="text-info">????</b></span>
                 <span class="float-end">วันที่จอง : <b
-                        class="text-info">{{ date('d/m/Y', strtotime($bookingModel->created_at)) }}</b></span>
+                        class="text-info">{{ date('d/m/Y', strtotime(date(now()))) }}</b></span>
             </div>
 
             <div class="card-body">
-                <form id="form1" action="{{route('booking.update',$bookingModel->id)}}" method="post">
+                <form action="{{route('booking.store')}}" method="post">
                     @csrf
-                    @method('put')
+                    @method('post')
                     <div class="row">
                         <div class="col-md-6">
                             <label>Sale <span class="text-danger"> *</span></label>
                             <select name="sale_id" id="sale-name" class="form-select" placeholder="Sale Name" required>
-                          
+                           <option value="">เลือกหนึ่งรายการ</option>
                                 @forelse ($sales as $sale)
-                                    <option @if ($bookingModel->sale_id === $sale->id) selected @endif
+                                    <option 
                                         value="{{ $sale->id }}">{{ $sale->name }}</option>
                                 @empty
                                 @endforelse
@@ -45,12 +45,13 @@
 
                         <div class="col-md-6">
                             <label class="text-danger">สถานะ <span class="text-danger"> *</span></label>
+                            
                             <select name="status" id="status" class="form-select" placeholder="status" required>
-                                <option @if ($bookingModel->status === 'Booked') selected @endif value="Booked">Booked</option>
-                                <option @if ($bookingModel->status === 'Wait List') selected @endif value="Wait List">Wait List
-                                </option>
-                                <option @if ($bookingModel->status === 'Success') selected @endif value="Success">Success</option>
-                                <option @if ($bookingModel->status === 'Cancel') selected @endif value="Cancel">Cancel</option>
+                                <option value="">เลือกหนึ่งรายการ</option>
+                                <option  value="Booked">Booked</option>
+                                <option  value="Wait List">Wait List</option>
+                                <option  value="Success">Success</option>
+                                <option  value="Cancel">Cancel</option>
                             </select>
                         </div>
                     </div>
@@ -64,7 +65,7 @@
                                 <option value="">เลือกหนึ่งรายการ</option>
 
                                 @forelse ($tours as $item)
-                                    <option @if ($item->id === $bookingModel->tour_id) selected @endif value="{{ $item->id }}">
+                                    <option  value="{{ $item->id }}">
                                         [{{ $item->code }}] {{ $item->name }}</option>
                                 @empty
                                     No found data
@@ -75,44 +76,35 @@
                             <label>วันที่เดินทาง <span class="text-danger"> *</span></label>
                             <select name="period_id" id="date-tour" class="form-select" required>
                                 <option value="">เลือกหนึ่งรายการ</option>
-
-                                @forelse ($periods as $item)
-                                    <option @if ($item->id === $bookingModel->period_id) selected @endif value="{{$item->id}}">
-                                        {{ date('d/m/Y', strtotime($item->start_date)) . ' - ' . date('d/m/Y', strtotime($item->end_date)) }}
-                                    </option>
-
-                                @empty
-                                    No found data
-                                @endforelse
                             </select>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-3 mb-2">
                             <label>ชื่อ <span class="text-danger"> * </span></label>
-                            <input type="text" class="form-control" name="name" value="{{ $bookingModel->name }}"
+                            <input type="text" class="form-control" name="name" value=""
                                 placeholder="ชื่อ" required>
                         </div>
                         <div class="col-md-3 mb-2">
                             <label>นามสกุล <span class="text-danger"> * </span></label>
-                            <input type="text" class="form-control" name="surname" value="{{ $bookingModel->surname }}"
+                            <input type="text" class="form-control" name="surname" value=""
                                 placeholder="นามสกุล" required>
                         </div>
                         <div class="col-md-3 mb-2">
                             <label>Email <span class="text-danger"> * </span></label>
                             <input type="email" class="form-control" name="email" placeholder="email"
-                                value="{{ $bookingModel->email }}" required>
+                                value="" required>
                         </div>
                         <div class="col-md-3 mb-2">
                             <label>เบอร์โทรศัพท์ <span class="text-danger"> * </span></label>
                             <input type="text" class="form-control" name="phone" placeholder="+66"
-                                value="{{ $bookingModel->phone }}" required>
+                                value="" required>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
                             <label><b>ความต้องการพิเศษ</b></label>
-                            <textarea name="detail" id="detail" cols="30" rows="4" class="form-control" >{{ $bookingModel->detail }}</textarea>
+                            <textarea name="detail" id="detail" cols="30" rows="4" class="form-control" ></textarea>
                         </div>
                     </div>
                     <hr>
@@ -136,17 +128,17 @@
                                         <td>1</td>
                                         <td>ผู้ใหญ่พักคู่</td>
                                         <td> <input type="number" min="0.00" placeholder="0.00"
-                                                value="{{ $bookingModel->num_twin }}" id="num-twin"
+                                                 id="num-twin"
                                                 name="num_twin"class="form-control text-end">
                                         </td>
                                         <td>
                                             <input type="number" min="0.00" name="price1" placeholder="0.00"
-                                                id="price1" value="{{ $bookingModel->price1 }}"
+                                                id="price1"
                                                 class="form-control text-end">
                                         </td>
                                         <td>
                                             <input type="number" min="0.00" name="sum_price1" placeholder="0.00"
-                                                id="sum-price1" value="{{ $bookingModel->sum_price1 }}"
+                                                id="sum-price1" 
                                                 class="form-control text-end">
                                         </td>
 
@@ -157,17 +149,17 @@
                                         <td>ผู้ใหญ่พักเดี่ยว</td>
                                         <td>
                                             <input type="number" min="0.00" name="num_single" placeholder="0.00"
-                                                id="num-single" value="{{ $bookingModel->num_single }}"
+                                                id="num-single" 
                                                 class="form-control text-end">
                                         </td>
                                         <td>
                                             <input type="number" min="0.00" name="price2" placeholder="0.00"
-                                                id="price2" value="{{ $bookingModel->price2 }}"
+                                                id="price2" 
                                                 class="form-control text-end">
                                         </td>
                                         <td>
                                             <input type="number" min="0.00" name="sum_price2" placeholder="0.00"
-                                                id="sum-price2" value="{{ $bookingModel->sum_price2 }}"
+                                                id="sum-price2" 
                                                 class="form-control text-end">
                                         </td>
                                     </tr>
@@ -176,17 +168,17 @@
                                         <td>เด็กมีเตียง</td>
                                         <td>
                                             <input type="number" min="0.00" name="num_child" placeholder="0.00"
-                                                id="num-child" value="{{ $bookingModel->num_child }}"
+                                                id="num-child" 
                                                 class="form-control text-end">
                                         </td>
                                         <td>
                                             <input type="number" min="0.00" name="price3" placeholder="0.00"
-                                                id="price3" value="{{ $bookingModel->price3 }}"
+                                                id="price3" 
                                                 class="form-control text-end">
                                         </td>
                                         <td>
                                             <input type="number" min="0.00" name="sum_price3" placeholder="0.00"
-                                                id="sum-price3" value="{{ $bookingModel->sum_price3 }}"
+                                                id="sum-price3"
                                                 class="form-control text-end">
                                         </td>
                                     </tr>
@@ -195,17 +187,17 @@
                                         <td>เด็กไม่มีเตียง</td>
                                         <td>
                                             <input type="number" min="0.00" name="num_childnb" placeholder="0.00"
-                                                id="num-childnb" value="{{ $bookingModel->num_childnb }}"
+                                                id="num-childnb" 
                                                 class="form-control text-end">
                                         </td>
                                         <td>
                                             <input type="number" min="0.00" name="price4" placeholder="0.00"
-                                                id="price4" value="{{ $bookingModel->price4 }}"
+                                                id="price4" 
                                                 class="form-control text-end">
                                         </td>
                                         <td>
                                             <input type="number" min="0.00" name="sum_price4" placeholder="0.00"
-                                                id="sum-price4" value="{{ $bookingModel->sum_price4 }}"
+                                                id="sum-price4" 
                                                 class="form-control text-end">
                                         </td>
                                     </tr>
@@ -230,13 +222,13 @@
                     <div class="row">
                         <div class="col-md-12">
                             <label>Remark</label>
-                            <textarea name="remark" id="remark" cols="30" rows="4" class="form-control">{{$bookingModel->remark}}</textarea>
+                            <textarea name="remark" id="remark" cols="30" rows="4" class="form-control"></textarea>
                         </div>
                     </div>
                     <br>
                     <div class="row">
                         <div class="col-md-12">
-                            <button type="submit" form="form1" class="btn btn btn-success float-end"><i class="fas fa-save"></i>
+                            <button type="submit" class="btn btn btn-success float-end"><i class="fas fa-save"></i>
                                 อัพเดทข้อมูล</button>
                         </div>
                     </div>
@@ -244,73 +236,6 @@
             </div>
         </div>
     </div>
-
-
-    {{-- Convert --}}
-
-    <form action="{{ route('booking.convert') }}" method="get">
-
-        <input type="hidden" name="customer_name"
-            value="{{ $bookingModel->name . ' ' . $bookingModel->surname }}">
-        <input type="hidden" name="customer_email" value="{{ $bookingModel->email }}">
-        <input type="hidden" name="customer_tel" value="{{ $bookingModel->phone }}">
-
-        <input type="hidden" name="booking_number" value="{{ $bookingModel->code }}">
-        <input type="hidden" name="booking_sale" value="{{ $sale->name }}">
-
-        <input type="hidden" name="booking_tour_number" value="{{ $bookingModel->tour_code }}">
-        <input type="hidden" name="booking_tour_name" value="{{ $bookingModel->tour_name }}">
-        <input type="hidden" name="tour_country" value="{{ $bookingModel->tour_country }}">
-        <input type="hidden" name="wholesale_name_th" value="{{ $bookingModel->wholesale_name_th }}">
-        <input type="hidden" name="airline_name" value="{{ $bookingModel->airline_name }}">
-        <input type="hidden" name="start_date" value="{{ $bookingModel->start_date }}">
-        <input type="hidden" name="end_date" value="{{ $bookingModel->end_date }}">
-        <input type="hidden" name="num_day" value="{{ $bookingModel->num_day }}">
-
-
-        @php
-        $products = [
-            [
-                'name' => 'ผู้ใหญ่พักคู่',
-                'qty' => $bookingModel->num_twin,
-                'price' => $bookingModel->price1,
-                'sum' => $bookingModel->sum_price1,
-            ],
-            [
-                'name' => 'ผู้ใหญ่พักเดี่ยว',
-                'qty' => $bookingModel->num_single,
-                'price' => $bookingModel->price2,
-                'sum' => $bookingModel->sum_price2,
-            ],
-            [
-                'name' => 'เด็กไมีเตียง',
-                'qty' => $bookingModel->num_child,
-                'price' => $bookingModel->price3,
-                'sum' => $bookingModel->sum_price3,
-            ],
-            [
-                'name' => 'เด็กไม่มีเตียง',
-                'qty' => $bookingModel->num_childnb,
-                'price' => $bookingModel->price4,
-                'sum' => $bookingModel->sum_price4,
-            ],
-        ];
-    @endphp
-    
-    @foreach ($products as $index => $product)
-        <input type="hidden" name="products[{{ $index }}][name]" value="{{ $product['name'] }}">
-        <input type="hidden" name="products[{{ $index }}][qty]" value="{{ $product['qty'] }}">
-        <input type="hidden" name="products[{{ $index }}][price]" value="{{ $product['price'] }}">
-        <input type="hidden" name="products[{{ $index }}][sum]" value="{{ $product['sum'] }}">
-    @endforeach
-
-
-
-        <button type="submit" class="mx-3 btn btn-sm btn-primary"><i class=" fas fa-redo "></i> Convert</button>
-
-
-    </form>
-
 
     <script>
         $(document).ready(function() {

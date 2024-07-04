@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\selects\periodSelect;
 use App\Http\Controllers\wholeSales\wholeSaleController;
 
 /*
@@ -48,8 +49,16 @@ Route::get('/airline/delete/{airlineModel}',[airlineController::class,'destroy']
 
 //Booking
 Route::get('/booking',[BookingController::class,'index'])->name('booking.index');
+Route::get('/booking/create',[BookingController::class,'create'])->name('booking.create');
+Route::post('/booking/store',[BookingController::class,'store'])->name('booking.store');
 Route::get('/booking/convert',[BookingController::class,'convert'])->name('booking.convert');
 Route::get('/booking/edit/{bookingModel}',[BookingController::class,'edit'])->name('booking.edit');
+Route::put('/booking/update/{bookingModel}',[BookingController::class,'update'])->name('booking.update');
+Route::get('/booking/delete/{bookingModel}',[BookingController::class,'destroy'])->name('booking.delete');
+
+
+//selects
+Route::get('/selects/period',[periodSelect::class,'index'])->name('select.period');
 
 Route::resources([
     'roles' => RoleController::class,

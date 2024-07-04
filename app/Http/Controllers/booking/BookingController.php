@@ -24,6 +24,8 @@ class BookingController extends Controller
         $this->middleware('permission:delete-booking', ['only' => ['destroy']]);
     }
 
+    
+
     public function index(Request $request)
     {
         $keyword_name = $request->input('search_name');
@@ -133,7 +135,7 @@ class BookingController extends Controller
 
 
 
-        $booking = $booking->paginate(10);
+        $booking = $booking->orderByDesc('id')->paginate(10);
         return view('bookings.index', compact('booking', 'sales', 'keyword_sale'));
     }
 
@@ -157,13 +159,91 @@ class BookingController extends Controller
        // dd($country_name);
         return view('bookings.convert-booking', compact('checkCustomer', 'request', 'country_name'));
     }
+    
 
     public function edit(bookingModel $bookingModel)
     {
         $sales = saleModel::whereNot('role',1)->get();
         $tours = DB::connection('mysql2')->table('tb_tour')->where('status','on')->get();
         $periods = DB::connection('mysql2')->table('tb_tour_period')->where('tour_id',$bookingModel->tour_id)->get();
+        $sale =  DB::connection('mysql2')->table('users')->where('id',$bookingModel->sale_id)->first();
        
-        return view('bookings.edit-booking',compact('bookingModel','sales','tours','periods'));
+        return view('bookings.edit-booking',compact('bookingModel','sales','tours','periods','sale'));
+    }
+
+    public function update(bookingModel $bookingModel, Request $request)
+    {
+        $check = $bookingModel->update($request->all());
+
+        if($check){
+            return redirect()->back()->with('success','Updated booking Successfully');
+        }else{
+            return redirect()->back()->with('error','Update booking Error');
+        }
+    }
+
+    public function create()
+    {
+        $sales = saleModel::whereNot('role',1)->get();
+        $tours = DB::connection('mysql2')->table('tb_tour')->where('status','on')->get();
+        return view('bookings.create-booking',compact('sales','tours'));
+    }
+
+    //รันเลขอัตโนมัติในรูปแบบ BYYMM001
+    
+    public static function generateRunningCode()
+    {
+        $prefix = 'B';
+        $year = date('y'); // ปีสองหลัก เช่น 24
+        $month = date('m'); // เดือนสองหลัก เช่น 07
+
+        $latestCode = DB::connection('mysql2')->table('tb_booking_form')
+            ->where('code', 'like', $prefix . $year . $month . '%')
+            ->orderBy('code', 'desc')
+            ->value('code');
+
+        if ($latestCode) {
+            $lastNumber = (int)substr($latestCode, 5); // ตัด prefix, ปี และเดือนออก
+            $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        } else {
+            $newNumber = '001';
+        }
+
+        return $prefix . $year . $month . $newNumber;
+    }
+
+
+    public function store(Request $request)
+    {
+        $code = $this->generateRunningCode();
+        $request->merge(['code'=> $code]);
+
+        $periods = DB::connection('mysql2')->table('tb_tour_period')->where('id',$request->period_id)->first();
+        $request->merge(['start_date'=> $periods->start_date]);
+        $request->merge(['end_date'=> $periods->end_date]);
+
+        $request->merge(['total_price'=> $request->sum_price1]);
+        $request->merge(['total_qty'=> $request->num_twin]);
+
+
+        $check = bookingModel::create($request->all());
+
+        if($check){
+            return redirect()->route('booking.edit',$check->id)->with('success','Created booking Successfully');
+        }else{
+            return redirect()->back()->with('error','Create booking Error');
+        }
+    }
+
+    public function destroy(bookingModel $bookingModel) 
+    {
+        $check = $bookingModel->delete();
+
+        if($check){
+            return redirect()->back()->with('success','Deleted booking Successfully');
+        }else{
+            return redirect()->back()->with('error','Delete booking Error');
+        }
+
     }
 }

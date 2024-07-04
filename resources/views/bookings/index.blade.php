@@ -1,6 +1,7 @@
 @extends('layouts.template')
 
 @section('content')
+<br>
     @if (session('success'))
         <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -20,7 +21,8 @@
 
         <div class="card-body">
 
-            <h4 class="card-title">ใบจองทัวร์ จากเว็บไซต์</h4>
+            <h4 class="card-title">ใบจองทัวร์ จากเว็บไซต์  <a href="{{route('booking.create')}}" class="btn btn-primary float-end">เพิ่มใบจองทัวร์</a></h4>
+           
             <hr>
 
             <form action="" method="GET">
@@ -210,7 +212,7 @@
                                             <a href="{{route('booking.edit',$item->id)}}" class="  mx-3"><i class="fas fa-edit"></i> แก้ไข</a>
                                         @endcan
                                         @can('delete-booking')
-                                            <a href="#" class="text-danger  mx-3"><i class="fas fa-trash"></i> ลบ</a>
+                                            <a href="{{route('booking.delete',$item->id)}}" class="text-danger  mx-3"  onclick="return confirm('Do you want to delete this booking?');"><i class="fas fa-trash"></i> ลบ</a>
                                         @endcan
                                     </form>
 
