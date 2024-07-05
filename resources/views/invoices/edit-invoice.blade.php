@@ -222,128 +222,100 @@
                                 <h4>รายละเอียดรายการสั่งซื้อ / Description</h4>
                                 <hr>
                                 <form action="">
-                                    <table id="table-product" class="table customize-table mb-0 v-middle"
-                                        style="font-size: 12px">
-                                        <thead>
-                                            <tr>
-                                                <th>Actions</th>
-                                                <th>รายการ</th>
-                                                <th>จำนวน</th>
-                                                <th>ราคาต่อหน่วย:บาท</th>
-                                                <th>ราคารวม:บาท</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td colspan="5" style="background-color: #dadaff">
-                                                    ค่าทัวร์/ค่าบริการ
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="" class="text-danger removeRow"><i
-                                                            class="fas fa-trash"></i> ลบ</a></td>
-                                                <td style="width: 400px"><select name="product_id[]" id=""
-                                                        class="form-select">
-                                                        <option value="">รายการสินค้า1</option>
-                                                        <option value="">รายการสินค้า1</option>
-                                                        <option value="">รายการสินค้า2</option>
-                                                    </select></td>
-                                                <td><input type="number" name="product_price[]"
-                                                        class="form-control text-end"
-                                                        placeholder="00.0"style="font-size: 12px;"></td>
-                                                <td><input type="number" name="product_qty[]"
-                                                        class="form-control text-end" placeholder="00.0"
-                                                        style="font-size: 12px"></td>
-                                                <td><input type="number" name="product_sum[]"
-                                                        class="form-control text-end" placeholder="00.0"
-                                                        readonlystyle="font-size: 12px"></td>
-
-                                            </tr>
-
-                                            <tr id="productList" style="visibility: hidden; position: absolute;">
-                                                <td><a href="" class="text-danger removeRow"><i
-                                                            class="fas fa-trash"></i> ลบ</a></td>
-                                                <td style="width: 400px"><select name="product_id[]" id=""
-                                                        class="form-select">
-                                                        <option value="">รายการสินค้า1</option>
-                                                        <option value="">รายการสินค้า1</option>
-                                                        <option value="">รายการสินค้า2</option>
-                                                    </select></td>
-                                                <td><input type="number" name="product_price[]"
-                                                        class="form-control text-end"
-                                                        placeholder="00.0"style="font-size: 12px;"></td>
-                                                <td><input type="number" name="product_qty[]"
-                                                        class="form-control text-end" placeholder="00.0"
-                                                        style="font-size: 12px"></td>
-                                                <td><input type="number" name="product_sum[]"
-                                                        class="form-control text-end" placeholder="00.0"
-                                                        readonlystyle="font-size: 12px"></td>
-
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <br>
-                                    <a href="" id="addRow"> <i class=" fas fa-cart-plus"></i> เพิ่มรายการ</a>
-                                    <hr>
-
-                                    <table id="table-product2" class="table customize-table table-hover mb-0 v-middle">
-                                        <thead>
-                                            <tr>
-                                                <td colspan="5" style="background-color: #dadaff">
-                                                    ส่วนลด
-                                                </td>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><a href="" class="text-danger removeRow"><i
-                                                            class="fas fa-trash"></i> ลบ</a></td>
-                                                <td style="width: 400px"><select name="product_id[]" id=""
-                                                        class="form-select">
-                                                        <option value="">รายการสินค้า1</option>
-                                                        <option value="">รายการสินค้า1</option>
-                                                        <option value="">รายการสินค้า2</option>
-                                                    </select></td>
-                                                <td><input type="number" name="product_price[]"
-                                                        class="form-control text-end"
-                                                        placeholder="00.0"style="font-size: 12px;"></td>
-                                                <td><input type="number" name="product_qty[]"
-                                                        class="form-control text-end" placeholder="00.0"
-                                                        style="font-size: 12px"></td>
-                                                <td><input type="number" name="product_sum[]"
-                                                        class="form-control text-end" placeholder="00.0"
-                                                        readonlystyle="font-size: 12px"></td>
-
-                                            </tr>
-
-                                            <tr id="productList2" style="visibility: hidden; position: absolute;">
-                                             <td><a href="" class="text-danger removeRow"><i
-                                                         class="fas fa-trash"></i> ลบ</a></td>
-                                             <td style="width: 400px"><select name="product_id[]" id=""
-                                                     class="form-select">
-                                                     <option value="">รายการสินค้า1</option>
-                                                     <option value="">รายการสินค้า1</option>
-                                                     <option value="">รายการสินค้า2</option>
-                                                 </select></td>
-                                             <td><input type="number" name="product_price[]"
-                                                     class="form-control text-end"
-                                                     placeholder="00.0"style="font-size: 12px;"></td>
-                                             <td><input type="number" name="product_qty[]"
-                                                     class="form-control text-end" placeholder="00.0"
-                                                     style="font-size: 12px"></td>
-                                             <td><input type="number" name="product_sum[]"
-                                                     class="form-control text-end" placeholder="00.0"
-                                                     readonlystyle="font-size: 12px"></td>
-
-                                         </tr>
-
-                                        </tbody>
-                                    </table>
-                                    <br>
-                                    <a href="" id="addRow2"> <i class=" fas fa-cart-plus"></i> เพิ่มส่วนลด</a>
-
-                                    <br>
-
+                                        <table id="table-product" class="table customize-table mb-0 v-middle table-bordered" style="font-size: 12px">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th class="text-center">รายการ</th>
+                                                    <th class="text-center">จำนวน</th>
+                                                    <th>ราคาต่อหน่วย:บาท</th>
+                                                    <th>ราคารวม:บาท</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="5" style="background-color: #aaaaaa27">ค่าทัวร์/ค่าบริการ</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><a href="" class="text-danger removeRow"><i class="fas fa-trash"></i> </a></td>
+                                                    <td style="width: 400px">
+                                                        <select name="product_id[]" class="form-select">
+                                                            <option value="">รายการสินค้า1</option>
+                                                            <option value="">รายการสินค้า1</option>
+                                                            <option value="">รายการสินค้า2</option>
+                                                        </select>
+                                                    </td>
+                                                    <td><input type="number" name="product_qty[]" class="form-control text-end" placeholder="00.0" style="font-size: 12px;"></td>
+                                                    <td><input type="number" name="product_price[]" class="form-control text-end" placeholder="00.0" style="font-size: 12px;"></td>
+                                                    <td><input type="number" name="product_sum[]" class="form-control text-end" placeholder="00.0" readonly style="font-size: 12px;"></td>
+                                                </tr>
+                                                <tr id="productList" style="visibility: hidden; position: absolute;">
+                                                    <td><a href="" class="text-danger removeRow"><i class="fas fa-trash"></i> </a></td>
+                                                    <td style="width: 400px">
+                                                        <select name="product_id[]" class="form-select">
+                                                            <option value="">รายการสินค้า1</option>
+                                                            <option value="">รายการสินค้า1</option>
+                                                            <option value="">รายการสินค้า2</option>
+                                                        </select>
+                                                    </td>
+                                                    <td><input type="number" name="product_qty[]" class="form-control text-end" placeholder="00.0" style="font-size: 12px;"></td>
+                                                    <td><input type="number" name="product_price[]" class="form-control text-end" placeholder="00.0" style="font-size: 12px;"></td>
+                                                    <td><input type="number" name="product_sum[]" class="form-control text-end" placeholder="00.0" readonly style="font-size: 12px;"></td>
+                                                </tr>
+                                                <tr class="total-row" style="visibility: hidden; position: absolute;">
+                                                    <td colspan="4" class="text-end">ยอดรวมสุทธิ:บาท</td>
+                                                    <td><input type="number" class="form-control total-sum" placeholder="00.0" readonly></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <br>
+                                        <a href="" id="addRow"> <i class="fas fa-cart-plus"></i> เพิ่มรายการ</a>
+                                        <hr>
+                                        <table id="table-product2" class="table customize-table table-hover mb-0 v-middle table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <td colspan="5" style="background-color: #aaaaaa27">ส่วนลด</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><a href="" class="text-danger removeRow"><i class="fas fa-trash"></i> </a></td>
+                                                    <td style="width: 400px">
+                                                        <select name="product_id[]" id="product-id" class="form-select">
+                                                            <option value="">รายการสินค้า1</option>
+                                                            <option value="">รายการสินค้า1</option>
+                                                            <option value="">รายการสินค้า2</option>
+                                                        </select>
+                                                    </td>
+                                                    <td><input type="number" name="product_price[]" class="form-control text-end product-price" placeholder="00.0" style="font-size: 12px;"></td>
+                                                    <td><input type="number" name="product_qty[]" class="form-control text-end product-qty" placeholder="00.0" style="font-size: 12px;"></td>
+                                                    <td><input type="number" name="product_sum[]" class="form-control text-end product-sum" placeholder="00.0" readonly style="font-size: 12px;"></td>
+                                                </tr>
+                                                <tr id="productList2" style="visibility: hidden; position: absolute;">
+                                                    <td><a href="" class="text-danger removeRow"><i class="fas fa-trash"></i> </a></td>
+                                                    <td style="width: 400px">
+                                                        <select name="product_id[]" class="form-select product-id">
+                                                            <option value="">รายการสินค้า1</option>
+                                                            <option value="">รายการสินค้า1</option>
+                                                            <option value="">รายการสินค้า2</option>
+                                                        </select>
+                                                    </td>
+                                                    <td><input type="number" name="product_price[]" class="form-control text-end product-price" placeholder="00.0" style="font-size: 12px;"></td>
+                                                    <td><input type="number" name="product_qty[]" class="form-control text-end product-qty" placeholder="00.0" style="font-size: 12px;"></td>
+                                                    <td><input type="number" name="product_sum[]" class="form-control text-end product-sum" placeholder="00.0" readonly style="font-size: 12px;"></td>
+                                                </tr>
+                                                <tr class="total-row">
+                                                    <td colspan="4" class="text-end">ยอดรวมสุทธิ:บาท</td>
+                                                    <td><input type="number" class="form-control total-sum" placeholder="00.0" readonly></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        
+                                        <br>
+                                        <a href="" id="addRow2"> <i class="fas fa-cart-plus"></i> เพิ่มส่วนลด</a>
+                                        <br>
+                                        
+                                    
                                     <button type="submit" class="btn btn-success float-end btn-sm"><i
                                             class="fas fa-save"></i> บันทึก</button>
                                 </form>
@@ -381,32 +353,59 @@
 
 
     <script>
-        $(document).ready(function() {
-            $('#addRow').click(function(event) {
-                event.preventDefault();
-                var newRow = $('#productList').clone().removeAttr('id').css('visibility', 'visible').css(
-                    'position', 'relative');
-                $('#table-product tbody').append(newRow);
-            });
+     $(document).ready(function() {
+    // Function to calculate sum for each row and total sum
+    function calculateSum() {
+        let totalSum = 0;
 
-            $(document).on('click', '.removeRow', function(event) {
-                event.preventDefault();
-                $(this).closest('tr').remove();
-            });
-
-
-            $('#addRow2').click(function(event) {
-                event.preventDefault();
-                var newRow = $('#productList2').clone().removeAttr('id').css('visibility', 'visible').css(
-                    'position', 'relative');
-                $('#table-product2 tbody').append(newRow);
-            });
-
-            $(document).on('click', '.removeRow', function(event) {
-                event.preventDefault();
-                $(this).closest('tr').remove();
-            });
-
+        $('#table-product tbody tr:not(#productList, .total-row)').each(function() {
+            let qty = parseFloat($(this).find('input[name="product_qty[]"]').val()) || 0;
+            let price = parseFloat($(this).find('input[name="product_price[]"]').val()) || 0;
+            let sum = qty * price;
+            $(this).find('input[name="product_sum[]"]').val(sum.toFixed(2));
+            totalSum += sum;
         });
+
+        $('#table-product2 tbody tr:not(#productList2, .total-row)').each(function() {
+            let qty = parseFloat($(this).find('input[name="product_qty[]"]').val()) || 0;
+            let price = parseFloat($(this).find('input[name="product_price[]"]').val()) || 0;
+            let sum = qty * price;
+            $(this).find('input[name="product_sum[]"]').val(sum.toFixed(2));
+            totalSum += sum;
+        });
+
+        $('.total-sum').val(totalSum.toFixed(2));
+    }
+
+    // Event listener to add a new row in table-product
+    $('#addRow').click(function(event) {
+        event.preventDefault();
+        var newRow = $('#productList').clone().removeAttr('id').removeAttr('style');
+        $('#table-product tbody .total-row').before(newRow);
+    });
+
+    // Event listener to add a new row in table-product2
+    $('#addRow2').click(function(event) {
+        event.preventDefault();
+        var newRow = $('#productList2').clone().removeAttr('id').removeAttr('style');
+        $('#table-product2 tbody .total-row').before(newRow);
+    });
+
+    // Event listener to remove a row
+    $(document).on('click', '.removeRow', function(event) {
+        event.preventDefault();
+        $(this).closest('tr').remove();
+        calculateSum();
+    });
+
+    // Event listener to recalculate the sum when qty or price changes
+    $(document).on('input', 'input[name="product_qty[]"], input[name="product_price[]"]', function() {
+        calculateSum();
+    });
+
+    // Initial calculation
+    calculateSum();
+});
+
     </script>
 @endsection
