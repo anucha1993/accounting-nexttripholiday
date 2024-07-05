@@ -120,14 +120,10 @@
 
                     </div>
                     <hr>
-
-
                     <div class="mb-3 row">
                         <h6>ใบจองทัวร์</h6>
-
                         <label for="permissions"
                         class="col-md-4 col-form-label text-md-end text-start">ข้อมูลโฮลเซลล์</label>
-
                     <div class="col-md-6">
                         @forelse ($permissionsBooking as $Booking)
                             <div class="form-check form-check-inline">
@@ -135,14 +131,27 @@
                                     id="success-check" value="{{ $Booking->id }}">
                                 <label class="form-check-label" for="success-check">{{ $Booking->label }}</label>
                             </div>
-
                         @empty
                         @endforelse
                     </div>
-
-                   
-
                     </div>
+                    <hr>
+                    <div class="mb-3 row">
+                        <h6>Invoice</h6>
+                        <label for="permissions"
+                        class="col-md-4 col-form-label text-md-end text-start">ใบแจ้งหนี้</label>
+                    <div class="col-md-6">
+                        @forelse ($permissionsInvoice as $invoice)
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input success" name="permissions[]" type="checkbox"  {{ in_array($invoice->id, $rolePermissions ?? []) ? 'checked' : '' }}
+                                    id="success-check" value="{{ $invoice->id }}">
+                                <label class="form-check-label" for="success-check">{{ $invoice->label }}</label>
+                            </div>
+                        @empty
+                        @endforelse
+                    </div>
+                    </div>
+
                     
                     
 

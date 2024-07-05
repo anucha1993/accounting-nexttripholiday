@@ -5,6 +5,7 @@ use App\Http\Controllers\booking\BookingController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\invoices\invoiceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
@@ -56,6 +57,8 @@ Route::get('/booking/edit/{bookingModel}',[BookingController::class,'edit'])->na
 Route::put('/booking/update/{bookingModel}',[BookingController::class,'update'])->name('booking.update');
 Route::get('/booking/delete/{bookingModel}',[BookingController::class,'destroy'])->name('booking.delete');
 
+//invoice
+Route::get('/invoice/edit',[invoiceController::class,'edit'])->name('invoice.edit');
 
 //selects
 Route::get('/selects/period',[periodSelect::class,'index'])->name('select.period');
