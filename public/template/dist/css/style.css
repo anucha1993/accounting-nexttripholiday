@@ -1515,7 +1515,7 @@ progress {
 .container-sm {
   --bs-gutter-x: 30px;
   --bs-gutter-y: 0;
-  width: 100%;
+  width: 20%;
   padding-right: calc(var(--bs-gutter-x) * .5);
   padding-left: calc(var(--bs-gutter-x) * .5);
   margin-right: auto;
@@ -13976,7 +13976,7 @@ textarea.form-control-lg {
 .page-wrapper > .page-content {
   padding: 30px;
   min-height: calc(100vh - 167px);
-  max-width: 1300px;
+  max-width: 1800px;
   padding-top: 0px;
 }
 
