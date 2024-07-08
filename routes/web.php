@@ -1,15 +1,16 @@
 <?php
 
-use App\Http\Controllers\airline\airlineController;
-use App\Http\Controllers\booking\BookingController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\invoices\invoiceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\selects\periodSelect;
+use App\Http\Controllers\airline\airlineController;
+use App\Http\Controllers\booking\BookingController;
+
+use App\Http\Controllers\invoices\invoiceController;
+use App\Http\Controllers\products\productController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
 
 /*
@@ -59,6 +60,12 @@ Route::get('/booking/delete/{bookingModel}',[BookingController::class,'destroy']
 
 //invoice
 Route::get('/invoice/edit',[invoiceController::class,'edit'])->name('invoice.edit');
+
+
+//Products
+Route::get('/products',[productController::class,'index'])->name('product.index');
+Route::get('/products/list',[productController::class,'products'])->name('product.products');
+Route::post('/product/store',[productController::class,'store'])->name('product.store');
 
 //selects
 Route::get('/selects/period',[periodSelect::class,'index'])->name('select.period');

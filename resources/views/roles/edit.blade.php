@@ -150,6 +150,19 @@
                         @empty
                         @endforelse
                     </div>
+                    <label for="permissions"
+                    class="col-md-4 col-form-label text-md-end text-start">รายการค่าบริการ</label>
+                    <div class="col-md-6">
+                        @forelse ($permissionsProducts as $product)
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input success" name="permissions[]" type="checkbox"  {{ in_array($product->id, $rolePermissions ?? []) ? 'checked' : '' }}
+                                    id="success-check" value="{{ $product->id }}">
+                                <label class="form-check-label" for="success-check">{{ $product->label }}</label>
+                            </div>
+                        @empty
+                        @endforelse
+                    </div>
+
                     </div>
 
                     

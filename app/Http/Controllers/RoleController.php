@@ -88,6 +88,7 @@ class RoleController extends Controller
         $permissionsAirline = Permission::where('group','airline')->get();
         $permissionsBooking = Permission::where('group','booking')->get();
         $permissionsInvoice = Permission::where('group','invoice')->get();
+        $permissionsProducts = Permission::where('group','product')->get();
 
         if($role->name=='Super Admin'){
             abort(403, 'SUPER ADMIN ROLE CAN NOT BE EDITED');
@@ -97,7 +98,7 @@ class RoleController extends Controller
         $rolePermissions = DB::table("role_has_permissions")->where("role_id",$role->id)
             ->pluck('permission_id')
             ->all();
-       return view('roles.edit',compact('permissionsInvoice','role','permissionsBooking','rolePermissions','permissions','permissionsRole','permissionsUser','permissionsWholesale','permissionsAirline'));
+       return view('roles.edit',compact('permissionsProducts','permissionsInvoice','role','permissionsBooking','rolePermissions','permissions','permissionsRole','permissionsUser','permissionsWholesale','permissionsAirline'));
      
     }
 

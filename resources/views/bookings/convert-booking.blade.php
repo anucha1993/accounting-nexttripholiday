@@ -39,8 +39,7 @@
                         <div class="col-md-6">
 
                             <div class="mb-1 row">
-                                <label for="example-text-input text-right"
-                                    class="col-sm-4 text-end control-label col-form-label">ชื่อลูกค้า:</label>
+                                <label for="example-text-input text-right" class="col-sm-4 text-end control-label col-form-label">ชื่อลูกค้า:</label>
                                 <div class="col-md-8">
                                     <input type="text" class="form-control" name="customer_name" placeholder="ชื่อลูกค้า"
                                     value="{{$request->customer_name }}"
@@ -232,7 +231,7 @@
                                   $total += $item['sum']
                               @endphp
                             <tr>
-                                <td>{{ $key + 1 }}</td>
+                                <td> <input type="hidden" name=""> {{ $key + 1 }}</td>
                                 <td>{{ $item['name'] }}</td>
                                 <td>{{ $item['qty'] }}</td>
                                 <td>{{ number_format($item['price'], 2, '.', ',');  }}</td>
