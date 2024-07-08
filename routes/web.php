@@ -65,6 +65,9 @@ Route::get('/invoice/edit',[invoiceController::class,'edit'])->name('invoice.edi
 //Products
 Route::get('/products',[productController::class,'index'])->name('product.index');
 Route::get('/products/list',[productController::class,'products'])->name('product.products');
+Route::get('/product/edit/{id}',[productController::class,'edit'])->name('product.edit');
+Route::delete('/product/delete/{id}',[productController::class,'destroy'])->name('product.destroy');
+Route::put('/product/update/{id}',[productController::class,'update'])->name('product.update');
 Route::post('/product/store',[productController::class,'store'])->name('product.store');
 
 //selects

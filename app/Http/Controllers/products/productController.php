@@ -23,7 +23,7 @@ class productController extends Controller
     public function index()
     {
         $roles = DB::table('roles')->get();
-       // dd($roles);
+
         return view('products.index',compact('roles'));
     }
 
@@ -52,4 +52,32 @@ class productController extends Controller
             return response()->json(['errors' => 'Create Product Error!'], 422);
         }
     }
+
+    public function edit($id)
+    {
+        $product = productModel::findOrFail($id);
+        return response()->json($product);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $product = productModel::findOrFail($id);
+        $product->update([
+            'product_name' => $request->product_name,
+            'product_price' => $request->product_price,
+            'product_roles' => implode(',', $request->product_roles),  // แปลง array เป็น string ก่อนบันทึก
+            'product_pax' => $request->product_pax,
+            'product_type' => $request->product_type
+        ]);
+        return response()->json($product);
+    }
+
+    public function destroy($id)
+    {
+        $product = productModel::findOrFail($id);
+        $product->delete();
+        return response()->json(['message' => 'Product deleted successfully']);
+    }
+
+
 }
