@@ -23,8 +23,9 @@ class productController extends Controller
     public function index()
     {
         $roles = DB::table('roles')->get();
-
-        return view('products.index',compact('roles'));
+        $canEdit = auth()->user()->can('edit-product');
+        $canDelete = auth()->user()->can('delete-product');
+        return view('products.index',compact('roles','canEdit','canDelete'));
     }
 
     public function products()

@@ -31,7 +31,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered display" id="default_order">
+                    <table class="table table-striped table-bordered display" id="products">
                         <thead>
                             <tr>
                                 <th>ลำดับ</th>
@@ -180,6 +180,9 @@
         </div>
 
         <script>
+            var canEdit = @json($canEdit);
+            var canDelete = @json($canDelete);
+
             $(document).ready(function() {
                 $(".roles").select2({
                     dropdownParent: $("#productModal"),
@@ -211,34 +214,46 @@
                                         .includes(role.id))
                                     .map(role => role.name)
                                     .join(', ');
-                                    let actionButtons = '';
-                                    @canany(['delete-product'])
-                                    actionButtons += `<button class="btn btn-sm btn-danger deleteProduct " data-id="${product.id}"><i class="fas fa-trash"></i> ลบข้อมูล</button> ` ;
-                                    @endcanany
+                                let actionButtons = '';
 
-                                    @canany(['edit-product'])
-                                    actionButtons += `<button class="btn btn-sm btn-info editProduct " data-id="${product.id}"><i class="fas fa-edit"></i> แก้ไขข้อมูล</button> &nbsp;` ;
-                                    @endcanany
+                                if (canEdit) {
+                                    actionButtons +=
+                                        `<button class="btn btn-sm btn-info editProduct" data-id="${product.id}"><i class="fas fa-edit"></i> แก้ไขข้อมูล</button> &nbsp;`;
+                                }
+
+                                if (canDelete) {
+                                    actionButtons +=
+                                        `<button class="btn btn-sm btn-danger deleteProduct" data-id="${product.id}"><i class="fas fa-trash"></i> ลบข้อมูล</button>`;
+                                }
 
                                 rows += `
-                                <tr>
-                                    <td>${index+1}</td>
-                                    <td>${product.product_name}</td>
-                                    <td>${product.product_price}</td>
-                                    <td>${roleNames}</td>
-                                    <td>${type}</td>
-                                    <td>${(product.product_pax==='Y'? 'ใช่': 'ไม่ใช่')}</td>
-                                    <td>
-                                       
-                                        ${actionButtons}
-                                    </td>
-                                </tr>
-                            `;
+                                          <tr>
+                                              <td>${index+1}</td>
+                                              <td>${product.product_name}</td>
+                                              <td>${product.product_price}</td>
+                                              <td>${roleNames}</td>
+                                              <td>${type}</td>
+                                              <td>${(product.product_pax==='Y'? 'ใช่': 'ไม่ใช่')}</td>
+                                              <td>
+                                                  ${actionButtons}
+                                              </td>
+                                          </tr>
+                                      `;
                             });
                             $('#productsTable').html(rows);
+
+                            if ($.fn.DataTable.isDataTable('#products')) {
+                                $('#products').DataTable().destroy();
+                            }
+                            $('#products').DataTable();
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX Error: ' + status + error);
                         }
                     });
                 }
+
+
                 // Add products
                 $('#productForm').submit(function(e) {
                     e.preventDefault();
@@ -281,7 +296,7 @@
                         url: `product/edit/${id}`,
                         method: 'GET',
                         success: function(response) {
-                            
+
                             $('#productModalLabel').text('Edit Product');
                             $('#id').val(response.id);
                             $('#product_name_show').val(response.product_name);
@@ -291,7 +306,7 @@
                             $('#product_type_show').val(response.product_type);
                             // Set selected values in multiple select
                             let roles = response.product_roles.split(
-                            ','); // Split the string into an array
+                                ','); // Split the string into an array
                             $('#product_roles_show').val(roles).trigger('change');
                             $('#productModal-edit').modal('show');
                         }
@@ -333,24 +348,24 @@
                     });
                 });
 
-                 // Delete product
-            $(document).on('click', '.deleteProduct', function() {
-                let id = $(this).data('id');
+                // Delete product
+                $(document).on('click', '.deleteProduct', function() {
+                    let id = $(this).data('id');
 
-                if (confirm('Are you sure you want to delete this product?')) {
-                    $.ajax({
-                        url: `product/delete/${id}`,
-                        method: 'DELETE',
-                        data: {
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function(response) {
-                            fetchProducts(); // Fetch updated product list
-                            alert('Delete Product Successfully');
-                        }
-                    });
-                }
-            });
+                    if (confirm('Are you sure you want to delete this product?')) {
+                        $.ajax({
+                            url: `product/delete/${id}`,
+                            method: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                fetchProducts(); // Fetch updated product list
+                                alert('Delete Product Successfully');
+                            }
+                        });
+                    }
+                });
 
 
 
