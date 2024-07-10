@@ -656,16 +656,16 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"
                                 aria-expanded="false"><i class="mdi mdi-cart-outline"></i><span
-                                    class="hide-menu">Ecommerce
+                                    class="hide-menu">รายการสินค้า
                                 </span></a>
                             <ul aria-expanded="false" class="collapse first-level">
                                 <li class="sidebar-item">
-                                    <a href="eco-products.html" class="sidebar-link"><i
+                                    <a href="{{route('products.index')}}" class="sidebar-link"><i
                                             class="mdi mdi-cards-variant"></i><span class="hide-menu">
-                                            Products
+                                            ค่าบริการ และส่วนลด
                                         </span></a>
                                 </li>
-                                <li class="sidebar-item">
+                                {{-- <li class="sidebar-item">
                                     <a href="eco-products-cart.html" class="sidebar-link"><i
                                             class="mdi mdi-cart"></i><span class="hide-menu">
                                             Products Cart
@@ -694,7 +694,7 @@
                                             class="mdi mdi-clipboard-check"></i><span class="hide-menu">
                                             Products Checkout
                                         </span></a>
-                                </li>
+                                </li> --}}
                             </ul>
                         </li>
                         <li class="nav-small-cap">

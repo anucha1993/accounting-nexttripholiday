@@ -154,6 +154,7 @@
                                             value="{{ $item->name . ' ' . $item->surname }}">
                                         <input type="hidden" name="customer_email" value="{{ $item->email }}">
                                         <input type="hidden" name="customer_tel" value="{{ $item->phone }}">
+        
 
                                         <input type="hidden" name="booking_number" value="{{ $item->code }}">
                                         <input type="hidden" name="booking_sale" value="{{ $item->sale_name }}">

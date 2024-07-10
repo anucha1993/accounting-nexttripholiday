@@ -60,6 +60,7 @@ Route::get('/booking/delete/{bookingModel}',[BookingController::class,'destroy']
 
 //invoice
 Route::get('/invoice/edit',[invoiceController::class,'edit'])->name('invoice.edit');
+Route::post('/invoice/store',[invoiceController::class,'store'])->name('invoice.store');
 
 
 //Products

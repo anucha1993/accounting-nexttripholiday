@@ -3,20 +3,22 @@
 @section('content')
     <div class="container-fluid page-content">
         <div class="card">
+            <form action="{{route('invoice.store')}}" id="formInvoice" method="post">
+                @csrf
             <div class="card-header" style="background-color: #ffff">
                 <h4 class="card-title">Convert ใบจองทัวร์</h4>
                 <h6 class="card-subtitle lh-base">
-                    อ้างอิงใบจองทัวร์เลขที่ :
+                    อ้างอิงใบจองทัวร์เลขที่ : {{$request->booking_number}}
 
                     <div class="float-end">
                      @if($checkCustomer)
-                      
+                       <input type="hidden" name="customer_id" value="{{$request->customer_id}}">
                      <div class="form-check form-check-inline">
-                              <input class="form-check-input success" type="radio" name="radio-solid-success" id="success-radio-old" value="customerold" checked>
+                              <input class="form-check-input success" type="radio" name="customer_type_new" id="success-radio-old" value="customerold" checked>
                               <label class="form-check-label" for="success-radio-old">อัพเดทข้อมูลเดิม</label>
                           </div>
                           <div class="form-check form-check-inline">
-                              <input class="form-check-input success" type="radio" name="radio-solid-success" id="success-radio-new" value="customerNew">
+                              <input class="form-check-input success" type="radio" name="customer_type_new" id="success-radio-new" value="customerNew">
                               <label class="form-check-label" for="success-radio-new">สร้างลูกค้าใหม่</label>
                           </div>
 
@@ -260,12 +262,18 @@
 
                        
                     </div>
-                    
+                    <br>
+
+                    <button type="submit" class="btn btn-success float-end" form="formInvoice">Convert</button>
+                    <br>
                 </form>
+
+
 
             </div>
         </div>
     </div>
+
 
     <script>
                $(document).ready(function() {
@@ -275,7 +283,7 @@
                    var originalFax = $('#fax').val().trim();
        
                    // ฟังก์ชั่นตรวจสอบสถานะของ radio button เมื่อมีการเปลี่ยนแปลง
-                   $('input[name="radio-solid-success"]').change(function() {
+                   $('input[name="customer_type_new"]').change(function() {
                        if ($(this).val() === 'customerNew') {
                            // ถ้า radio button customerNew ถูกเลือก, เซ็ตค่า textarea ให้เป็นค่าว่าง
                            $('#address').val('');
@@ -292,12 +300,12 @@
                    });
        
                    // ตรวจสอบสถานะของ radio button ที่ถูกเลือกเมื่อโหลดหน้าเว็บ
-                   if ($('input[name="radio-solid-success"]:checked').val() === 'customerNew') {
+                   if ($('input[name="customer_type_new"]:checked').val() === 'customerNew') {
                        $('#address').val('');
                        $('#textid').val('');
                        $('#fax').val('');
                        $('.check-customer').css('display', 'none');
-                   } else if ($('input[name="radio-solid-success"]:checked').val() === 'customerold') {
+                   } else if ($('input[name="customer_type_new"]:checked').val() === 'customerold') {
                        $('#address').val(originalAddress);
                        $('#texid').val(originalTexid);
                        $('#fax').val(originalFax);

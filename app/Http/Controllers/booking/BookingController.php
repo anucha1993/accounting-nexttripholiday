@@ -38,9 +38,7 @@ class BookingController extends Controller
 
         //dd($keyword_tour_end);
 
-        $sales = DB::connection('mysql2')
-            ->table('users')
-            ->select('name', 'id')
+        $sales = saleModel::select('name', 'id')
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
             ->get();
 
@@ -86,7 +84,6 @@ class BookingController extends Controller
                 'tb_booking_form.price4',
                 //ราคารวมเด็กไม่มีเตียง
                 'tb_booking_form.sum_price4',
-
                 //ราคารวมทั้งหมด
                 'tb_booking_form.total_price',
 
