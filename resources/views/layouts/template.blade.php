@@ -654,7 +654,7 @@
                             </ul>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"
+                            <a class="sidebar-link has-arrow waves-effect waves-dark" alt href="javascript:void(0)"
                                 aria-expanded="false"><i class="mdi mdi-cart-outline"></i><span
                                     class="hide-menu">รายการสินค้า
                                 </span></a>
