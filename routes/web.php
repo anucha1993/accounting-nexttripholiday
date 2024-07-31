@@ -8,7 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\selects\periodSelect;
 use App\Http\Controllers\airline\airlineController;
 use App\Http\Controllers\booking\BookingController;
-
+use App\Http\Controllers\Invoices\InvoiceBookingController;
 use App\Http\Controllers\invoices\invoiceController;
 use App\Http\Controllers\products\productController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
@@ -61,6 +61,9 @@ Route::get('/booking/delete/{bookingModel}',[BookingController::class,'destroy']
 //invoice
 Route::get('/invoice/edit',[invoiceController::class,'edit'])->name('invoice.edit');
 Route::post('/invoice/store',[invoiceController::class,'store'])->name('invoice.store');
+
+//invoice booking
+Route::get('invoice/booking',[InvoiceBookingController::class,'index'])->name('invoiceBooking.index');
 
 
 //Products
