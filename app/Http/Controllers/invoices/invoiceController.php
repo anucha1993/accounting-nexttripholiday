@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\customers\customerModel;
+use App\Models\invoices\invoiceModel;
+use Illuminate\Support\Facades\Auth;
 
 class invoiceController extends Controller
 {
@@ -63,19 +65,33 @@ class invoiceController extends Controller
 
     public function store(Request $request)
     {
-        dd($request);
+        //dd($request);
         $runningCodeIV = $this->generateRunningCodeIV($request->booking_number);
 
-        if($request->customer_type_new === 'customerNew') {
-
-            customerModel::create($request->all());
-            return 'customerNew';
+        if($request->customer_type_new !== 'customerold') {
+            //customerNew
+           $customerModel =  customerModel::create($request->all());
         }else{
-            customerModel::where('customer_id',$request->customer_id)->update($request->all());
-            return 'customerOld';
+            //customerOld
+             customerModel::where('customer_id',$request->customer_id)
+            ->update([
+                'customer_name' => $request->customer_name,
+                'customer_email' => $request->customer_email,
+                'customer_address' => $request->customer_address,
+                'customer_texid' => $request->customer_texid,
+                'customer_tel' =>  $request->customer_tel,
+                'customer_fax' =>  $request->customer_fax,
+                'customer_date' => $request->customer_date,
+            ]);
+            $customerModel = customerModel::where('customer_id',$request->customer_id)->first();
         }
+        //dd($customerModel);
+        $request->merge(['invoice_number'=> $runningCodeIV]); //เลขที่ใบแจ้งหนี้
+        $request->merge(['invoice_status'=> 'wait']); //เลขที่ใบแจ้งหนี้
+        $request->merge(['customer_id'=> $customerModel->customer_id]); // id ลูกค้า
+        $request->merge(['created_by'=> Auth::user()->name]); // id ลูกค้า
 
-        $request->merge(['invoice_number'=> $runningCodeIV]);
+        $invoice = invoiceModel::create($request->all());
 
     }
 

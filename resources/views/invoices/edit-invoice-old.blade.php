@@ -41,7 +41,6 @@
                             <div class="card-header"> <i class="  fas fa-address-book" style="font-size: 16px"></i> <b>
                                     รายละเอียดลูกค้า (Customer)</b> </div>
                             <div class="card-body" style="font-size: 12px">
-
                                 <div class="row align-items-center" style="margin-top: -13px;">
                                     <b for="example-text-input"
                                         class="col-sm-3 text-end control-label col-form-label">ชื่อลูกค้า:</b>

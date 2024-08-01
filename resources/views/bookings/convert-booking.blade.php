@@ -5,6 +5,17 @@
         <div class="card">
             <form action="{{route('invoice.store')}}" id="formInvoice" method="post">
                 @csrf
+
+                {{-- ข้อมูลส่งไป invoice --}}
+                <input type="hidden" name="invoice_booking" value="{{$request->booking_number}}">
+                <input type="hidden" name="invoice_sale" value="{{$request->sale_id}}">
+                <input type="hidden" name="invoice_tour_code" value="{{$request->booking_tour_number}}">
+                <input type="hidden"  name="invoice_date" value="{{date('Y-m-d',strtotime(now()))}}">
+
+                
+
+
+
             <div class="card-header" style="background-color: #ffff">
                 <h4 class="card-title">Convert ใบจองทัวร์</h4>
                 <h6 class="card-subtitle lh-base">
@@ -12,7 +23,7 @@
 
                     <div class="float-end">
                      @if($checkCustomer)
-                       <input type="hidden" name="customer_id" value="{{$request->customer_id}}">
+                     <input type="hidden" name="customer_id" value="{{$checkCustomer->customer_id ? : NULL}}">
                      <div class="form-check form-check-inline">
                               <input class="form-check-input success" type="radio" name="customer_type_new" id="success-radio-old" value="customerold" checked>
                               <label class="form-check-label" for="success-radio-old">อัพเดทข้อมูลเดิม</label>
@@ -103,7 +114,7 @@
                                 <div class="col-md-8">
                                     <input type="text" class="form-control" id="fax" name="customer_fax"
                                        value="{{$checkCustomer? $checkCustomer->customer_fax : ''}}"
-                                        placeholder="เบอร์โทรศัพท์" required aria-describedby="basic-addon1">
+                                        placeholder="เบอร์โทรศัพท์"  aria-describedby="basic-addon1">
                                 </div>
                             </div>
 
@@ -117,8 +128,9 @@
                                     class="col-sm-4 text-end control-label col-form-label">วันที่ออกใบแจ้งหนี้ : </label>
 
                                     <div class="col-md-8">
-                                             <input type="text" class="form-control" name="invoice_number" placeholder="Pending" readonly
+                                             <input type="text" class="form-control" name="date" placeholder="Pending" readonly
                                              value="{{date('d/m/Y',strtotime(now()))}}">
+
                                          </div>
 
                             </div>

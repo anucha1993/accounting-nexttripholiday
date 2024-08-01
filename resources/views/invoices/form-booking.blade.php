@@ -27,4 +27,15 @@
             </div>
         </div>
     </div>
+
+    <br>
+     <div class="col-md-12">
+        <table>
+            <thead>
+                <tr>
+                    <td>s</td>
+                </tr>
+            </thead>
+        </table>
+     </div>
 </div>

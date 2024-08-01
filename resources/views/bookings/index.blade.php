@@ -150,11 +150,10 @@
                                 <td>
                                     <form action="{{ route('booking.convert') }}" method="get">
 
-                                        <input type="hidden" name="customer_name"
-                                            value="{{ $item->name . ' ' . $item->surname }}">
+                                        <input type="hidden" name="customer_name" value="{{ $item->name . ' ' . $item->surname }}">
                                         <input type="hidden" name="customer_email" value="{{ $item->email }}">
                                         <input type="hidden" name="customer_tel" value="{{ $item->phone }}">
-        
+                                        <input type="hidden" name="sale_id" value="{{ $item->sale_id }}">
 
                                         <input type="hidden" name="booking_number" value="{{ $item->code }}">
                                         <input type="hidden" name="booking_sale" value="{{ $item->sale_name }}">

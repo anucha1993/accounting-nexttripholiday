@@ -56,6 +56,7 @@ class BookingController extends Controller
                 'tb_booking_form.created_at',
                 'tb_booking_form.email',
                 'tb_booking_form.phone',
+                'tb_booking_form.sale_id',
                 //รายการสินค่า
                 //จำนวนผู้ใหญ่พักคู่
                 'tb_booking_form.num_twin',

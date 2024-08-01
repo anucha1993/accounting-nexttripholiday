@@ -11,6 +11,6 @@ class InvoiceBookingController extends Controller
 
     public function index()
     {
-        return view('invoices.form-booking');
+        return view('invoices.table-booking');
     }
 }
