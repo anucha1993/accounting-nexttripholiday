@@ -1135,6 +1135,11 @@
                                 aria-expanded="false"><i class="mdi mdi-clipboard-text"></i><span
                                     class="hide-menu">ใบจองทัวร์</span></a>
                         </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link waves-effect waves-dark" href="{{ route('invoice.index') }}"
+                                aria-expanded="false"><i class="mdi mdi-clipboard-text"></i><span
+                                    class="hide-menu">ออเดอร์</span></a>
+                        </li>
 
                         <li class="sidebar-item">
                             <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"

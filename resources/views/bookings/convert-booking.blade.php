@@ -11,9 +11,10 @@
                 <input type="hidden" name="invoice_sale" value="{{$request->sale_id}}">
                 <input type="hidden" name="invoice_tour_code" value="{{$request->booking_tour_number}}">
                 <input type="hidden"  name="invoice_date" value="{{date('Y-m-d',strtotime(now()))}}">
-
-                
-
+                <input type="hidden"  name="tour_id" value="{{$request->tour_id}}">
+                <input type="hidden"  name="country_id" value="{{$request->country_id}}">
+                <input type="hidden"  name="travel_type" value="{{$request->travel_type}}">
+                <input type="hidden"  name="wholesale_id" value="{{$request->wholesale_id}}">
 
 
             <div class="card-header" style="background-color: #ffff">
@@ -250,6 +251,13 @@
                                 <td>{{ $item['qty'] }}</td>
                                 <td>{{ number_format($item['price'], 2, '.', ',');  }}</td>
                                 <td>{{ number_format($item['sum'], 2, '.', ',');  }}</td>
+
+                                <input type="hidden" name="product_id[]" value="{{$item['id']}}">
+                                <input type="hidden" name="product_name[]" value="{{$item['name']}}">
+                                <input type="hidden" name="invoice_qty[]" value="{{$item['qty']}}">
+                                <input type="hidden" name="invoice_price[]" value="{{$item['price']}}">
+                                <input type="hidden" name="invoice_sum[]" value="{{$item['sum']}}">
+                                <input type="hidden" name="expense_type[]" value="expense">
                             </tr>
                             @endif
 

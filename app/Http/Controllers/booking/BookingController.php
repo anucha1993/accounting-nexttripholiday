@@ -90,6 +90,8 @@ class BookingController extends Controller
 
                 //tb_tour
                 'tb_tour.code as tour_code',
+                'tb_tour.id as tour_id',
+                'tb_tour.wholesale_id as wholesale_id',
                 'tb_tour.name as tour_name',
                 'tb_tour.country_id as tour_country',
                 'tb_tour.num_day',
@@ -99,12 +101,15 @@ class BookingController extends Controller
                  //wholesale
                  'tb_wholesale.wholesale_name_th as wholesale_name_th',
                  //airline
-                 'tb_travel_type.travel_name as airline_name'
+                 'tb_travel_type.travel_name as airline_name','tb_travel_type.id as travel_type_id',
+                 //country
+                 'tb_tour.id as country_id'
             )
             ->leftJoin('tb_tour', 'tb_tour.id', 'tb_booking_form.tour_id')
             ->leftJoin('users', 'users.id', 'tb_booking_form.sale_id')
             ->leftJoin('tb_wholesale', 'tb_wholesale.id', 'tb_tour.wholesale_id')
             ->leftJoin('tb_travel_type', 'tb_travel_type.id', 'tb_tour.airline_id')
+            ->leftJoin('tb_country', 'tb_country.id', 'tb_tour.country_id')
             ->where('tb_booking_form.status', 'Success');
 
         if (!empty($keyword_name)) {
@@ -142,6 +147,8 @@ class BookingController extends Controller
         $checkCustomer = DB::connection('mysql')
             ->table('customer')
             ->where('customer_name', $request->customer_name)
+            ->orWhere('customer_email',$request->customer_email)
+            ->orWhere('customer_tel',$request->customer_tel)
             ->first();
 
         $country_name = '';

@@ -165,29 +165,37 @@
                                         <input type="hidden" name="start_date" value="{{ $item->start_date }}">
                                         <input type="hidden" name="end_date" value="{{ $item->end_date }}">
                                         <input type="hidden" name="num_day" value="{{ $item->num_day }}">
+                                        <input type="hidden" name="travel_type" value="{{ $item->travel_type_id }}">
+                                        <input type="hidden" name="country_id" value="{{ $item->country_id }}">
+                                        <input type="hidden" name="tour_id" value="{{ $item->tour_id }}">
+                                        <input type="hidden" name="wholesale_id" value="{{ $item->wholesale_id }}">
 
 
                                         @php
                                         $products = [
                                             [
+                                                'id' => 189,
                                                 'name' => 'ผู้ใหญ่พักคู่',
                                                 'qty' => $item->num_twin,
                                                 'price' => $item->price1,
                                                 'sum' => $item->sum_price1,
                                             ],
                                             [
+                                                'id' => 185,
                                                 'name' => 'ผู้ใหญ่พักเดี่ยว',
                                                 'qty' => $item->num_single,
                                                 'price' => $item->price2,
                                                 'sum' => $item->sum_price2,
                                             ],
                                             [
-                                                'name' => 'เด็กไมีเตียง',
+                                                'id' =>  187,
+                                                'name' => 'เด็กมีเตียง',
                                                 'qty' => $item->num_child,
                                                 'price' => $item->price3,
                                                 'sum' => $item->sum_price3,
                                             ],
                                             [
+                                                'id' => 186,
                                                 'name' => 'เด็กไม่มีเตียง',
                                                 'qty' => $item->num_childnb,
                                                 'price' => $item->price4,
@@ -197,6 +205,7 @@
                                     @endphp
                                     
                                     @foreach ($products as $index => $product)
+                                        <input type="hidden" name="products[{{ $index }}][id]" value="{{ $product['id'] }}">
                                         <input type="hidden" name="products[{{ $index }}][name]" value="{{ $product['name'] }}">
                                         <input type="hidden" name="products[{{ $index }}][qty]" value="{{ $product['qty'] }}">
                                         <input type="hidden" name="products[{{ $index }}][price]" value="{{ $product['price'] }}">
