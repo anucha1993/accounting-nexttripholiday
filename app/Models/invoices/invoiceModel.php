@@ -32,27 +32,36 @@ class invoiceModel extends Model
         'updated_by',
     ];
 
-    // join booking Mysql 2 
+    // ความสัมพันธ์กับ BookingModel
     public function invoiceBooking()
     {
         return $this->belongsTo(bookingModel::class, 'invoice_booking', 'code');
     }
-    // join customer
+
+    // ความสัมพันธ์กับ CustomerModel
     public function invoiceCustomer()
     {
         return $this->belongsTo(customerModel::class, 'customer_id', 'customer_id');
     }
-     // join country
-     public function invoiceCountry()
-     {
-         return $this->belongsTo(countryModel::class, 'country_id', 'id');
-     }
-      // join wholesale
-      public function invoiceWholesale()
-      {
-          return $this->belongsTo(wholesaleModel::class, 'wholesale_id', 'id');
-      }
- 
 
+    // ความสัมพันธ์กับ WholesaleModel
+    public function invoiceWholesale()
+    {
+        return $this->belongsTo(wholesaleModel::class, 'wholesale_id', 'id');
+    }
 
+    // Accessor เพื่อดึงข้อมูล country
+    public function getInvoiceCountriesAttribute()
+    {
+        // แปลงค่า country_id จาก JSON string เป็น array
+        $countryIds = json_decode($this->attributes['country_id'], true);
+
+        // ตรวจสอบว่า countryIds ไม่เป็น null หรือว่างเปล่า
+        if (is_array($countryIds) && count($countryIds) > 0) {
+            // ดึงข้อมูลจาก CountryModel ตาม country_ids ที่ได้มา
+            return countryModel::whereIn('id', $countryIds)->get();
+        }
+
+        return collect(); // คืนค่า collection ว่างเปล่าถ้าไม่มี country_ids
+    }
 }

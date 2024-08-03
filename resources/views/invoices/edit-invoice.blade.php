@@ -17,9 +17,9 @@
                         <small class="p-3 d-block text-uppercase text-dark font-weight-medium">ข้อมูลการขาย</small>
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)"
+                        <a href="javascript:void(0)" data-id="{{$invoiceModel->invoice_id}}"
                             class="todo-link active list-group-item-action p-3 d-flex align-items-center btn-booking"
-                            id="all-todo-list">
+                            id="invoice">
                             <i class="far fa-file-alt"></i>
                             &nbsp; ใบจองทัวร์
                             <span
@@ -80,15 +80,21 @@
 
     <script>
         $(document).ready(function() {
+            // table invoice index
            $('.btn-booking').click("click", function (e) {
+                var invoiceID = $('#invoice').attr('data-id');
                $.ajax({
                    url: '{{route("invoiceBooking.index")}}',
                    type: 'GET',
+                   data : {
+                    invoiceID: invoiceID
+                   },
                    success: function(response) {
                       $('#content').html(response)
                    }
                });
            });
+           
         });
     </script>
 @endsection

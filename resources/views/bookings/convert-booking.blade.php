@@ -257,7 +257,7 @@
                                 <input type="hidden" name="invoice_qty[]" value="{{$item['qty']}}">
                                 <input type="hidden" name="invoice_price[]" value="{{$item['price']}}">
                                 <input type="hidden" name="invoice_sum[]" value="{{$item['sum']}}">
-                                <input type="hidden" name="expense_type[]" value="expense">
+                                <input type="hidden" name="expense_type[]" value="income">
                             </tr>
                             @endif
 

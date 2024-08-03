@@ -2,6 +2,7 @@
 
 namespace App\Models\booking;
 
+use App\Models\sales\saleModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,4 +44,12 @@ class bookingModel extends Model
         'remark',
 
     ];
+
+
+    // join sales 
+    public function bookingSale()
+    {
+        return $this->belongsTo(saleModel::class, 'sale_id', 'id');
+    }
+
 }

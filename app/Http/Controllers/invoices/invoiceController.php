@@ -23,24 +23,17 @@ class invoiceController extends Controller
         $this->middleware('permission:delete-invoice', ['only' => ['destroy']]);
     }
 
-    public function index() 
+    public function index()
     {
         $sales = saleModel::select('name', 'id')
-        ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
-        ->get();
-        // $invoices = invoiceModel::select(
-        //  //invoice
-        // 'invoices.invoice_number','invoices.invoice_booking'
-        // )
-        // ->leftjoin('tb_booking_form','tb_booking_form.code','invoices.invoice_booking')
-        // ->latest()
-        // ->paginate(10);
+            ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+            ->get();
 
-        $invoices = InvoiceModel::with('invoiceBooking','invoiceCustomer','invoiceCountry','invoiceWholesale')
-        ->orderBy('invoices.created_at', 'desc')
-        ->paginate(10);
+        $invoices = InvoiceModel::with('invoiceBooking.bookingSale', 'invoiceCustomer', 'invoiceWholesale')
+            ->orderBy('invoices.created_at', 'desc')
+            ->paginate(10);
 
-        return view('invoices.index',compact('sales','invoices'));
+        return view('invoices.index', compact('sales', 'invoices'));
     }
 
     // function Runnumber  เลขที่อ้างอิง
@@ -147,9 +140,9 @@ class invoiceController extends Controller
 
     }
     // 
-    public function edit()
+    public function edit(Request $request, invoiceModel $invoiceModel)
     {
-        return view('invoices.edit-invoice');
+        return view('invoices.edit-invoice',compact('invoiceModel'));
     }
 
 }

@@ -103,7 +103,7 @@ class BookingController extends Controller
                  //airline
                  'tb_travel_type.travel_name as airline_name','tb_travel_type.id as travel_type_id',
                  //country
-                 'tb_tour.id as country_id'
+                 'tb_tour.country_id as country_id'
             )
             ->leftJoin('tb_tour', 'tb_tour.id', 'tb_booking_form.tour_id')
             ->leftJoin('users', 'users.id', 'tb_booking_form.sale_id')

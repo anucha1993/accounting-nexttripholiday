@@ -1,6 +1,9 @@
 @extends('layouts.template')
 
 @section('content')
+
+
+    <div class="email-app todo-box-container container-fluid">
 <br>
     @if (session('success'))
         <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
@@ -15,6 +18,7 @@
             <strong>Error - </strong>{{ session('error') }}
         </div>
     @endif
+    <div class="email-app todo-box-container">
 
     <div class="card">
         <div class="card-body">
@@ -101,8 +105,8 @@
         <div class="card-body">
 
             <div class="table-responsive">
-                <table class="table customize-table table-hover mb-0 v-middle table-striped" style="font-size: 12px">
-                    <thead class="table-light">
+                <table class="table customize-table table-hover mb-0 v-middle table-striped table-bordered " style="font-size: 12px">
+                    <thead class="table text-white bg-info">
                         <tr>
                             <th>ลำดับ</th>
                             <th>เลขที่ใบแจ้งหนี้</th>
@@ -122,15 +126,24 @@
                        @forelse ($invoices as $key => $item)
                          <tr>
                               <td>{{$key+1}}</td>
-                              <td>{{$item->invoice_number}}</td>
+                              <td >{{$item->invoice_number}}</td>
                               <td>{{$item->invoice_booking}}</td>
                               <td>{{date('d/m/Y',strtotime($item->invoicebooking->start_date)).'-'.date('d/m/Y',strtotime($item->invoicebooking->end_date))}}</td>
                               <td>{{$item->invoicecustomer->customer_name}}</td>
-                              <td>{{$item->invoiceCountry->country_name_th}}</td>
+                              {{-- <td>{{$item->invoiceCountry->country_name_th}}</td> --}}
+                              <td>
+                                @foreach($item->invoice_countries as $country)
+                                {{ $country->country_name_th }}
+                               @endforeach
+
+                              </td>
+
                               <td>{{$item->invoiceWholesale->wholesale_name_th}}</td>
-                              <td> รอชำระ</td>
+                              <td><span class="badge rounded-pill bg-primary">รอชำระ</span> </td>
                               <td>{{ number_format($item->invoice_total, 2, '.', ',');  }}</td>
-                              <td> รอชำระ</td>
+                              <td> <span class="badge rounded-pill bg-primary">รอชำระ</span></td>
+                              <td> {{$item->invoiceBooking->bookingSale->name}}</td>
+                              <td><a href="{{route('invoice.edit',$item->invoice_id)}}" class="btn btn-info btn-sm">จัดการข้อมูล</a></td>
                               
                           </tr>
                        @empty
@@ -141,7 +154,12 @@
                 </table>
                 {!! $invoices->withQueryString()->links('pagination::bootstrap-5') !!}
             </div>
+            </div>
+            </div>
         </div>
-    </div>
+        
+   
+     
+
 
 @endsection
