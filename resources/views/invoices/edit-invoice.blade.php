@@ -17,14 +17,14 @@
                         <small class="p-3 d-block text-uppercase text-dark font-weight-medium">ข้อมูลการขาย</small>
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" data-id="{{$invoiceModel->invoice_id}}"
+                        <a href="javascript:void(0)" data-id="{{ $invoiceModel->invoice_id }}"
                             class="todo-link active list-group-item-action p-3 d-flex align-items-center btn-booking"
                             id="invoice">
                             <i class="far fa-file-alt"></i>
                             &nbsp; ใบจองทัวร์
-                            <span
-                                class="todo-badge badge bg-light-info text-info rounded-pill px-3 font-weight-medium ms-auto"></span>
-                        </a>
+                            <span class="todo-badge badge bg-light-info text-info rounded-pill px-3 font-weight-medium ms-auto"></span>
+                         </a>
+                         
                     </li>
                     <li class="list-group-item p-0 border-0">
                         <a href="javascript:void(0)" class="todo-link list-group-item-action p-3 d-flex align-items-center"
@@ -96,5 +96,11 @@
            });
            
         });
+
+        
     </script>
+
+
+
+
 @endsection

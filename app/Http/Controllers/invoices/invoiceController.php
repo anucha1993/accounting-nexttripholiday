@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\booking\bookingModel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\invoices\invoiceModel;
 use App\Models\customers\customerModel;
@@ -80,7 +81,7 @@ class invoiceController extends Controller
 
     public function store(Request $request)
     {
-       // dd($request);
+        //dd($request->invoice_booking);
         $invoiceNumber = invoiceModel::latest()->first();
         if($invoiceNumber)
         {
@@ -138,11 +139,17 @@ class invoiceController extends Controller
          }
          invoiceModel::where('invoice_id',$invoice->invoice_id)->update(['invoice_total'=>$sum]);
 
+         //Update status ใบจองทัวเป็น status = 'invoice'
+         bookingModel::where('code',$request->invoice_booking)->update(['status'=>'invoice']);
+         $invoiceId = $invoice->invoice_id;
+         return redirect('invoice/edit/'.$invoiceId);
     }
     // 
     public function edit(Request $request, invoiceModel $invoiceModel)
     {
         return view('invoices.edit-invoice',compact('invoiceModel'));
     }
+
+  
 
 }

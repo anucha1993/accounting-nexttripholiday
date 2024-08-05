@@ -40,7 +40,7 @@
                             <span class="badge bg-danger">ยกเลิก</span>
                             @endif
                         </td>
-                        <td><a href="javascript:void(0)" data-id="{{$item->invoice_id}}" class="btn-invoice-edit btn btn-sm btn-info">จัดการ</a></td>
+                        <td><a href="javascript:void(0)" data-id="{{$item->invoice_id}}" class="btn-invoice-edit btn btn-sm btn-info btn-booking">จัดการ</a></td>
                     </tr>
                 @empty
                     No data invoice
@@ -58,7 +58,7 @@
            $('.btn-invoice-edit').click("click", function (e) {
                  
                 var invoiceID = $(this).attr('data-id');
-                //alert(invoiceID);
+                var cachedContent = ""; // ตัวแปรสำหรับเก็บเนื้อหา
                $.ajax({
                    url: '{{route("invoiceBooking.edit")}}',
                    type: 'GET',
@@ -72,4 +72,9 @@
            });
            
         });
+
+
+
+
+
 </script>

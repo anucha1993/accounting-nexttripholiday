@@ -30,6 +30,11 @@ class invoiceModel extends Model
         'invoice_total',
         'created_by',
         'updated_by',
+        'invoice_vat_7',
+        'invoice_vat_3',
+        'invoice_grand_total',
+        'invoice_note',
+
     ];
 
     // ความสัมพันธ์กับ BookingModel

@@ -65,7 +65,8 @@ Route::post('/invoice/store',[invoiceController::class,'store'])->name('invoice.
 
 //invoice booking
 Route::get('invoice/booking',[InvoiceBookingController::class,'index'])->name('invoiceBooking.index');
-Route::get('invoice/edit',[InvoiceBookingController::class,'edit'])->name('invoiceBooking.edit');
+Route::get('invoice/booking/edit',[InvoiceBookingController::class,'edit'])->name('invoiceBooking.edit');
+Route::post('invoice/booking/update',[InvoiceBookingController::class,'update'])->name('invoiceBooking.update');
 
 
 //Products
