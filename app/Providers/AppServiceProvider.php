@@ -21,5 +21,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrapFive();
+        \Illuminate\Support\Facades\Blade::directive('bathText', function ($expression) {
+            return "<?php echo App\Helpers\BathTextHelper::convert($expression); ?>";
+        });
     }
 }

@@ -100,7 +100,7 @@
         </div>
 
     </div>
-
+    @bathText(12000)
     <div class="card">
         <div class="card-body">
 

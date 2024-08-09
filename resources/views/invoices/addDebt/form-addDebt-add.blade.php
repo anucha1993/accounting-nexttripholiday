@@ -1,10 +1,9 @@
 <div class="row">
+    <h4 class="text-info">เพิ่มใบเพิ่มหนี้</h4>
     <div class="col-md-8 border" style="padding: 10px">
         <div class="row">
             <div class="col-md-12">
-                <b>Customer ID :</b> <span style="margin: 20px;">CUS-000{{ $customer->customer_id }}</span> <a
-                    href="javascript:void(0)" id="edit-customer" data-id="{{ $customer->customer_id }}"
-                    data-bs-toggle="modal" data-bs-target="#bs-example-modal-xlg">แก้ไขข้อมูลลูกค้า</a></br>
+                <b>Customer ID :</b> <span style="margin: 20px;">CUS-000{{ $customer->customer_id }}</span> </br>
                 <b>Name : </b> <span style="margin: 60px;"> คุณ <label
                         id="customer_name-label">{{ $customer->customer_name }}</label></span></br>
                 <b>Address : </b> <span style="margin: 45px;"> <label
@@ -21,6 +20,8 @@
         </div>
     </div>
 
+
+
     <div class="col-md-4 border" style="padding-top: 10px">
         <div class="row">
             <div class="col-md-12">
@@ -31,45 +32,14 @@
                 <b>Email :</b> <span style="margin: 45px;"> {{ $sale->email }}</span></br>
                 <b>Tour Code :</b> <span style="margin: 15px;"> {{ $tour->code }}</span></br>
                 <b>Airline :</b> <span style="margin: 40px;"> {{ $airline->travel_name }}</span></br>
+                <b>เลขที่อ้างอิง :</b> <span style="margin: 10px;" class="text-danger"> {{ $invoices->invoice_number }}</span></br>
             </div>
         </div>
     </div>
 
-    <form id="invoice-form" method="post">
+    <form id="addDebt-form" method="post">
         @csrf
         <br>
-
-        <div class="row">
-            <div class="col-md-4">
-                <label class="text-primary">ประเภทการชำระเงิน</label>
-                <select name="payment_type" class="form-select payment-type">
-                    <option @if ($invoices->payment_type === 'full') selected @endif value="full">ชำระเต็มจำนวน</option>
-                    <option @if ($invoices->payment_type === 'deposit') selected @endif value="deposit">มัดจำ(แบ่งชำระ)</option>
-                </select>
-            </div>
-            <div class="col-md-8">
-                <div class="full">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>กำหนดระยะเวลาการชำระ</label>
-                            <input type="datetime-local" name="payment_before_date" value="{{ $invoices->payment_before_date }}"
-                                class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label id="text-deposit">จำนวนเงิน มัดจำ</label>
-                            <input type="number" name="deposit" class="form-control deposit text-end"
-                                value="{{ $invoices->deposit }}" placeholder="00.00">
-                        </div>
-                        <div class="col-md-4">
-                            <label>ยอดคงค้าง</label>
-                            <input type="text"
-                                class="form-control outstanding-balance text-end text-danger bg-warning"
-                                placeholder="00.00" readonly>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <br>
 
         <div class="col-md-12">
@@ -86,6 +56,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    
                     @forelse ($invoiceProduct as $key => $item)
 
                         <tr id="productList" class="mt-0">
@@ -124,6 +95,8 @@
                             <td colspan="6">No data</td>
                         </tr>
                     @endforelse
+                    
+
 
                     <tr id="productAdd" style="visibility: hidden; position: absolute;" class="mt-0">
                         <td></td>
@@ -131,9 +104,13 @@
                             <select name="product_id[]" class="form-select">
                                 <option value="">เลือกสินค้า</option>
                                 @foreach ($productIncome as $product)
-                                    <option value="{{ $product->id }}">{{ $product->product_name }}</option>
+                                    <option value="{{ $product->id }}">
+                                        
+                                        {{ $product->product_name }}</option>
                                 @endforeach
+
                             </select>
+                            
                         </td>
                         <td>
                             <select name="expense[]" class="form-select">
@@ -169,7 +146,7 @@
                 <hr>
                 <div class="col-md-12">
                     <label class="text-danger">หมายเหตุ : </label>
-                    <textarea name="invoice_note" id="" cols="30" rows="3" class="form-control"></textarea>
+                    <textarea name="debt_note" id="" cols="30" rows="3" class="form-control"></textarea>
                 </div>
             </div>
             <div class="col-md-6">
@@ -242,13 +219,16 @@
 
         </div>
 
-        <input type="hidden" name="invoice_total" id="invoiceTotal">
-        <input type="hidden" name="invoice_discount" id="invoiceDiscount">
+        <input type="hidden" name="debt_total" id="invoiceTotal">
+        <input type="hidden" name="debt_discount" id="invoiceDiscount">
 
-        <input type="hidden" name="invoice_vat_7" id="invoiceVat7">
-        <input type="hidden" name="invoice_grand_total" id="invoiceGrandTotal">
-        <input type="hidden" name="invoice_vat_3" id="invoiceVat3">
+        <input type="hidden" name="debt_vat_7" id="invoiceVat7">
+        <input type="hidden" name="debt_grand_total" id="invoiceGrandTotal">
+        <input type="hidden" name="debt_vat_3" id="invoiceVat3">
         <input type="hidden" name="invoice_id" id="invoice_id" value="{{ $invoices->invoice_id }}">
+
+        <input type="hidden" name="invoice_number" value="{{$invoices->invoice_number}}">
+
 
         <button id="submit" class="btn btn-success btn-sm">บันทึก</button>
 
@@ -316,9 +296,6 @@
         <!-- /.modal-dialog -->
     </div>
     <!-- /.modal -->
-
-
-
 
     <script>
         $(document).ready(function() {
@@ -467,15 +444,15 @@
 
 
 
-        // Udpate invoice
+        // add debet
         $(document).ready(function() {
-            $('#invoice-form').submit(function(event) {
+            $('#addDebt-form').submit(function(event) {
                 event.preventDefault(); // ป้องกันการส่งฟอร์มแบบปกติ
 
                 var form = $(this);
                 var formData = form.serialize(); // แปลงข้อมูลฟอร์มเป็นแบบ URL-encoded
                 $.ajax({
-                    url: '{{ route('invoiceBooking.update') }}', // URL ของ endpoint ที่ต้องการส่งข้อมูลไป
+                    url: '{{ route('adddebt.store') }}', // URL ของ endpoint ที่ต้องการส่งข้อมูลไป
                     type: 'POST',
                     data: formData,
                     success: function(response) {
@@ -494,70 +471,7 @@
             });
         });
 
-        $(document).ready(function() {
-            // Customer Edit
-            $('#edit-customer').on('click', function(event) {
-                event.preventDefault();
-                var customerID = $(this).attr('data-id');
-
-                $.ajax({
-                    url: '{{ route('customer.ajaxEdit') }}',
-                    method: 'POST',
-                    data: {
-                        customerID: customerID,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-                        $('#customer-id').html(response.customer_id);
-                        $('#customer_name').val(response.customer_name);
-                        $('#customer_address').val(response.customer_address);
-                        $('#customer_texid').val(response.customer_texid);
-                        $('#customer_tel').val(response.customer_tel);
-                        $('#customer_fax').val(response.customer_fax);
-                        $('#customer_email').val(response.customer_email);
-                    }
-                })
-            });
-            //update Customer
-            $('#update-customer').on('click', function(event) {
-                event.preventDefault();
-                var customer_id = $('#customer_id').val();
-                var customer_name = $('#customer_name').val();
-                var customer_address = $('#customer_address').val();
-                var customer_texid = $('#customer_texid').val();
-                var customer_tel = $('#customer_tel').val();
-                var customer_fax = $('#customer_fax').val();
-                var customer_email = $('#customer_email').val();
-
-                console.log(customer_id);
 
 
-                $.ajax({
-                    url: '{{ route('customer.ajaxUpdate') }}',
-                    method: 'POST',
-                    data: {
-                        customer_id: customer_id,
-                        customer_name: customer_name,
-                        customer_address: customer_address,
-                        customer_texid: customer_texid,
-                        customer_tel: customer_tel,
-                        customer_fax: customer_fax,
-                        customer_email: customer_email,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-                        console.log(response);
 
-                        $('#customer-id-label').html(response.customer_id);
-                        $('#customer_name-label').html(response.customer_name);
-                        $('#customer_address-label').html(response.customer_address);
-                        $('#customer_texid-label').html(response.customer_texid);
-                        $('#customer_tel-label').html(response.customer_tel);
-                        $('#customer_fax-label').html(response.customer_fax);
-                        $('#customer_email-label').html(response.customer_email);
-                    }
-                })
-            });
-
-        });
     </script>

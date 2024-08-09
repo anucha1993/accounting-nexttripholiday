@@ -34,6 +34,12 @@ class invoiceModel extends Model
         'invoice_vat_3',
         'invoice_grand_total',
         'invoice_note',
+        'vat_3_status',
+        'vat_type',
+        'payment_date',
+        'payment_before_date',
+        'payment_type',
+        'deposit',
 
     ];
 

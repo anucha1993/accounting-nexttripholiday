@@ -8,8 +8,11 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\selects\periodSelect;
 use App\Http\Controllers\airline\airlineController;
 use App\Http\Controllers\booking\BookingController;
+use App\Http\Controllers\customers\customerController;
+use App\Http\Controllers\invoices\addDebtController;
 use App\Http\Controllers\Invoices\InvoiceBookingController;
 use App\Http\Controllers\invoices\invoiceController;
+use App\Http\Controllers\invoices\invoiceDashboardController;
 use App\Http\Controllers\products\productController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
 
@@ -67,7 +70,11 @@ Route::post('/invoice/store',[invoiceController::class,'store'])->name('invoice.
 Route::get('invoice/booking',[InvoiceBookingController::class,'index'])->name('invoiceBooking.index');
 Route::get('invoice/booking/edit',[InvoiceBookingController::class,'edit'])->name('invoiceBooking.edit');
 Route::post('invoice/booking/update',[InvoiceBookingController::class,'update'])->name('invoiceBooking.update');
-
+// invoice Dashboard
+Route::get('invoice/dashboard',[invoiceDashboardController::class,'index'])->name('invoice.dashboardIndex');
+// invoice addDebt 
+Route::get('invoice/adddebt/add',[addDebtController::class,'create'])->name('adddebt.create');
+Route::post('invoice/adddebt/store',[addDebtController::class,'store'])->name('adddebt.store');
 
 //Products
 Route::get('/products',[productController::class,'index'])->name('product.index');
@@ -86,3 +93,7 @@ Route::resources([
     'products' => ProductController::class,
 ]);
 
+
+// Customer
+Route::post('customer/ajax/edit',[customerController::class,'ajaxEdit'])->name('customer.ajaxEdit');
+Route::post('customer/ajax/update',[customerController::class,'ajaxUpdate'])->name('customer.ajaxUpdate');

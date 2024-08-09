@@ -14,17 +14,29 @@
                 <div class="divider"></div>
                 <ul class="list-group">
                     <li>
-                        <small class="p-3 d-block text-uppercase text-dark font-weight-medium">ข้อมูลการขาย</small>
+                        <small class="p-3 d-block text-uppercase text-dark font-weight-medium"> ข้อมูลการขาย</small>
                     </li>
                     <li class="list-group-item p-0 border-0">
+                        <a href="javascript:void(0)" data-id="{{ $invoiceModel->invoice_id }}" id="invoice-dashboard"
+                            class="todo-link list-group-item-action p-3 d-flex align-items-center">
+                            <i class="far fa-file-alt"></i>
+                            &nbsp; รายละเอียดรวม
+                            <span
+                                class="todo-badge badge bg-light-info text-info rounded-pill px-3 font-weight-medium ms-auto"></span>
+                        </a>
+
+                    </li>
+
+                    <li class="list-group-item p-0 border-0">
                         <a href="javascript:void(0)" data-id="{{ $invoiceModel->invoice_id }}"
-                            class="todo-link active list-group-item-action p-3 d-flex align-items-center btn-booking"
+                            class="todo-link list-group-item-action p-3 d-flex align-items-center btn-booking"
                             id="invoice">
                             <i class="far fa-file-alt"></i>
-                            &nbsp; ใบจองทัวร์
-                            <span class="todo-badge badge bg-light-info text-info rounded-pill px-3 font-weight-medium ms-auto"></span>
-                         </a>
-                         
+                            &nbsp; ข้อมูลการขาย
+                            <span
+                                class="todo-badge badge bg-light-info text-info rounded-pill px-3 font-weight-medium ms-auto"></span>
+                        </a>
+
                     </li>
                     <li class="list-group-item p-0 border-0">
                         <a href="javascript:void(0)" class="todo-link list-group-item-action p-3 d-flex align-items-center"
@@ -47,6 +59,8 @@
                     <li class="list-group-item p-0 border-0">
                         <hr />
                     </li>
+                    
+
                     <li class="list-group-item p-0 border-0">
                         <a href="javascript:void(0)" class="list-group-item-action p-3 d-flex align-items-center"
                             id="current-todo-delete">
@@ -62,12 +76,10 @@
         <!-- -------------------------------------------------------------- -->
         <div class="right-part mail-list bg-white overflow-auto">
             <div id="todo-list-container">
-                <div class="p-3 border-bottom" >
 
-                </div>
                 <!-- Todo list-->
                 <div class="todo-listing">
-                    <div id="content" class="p-3" >
+                    <div id="content" class="p-3">
 
                     </div>
 
@@ -81,26 +93,40 @@
     <script>
         $(document).ready(function() {
             // table invoice index
-           $('.btn-booking').click("click", function (e) {
+            $('.btn-booking').click("click", function(e) {
                 var invoiceID = $('#invoice').attr('data-id');
-               $.ajax({
-                   url: '{{route("invoiceBooking.index")}}',
-                   type: 'GET',
-                   data : {
-                    invoiceID: invoiceID
-                   },
-                   success: function(response) {
-                      $('#content').html(response)
-                   }
-               });
-           });
-           
+                $.ajax({
+                    url: '{{ route('invoiceBooking.index') }}',
+                    type: 'GET',
+                    data: {
+                        invoiceID: invoiceID
+                    },
+                    success: function(response) {
+                        $('#content').html(response)
+                    }
+                });
+            });
+            // dashboard
+            $('#invoice-dashboard').click("click", function(e) {
+                index()
+            });
+
+            // index
+            function index() {
+                var invoiceID = $('#invoice-dashboard').attr('data-id');
+                $.ajax({
+                    url: '{{ route('invoice.dashboardIndex') }}',
+                    type: 'GET',
+                    data: {
+                        invoiceID: invoiceID
+                    },
+                    success: function(response) {
+                        $('#content').html(response)
+                    }
+                });
+            }
+            index()
+
         });
-
-        
     </script>
-
-
-
-
 @endsection
