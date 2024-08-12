@@ -40,7 +40,40 @@
     <form id="addDebt-form" method="post">
         @csrf
         <br>
+
+        {{-- <div class="row">
+            <div class="col-md-4">
+                <label class="text-primary">ประเภทการชำระเงิน</label>
+                <select name="payment_type" class="form-select payment-type" required>
+                    <option value="full">ชำระเต็มจำนวน</option>
+                    <option value="deposit">มัดจำ(แบ่งชำระ)</option>
+                </select>
+            </div>
+            <div class="col-md-8">
+                <div class="full">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>กำหนดระยะเวลาการชำระ</label>
+                            <input type="datetime-local" name="payment_before_date" 
+                                class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label id="text-deposit">จำนวนเงิน มัดจำ</label>
+                            <input type="number" name="deposit" class="form-control deposit text-end"
+                               placeholder="00.00" min ="0.01" step="0.01" >
+                        </div>
+                        <div class="col-md-4">
+                            <label>ยอดคงค้าง</label>
+                            <input type="text"
+                                class="form-control outstanding-balance text-end text-danger bg-warning"
+                                placeholder="00.00" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> --}}
         <br>
+
 
         <div class="col-md-12">
             <table class="table table-bordered" id="table-product">
@@ -57,7 +90,7 @@
                 </thead>
                 <tbody>
                     
-                    @forelse ($invoiceProduct as $key => $item)
+                    {{-- @forelse ($invoiceProduct as $key => $item)
 
                         <tr id="productList" class="mt-0">
                             <td>{{ $key + 1 }}</td>
@@ -94,7 +127,7 @@
                         <tr>
                             <td colspan="6">No data</td>
                         </tr>
-                    @endforelse
+                    @endforelse --}}
                     
 
 
@@ -106,7 +139,7 @@
                                 @foreach ($productIncome as $product)
                                     <option value="{{ $product->id }}">
                                         
-                                        {{ $product->product_name }}</option>
+                                        {{ $product->product_name }} {{$product->product_pax === "Y" ? '(PAX)': ''}}</option>
                                 @endforeach
 
                             </select>
@@ -144,12 +177,55 @@
                         Amount)</label>
                 </div>
                 <hr>
+                <div class="col-md-12 mt-3">
+                    <label class="">สาเหตุที่ออกใบแจ้งหนี้เพิ่ม : </label>
+                  <input type="text" name="debt_add_note" class="form-control" placeholder="กรุณาระบุ" required>
+                </div>
+
+              
                 <div class="col-md-12">
                     <label class="text-danger">หมายเหตุ : </label>
                     <textarea name="debt_note" id="" cols="30" rows="3" class="form-control"></textarea>
                 </div>
             </div>
             <div class="col-md-6">
+                <div class="row">
+
+                    <div class="col-md-8 text-end">
+                        <label class="">มูลค่าตามใบกำกับภาษีเดิม :</label>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <label >{{ number_format($invoices->invoice_grand_total, 2, '.', ',');  }}</label>
+                        <input type="hidden" name="grand_total_old" id="grandTotalOld"  value="{{$invoices->invoice_grand_total}}">
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-8 text-end">
+                        <label class="">มูลค่าที่ถูกต้อง :</label>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <label id="totalSumEdit">0.00</label>
+                        <input type="hidden" name="total_sum_new"  id="totalSumNew">
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-8 text-end">
+                        <label class="">ผลต่าง :</label>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <label id="difference">0.00</label>
+                        <input type="hidden" name="difference_total"  id="differenceTotal">
+                    </div>
+                   
+                </div>
+  
+               <br>
+
+            
                 <div class="row">
 
                     <div class="col-md-8 text-end">
@@ -227,7 +303,7 @@
         <input type="hidden" name="debt_vat_3" id="invoiceVat3">
         <input type="hidden" name="invoice_id" id="invoice_id" value="{{ $invoices->invoice_id }}">
 
-        <input type="hidden" name="invoice_number" value="{{$invoices->invoice_number}}">
+        <input type="hidden" name="invoice_number"  value="{{$invoices->invoice_number}}">
 
 
         <button id="submit" class="btn btn-success btn-sm">บันทึก</button>
@@ -236,66 +312,7 @@
     </form>
 
 
-    <!-- sample modal content -->
-    <div class="modal fade" id="bs-example-modal-xlg" tabindex="-1" aria-labelledby="bs-example-modal-lg"
-        aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header d-flex align-items-center">
-                    <h4 class="modal-title" id="myLargeModalLabel">
-                        แก้ไขข้อมูลลูกค้า : CUS-000<span id="customer-id"></span>
-                    </h4>
-                    <hr>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="" id="customer_id" value="{{ $customer->customer_id }}">
-                    <div class="row">
-                        <div class="col-md-12 mt-2">
-                            <label>ชื่อลูกค้า :</label>
-                            <input type="text" id="customer_name" class="form-control">
-                        </div>
-                        <div class="col-md-12 mt-2">
-                            <label>ที่อยู่ :</label>
-                            <textarea id="customer_address" class="form-control" cols="30" rows="3"></textarea>
-                        </div>
-                        <div class="col-md-12 mt-2">
-                            <label>Tax ID :</label>
-                            <input type="text" id="customer_texid" class="form-control">
-                        </div>
-                        <div class="col-md-12 mt-2">
-                            <label>เบอร์ติดต่อ</label>
-                            <input type="text" id="customer_tel" class="form-control">
-                        </div>
-                        <div class="col-md-12 mt-2">
-                            <label>Email : </label>
-                            <input type="text" id="customer_email" class="form-control">
-                        </div>
-                        <div class="col-md-12 mt-2">
-                            <label>Fax : </label>
-                            <input type="text" id="customer_fax" class="form-control">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="update-customer"
-                        class="
-              btn btn-light-success
-
-              font-weight-medium
-              waves-effect
-              text-start
-            "
-                        data-bs-dismiss="modal">
-                        อัพเดท
-                    </button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
+    
 
     <script>
         $(document).ready(function() {
@@ -376,6 +393,10 @@
                 $('#discount').text(formatNumber(totalDiscount));
                 $('#invoiceDiscount').val(totalDiscount);
 
+                            // ผลต่าง
+         
+
+
                 var totalAfterDiscount = totalSum - totalDiscount;
                 $('#totalAfterDiscount').text(formatNumber(totalAfterDiscount));
 
@@ -397,11 +418,20 @@
                 }
                 $('#withholdingTax').text(formatNumber(withholdingTax));
                 $('#invoiceVat3').val(withholdingTax);
-
+                var grandTotalOld = parseFloat($('#grandTotalOld').val()) || 0;
                 var grandTotal = totalAfterDiscount + parseFloat(vatAmount) - parseFloat(withholdingTax);
-                $('#grandTotal').text(formatNumber(grandTotal.toFixed(2)));
-                $('#invoiceGrandTotal').val(grandTotal.toFixed(2));
-                // $('.outstanding-balance').val(formatNumber(grandTotal.toFixed(2)));
+                var grandTotalNew = grandTotal + parseFloat(grandTotalOld);
+
+
+            // มูลค่าที่ถูกต้อง
+            $('#totalSumEdit').text(formatNumber(grandTotalNew));
+            $('#totalSumNew').val(grandTotalNew);
+
+            // จำนวนเงินรวมทั้งสิ้น
+            $('#grandTotal').text(formatNumber(grandTotal));
+            $('#invoiceGrandTotal').val(grandTotal);
+            $('#difference').text(formatNumber(grandTotal));
+            $('#differenceTotal').val(grandTotal);
             }
 
             // เพิ่มแถวสินค้าใหม่
@@ -424,10 +454,12 @@
 
             $(document).on('change', 'select[name="expense[]"], #vat', function() {
                 calculateTotals();
+                paymentType();
             });
 
             $('#vat3').change(function() {
                 calculateTotals();
+                paymentType();
             });
 
             // delete row
@@ -435,6 +467,7 @@
                 event.preventDefault();
                 $(this).closest('tr').remove();
                 calculateTotals();
+                paymentType();
             });
             // คำนวณยอดรวมเมื่อเริ่มต้น
             calculateTotals();
@@ -456,12 +489,8 @@
                     type: 'POST',
                     data: formData,
                     success: function(response) {
-                        //console.log(response);
-
-                        // ดำเนินการหลังจากได้รับการตอบกลับจากเซิร์ฟเวอร์
-                        alert('บันทึกข้อมูลสำเร็จ');
-                        // ทำความสะอาดฟอร์มหรือรีเซ็ตค่าอื่นๆ ตามต้องการ
-                        // form[0].reset();
+                     alert('บันทึกข้อมูลสำเร็จ');
+                     location.reload(); // รีเฟรชหน้าเว็บหลังจากบันทึกข้อมูลสำเร็จ
                     },
                     error: function(xhr) {
                         // จัดการกรณีที่เกิดข้อผิดพลาด

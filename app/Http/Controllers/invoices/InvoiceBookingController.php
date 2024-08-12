@@ -11,6 +11,7 @@ use App\Models\invoices\invoiceModel;
 use App\Models\products\productModel;
 use App\Models\customers\customerModel;
 use App\Models\invoices\addDebtModel;
+use App\Models\invoices\creditNoteModel;
 use App\Models\invoices\invoicePorductsModel;
 
 
@@ -30,7 +31,13 @@ class InvoiceBookingController extends Controller
         ->select('add_debt.*', 'invoices.*', 'customer.*')
         ->get();
 
-        return view('invoices.table-invoice', compact('invoices','invoice','debts'));
+        $creditNotes = creditNoteModel::where('credit_note.invoice_number', $invoice->invoice_number)
+        ->leftJoin('invoices', 'invoices.invoice_number', '=', 'credit_note.invoice_number')
+        ->leftJoin('customer', 'customer.customer_id', '=', 'invoices.customer_id')
+        ->select('credit_note.*', 'invoices.*', 'customer.*')
+        ->get();
+
+        return view('invoices.table-invoice', compact('invoices','invoice','debts','creditNotes'));
     }
 
     public function edit(Request $request)

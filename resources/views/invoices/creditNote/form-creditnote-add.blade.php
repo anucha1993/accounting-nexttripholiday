@@ -1,10 +1,9 @@
 <div class="row">
+    <h4 class="text-danger">เพิ่มใบลดหนี้</h4>
     <div class="col-md-8 border" style="padding: 10px">
         <div class="row">
             <div class="col-md-12">
-                <b>Customer ID :</b> <span style="margin: 20px;">CUS-000{{ $customer->customer_id }}</span> <a
-                    href="javascript:void(0)" id="edit-customer" data-id="{{ $customer->customer_id }}"
-                    data-bs-toggle="modal" data-bs-target="#bs-example-modal-xlg">แก้ไขข้อมูลลูกค้า</a></br>
+                <b>Customer ID :</b> <span style="margin: 20px;">CUS-000{{ $customer->customer_id }}</span> </br>
                 <b>Name : </b> <span style="margin: 60px;"> คุณ <label
                         id="customer_name-label">{{ $customer->customer_name }}</label></span></br>
                 <b>Address : </b> <span style="margin: 45px;"> <label
@@ -21,6 +20,8 @@
         </div>
     </div>
 
+
+
     <div class="col-md-4 border" style="padding-top: 10px">
         <div class="row">
             <div class="col-md-12">
@@ -31,20 +32,21 @@
                 <b>Email :</b> <span style="margin: 45px;"> {{ $sale->email }}</span></br>
                 <b>Tour Code :</b> <span style="margin: 15px;"> {{ $tour->code }}</span></br>
                 <b>Airline :</b> <span style="margin: 40px;"> {{ $airline->travel_name }}</span></br>
+                <b>เลขที่อ้างอิง :</b> <span style="margin: 10px;" class="text-danger"> {{ $invoices->invoice_number }}</span></br>
             </div>
         </div>
     </div>
 
-    <form id="invoice-form" method="post">
+    <form id="credit-form" method="post">
         @csrf
         <br>
 
         <div class="row">
             <div class="col-md-4">
                 <label class="text-primary">ประเภทการชำระเงิน</label>
-                <select name="payment_type" class="form-select payment-type">
-                    <option @if ($invoices->payment_type === 'full') selected @endif value="full">ชำระเต็มจำนวน</option>
-                    <option @if ($invoices->payment_type === 'deposit') selected @endif value="deposit">มัดจำ(แบ่งชำระ)</option>
+                <select name="payment_type" class="form-select payment-type" required>
+                    <option value="full">ชำระเต็มจำนวน</option>
+                    <option value="deposit">มัดจำ(แบ่งชำระ)</option>
                 </select>
             </div>
             <div class="col-md-8">
@@ -52,13 +54,13 @@
                     <div class="row">
                         <div class="col-md-4">
                             <label>กำหนดระยะเวลาการชำระ</label>
-                            <input type="datetime-local" name="payment_before_date" value="{{ $invoices->payment_before_date }}"
-                                class="form-control">
+                            <input type="datetime-local" name="payment_before_date" 
+                                class="form-control" required>
                         </div>
                         <div class="col-md-4">
                             <label id="text-deposit">จำนวนเงิน มัดจำ</label>
                             <input type="number" name="deposit" class="form-control deposit text-end"
-                                value="{{ $invoices->deposit }}" placeholder="00.00"  min ="0.01" step="0.01">
+                               placeholder="00.00" min ="0.01" step="0.01" >
                         </div>
                         <div class="col-md-4">
                             <label>ยอดคงค้าง</label>
@@ -71,6 +73,7 @@
             </div>
         </div>
         <br>
+
 
         <div class="col-md-12">
             <table class="table table-bordered" id="table-product">
@@ -86,7 +89,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($invoiceProduct as $key => $item)
+                    
+                    {{-- @forelse ($invoiceProduct as $key => $item)
 
                         <tr id="productList" class="mt-0">
                             <td>{{ $key + 1 }}</td>
@@ -123,7 +127,9 @@
                         <tr>
                             <td colspan="6">No data</td>
                         </tr>
-                    @endforelse
+                    @endforelse --}}
+                    
+
 
                     <tr id="productAdd" style="visibility: hidden; position: absolute;" class="mt-0">
                         <td></td>
@@ -131,9 +137,13 @@
                             <select name="product_id[]" class="form-select">
                                 <option value="">เลือกสินค้า</option>
                                 @foreach ($productIncome as $product)
-                                    <option value="{{ $product->id }}">{{ $product->product_name }}</option>
+                                    <option value="{{ $product->id }}">
+                                        
+                                        {{ $product->product_name }} {{$product->product_pax === "Y" ? '(PAX)': ''}}</option>
                                 @endforeach
+
                             </select>
+                            
                         </td>
                         <td>
                             <select name="expense[]" class="form-select">
@@ -167,12 +177,55 @@
                         Amount)</label>
                 </div>
                 <hr>
+                <div class="col-md-12 mt-3">
+                    <label class="">สาเหตุที่ออกใบแจ้งหนี้เพิ่ม : </label>
+                  <input type="text" name="credit_note_add_note" class="form-control" placeholder="กรุณาระบุ" required>
+                </div>
+
+              
                 <div class="col-md-12">
                     <label class="text-danger">หมายเหตุ : </label>
-                    <textarea name="invoice_note" id="" cols="30" rows="3" class="form-control"></textarea>
+                    <textarea name="credit_note_note" id="" cols="30" rows="3" class="form-control"></textarea>
                 </div>
             </div>
             <div class="col-md-6">
+                <div class="row">
+
+                    <div class="col-md-8 text-end">
+                        <label class="">มูลค่าตามใบกำกับภาษีเดิม :</label>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <label >{{ number_format($invoices->invoice_grand_total, 2, '.', ',');  }}</label>
+                        <input type="hidden" name="grand_total_old" id="grandTotalOld"  value="{{$invoices->invoice_grand_total}}">
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-8 text-end">
+                        <label class="">มูลค่าที่ถูกต้อง :</label>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <label id="totalSumEdit">0.00</label>
+                        <input type="hidden" name="total_sum_new"  id="totalSumNew">
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-8 text-end">
+                        <label class="">ผลต่าง :</label>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <label id="difference">0.00</label>
+                        <input type="hidden" name="difference_total"  id="differenceTotal">
+                    </div>
+                   
+                </div>
+  
+               <br>
+
+            
                 <div class="row">
 
                     <div class="col-md-8 text-end">
@@ -242,13 +295,16 @@
 
         </div>
 
-        <input type="hidden" name="invoice_total" id="invoiceTotal">
-        <input type="hidden" name="invoice_discount" id="invoiceDiscount">
+        <input type="hidden" name="credit_note_total" id="invoiceTotal">
+        <input type="hidden" name="credit_note_discount" id="invoiceDiscount">
 
-        <input type="hidden" name="invoice_vat_7" id="invoiceVat7">
-        <input type="hidden" name="invoice_grand_total" id="invoiceGrandTotal">
-        <input type="hidden" name="invoice_vat_3" id="invoiceVat3">
+        <input type="hidden" name="credit_note_vat_7" id="invoiceVat7">
+        <input type="hidden" name="credit_note_grand_total" id="invoiceGrandTotal">
+        <input type="hidden" name="credit_note_vat_3" id="invoiceVat3">
         <input type="hidden" name="invoice_id" id="invoice_id" value="{{ $invoices->invoice_id }}">
+
+        <input type="hidden" name="invoice_number"  value="{{$invoices->invoice_number}}">
+
 
         <button id="submit" class="btn btn-success btn-sm">บันทึก</button>
 
@@ -256,69 +312,7 @@
     </form>
 
 
-    <!-- sample modal content -->
-    <div class="modal fade" id="bs-example-modal-xlg" tabindex="-1" aria-labelledby="bs-example-modal-lg"
-        aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header d-flex align-items-center">
-                    <h4 class="modal-title" id="myLargeModalLabel">
-                        แก้ไขข้อมูลลูกค้า : CUS-000<span id="customer-id"></span>
-                    </h4>
-                    <hr>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="" id="customer_id" value="{{ $customer->customer_id }}">
-                    <div class="row">
-                        <div class="col-md-12 mt-2">
-                            <label>ชื่อลูกค้า :</label>
-                            <input type="text" id="customer_name" class="form-control">
-                        </div>
-                        <div class="col-md-12 mt-2">
-                            <label>ที่อยู่ :</label>
-                            <textarea id="customer_address" class="form-control" cols="30" rows="3"></textarea>
-                        </div>
-                        <div class="col-md-12 mt-2">
-                            <label>Tax ID :</label>
-                            <input type="text" id="customer_texid" class="form-control">
-                        </div>
-                        <div class="col-md-12 mt-2">
-                            <label>เบอร์ติดต่อ</label>
-                            <input type="text" id="customer_tel" class="form-control">
-                        </div>
-                        <div class="col-md-12 mt-2">
-                            <label>Email : </label>
-                            <input type="text" id="customer_email" class="form-control">
-                        </div>
-                        <div class="col-md-12 mt-2">
-                            <label>Fax : </label>
-                            <input type="text" id="customer_fax" class="form-control">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="update-customer"
-                        class="
-              btn btn-light-success
-
-              font-weight-medium
-              waves-effect
-              text-start
-            "
-                        data-bs-dismiss="modal">
-                        อัพเดท
-                    </button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
-
-
-
+    
 
     <script>
         $(document).ready(function() {
@@ -399,6 +393,10 @@
                 $('#discount').text(formatNumber(totalDiscount));
                 $('#invoiceDiscount').val(totalDiscount);
 
+                            // ผลต่าง
+         
+
+
                 var totalAfterDiscount = totalSum - totalDiscount;
                 $('#totalAfterDiscount').text(formatNumber(totalAfterDiscount));
 
@@ -420,11 +418,20 @@
                 }
                 $('#withholdingTax').text(formatNumber(withholdingTax));
                 $('#invoiceVat3').val(withholdingTax);
+                var grandTotalOld = parseFloat($('#grandTotalOld').val()) || 0;
+                var grandTotal = totalAfterDiscount - parseFloat(vatAmount) - parseFloat(withholdingTax);
+                var grandTotalNew = grandTotal + parseFloat(grandTotalOld);
 
-                var grandTotal = totalAfterDiscount + parseFloat(vatAmount) - parseFloat(withholdingTax);
-                $('#grandTotal').text(formatNumber(grandTotal.toFixed(2)));
-                $('#invoiceGrandTotal').val(grandTotal.toFixed(2));
-                // $('.outstanding-balance').val(formatNumber(grandTotal.toFixed(2)));
+
+            // มูลค่าที่ถูกต้อง
+            $('#totalSumEdit').text(formatNumber(grandTotalNew));
+            $('#totalSumNew').val(grandTotalNew);
+
+            // จำนวนเงินรวมทั้งสิ้น
+            $('#grandTotal').text(formatNumber(grandTotal));
+            $('#invoiceGrandTotal').val(grandTotal);
+            $('#difference').text(formatNumber(grandTotal));
+            $('#differenceTotal').val(grandTotal);
             }
 
             // เพิ่มแถวสินค้าใหม่
@@ -447,10 +454,12 @@
 
             $(document).on('change', 'select[name="expense[]"], #vat', function() {
                 calculateTotals();
+                paymentType();
             });
 
             $('#vat3').change(function() {
                 calculateTotals();
+                paymentType();
             });
 
             // delete row
@@ -458,6 +467,7 @@
                 event.preventDefault();
                 $(this).closest('tr').remove();
                 calculateTotals();
+                paymentType();
             });
             // คำนวณยอดรวมเมื่อเริ่มต้น
             calculateTotals();
@@ -467,24 +477,20 @@
 
 
 
-        // Udpate invoice
+        // add debet
         $(document).ready(function() {
-            $('#invoice-form').submit(function(event) {
+            $('#credit-form').submit(function(event) {
                 event.preventDefault(); // ป้องกันการส่งฟอร์มแบบปกติ
 
                 var form = $(this);
                 var formData = form.serialize(); // แปลงข้อมูลฟอร์มเป็นแบบ URL-encoded
                 $.ajax({
-                    url: '{{ route('invoiceBooking.update') }}', // URL ของ endpoint ที่ต้องการส่งข้อมูลไป
+                    url: '{{ route('creditNote.store') }}', // URL ของ endpoint ที่ต้องการส่งข้อมูลไป
                     type: 'POST',
                     data: formData,
                     success: function(response) {
-                        //console.log(response);
-
-                        // ดำเนินการหลังจากได้รับการตอบกลับจากเซิร์ฟเวอร์
-                        alert('บันทึกข้อมูลสำเร็จ');
-                        // ทำความสะอาดฟอร์มหรือรีเซ็ตค่าอื่นๆ ตามต้องการ
-                        // form[0].reset();
+                     alert('บันทึกข้อมูลสำเร็จ');
+                     location.reload(); // รีเฟรชหน้าเว็บหลังจากบันทึกข้อมูลสำเร็จ
                     },
                     error: function(xhr) {
                         // จัดการกรณีที่เกิดข้อผิดพลาด
@@ -494,70 +500,7 @@
             });
         });
 
-        $(document).ready(function() {
-            // Customer Edit
-            $('#edit-customer').on('click', function(event) {
-                event.preventDefault();
-                var customerID = $(this).attr('data-id');
-
-                $.ajax({
-                    url: '{{ route('customer.ajaxEdit') }}',
-                    method: 'POST',
-                    data: {
-                        customerID: customerID,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-                        $('#customer-id').html(response.customer_id);
-                        $('#customer_name').val(response.customer_name);
-                        $('#customer_address').val(response.customer_address);
-                        $('#customer_texid').val(response.customer_texid);
-                        $('#customer_tel').val(response.customer_tel);
-                        $('#customer_fax').val(response.customer_fax);
-                        $('#customer_email').val(response.customer_email);
-                    }
-                })
-            });
-            //update Customer
-            $('#update-customer').on('click', function(event) {
-                event.preventDefault();
-                var customer_id = $('#customer_id').val();
-                var customer_name = $('#customer_name').val();
-                var customer_address = $('#customer_address').val();
-                var customer_texid = $('#customer_texid').val();
-                var customer_tel = $('#customer_tel').val();
-                var customer_fax = $('#customer_fax').val();
-                var customer_email = $('#customer_email').val();
-
-                console.log(customer_id);
 
 
-                $.ajax({
-                    url: '{{ route('customer.ajaxUpdate') }}',
-                    method: 'POST',
-                    data: {
-                        customer_id: customer_id,
-                        customer_name: customer_name,
-                        customer_address: customer_address,
-                        customer_texid: customer_texid,
-                        customer_tel: customer_tel,
-                        customer_fax: customer_fax,
-                        customer_email: customer_email,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-                        console.log(response);
 
-                        $('#customer-id-label').html(response.customer_id);
-                        $('#customer_name-label').html(response.customer_name);
-                        $('#customer_address-label').html(response.customer_address);
-                        $('#customer_texid-label').html(response.customer_texid);
-                        $('#customer_tel-label').html(response.customer_tel);
-                        $('#customer_fax-label').html(response.customer_fax);
-                        $('#customer_email-label').html(response.customer_email);
-                    }
-                })
-            });
-
-        });
     </script>

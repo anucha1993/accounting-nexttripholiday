@@ -17,37 +17,76 @@ use Illuminate\Support\Facades\Auth;
 
 class addDebtController extends Controller
 {
-    // 
+    //
     public function create(Request $request)
     {
         $invoiceId = $request->invoiceID;
-        $invoices = invoiceModel::where('invoice_id', $invoiceId)
-            ->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')->first();
+        $invoices = invoiceModel::where('invoice_id', $invoiceId)->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')->first();
 
         $productIncome = productModel::get();
         $customer = customerModel::where('customer_id', $invoices->customer_id)->first();
         $sale = saleModel::where('id', $invoices->invoice_sale)->first();
-        $tour = DB::connection('mysql2')->table('tb_tour')->select('code', 'airline_id')->where('id', $invoices->tour_id)->first();
-        $airline = DB::connection('mysql2')->table('tb_travel_type')->select('travel_name')->where('id', $tour->airline_id)->first();
-
+        $tour = DB::connection('mysql2')
+            ->table('tb_tour')
+            ->select('code', 'airline_id')
+            ->where('id', $invoices->tour_id)
+            ->first();
+        $airline = DB::connection('mysql2')
+            ->table('tb_travel_type')
+            ->select('travel_name')
+            ->where('id', $tour->airline_id)
+            ->first();
         $invoiceProduct = invoicePorductsModel::where('invoice_id', $invoiceId)
-        ->select(
-            'invoice_product.invoice_qty',
-            'invoice_product.invoice_price',
-            'invoice_product.invoice_sum',
-            'invoice_product.product_id',
-            // product
-            'products.product_name'
-        )
-        ->leftjoin('products', 'products.id', 'invoice_product.product_id')
-        ->get();
-
-
-
-        return view('invoices.addDebt.form-addDebt-add', compact('invoices', 'sale', 'productIncome', 'customer', 'tour', 'airline','invoiceProduct'));
+            ->select(
+                'invoice_product.invoice_qty',
+                'invoice_product.invoice_price',
+                'invoice_product.invoice_sum',
+                'invoice_product.product_id',
+                // product
+                'products.product_name',
+            )
+            ->leftjoin('products', 'products.id', 'invoice_product.product_id')
+            ->get();
+        return view('invoices.addDebt.form-addDebt-add', compact('invoices', 'sale', 'productIncome', 'customer', 'tour', 'airline', 'invoiceProduct'));
     }
 
+    public function edit(Request $request)
+    {
+        $debtID = $request->debtID;
 
+        $debt = addDebtModel::where('debt_id', $debtID)->first();
+
+        $invoices = invoiceModel::where('invoice_number', $debt->invoice_number)
+            ->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')
+            ->first();
+
+        $productIncome = productModel::get();
+        $customer = customerModel::where('customer_id', $invoices->customer_id)->first();
+        $sale = saleModel::where('id', $invoices->invoice_sale)->first();
+        $tour = DB::connection('mysql2')
+            ->table('tb_tour')
+            ->select('code', 'airline_id')
+            ->where('id', $invoices->tour_id)
+            ->first();
+        $airline = DB::connection('mysql2')
+            ->table('tb_travel_type')
+            ->select('travel_name')
+            ->where('id', $tour->airline_id)
+            ->first();
+        $debtProduct = debtProductsModel::where('debt_id', $debt->debt_id)
+            ->select(
+                'debt_product.debt_qty',
+                'debt_product.debt_price',
+                'debt_product.debt_sum',
+                'debt_product.product_id',
+                // product
+                'products.product_name',
+            )
+            ->leftjoin('products', 'products.id', 'debt_product.product_id')
+            ->get();
+
+        return view('invoices.addDebt.form-addDebt-edit', compact('debt', 'invoices', 'sale', 'productIncome', 'customer', 'tour', 'airline', 'debtProduct'));
+    }
 
     // function Runnumber  เลขที่อ้างอิง
     public function generateRunningCodeDBN($debt)
@@ -67,32 +106,79 @@ class addDebtController extends Controller
     }
 
     public function store(Request $request)
-    {
-        // Get the latest debt record
-        $debt = addDebtModel::latest()->first();
+{
+    $totalQty = 0;
 
-        // Check if there's an existing debt record
-        if ($debt) {
-            $last_debt_number = $debt->debt_number;
-        } else {
-            // If no debt records exist, start the sequence with a base number
-            $last_debt_number = 'DB' . date('y') . date('m') . '0000';
+    // Get the latest debt record
+    $debt = addDebtModel::latest()->first();
+
+    // Check if there's an existing debt record
+    if ($debt) {
+        $last_debt_number = $debt->debt_number;
+    } else {
+        // If no debt records exist, start the sequence with a base number
+        $last_debt_number = 'DB' . date('y') . date('m') . '0000';
+    }
+
+    // Generate a new running code using the last debt number
+    $new_debt_number = $this->generateRunningCodeDBN($last_debt_number);
+
+    // Merge the new debt number into the request data
+    $request->merge(['debt_number' => $new_debt_number]);
+    $request->merge(['debt_status' => 'wait']);
+    $request->merge(['debt_date' => date('Y-m-d')]);
+    $request->merge(['created_by' => Auth::user()->name]);
+
+    // Create a new debt record with the request data
+    $debtStore = addDebtModel::create($request->all());
+
+    // เพิ่มรายการใหม่
+    if ($request->has('product_id')) {
+        foreach ($request->product_id as $key => $product_id) {
+            // ตรวจสอบค่าแต่ละค่าใน $request
+            $product_id = $request->input('product_id.' . $key);
+            $debt_qty = $request->input('product_qty.' . $key);
+            $debt_price = $request->input('product_price.' . $key);
+            $debt_sum = $request->input('product_sum.' . $key);
+            $expense_type = $request->input('expense.' . $key);
+
+            $productModel = productModel::where('id', $product_id)->first();
+
+            // ตรวจสอบว่า $productModel ไม่เป็น null และ product_pax มีค่าเป็น Y
+            if ($productModel && $productModel->product_pax === 'Y') {
+                $totalQty += $debt_qty;
+            }
+
+            if ($product_id && $productModel) {
+                // เพิ่มข้อมูลเข้าในตาราง
+                debtProductsModel::create([
+                    'debt_id' => $debtStore->debt_id,
+                    'product_id' => $product_id,
+                    'product_name' => $productModel->product_name,
+                    'debt_qty' => $debt_qty,
+                    'debt_price' => $debt_price,
+                    'debt_sum' => $debt_sum,
+                    'expense_type' => $expense_type,
+                ]);
+            }
         }
+    }
 
-        // Generate a new running code using the last debt number
-        $new_debt_number = $this->generateRunningCodeDBN($last_debt_number);
+    // อัปเดตยอดรวมใน total_qty
+    $debtStore->update(['total_qty' => $totalQty]);
+    return response()->json($debtStore->debt_id);
+}
 
-        // Merge the new debt number into the request data
-        $request->merge(['debt_number' => $new_debt_number]);
-        $request->merge(['debt_status' => 'wait']);
-        $request->merge(['debt_date' => date('Y-m-d')]);
-        $request->merge(['created_by' => Auth::user()->name]);
 
-        // Create a new debt record with the request data
-        $debtStore = addDebtModel::create($request->all());
-
-         // เพิ่มรายการใหม่
-         if ($request->has('product_id')) {
+    public function update(addDebtModel $addDebtModel, Request $request)
+    {
+        $totalQty = 0;
+        $request->merge(['updated_by' => Auth::user()->name]);
+        $addDebtModel->update($request->all());
+        //ลบรายการเก่า
+        debtProductsModel::where('debt_id', $request->debt_id)->delete();
+        // เพิ่มรายการใหม่
+        if ($request->has('product_id')) {
             foreach ($request->product_id as $key => $product_id) {
                 // ตรวจสอบค่าแต่ละค่าใน $request
                 $product_id = $request->input('product_id.' . $key);
@@ -101,12 +187,17 @@ class addDebtController extends Controller
                 $debt_sum = $request->input('product_sum.' . $key);
                 $expense_type = $request->input('expense.' . $key);
 
-                $productModel = productModel::where('id',$product_id)->first();
+                $productModel = productModel::where('id', $product_id)->first();
+
+                  // ตรวจสอบว่า $productModel ไม่เป็น null และ product_pax มีค่าเป็น Y
+            if ($productModel && $productModel->product_pax === 'Y') {
+                $totalQty += $debt_qty;
+            }
 
                 if ($product_id) {
                     // เพิ่มข้อมูลเข้าในตาราง
                     debtProductsModel::create([
-                        'debt_id' => $debtStore->debt_id,
+                        'debt_id' => $request->debt_id,
                         'product_id' => $product_id,
                         'product_name' => $productModel->product_name,
                         'debt_qty' => $debt_qty,
@@ -118,6 +209,8 @@ class addDebtController extends Controller
             }
         }
 
+        $addDebtModel->update(['total_qty' => $totalQty]);
 
+        return response()->json(['message' => 'Update successful!']);
     }
 }

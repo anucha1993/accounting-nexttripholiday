@@ -79,7 +79,7 @@
 
                 <!-- Todo list-->
                 <div class="todo-listing">
-                    <div id="content" class="p-3">
+                    <div id="content" class="p-5">
 
                     </div>
 

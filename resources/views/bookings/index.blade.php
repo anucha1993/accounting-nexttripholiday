@@ -169,6 +169,7 @@
                                         <input type="hidden" name="country_id" value="{{ $item->country_id }}">
                                         <input type="hidden" name="tour_id" value="{{ $item->tour_id }}">
                                         <input type="hidden" name="wholesale_id" value="{{ $item->wholesale_id }}">
+                                        <input type="hidden" name="total_qty" value="{{ $item->total_qty }}">
 
 
                                         @php

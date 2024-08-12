@@ -1136,9 +1136,9 @@
                                     class="hide-menu">ใบจองทัวร์</span></a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark" href="{{ route('invoice.index') }}"
+                            <a class="sidebar-link waves-effect waves-dark" href="{{ route('quote.index') }}"
                                 aria-expanded="false"><i class="mdi mdi-clipboard-text"></i><span
-                                    class="hide-menu">ออเดอร์</span></a>
+                                    class="hide-menu">ใบเสนอราคา</span></a>
                         </li>
 
                         <li class="sidebar-item">

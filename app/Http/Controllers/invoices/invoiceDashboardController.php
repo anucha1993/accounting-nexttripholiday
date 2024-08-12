@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use App\Models\booking\bookingModel;
 use App\Models\invoices\invoiceModel;
 use App\Models\customers\customerModel;
+use App\Models\invoices\addDebtModel;
+use App\Models\invoices\creditNoteModel;
 use App\Models\wholesale\wholesaleModel;
 
 class invoiceDashboardController extends Controller
@@ -24,6 +26,11 @@ class invoiceDashboardController extends Controller
         $airline = DB::connection('mysql2')->table('tb_travel_type')->where('id',$tour->airline_id)->first();
         $booking = bookingModel::where('code',$invoice->invoice_booking)->first();
         $wholesale = wholesaleModel::where('id',$invoice->wholesale_id)->first();
-        return view('invoices.invoice-dashboard',compact('customer','invoice','sale','tour','airline','booking','wholesale'));
+
+        //get
+        $debts = addDebtModel::where('invoice_number',$invoice->invoice_number)->get();
+        $creditNotes = creditNoteModel::where('invoice_number',$invoice->invoice_number)->get();
+
+        return view('invoices.invoice-dashboard',compact('customer','invoice','sale','tour','airline','booking','wholesale','debts','creditNotes'));
     }
 }

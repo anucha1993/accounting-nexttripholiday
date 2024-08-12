@@ -3,18 +3,19 @@
 @section('content')
     <div class="container-fluid page-content">
         <div class="card">
-            <form action="{{route('invoice.store')}}" id="formInvoice" method="post">
+            <form action="{{route('quote.store')}}" id="formQuote" method="post">
                 @csrf
 
-                {{-- ข้อมูลส่งไป invoice --}}
-                <input type="hidden" name="invoice_booking" value="{{$request->booking_number}}">
-                <input type="hidden" name="invoice_sale" value="{{$request->sale_id}}">
-                <input type="hidden" name="invoice_tour_code" value="{{$request->booking_tour_number}}">
-                <input type="hidden"  name="invoice_date" value="{{date('Y-m-d',strtotime(now()))}}">
+                {{-- ข้อมูลส่งไป quote --}}
+                <input type="hidden" name="quote_booking" value="{{$request->booking_number}}">
+                <input type="hidden" name="quote_sale" value="{{$request->sale_id}}">
+                <input type="hidden" name="quote_tour_code" value="{{$request->booking_tour_number}}">
+                <input type="hidden"  name="quote_date" value="{{date('Y-m-d',strtotime(now()))}}">
                 <input type="hidden"  name="tour_id" value="{{$request->tour_id}}">
                 <input type="hidden"  name="country_id" value="{{$request->country_id}}">
                 <input type="hidden"  name="travel_type" value="{{$request->travel_type}}">
                 <input type="hidden"  name="wholesale_id" value="{{$request->wholesale_id}}">
+                <input type="hidden"  name="total_qty" value="{{$request->total_qty}}">
 
 
             <div class="card-header" style="background-color: #ffff">
@@ -254,9 +255,9 @@
 
                                 <input type="hidden" name="product_id[]" value="{{$item['id']}}">
                                 <input type="hidden" name="product_name[]" value="{{$item['name']}}">
-                                <input type="hidden" name="invoice_qty[]" value="{{$item['qty']}}">
-                                <input type="hidden" name="invoice_price[]" value="{{$item['price']}}">
-                                <input type="hidden" name="invoice_sum[]" value="{{$item['sum']}}">
+                                <input type="hidden" name="product_qty[]" value="{{$item['qty']}}">
+                                <input type="hidden" name="product_price[]" value="{{$item['price']}}">
+                                <input type="hidden" name="product_sum[]" value="{{$item['sum']}}">
                                 <input type="hidden" name="expense_type[]" value="income">
                             </tr>
                             @endif
@@ -284,7 +285,7 @@
                     </div>
                     <br>
 
-                    <button type="submit" class="btn btn-success float-end" form="formInvoice">Convert</button>
+                    <button type="submit" class="btn btn-success float-end" form="formQuote">Convert</button>
                     <br>
                 </form>
 

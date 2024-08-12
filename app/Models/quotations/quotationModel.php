@@ -1,39 +1,39 @@
 <?php
 
-namespace App\Models\invoices;
+namespace App\Models\quotations;
 
 use App\Models\booking\bookingModel;
 use App\Models\booking\countryModel;
 use App\Models\customers\customerModel;
-use App\Models\wholesale\wholesaleModel;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\wholesale\wholesaleModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class invoiceModel extends Model
+class quotationModel extends Model
 {
     use HasFactory;
-    protected $table = 'invoices';
-    protected $primaryKey = 'invoice_id';
+    protected $table = 'quotation';
+    protected $primaryKey = 'quote_id';
     protected $fillable = [
         'customer_id',
-        'invoice_number',
-        'invoice_date',
+        'quote_number',
+        'quote_date',
         'tour_id',
         'wholesale_id',
         'travel_type',
         'country_id',
-        'invoice_booking',
-        'invoice_sale',
-        'invoice_tour_code',
-        'invoice_status',
-        'invoice_discount',
-        'invoice_total',
+        'quote_booking',
+        'quote_sale',
+        'quote_tour_code',
+        'quote_status',
+        'quote_discount',
+        'quote_total',
         'created_by',
         'updated_by',
-        'invoice_vat_7',
-        'invoice_vat_3',
-        'invoice_grand_total',
-        'invoice_note',
+        'quote_vat_7',
+        'quote_vat_3',
+        'quote_grand_total',
+        'quote_note',
         'vat_3_status',
         'vat_type',
         'payment_date',
@@ -41,29 +41,29 @@ class invoiceModel extends Model
         'payment_type',
         'deposit',
         'total_qty',
-
     ];
 
+    
     // ความสัมพันธ์กับ BookingModel
-    public function invoiceBooking()
+    public function quoteBooking()
     {
-        return $this->belongsTo(bookingModel::class, 'invoice_booking', 'code');
+        return $this->belongsTo(bookingModel::class, 'quote_booking', 'code');
     }
 
     // ความสัมพันธ์กับ CustomerModel
-    public function invoiceCustomer()
+    public function quoteCustomer()
     {
         return $this->belongsTo(customerModel::class, 'customer_id', 'customer_id');
     }
 
     // ความสัมพันธ์กับ WholesaleModel
-    public function invoiceWholesale()
+    public function quoteWholesale()
     {
         return $this->belongsTo(wholesaleModel::class, 'wholesale_id', 'id');
     }
 
     // Accessor เพื่อดึงข้อมูล country
-    public function getInvoiceCountriesAttribute()
+    public function getquoteCountriesAttribute()
     {
         // แปลงค่า country_id จาก JSON string เป็น array
         $countryIds = json_decode($this->attributes['country_id'], true);
@@ -76,4 +76,5 @@ class invoiceModel extends Model
 
         return collect(); // คืนค่า collection ว่างเปล่าถ้าไม่มี country_ids
     }
+    
 }

@@ -10,10 +10,12 @@ use App\Http\Controllers\airline\airlineController;
 use App\Http\Controllers\booking\BookingController;
 use App\Http\Controllers\customers\customerController;
 use App\Http\Controllers\invoices\addDebtController;
+use App\Http\Controllers\invoices\creditNoteController;
 use App\Http\Controllers\Invoices\InvoiceBookingController;
 use App\Http\Controllers\invoices\invoiceController;
 use App\Http\Controllers\invoices\invoiceDashboardController;
 use App\Http\Controllers\products\productController;
+use App\Http\Controllers\quotations\quoteController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
 
 /*
@@ -75,6 +77,8 @@ Route::get('invoice/dashboard',[invoiceDashboardController::class,'index'])->nam
 // invoice addDebt 
 Route::get('invoice/adddebt/add',[addDebtController::class,'create'])->name('adddebt.create');
 Route::post('invoice/adddebt/store',[addDebtController::class,'store'])->name('adddebt.store');
+Route::get('invoice/adddebt/edit',[addDebtController::class,'edit'])->name('adddebt.edit');
+Route::PUT('invoice/adddebt/update/{addDebtModel}',[addDebtController::class,'update'])->name('adddebt.update');
 
 //Products
 Route::get('/products',[productController::class,'index'])->name('product.index');
@@ -83,6 +87,19 @@ Route::get('/product/edit/{id}',[productController::class,'edit'])->name('produc
 Route::delete('/product/delete/{id}',[productController::class,'destroy'])->name('product.destroy');
 Route::put('/product/update/{id}',[productController::class,'update'])->name('product.update');
 Route::post('/product/store',[productController::class,'store'])->name('product.store');
+
+// invoice creditNote 
+Route::get('invoice/credit/add',[creditNoteController::class,'create'])->name('creditNote.create');
+Route::post('invoice/credit/store',[creditNoteController::class,'store'])->name('creditNote.store');
+Route::get('invoice/credit/edit',[creditNoteController::class,'edit'])->name('creditNote.edit');
+Route::PUT('invoice/credit/update/{creditNoteModel}',[creditNoteController::class,'update'])->name('creditNote.update');
+
+
+// quote
+Route::get('quotations/',[quoteController::class,'index'])->name('quote.index');
+Route::post('quote/store',[quoteController::class,'store'])->name('quote.store');
+Route::get('quote/edit/{quotationModel}',[quoteController::class,'edit'])->name('quote.edit');
+
 
 //selects
 Route::get('/selects/period',[periodSelect::class,'index'])->name('select.period');
