@@ -96,6 +96,10 @@
         </style>
         <br>
 
+
+        <form action="{{route('quote.update',$quotationModel->quote_id)}}" id="form-update">
+            @csrf
+            @method('PUT')
         <div class="right-part mail-list overflow-auto">
             <div id="todo-list-container">
 
@@ -323,14 +327,22 @@
 
                                     </div>
                                 </div>
+                                
 
                             </div>
                         </div>
+                        <div class="text-end mt-3">
+                            <button type="submit" class="btn btn-success btn-sm  mx-3" form="form-update"> <i class="fa fa-save"></i> Update</button>
+                        </div>
+                        <br>
                     </div>
+                   
                     <br>
                 </div>
             </div>
         </div>
+
+        </form>
     </div>
 
 

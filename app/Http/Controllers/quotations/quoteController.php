@@ -108,4 +108,9 @@ class quoteController extends Controller
         //dd($quoteProducts);
         return view('quotations.edit',compact('quotationModel','customer','sale','tour','airline','products','quoteProducts','quoteProducts'));
     }
+
+    public function update(quotationModel $quotationModel, Request $request)
+    {
+        dd($request);
+    }
 }
