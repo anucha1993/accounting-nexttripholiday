@@ -141,7 +141,7 @@
                               <td>{{ number_format($item->quote_total, 2, '.', ',');  }}</td>
                               <td> <span class="badge rounded-pill bg-primary">รอชำระ</span></td>
                               <td> {{$item->quoteBooking->bookingSale->name}}</td>
-                              <td><a href="{{route('quote.edit',$item->quote_id)}}" class="btn btn-info btn-sm">จัดการข้อมูล</a></td>
+                              <td><a href="{{route('saleInfo.index',$item->quote_id)}}" class="btn btn-info btn-sm">จัดการข้อมูล</a></td>
                               
                           </tr>
                        @empty

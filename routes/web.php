@@ -16,6 +16,7 @@ use App\Http\Controllers\invoices\invoiceController;
 use App\Http\Controllers\invoices\invoiceDashboardController;
 use App\Http\Controllers\products\productController;
 use App\Http\Controllers\quotations\quoteController;
+use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
 
 /*
@@ -99,9 +100,10 @@ Route::PUT('invoice/credit/update/{creditNoteModel}',[creditNoteController::clas
 Route::get('quotations/',[quoteController::class,'index'])->name('quote.index');
 Route::post('quote/store',[quoteController::class,'store'])->name('quote.store');
 Route::get('quote/edit/{quotationModel}',[quoteController::class,'edit'])->name('quote.edit');
-Route::put('quote/update/{quotationModel}',[quoteController::class,'update'])->name('quote.update');
+Route::put('quote/update/{quotationModel}',[quoteController::class,'update'])->name('quote.update');//
 
-
+// Sales info
+Route::get('quote/sales/info/{quotationModel}',[salesInformationController::class,'index'])->name('saleInfo.index');
 //selects
 Route::get('/selects/period',[periodSelect::class,'index'])->name('select.period');
 
