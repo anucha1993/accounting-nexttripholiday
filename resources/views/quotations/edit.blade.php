@@ -5,6 +5,10 @@
         <!-- -------------------------------------------------------------- -->
         <!-- Left Part -->
         <!-- -------------------------------------------------------------- -->
+
+
+
+
         <div class="left-part list-of-tasks bg-white">
             <a class="ti-menu ti-close btn btn-success show-left-part d-block d-md-none" href="javascript:void(0)"></a>
             <div class="scrollable" style="height: 100%">
@@ -103,7 +107,21 @@
             <div class="right-part mail-list overflow-auto">
                 <div id="todo-list-container">
 
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show"
+                            role="alert">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <strong>Success - </strong>{{ session('success') }}
+                        </div>
+                    @endif
 
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show"
+                            role="alert">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <strong>Error - </strong>{{ session('error') }}
+                        </div>
+                    @endif
 
                     <!-- Todo list-->
                     <div class="todo-listing ">
@@ -189,14 +207,14 @@
                                     <div class="col-md-2">ยอดรวม</div>
                                 </div>
                                 <hr>
-                                @forelse ($quoteProducts as $item)
+                                @forelse ($quoteProducts as $key => $item)
                                     <div class="row item-row">
-                                        <div class="col-md-1"><span class="row-number">1 </span> <a
+                                        <div class="col-md-1"><span class="row-number"> {{$key+1}}</span> <a
                                                 href="javascript:void(0)" class="remove-row-btn text-danger"><span
                                                     class=" fa fa-trash"></span></a></div>
                                         <div class="col-md-3">
 
-                                            <select name="product_name[]" class="form-select">
+                                            <select name="product_id[]" class="form-select">
                                                 @forelse ($products as $product)
                                                     <option value="">กรุณาเลือกรายการ</option>
                                                     <option @if ($item->product_id == $product->id) selected @endif
@@ -235,40 +253,6 @@
                                 @empty
                                 @endforelse
 
-                                {{-- <div class="row item-row">
-                                <div class="col-md-1"><span class="row-number">1 </span> <a href="javascript:void(0)"
-                                        class="remove-row-btn text-danger"><span class=" fa fa-trash"></span></a></div>
-                                <div class="col-md-3"> 
-                                 
-                                    <select name="product_name[]" class="form-select">
-                                        @forelse ($products as $item)
-                                        <option value="" selected disabled>กรุณาเลือกรายการ</option>
-                                        <option value="{{$item->product_id}}">{{$item->product_name}} {{$item->product_pax === 'Y' ? '(Pax)' : ''}}</option>
-                                        @empty
-                                        @endforelse
-                                    </select>
-                            
-                                   </div>
-                                <div class="col-md-2">
-                                  
-                                   
-                                    <select name="expense_type[]" class="form-select">
-                                        <option value="income">รายได้</option>
-                                        <option value="discount">ส่วนลด</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-1 text-center"><input type="checkbox" name="non_vat[]"
-                                        class="non-vat">
-                                </div>
-                                <div class="col-md-1"><input type="number" name="quantity[]"
-                                        class="quantity form-control text-end" value="0" step="0.01"></div>
-                                <div class="col-md-2"><input type="number" name="price_per_unit[]"
-                                        class="price-per-unit form-control text-end" value="0" step="0.01"></div>
-                                <div class="col-md-2"><input type="number" name="total_amount[]"
-                                        class="total-amount form-control text-end" value="0" readonly></div>
-                            </div> --}}
-
-
                             </div>
                             <div class="add-row">
                                 <i class="fa fa-plus"></i><a id="add-row" href="javascript:void(0)" class="">
@@ -282,14 +266,14 @@
                                             <div class="form-group">
                                                 <label for="vat-method">การคำนวณ VAT:</label>
                                                 <div>
-                                                    <input type="radio" id="vat-include" name="vat_method"
-                                                        value="include" checked>
+                                                    <input type="radio" id="vat-include" name="vat_type"
+                                                        value="include" @if ($quotationModel->vat_type === 'include') checked @endif>
                                                     <label for="vat-include">คำนวณรวมกับราคาสินค้าและบริการ (VAT
                                                         Include)</label>
                                                 </div>
                                                 <div>
-                                                    <input type="radio" id="vat-exclude" name="vat_method"
-                                                        value="exclude">
+                                                    <input type="radio" id="vat-exclude" name="vat_type"
+                                                        value="exclude" @if ($quotationModel->vat_type === 'exclude') checked @endif>
                                                     <label for="vat-exclude">คำนวณแยกกับราคาสินค้าและบริการ (VAT
                                                         Exclude)</label>
                                                 </div>
@@ -300,7 +284,7 @@
                                         <div class="col-md-12">
                                             <div class="row summary-row">
                                                 <div class="col-md-10">
-                                                    <input type="checkbox" id="withholding-tax"> <span class="">
+                                                    <input type="checkbox" name="vat3_status" value="Y" id="withholding-tax"   @if ($quotationModel->vat_3_status === 'Y') checked @endif> <span class="">
                                                         คิดภาษีหัก ณ ที่จ่าย 3% (คำนวณจากยอด ราคาก่อนภาษีมูลค่าเพิ่ม /
                                                         Pre-VAT
                                                         Amount)</span>
@@ -316,7 +300,7 @@
 
                                         <div class="col-md-12" style="padding-bottom: 10px">
                                             <label>บันทึกเพิ่มเติม</label>
-                                            <textarea name="qout_note" class="form-control" cols="30" rows="2"></textarea>
+                                            <textarea name="quote_note" class="form-control" cols="30" rows="2">{{$quotationModel->quote_note}}</textarea>
                                         </div>
                                     </div>
 
@@ -359,15 +343,16 @@
                             </div>
                             <div class="text-end mt-3">
                                 {{-- hidden --}}
-                                <input type="text" name="quote_total" id="quote-total">
-                                <input type="text" name="quote_discount" id="quote-discount">
-                                <input type="text" name="quote_after_discount" id="quote-after-discount">
-                                <input type="text" name="quote_price_excluding_vat" id="quote-price-excluding-vat">
-                                <input type="text" name="quote_grand_total" id="quote-grand-total">
-                                <input type="text" name="quote_withholding_amount" id="quote-withholding-amount">
+                                <input type="hidden" name="quote_total" id="quote-total">
+                                <input type="hidden" name="quote_discount" id="quote-discount">
+                                <input type="hidden" name="quote_after_discount" id="quote-after-discount">
+                                <input type="hidden" name="quote_price_excluding_vat" id="quote-price-excluding-vat">
+                                <input type="hidden" name="quote_grand_total" id="quote-grand-total">
+                                <input type="hidden" name="quote_vat_3" id="quote-withholding-amount">
+                                <input type="hidden" name="quote_vat_7" id="quote-vat-7">
 
-                                <button type="submit" class="btn btn-success btn-sm  mx-3" form="form-update"> <i
-                                        class="fa fa-save"></i> Update</button>
+                                <button type="submit" class="btn btn-success btn-sm  mx-3" form="form-update">
+                                    <i class="fa fa-save"></i> Update</button>
                             </div>
                             <br>
                         </div>
@@ -525,11 +510,12 @@
 
                 $('#after-discount').text(formatNumber(afterDiscount.toFixed(2)));
                 $('#quote-after-discount').val(afterDiscount.toFixed(2));
-                
-                $('#vat-amount').text(formatNumber(vatAmount.toFixed(2)));
-                $('#quote-vat-amount').val(vatAmount.toFixed(2));
 
-                $('#price-excluding-vat').text(formatNumber((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(2)));
+                $('#vat-amount').text(formatNumber(vatAmount.toFixed(2)));
+                $('#quote-vat-7').val(vatAmount.toFixed(2));
+
+                $('#price-excluding-vat').text(formatNumber((sumPriceExcludingVat + sumPriceExcludingVatNonVat)
+                    .toFixed(2)));
                 $('#quote-price-excluding-vat').val((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(2));
 
                 $('#grand-total').text(formatNumber(grandTotal.toFixed(2)));

@@ -111,6 +111,33 @@ class quoteController extends Controller
 
     public function update(quotationModel $quotationModel, Request $request)
     {
-        dd($request);
+        // dd($request);
+        $request->merge(['vat_3_status' => isset($request->vat3_status) ? 'Y' : 'N']); //เลขที่ใบแจ้งหนี้
+
+        $quotationModel->update($request->all());
+        
+        // Delete Product old
+        quoteProductModel::where('quote_id',$quotationModel->quote_id)->delete();
+        // Create product lits
+        foreach($request->product_id as $key => $value)
+        {
+          if($request->product_id[$key]){
+            $product = productModel::where('id',$request->product_id[$key])->first();
+            
+            quoteProductModel::create([
+                'quote_id' => $quotationModel->quote_id,
+                'product_id' => $product->id,
+                'product_name' => $product->product_name,
+                'product_qty' => $request->quantity[$key],
+                'product_price' => $request->price_per_unit[$key],
+                'product_sum' => $request->total_amount[$key],
+                'expense_type' => $request->expense_type[$key],
+                'vat' => isset($request->non_vat[$key]) ? 'Y' : 'N',
+            ]);
+          }
+
+        }
+
+        return redirect()->back()->with('success','Update Quotation Successfully.');
     }
 }
