@@ -103,7 +103,7 @@
                 <!-- Todo list-->
                 <div class="todo-listing ">
                     <div class="container border bg-white">
-                        <h4 class="text-center my-4">ข้อมูลการขาย Quotation No #</h4>
+                        <h4 class="text-center my-4">ข้อมูลการขาย Quotation No #{{$quotationModel->quote_number}}</h4>
 
 
                         <table class="table">
@@ -112,13 +112,53 @@
                                     <th>ประเภท</th>
                                     <th>วันที่</th>
                                     <th>Doc. Number</th>
-                                    <th>ชื่อลูกค้า</th>
+                                    <th  style="width: 400px">ชื่อลูกค้า</th>
                                     <th>ยอดรวมสุทธิ</th>
                                     <th>สถานะ </th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
+                               <tr>
+                                <td class="text-primary">ใบเสนอราคา</td>
+                                <td>{{date('d/m/Y',strtotime($quotationModel->created_at))}}</td>
+                                <td><span class="badge bg-dark">{{$quotationModel->quote_number}}</span></td>
+                                <td>คุณ{{$quotationModel->customer_name}}</td>
+                                <td>{{ number_format($quotationModel->quote_grand_total, 2, '.', ',');  }}</td>
+                                <td>
+                                    @if ($quotationModel->quote_status === 'wait' || $quotationModel->quote_status === 'invoice' )
+                                    <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
+                                    @endif
+                                    @if ($quotationModel->quote_status === 'success')
+                                    <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
+                                    @endif
+                                    @if ($quotationModel->quote_status === 'cancel')
+                                    <span class="badge rounded-pill bg-danger">ยกเลิก</span>
+                                    @endif
+                                    @if ($quotationModel->quote_status === 'payment')
+                                    <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button id="btnGroupVerticalDrop2" type="button" class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            จัดการข้อมูล
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
+                                            <a class="dropdown-item" href="{{route('quote.edit',$quotationModel->quote_id)}}"><i class="fa fa-edit"></i> แก้ไข</a>
+                                            <a class="dropdown-item" href="#"><i class="fa fa-print"></i> พิมพ์ใบเสนอราคา</a>
+                                            @if ($quotationModel->quote_status != 'invoice')
+                                            <a class="dropdown-item" href="{{route('invoice.create',$quotationModel->quote_id)}}"><i class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
+                                            @endif
+                                           
+                                            <a class="dropdown-item" href="#"><i class="fas fa-plus"></i> ออกใบเพิ่มหนี้</a>
+                                            <a class="dropdown-item" href="#"><i class="fas fa-minus"></i> ออกใบลดหนี้</a>
+                                            <a class="dropdown-item" href="#"><i class="fas fa-minus-circle"></i> ยกเลิกใบงาน</a>
+                                        </div>
+                                    </div>
+                                </td>
+                               
+                               </tr>
                             </tbody>
                         </table>
 

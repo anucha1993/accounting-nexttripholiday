@@ -12,6 +12,7 @@ class salesInformationController extends Controller
 
     public function index(quotationModel $quotationModel)
     {
+        $quotationModel = $quotationModel->leftjoin('customer','customer.customer_id','quotation.customer_id')->first();
         return view('sales-info.index',compact('quotationModel'));
     }
 }

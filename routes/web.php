@@ -65,9 +65,8 @@ Route::put('/booking/update/{bookingModel}',[BookingController::class,'update'])
 Route::get('/booking/delete/{bookingModel}',[BookingController::class,'destroy'])->name('booking.delete');
 
 //invoice
-Route::get('/invoice/edit/{invoiceModel}',[invoiceController::class,'edit'])->name('invoice.edit');
-Route::get('/invoices',[invoiceController::class,'index'])->name('invoice.index');
-Route::post('/invoice/store',[invoiceController::class,'store'])->name('invoice.store');
+Route::get('invoice/create/{quotationModel}',[invoiceController::class,'create'])->name('invoice.create');
+
 
 //invoice booking
 Route::get('invoice/booking',[InvoiceBookingController::class,'index'])->name('invoiceBooking.index');
