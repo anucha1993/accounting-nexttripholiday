@@ -11,6 +11,7 @@ use App\Models\customers\customerModel;
 use App\Models\invoices\invoiceModel;
 use App\Models\quotations\quotationModel;
 use App\Models\quotations\quoteProductModel;
+use Illuminate\Support\Facades\Auth;
 
 class invoiceController extends Controller
 {
@@ -61,7 +62,11 @@ class invoiceController extends Controller
     {
         $runningCode = $this->generateRunningCodeIVS();
         $request->merge(['invoice_number' => $runningCode]); 
+        $request->merge(['created_by' => Auth::user()->name]); 
         invoiceModel::create($request->all());
+        quotationModel::where('quote_number',$request->quote_number)->update(['quote_status'=> 'invoice']);
+        return redirect('quote/sales/info/'.$request->quote_id);
+
     }
 
 }

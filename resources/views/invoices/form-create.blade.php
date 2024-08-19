@@ -7,103 +7,116 @@
         <!-- -------------------------------------------------------------- -->
 
 
-
-
-        <div class="left-part list-of-tasks bg-white">
-            <a class="ti-menu ti-close btn btn-success show-left-part d-block d-md-none" href="javascript:void(0)"></a>
-            <div class="scrollable" style="height: 100%">
-                <div class="p-3">
-
-                </div>
-                <div class="divider"></div>
-                <ul class="list-group">
-                    <li>
-                        <small class="p-3 d-block text-uppercase text-dark font-weight-medium"> ข้อมูลการขาย</small>
-                    </li>
-                    <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" id="invoice-dashboard"
-                            class="todo-link list-group-item-action p-3 d-flex align-items-center">
-                            <i class="far fa-file-alt"></i>
-                            &nbsp; รายละเอียดรวม
-                            <span
-                                class="todo-badge badge bg-light-info text-info rounded-pill px-3 font-weight-medium ms-auto"></span>
-                        </a>
-
-                    </li>
-
-                    <li class="list-group-item p-0 border-0">
-                        <a href="{{route('saleInfo.index',$quotationModel->quote_id)}}"
-                            class="todo-link list-group-item-action p-3 d-flex align-items-center btn-booking">
-                            <i class="far fa-file-alt"></i>
-                            &nbsp; ข้อมูลการขาย
-                            <span
-                                class="todo-badge badge bg-light-info text-info rounded-pill px-3 font-weight-medium ms-auto"></span>
-                        </a>
-
-                    </li>
-                    <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" class="todo-link list-group-item-action p-3 d-flex align-items-center"
-                            id="current-task-important">
-                            <i data-feather="star" class="feather-sm me-2"></i>
-                            Important
-                            <span
-                                class="todo-badge badge rounded-pill px-3 bg-light-danger ms-auto text-danger font-weight-medium"></span>
-                        </a>
-                    </li>
-                    <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" class="todo-link list-group-item-action p-3 d-flex align-items-center"
-                            id="current-task-done">
-                            <i data-feather="send" class="feather-sm me-2"></i>
-                            Complete
-                            <span
-                                class="todo-badge badge rounded-pill px-3 text-success font-weight-medium bg-light-success ms-auto"></span>
-                        </a>
-                    </li>
-                    <li class="list-group-item p-0 border-0">
-                        <hr />
-                    </li>
-
-
-                    <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" class="list-group-item-action p-3 d-flex align-items-center"
-                            id="current-todo-delete">
-                            <i data-feather="trash-2" class="feather-sm me-2"></i>
-                            Trash
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <!-- -------------------------------------------------------------- -->
-        <!-- Right Part -->
-        <!-- -------------------------------------------------------------- -->
-
-        <style>
-            .table-custom {
-                border: 1px solid #e0e0e0;
-                padding: 10px;
-                margin-bottom: 20px;
-            }
-
-
-            .table-custom input,
-            .table-custom select {
-                width: 100%;
-                padding: 3px;
-                margin-bottom: 10px;
-            }
-
-            .add-row {
-                margin: 10px 0;
-                text-align: left;
-            }
-        </style>
-        <br>
-
-
-        <form action="{{route('invoice.store')}}" id="form-create" method="post">
+        <form action="{{ route('invoice.store') }}" id="form-create" method="post">
             @csrf
             @method('post')
+
+
+            <div class="left-part list-of-tasks bg-white">
+                <a class="ti-menu ti-close btn btn-success show-left-part d-block d-md-none" href="javascript:void(0)"></a>
+                <div class="scrollable" style="height: 100%">
+                    <div class="p-3">
+
+                    </div>
+                    <div class="divider"></div>
+                    <ul class="list-group">
+                        <li>
+                            <small class="p-3 d-block text-uppercase text-dark font-weight-medium"> ข้อมูลการขาย</small>
+                        </li>
+                        <li class="list-group-item p-0 border-0">
+                            <a href="javascript:void(0)" id="invoice-dashboard"
+                                class="todo-link list-group-item-action p-3 d-flex align-items-center">
+                                <i class="far fa-file-alt"></i>
+                                &nbsp; รายละเอียดรวม
+                                <span
+                                    class="todo-badge badge bg-light-info text-info rounded-pill px-3 font-weight-medium ms-auto"></span>
+                            </a>
+
+                        </li>
+
+                        <li class="list-group-item p-0 border-0">
+                            <a href="{{ route('saleInfo.index', $quotationModel->quote_id) }}"
+                                class="todo-link list-group-item-action p-3 d-flex align-items-center btn-booking">
+                                <i class="far fa-file-alt"></i>
+                                &nbsp; ข้อมูลการขาย
+                                <span
+                                    class="todo-badge badge bg-light-info text-info rounded-pill px-3 font-weight-medium ms-auto"></span>
+                            </a>
+
+                        </li>
+                        <li class="list-group-item p-0 border-0">
+                            <a href="javascript:void(0)"
+                                class="todo-link list-group-item-action p-3 d-flex align-items-center"
+                                id="current-task-important">
+                                <i data-feather="star" class="feather-sm me-2"></i>
+                                Important
+                                <span
+                                    class="todo-badge badge rounded-pill px-3 bg-light-danger ms-auto text-danger font-weight-medium"></span>
+                            </a>
+                        </li>
+                        <li class="list-group-item p-0 border-0">
+                            <a href="javascript:void(0)"
+                                class="todo-link list-group-item-action p-3 d-flex align-items-center"
+                                id="current-task-done">
+                                <i data-feather="send" class="feather-sm me-2"></i>
+                                Complete
+                                <span
+                                    class="todo-badge badge rounded-pill px-3 text-success font-weight-medium bg-light-success ms-auto"></span>
+                            </a>
+                        </li>
+                        <li class="list-group-item p-0 border-0">
+                            <hr />
+                        </li>
+
+
+                        <li class="list-group-item p-0 border-0">
+                            <a href="javascript:void(0)" class="list-group-item-action p-3 d-flex align-items-center"
+                                id="current-todo-delete">
+                                <i data-feather="trash-2" class="feather-sm me-2"></i>
+                                Trash
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- -------------------------------------------------------------- -->
+            <!-- Right Part -->
+            <!-- -------------------------------------------------------------- -->
+
+            <style>
+                .table-custom {
+                    border: 1px solid #e0e0e0;
+                    padding: 10px;
+                    margin-bottom: 20px;
+                }
+
+
+                .table-custom input,
+                .table-custom select {
+                    width: 100%;
+                    padding: 3px;
+                    margin-bottom: 10px;
+                }
+
+                .add-row {
+                    margin: 10px 0;
+                    text-align: left;
+                }
+
+                .date-create {
+                    max-width: 190px;
+                    padding: 2px;
+                    border: none;
+                    border-radius: 4px;
+                    box-shadow: 2px 2px 7px 0 rgb(0, 0, 0, 0.2);
+                    outline: none;
+                    color: dimgray;
+
+                }
+            </style>
+            <br>
+
+
             <div class="right-part mail-list overflow-auto">
                 <div id="todo-list-container">
 
@@ -154,9 +167,9 @@
 
                                 <div class="col-md-4 border" style="padding-top: 10px">
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-12 ">
                                             <b>Date :</b> <span style="margin: 50px;">
-                                                {{ date('d-M-Y', strtotime($quotationModel->created_at)) }}</span></br>
+                                                <input type="date" class="date-create" name="invoice_date" value="{{date('Y-m-d',strtotime(now()))}}"></span></br>
                                             <b>Booking No :</b> <span style="margin: 5px;">
                                                 {{ $quotationModel->quote_booking }}</span></br>
                                             <b>Sale :</b> <span style="margin: 53px;"> {{ $sale->name }}</span></br>
@@ -176,7 +189,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <input type="hidden" value="{{$quotationModel->quote_grand_total}}" id="quoteGrandTotal">
+                            <input type="hidden" value="{{ $quotationModel->quote_grand_total }}" id="quoteGrandTotal">
                             <br>
 
 
@@ -192,49 +205,52 @@
                                 </div>
                                 <hr>
                                 @forelse ($quoteProducts as $key => $item)
-                                @if ($item->expense_type === 'income')
-                                    <div class="row item-row">
-                                        <div class="col-md-1"><span class="row-number"> {{ $key + 1 }}</span> <a
-                                                href="javascript:void(0)" class="remove-row-btn text-danger"><span
-                                                    class=" fa fa-trash"></span></a></div>
-                                        <div class="col-md-3">
+                                    @if ($item->expense_type === 'income')
+                                        <div class="row item-row">
+                                            <div class="col-md-1"><span class="row-number"> {{ $key + 1 }}</span> <a
+                                                    href="javascript:void(0)" class="remove-row-btn text-danger"><span
+                                                        class=" fa fa-trash"></span></a></div>
+                                            <div class="col-md-3">
 
-                                            <select name="product_id[]" class="form-select">
-                                                <option value="">กรุณาเลือกรายการ</option>
-                                                @forelse ($products as $product)
-                                                    <option @if ($item->product_id == $product->id) selected @endif
-                                                        value="{{ $product->id }}">{{ $product->product_name }}
-                                                        {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
-                                                @empty
-                                                @endforelse
-                                            </select>
+                                                <select name="product_id[]" class="form-select">
+                                                    <option value="">กรุณาเลือกรายการ</option>
+                                                    @forelse ($products as $product)
+                                                        <option @if ($item->product_id == $product->id) selected @endif
+                                                            value="{{ $product->id }}">{{ $product->product_name }}
+                                                            {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
+                                                    @empty
+                                                    @endforelse
+                                                </select>
 
-                                        </div>
-                                        <div class="col-md-2">
+                                            </div>
+                                            <div class="col-md-2">
 
 
-                                            <select name="expense_type[]" class="form-select">
-                                                <option value="">กรุณาเลือกรายการ</option>
-                                                <option @if ($item->expense_type === 'income') selected @endif value="income">
-                                                    รายได้
-                                                </option>
-                                                <option @if ($item->expense_type === 'discount') selected @endif value="discount">
-                                                    ส่วนลด</option>
-                                            </select>
+                                                <select name="expense_type[]" class="form-select">
+                                                    <option value="">กรุณาเลือกรายการ</option>
+                                                    <option @if ($item->expense_type === 'income') selected @endif
+                                                        value="income">
+                                                        รายได้
+                                                    </option>
+                                                    <option @if ($item->expense_type === 'discount') selected @endif
+                                                        value="discount">
+                                                        ส่วนลด</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-1 text-center"><input type="checkbox" name="non_vat[]"
+                                                    @if ($item->vat === 'Y') checked @endif class="non-vat">
+                                            </div>
+                                            <div class="col-md-1"><input type="number" name="quantity[]"
+                                                    class="quantity form-control text-end"
+                                                    value="{{ $item->product_qty }}" step="0.01"></div>
+                                            <div class="col-md-2"><input type="number" name="price_per_unit[]"
+                                                    class="price-per-unit form-control text-end"
+                                                    value="{{ $item->product_price }}" step="0.01">
+                                            </div>
+                                            <div class="col-md-2"><input type="number" name="total_amount[]"
+                                                    class="total-amount form-control text-end" value="0" readonly>
+                                            </div>
                                         </div>
-                                        <div class="col-md-1 text-center"><input type="checkbox" name="non_vat[]"
-                                                @if ($item->vat === 'Y') checked @endif class="non-vat">
-                                        </div>
-                                        <div class="col-md-1"><input type="number" name="quantity[]"
-                                                class="quantity form-control text-end" value="{{ $item->product_qty }}"
-                                                step="0.01"></div>
-                                        <div class="col-md-2"><input type="number" name="price_per_unit[]"
-                                                class="price-per-unit form-control text-end"
-                                                value="{{ $item->product_price }}" step="0.01">
-                                        </div>
-                                        <div class="col-md-2"><input type="number" name="total_amount[]"
-                                                class="total-amount form-control text-end" value="0" readonly></div>
-                                    </div>
                                     @endif
                                 @empty
                                 @endforelse
@@ -242,7 +258,7 @@
                                 {{-- รวมส่วนลดทั้งหมด --}}
                                 @if ($item->expense_type === 'discount')
                                     <div class="row item-row">
-                                        <div class="col-md-1"><span class="row-number"> {{ $key  }}</span> <a
+                                        <div class="col-md-1"><span class="row-number"> {{ $key }}</span> <a
                                                 href="javascript:void(0)" class="remove-row-btn text-danger"><span
                                                     class=" fa fa-trash"></span></a></div>
                                         <div class="col-md-3">
@@ -266,7 +282,8 @@
                                                 <option @if ($item->expense_type === 'income') selected @endif value="income">
                                                     รายได้
                                                 </option>
-                                                <option @if ($item->expense_type === 'discount') selected @endif value="discount">
+                                                <option @if ($item->expense_type === 'discount') selected @endif
+                                                    value="discount">
                                                     ส่วนลด</option>
                                             </select>
                                         </div>
@@ -274,8 +291,8 @@
                                                 @if ($item->vat === 'Y') checked @endif class="non-vat">
                                         </div>
                                         <div class="col-md-1"><input type="number" name="quantity[]"
-                                                class="quantity form-control text-end" value="1"
-                                                step="0.01"></div>
+                                                class="quantity form-control text-end" value="1" step="0.01">
+                                        </div>
                                         <div class="col-md-2"><input type="number" name="price_per_unit[]"
                                                 class="price-per-unit form-control text-end"
                                                 value="{{ $quotationModel->quote_discount }}" step="0.01">
@@ -283,9 +300,9 @@
                                         <div class="col-md-2"><input type="number" name="total_amount[]"
                                                 class="total-amount form-control text-end" value="0" readonly></div>
                                     </div>
-                                    @endif
+                                @endif
 
-                                
+
 
 
 
@@ -390,8 +407,18 @@
                                 <input type="hidden" name="invoice_vat_3" id="quote-withholding-amount">
                                 <input type="hidden" name="invoice_vat_7" id="quote-vat-7">
                                 {{--  hidden --}}
-                                <input type="hidden" name="customer_id" value="{{$customer->customer_id}}">
-                                <input type="hidden" name="customer_id" value="{{$customer->customer_id}}">
+                                <input type="hidden" name="quote_id" value="{{ $quotationModel->quote_id }}">
+                                <input type="hidden" name="quote_number" value="{{ $quotationModel->quote_number }}">
+                                <input type="hidden" name="customer_id" value="{{ $quotationModel->customer_id }}">
+                                <input type="hidden" name="tour_id" value="{{ $quotationModel->tour_id }}">
+                                <input type="hidden" name="travel_type" value="{{ $quotationModel->travel_type }}">
+                                <input type="hidden" name="country_id" value="{{ $quotationModel->travel_type }}">
+                                <input type="hidden" name="wholesale_id" value="{{ $quotationModel->wholesale_id }}">
+                                <input type="hidden" name="invoice_booking" value="{{ $quotationModel->quote_booking }}">
+                                <input type="hidden" name="invoice_sale" value="{{ $quotationModel->quote_sale }}">
+                                <input type="hidden" name="invoice_tour_code" value="{{ $quotationModel->quote_tour_code}}">
+                                <input type="hidden" name="invoice_status" value="wait">
+
 
                                 <button type="submit" class="btn btn-success btn-sm  mx-3" form="form-create">
                                     <i class="fa fa-save"></i> สร้างใบแจ้งหนี้</button>
@@ -481,7 +508,7 @@
                 var quoteGrandTotal = $('#quoteGrandTotal').val();
                 var quoteGrandTotalNew = $('#quote-grand-total').val();
 
-                if(quoteGrandTotal === quoteGrandTotalNew){
+                if (quoteGrandTotal === quoteGrandTotalNew) {
                     isValid = true;;
                 }
 

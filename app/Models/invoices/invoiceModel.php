@@ -43,6 +43,7 @@ class invoiceModel extends Model
         'payment_type',
         'deposit',
         'total_qty',
+        'quote_number',
 
     ];
 
