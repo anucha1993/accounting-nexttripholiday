@@ -8,12 +8,40 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\products\productModel;
 use App\Models\customers\customerModel;
+use App\Models\invoices\invoiceModel;
 use App\Models\quotations\quotationModel;
 use App\Models\quotations\quoteProductModel;
 
 class invoiceController extends Controller
 {
     //
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+
+    // function Runnumber ใบเสนอราคา
+    public function generateRunningCodeIVS()
+    {
+        $invoice = invoiceModel::select('invoice_number')->latest()->first();
+        if (!empty($invoice)) {
+            $invoiceNumber = $invoice->invoice_number;
+        } else {
+            $invoiceNumber = 'IVS' . date('y') . date('m') .'-'. '0000';
+        }
+        $prefix = 'IVS';
+        $year = date('y');
+        $month = date('m');
+        $lastFourDigits = substr($invoiceNumber, -4);
+        $incrementedNumber = intval($lastFourDigits) + 1;
+        $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
+        $runningCode = $prefix . $year . $month .'-'. $newNumber;
+        return $runningCode;
+    }
+
+
     public function create(quotationModel $quotationModel, Request $request)
     {
       
@@ -27,6 +55,13 @@ class invoiceController extends Controller
         ->where('quote_id',$quotationModel->quote_id)->leftjoin('products','products.id','quote_product.product_id')->get();
         //dd($quoteProducts);
         return view('invoices.form-create',compact('quotationModel','customer','sale','tour','airline','products','quoteProducts','quoteProducts'));
+    }
+
+    public function store(Request $request)
+    {
+        $runningCode = $this->generateRunningCodeIVS();
+        $request->merge(['invoice_number' => $runningCode]); 
+        invoiceModel::create($request->all());
     }
 
 }

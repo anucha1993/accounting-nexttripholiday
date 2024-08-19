@@ -28,6 +28,8 @@ class invoiceModel extends Model
         'invoice_status',
         'invoice_discount',
         'invoice_total',
+        'invoice_after_discount', //new
+        'invoice_price_excluding_vat', //new
         'created_by',
         'updated_by',
         'invoice_vat_7',

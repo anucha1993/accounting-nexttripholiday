@@ -66,6 +66,7 @@ Route::get('/booking/delete/{bookingModel}',[BookingController::class,'destroy']
 
 //invoice
 Route::get('invoice/create/{quotationModel}',[invoiceController::class,'create'])->name('invoice.create');
+Route::post('invoice/store',[invoiceController::class,'store'])->name('invoice.store');
 
 
 //invoice booking

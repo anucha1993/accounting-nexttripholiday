@@ -32,7 +32,7 @@
                     </li>
 
                     <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)"
+                       <a href="{{route('saleInfo.index',$quotationModel->quote_id)}}"
                             class="todo-link list-group-item-action p-3 d-flex align-items-center btn-booking">
                             <i class="far fa-file-alt"></i>
                             &nbsp; ข้อมูลการขาย
@@ -215,8 +215,9 @@
                                         <div class="col-md-3">
 
                                             <select name="product_id[]" class="form-select">
+                                                <option value="">กรุณาเลือกรายการ</option>
                                                 @forelse ($products as $product)
-                                                    <option value="">กรุณาเลือกรายการ</option>
+                                                   
                                                     <option @if ($item->product_id == $product->id) selected @endif
                                                         value="{{ $product->id }}">{{ $product->product_name }}
                                                         {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
@@ -464,6 +465,7 @@
                     // คำนวณส่วนลดได้แม้เลือก NonVat
                     if (expenseType === 'discount') {
                         sumDiscount += total;
+                        //total = total * -1; // ทำให้จำนวนเงินติดลบถ้าเป็นส่วนลด
                         total = total * -1; // ทำให้จำนวนเงินติดลบถ้าเป็นส่วนลด
                     }
 

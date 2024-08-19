@@ -32,7 +32,7 @@
                     </li>
 
                     <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)"
+                        <a href="{{route('saleInfo.index',$quotationModel->quote_id)}}"
                             class="todo-link list-group-item-action p-3 d-flex align-items-center btn-booking">
                             <i class="far fa-file-alt"></i>
                             &nbsp; ข้อมูลการขาย
@@ -101,7 +101,7 @@
         <br>
 
 
-        <form action="#" id="form-create" method="post">
+        <form action="{{route('invoice.store')}}" id="form-create" method="post">
             @csrf
             @method('post')
             <div class="right-part mail-list overflow-auto">
@@ -171,7 +171,6 @@
                                                     class="bg-primary text-white">{{ number_format($quotationModel->quote_grand_total, 2, '.', ',') }}</span></b>
 
 
-
                                             </br>
                                         </div>
                                     </div>
@@ -193,6 +192,7 @@
                                 </div>
                                 <hr>
                                 @forelse ($quoteProducts as $key => $item)
+                                @if ($item->expense_type === 'income')
                                     <div class="row item-row">
                                         <div class="col-md-1"><span class="row-number"> {{ $key + 1 }}</span> <a
                                                 href="javascript:void(0)" class="remove-row-btn text-danger"><span
@@ -235,8 +235,59 @@
                                         <div class="col-md-2"><input type="number" name="total_amount[]"
                                                 class="total-amount form-control text-end" value="0" readonly></div>
                                     </div>
+                                    @endif
                                 @empty
                                 @endforelse
+
+                                {{-- รวมส่วนลดทั้งหมด --}}
+                                @if ($item->expense_type === 'discount')
+                                    <div class="row item-row">
+                                        <div class="col-md-1"><span class="row-number"> {{ $key  }}</span> <a
+                                                href="javascript:void(0)" class="remove-row-btn text-danger"><span
+                                                    class=" fa fa-trash"></span></a></div>
+                                        <div class="col-md-3">
+
+                                            <select name="product_id[]" class="form-select">
+                                                <option value="">กรุณาเลือกรายการ</option>
+                                                @forelse ($products as $product)
+                                                    <option @if ($product->id === 182) selected @endif
+                                                        value="{{ $product->id }}">{{ $product->product_name }}
+                                                        {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
+                                                @empty
+                                                @endforelse
+                                            </select>
+
+                                        </div>
+                                        <div class="col-md-2">
+
+
+                                            <select name="expense_type[]" class="form-select">
+                                                <option value="">กรุณาเลือกรายการ</option>
+                                                <option @if ($item->expense_type === 'income') selected @endif value="income">
+                                                    รายได้
+                                                </option>
+                                                <option @if ($item->expense_type === 'discount') selected @endif value="discount">
+                                                    ส่วนลด</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1 text-center"><input type="checkbox" name="non_vat[]"
+                                                @if ($item->vat === 'Y') checked @endif class="non-vat">
+                                        </div>
+                                        <div class="col-md-1"><input type="number" name="quantity[]"
+                                                class="quantity form-control text-end" value="1"
+                                                step="0.01"></div>
+                                        <div class="col-md-2"><input type="number" name="price_per_unit[]"
+                                                class="price-per-unit form-control text-end"
+                                                value="{{ $quotationModel->quote_discount }}" step="0.01">
+                                        </div>
+                                        <div class="col-md-2"><input type="number" name="total_amount[]"
+                                                class="total-amount form-control text-end" value="0" readonly></div>
+                                    </div>
+                                    @endif
+
+                                
+
+
 
                             </div>
                             <div class="add-row">
@@ -288,7 +339,7 @@
 
                                         <div class="col-md-12" style="padding-bottom: 10px">
                                             <label>บันทึกเพิ่มเติม</label>
-                                            <textarea name="quote_note" class="form-control" cols="30" rows="2">{{ $quotationModel->quote_note }}</textarea>
+                                            <textarea name="invoice_note" class="form-control" cols="30" rows="2">{{ $quotationModel->quote_note }}</textarea>
                                         </div>
                                     </div>
 
@@ -331,13 +382,16 @@
                             </div>
                             <div class="text-end mt-3">
                                 {{-- hidden --}}
-                                <input type="hidden" name="quote_total" id="quote-total">
-                                <input type="hidden" name="quote_discount" id="quote-discount">
-                                <input type="hidden" name="quote_after_discount" id="quote-after-discount">
-                                <input type="hidden" name="quote_price_excluding_vat" id="quote-price-excluding-vat">
-                                <input type="hidden" name="quote_grand_total" id="quote-grand-total">
-                                <input type="hidden" name="quote_vat_3" id="quote-withholding-amount">
-                                <input type="hidden" name="quote_vat_7" id="quote-vat-7">
+                                <input type="hidden" name="invoice_total" id="quote-total">
+                                <input type="hidden" name="invoice_discount" id="quote-discount">
+                                <input type="hidden" name="invoice_after_discount" id="quote-after-discount">
+                                <input type="hidden" name="invoice_price_excluding_vat" id="quote-price-excluding-vat">
+                                <input type="hidden" name="invoice_grand_total" id="quote-grand-total">
+                                <input type="hidden" name="invoice_vat_3" id="quote-withholding-amount">
+                                <input type="hidden" name="invoice_vat_7" id="quote-vat-7">
+                                {{--  hidden --}}
+                                <input type="hidden" name="customer_id" value="{{$customer->customer_id}}">
+                                <input type="hidden" name="customer_id" value="{{$customer->customer_id}}">
 
                                 <button type="submit" class="btn btn-success btn-sm  mx-3" form="form-create">
                                     <i class="fa fa-save"></i> สร้างใบแจ้งหนี้</button>
