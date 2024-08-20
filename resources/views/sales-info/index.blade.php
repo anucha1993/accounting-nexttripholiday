@@ -187,7 +187,7 @@
                                             จัดการข้อมูล
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
-                                            <a class="dropdown-item" href="{{route('quote.edit',$item->invoice_id)}}"><i class="fa fa-edit"></i> แก้ไข</a>
+                                            <a class="dropdown-item" href="{{route('invoice.edit',$item->invoice_id)}}"><i class="fa fa-edit"></i> แก้ไข</a>
                                             <a class="dropdown-item" href="#"><i class="fa fa-print"></i> พิมพ์ใบเสนอราคา</a>
                                             <a class="dropdown-item" href="#"><i class="fas fa-plus"></i> ออกใบเพิ่มหนี้</a>
                                             <a class="dropdown-item" href="#"><i class="fas fa-minus"></i> ออกใบลดหนี้</a>

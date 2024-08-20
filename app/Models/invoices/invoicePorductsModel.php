@@ -15,10 +15,11 @@ class invoicePorductsModel extends Model
         'invoice_id',
         'product_id',
         'product_name',
-        'invoice_qty',
-        'invoice_price',
-        'invoice_sum',
+        'product_qty',
+        'product_price',
+        'product_sum',
         'expense_type',
+        'vat'
 
     ];
 }

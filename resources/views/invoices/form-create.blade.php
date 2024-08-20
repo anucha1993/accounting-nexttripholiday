@@ -544,7 +544,7 @@
                     const pricePerUnit = parseFloat($(this).find('.price-per-unit').val()) || 0;
                     const isNonVat = $(this).find('.non-vat').is(':checked');
                     const expenseType = $(this).find('select[name="expense_type[]"]').val();
-                    const vatMethod = $('input[name="vat_method"]:checked').val();
+                    const vatMethod = $('input[name="vat_type"]:checked').val();
 
                     let total = quantity * pricePerUnit;
                     let priceExcludingVat = total;
@@ -580,7 +580,7 @@
                 let vatAmount = 0;
 
                 // คำนวณ VAT ตามวิธีการที่เลือก โดยพิจารณาเฉพาะรายการที่ไม่ใช่ NonVat
-                if ($('input[name="vat_method"]:checked').val() === 'include') {
+                if ($('input[name="vat_type"]:checked').val() === 'include') {
                     vatAmount = (sumPriceExcludingVat * 0.07); // VAT รวม
                 } else {
                     vatAmount = sumPriceExcludingVat * 0.07; // VAT แยก
@@ -634,7 +634,7 @@
             // Bind input changes and VAT method change to recalculate totals
             $('#quotation-table').on('input', '.quantity, .price-per-unit', calculateTotals);
             $('#quotation-table').on('change', '.non-vat, select[name="expense_type[]"]', calculateTotals);
-            $('input[name="vat_method"]').change(calculateTotals);
+            $('input[name="vat_type"]').change(calculateTotals);
             $('#withholding-tax').change(calculateTotals);
 
             // Initial calculation
