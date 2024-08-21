@@ -1,41 +1,42 @@
 <?php
 
-namespace App\Models\invoices;
+namespace App\Models\debits;
 
 use App\Models\booking\bookingModel;
 use App\Models\booking\countryModel;
 use App\Models\customers\customerModel;
-use App\Models\wholesale\wholesaleModel;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\wholesale\wholesaleModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class invoiceModel extends Model
+class debitModel extends Model
 {
     use HasFactory;
-    protected $table = 'invoices';
-    protected $primaryKey = 'invoice_id';
+    use HasFactory;
+    protected $table = 'debit_notes';
+    protected $primaryKey = 'debit_note_id';
     protected $fillable = [
         'customer_id',
-        'invoice_number',
-        'invoice_date',
+        'debit_note_number',
+        'debit_note_date',
         'tour_id',
         'wholesale_id',
         'travel_type',
         'country_id',
-        'invoice_booking',
-        'invoice_sale',
-        'invoice_tour_code',
-        'invoice_status',
-        'invoice_discount',
-        'invoice_total',
-        'invoice_after_discount', //new
-        'invoice_price_excluding_vat', //new
+        'debit_note_booking',
+        'debit_note_sale',
+        'debit_note_tour_code',
+        'debit_note_status',
+        'debit_note_discount',
+        'debit_note_total',
+        'debit_note_after_discount', //new
+        'debit_note_price_excluding_vat', //new
         'created_by',
         'updated_by',
-        'invoice_vat_7',
-        'invoice_vat_3',
-        'invoice_grand_total',
-        'invoice_note',
+        'debit_note_vat_7',
+        'debit_note_vat_3',
+        'debit_note_grand_total',
+        'debit_note_note',
         'vat_3_status',
         'vat_type',
         'payment_date',
@@ -44,29 +45,28 @@ class invoiceModel extends Model
         'deposit',
         'total_qty',
         'quote_number',
-        'total_all',
     ];
 
     // ความสัมพันธ์กับ BookingModel
-    public function invoiceBooking()
+    public function debit_noteBooking()
     {
-        return $this->belongsTo(bookingModel::class, 'invoice_booking', 'code');
+        return $this->belongsTo(bookingModel::class, 'debit_note_booking', 'code');
     }
 
     // ความสัมพันธ์กับ CustomerModel
-    public function invoiceCustomer()
+    public function debit_noteCustomer()
     {
         return $this->belongsTo(customerModel::class, 'customer_id', 'customer_id');
     }
 
     // ความสัมพันธ์กับ WholesaleModel
-    public function invoiceWholesale()
+    public function debit_noteWholesale()
     {
         return $this->belongsTo(wholesaleModel::class, 'wholesale_id', 'id');
     }
 
     // Accessor เพื่อดึงข้อมูล country
-    public function getInvoiceCountriesAttribute()
+    public function getdebit_noteCountriesAttribute()
     {
         // แปลงค่า country_id จาก JSON string เป็น array
         $countryIds = json_decode($this->attributes['country_id'], true);
@@ -79,4 +79,5 @@ class invoiceModel extends Model
 
         return collect(); // คืนค่า collection ว่างเปล่าถ้าไม่มี country_ids
     }
+
 }

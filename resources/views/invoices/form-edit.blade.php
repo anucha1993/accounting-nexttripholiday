@@ -7,7 +7,7 @@
         <!-- -------------------------------------------------------------- -->
 
 
-        <form action="{{ route('invoice.update',$invoiceModel) }}" id="form-create" method="post">
+        <form action="{{ route('invoice.update',$invoiceModel->invoice_id) }}" id="form-create" method="post">
             @csrf
             @method('put')
 
@@ -139,7 +139,7 @@
                     <!-- Todo list-->
                     <div class="todo-listing ">
                         <div class="container border bg-white">
-                            <h4 class="text-center my-4">แก้ไขเแจ้งหนี้</h4>
+                            <h4 class="text-center my-4">แก้ไขเแจ้งหนี้ </h4>
                             <div class="row">
                                 <div class="col-md-8 border" style="padding: 10px">
                                     <div class="row">
@@ -252,13 +252,12 @@
                                             </div>
                                         </div>
                                     @endif
-                                @empty
-                                @endforelse
+                            
 
                                 {{-- รวมส่วนลดทั้งหมด --}}
                                 @if ($item->expense_type === 'discount')
                                     <div class="row item-row">
-                                        <div class="col-md-1"><span class="row-number"> {{ $key }}</span> <a
+                                        <div class="col-md-1"><span class="row-number"> {{ $key+1 }}</span> <a
                                                 href="javascript:void(0)" class="remove-row-btn text-danger"><span
                                                     class=" fa fa-trash"></span></a></div>
                                         <div class="col-md-3">
@@ -302,6 +301,9 @@
                                     </div>
                                 @endif
 
+                                @empty
+                                @endforelse
+
 
 
 
@@ -337,17 +339,17 @@
                                         <div class="col-md-12">
                                             <div class="row summary-row">
                                                 <div class="col-md-10">
-                                                    <input type="checkbox" name="vat3_status" value="Y"
+                                                    <input type="checkbox" name="vat_3_status" value="Y"
                                                         id="withholding-tax"
                                                         @if ($invoiceModel->vat_3_status === 'Y') checked @endif> <span
                                                         class="">
-                                                        คิดภาษีหัก ณ ที่จ่าย 3% (คำนวณจากยอด ราคาก่อนภาษีมูลค่าเพิ่ม /
-                                                        Pre-VAT
+                                                        คิดภาษีหัก ณ ที่จ่าย 3% (คำนวณจากยอด ราคาก่อนภาษีมูลค่าเพิ่ม / Pre-VAT
                                                         Amount)</span>
                                                 </div>
 
                                             </div>
                                         </div>
+
                                         <div class="col-md012">
                                             <label>จำนวนเงินภาษีหัก ณ ที่จ่าย 3% : &nbsp;</label><span class="text-danger"
                                                 id="withholding-amount"> 0.00</span> บาท
@@ -356,7 +358,7 @@
 
                                         <div class="col-md-12" style="padding-bottom: 10px">
                                             <label>บันทึกเพิ่มเติม</label>
-                                            <textarea name="invoice_note" class="form-control" cols="30" rows="2">{{ $invoiceModel->quote_note }}</textarea>
+                                            <textarea name="invoice_note" class="form-control" cols="30" rows="2">{{ $invoiceModel->invoice_note }}</textarea>
                                         </div>
                                     </div>
 
@@ -404,24 +406,14 @@
                                 <input type="hidden" name="invoice_after_discount" id="quote-after-discount">
                                 <input type="hidden" name="invoice_price_excluding_vat" id="quote-price-excluding-vat">
                                 <input type="hidden" name="invoice_grand_total" id="quote-grand-total">
-                                <input type="hidden" name="invoice_vat_3" id="quote-withholding-amount">
+                                <input type="hidden" name="vat_3_total" id="quote-withholding-amount">
                                 <input type="hidden" name="invoice_vat_7" id="quote-vat-7">
-                                {{--  hidden --}}
-                                <input type="hidden" name="invoice_id" value="{{ $invoiceModel->invoice_id }}">
-                                <input type="hidden" name="invoice_number" value="{{ $invoiceModel->invoice_number }}">
-                                <input type="hidden" name="customer_id" value="{{ $invoiceModel->customer_id }}">
-                                <input type="hidden" name="tour_id" value="{{ $invoiceModel->tour_id }}">
-                                <input type="hidden" name="travel_type" value="{{ $invoiceModel->travel_type }}">
-                                <input type="hidden" name="country_id" value="{{ $invoiceModel->travel_type }}">
-                                <input type="hidden" name="wholesale_id" value="{{ $invoiceModel->wholesale_id }}">
-                                <input type="hidden" name="invoice_booking" value="{{ $invoiceModel->invoice_booking }}">
-                                <input type="hidden" name="invoice_sale" value="{{ $invoiceModel->invoice_sale }}">
-                                <input type="hidden" name="invoice_tour_code" value="{{ $invoiceModel->invoice_tour_code}}">
-                                <input type="hidden" name="invoice_status" value="wait">
+
+
 
 
                                 <button type="submit" class="btn btn-success btn-sm  mx-3" form="form-create">
-                                    <i class="fa fa-save"></i> สร้างใบแจ้งหนี้</button>
+                                    <i class="fa fa-save"></i> อัพเดท</button>
                             </div>
                             <br>
                         </div>
@@ -589,6 +581,7 @@
                 const grandTotal = afterDiscount + vatAmount;
                 const withholdingTax = $('#withholding-tax').is(':checked') ? grandTotal * 0.03 : 0;
 
+
                 // อัปเดตยอดรวมบนหน้าเว็บ
                 $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
                 $('#quote-total').val(sumTotal.toFixed(2));
@@ -611,6 +604,7 @@
 
                 $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
                 $('#quote-withholding-amount').val(withholdingTax.toFixed(2));
+
             }
 
 

@@ -107,5 +107,34 @@ class invoiceController extends Controller
         return view('invoices.form-edit',compact('quotationModel','invoiceModel','customer','sale','tour','airline','products','invoiceProducts'));
     }
 
+    public function update(invoiceModel $invoiceModel, Request $request)
+    {
+        //dd($invoiceModel->invoice_id);
+        $invoiceModel->update($request->all());
+        
+         // delete product lits Old
+         invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->delete();
+         foreach($request->product_id as $key => $value)
+         {
+           if($request->product_id[$key]){
+             $product = productModel::where('id',$request->product_id[$key])->first();
+             
+             invoicePorductsModel::create([
+                 'invoice_id' => $invoiceModel->invoice_id,
+                 'product_id' => $product->id,
+                 'product_name' => $product->product_name,
+                 'product_qty' => $request->quantity[$key],
+                 'product_price' => $request->price_per_unit[$key],
+                 'product_sum' => $request->total_amount[$key],
+                 'expense_type' => $request->expense_type[$key],
+                 'vat' => isset($request->non_vat[$key]) ? 'Y' : 'N',
+             ]);
+           }
+ 
+         }
+         
+        
+    }
+
 
 }

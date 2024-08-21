@@ -337,7 +337,7 @@
                                         <div class="col-md-12">
                                             <div class="row summary-row">
                                                 <div class="col-md-10">
-                                                    <input type="checkbox" name="vat3_status" value="Y"
+                                                    <input type="checkbox" name="vat_3_status" value="Y"
                                                         id="withholding-tax"
                                                         @if ($quotationModel->vat_3_status === 'Y') checked @endif> <span
                                                         class="">
