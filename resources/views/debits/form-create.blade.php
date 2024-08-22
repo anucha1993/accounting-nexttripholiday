@@ -170,13 +170,14 @@
                                     <div class="row">
                                         <div class="col-md-12 ">
                                             <b>Date :</b> <span style="margin: 50px;">
-                                                <input type="date" class="date-create" name="invoice_date" value="{{date('Y-m-d',strtotime(now()))}}"></span></br>
-                                            <b>Booking No :</b> <span style="margin: 5px;">
-                                                {{ $quotationModel->quote_booking }}</span></br>
+                                                <input type="date" class="date-create" name="debit_note_date" value="{{date('Y-m-d',strtotime(now()))}}"></span></br>
+                                            <b>Debit Note No :</b> <span style="margin: 5px;">DBN??????</span></br>
+                                            <b>เอกสารอ้างอิง :</b> <span style="margin: 9px;">ใบเสร็จรับเงิน/ใบกำกับภาษี</span></br>
+                                            <b>เลขที่เอกสารอ้างอิง :</b> <span style="margin: 10px;"> {{ $invoiceModel->invoice_number }}</span></br>
                                             <b>Sale :</b> <span style="margin: 53px;"> {{ $sale->name }}</span></br>
                                             <b>Email :</b> <span style="margin: 45px;"> {{ $sale->email }}</span></br>
-                                            <b>Tour Code :</b> <span style="margin: 15px;"> {{ $tour->code }}</span></br>
-                                            <b>Airline :</b> <span style="margin: 40px;"> {{ $airline->travel_name }}</span></br>
+                                            
+                                           
                                             <b>Invoice No :</b> <span style="margin: 12px;" class="text-white bg-dark">{{ $invoiceModel->invoice_number }}</span></br>
                                             <b>ยอดยกมา : <span style="margin: 15px;" class="bg-primary text-white">{{ number_format($invoiceModel->invoice_grand_total, 2, '.', ',') }}</span></b>
                                             </br>
@@ -284,6 +285,12 @@
                                             <hr>
                                         </div>
 
+                                        <div class="col-md-12">
+                                            <label>สาเหตุการออกใบแจ้งหนี้</label>
+                                            <input type="text" class="form-control" name="debit_note_cause" placeholder="สาเหตุการออกใบแจ้งหนี้">
+                                            <hr>
+                                        </div>
+
                                         <div class="col-md-12" style="padding-bottom: 10px">
                                             <label>บันทึกเพิ่มเติม</label>
                                             <textarea name="invoice_note" class="form-control" cols="30" rows="2">{{ $quotationModel->quote_note }}</textarea>
@@ -295,8 +302,18 @@
                                     <div class="row">
                                         <div class="summary text-info">
                                             <div class="row summary-row ">
-                                                <div class="col-md-10 text-end"></div>
-                                                <div class="col-md-2 text-end"><span id="sum-total">0.00</span></div>
+                                                <div class="col-md-10 text-end">มูลค่าตามใบกำกับภาษีเดิม</div>
+                                                <div class="col-md-2 text-end"><span id="invoice-total-old">0.00</span></div>
+                                            </div>
+
+                                            <div class="row summary-row ">
+                                                <div class="col-md-10 text-end">มูลค่าที่ถูกต้อง</div>
+                                                <div class="col-md-2 text-end"><span id="grand-total-new">0.00</span></div>
+                                            </div>
+
+                                            <div class="row summary-row ">
+                                                <div class="col-md-10 text-end">ส่วนต่าง</div>
+                                                <div class="col-md-2 text-end"><span id="difference">0.00</span></div>
                                             </div>
 
                                             <br>

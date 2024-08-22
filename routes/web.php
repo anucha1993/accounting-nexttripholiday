@@ -119,6 +119,6 @@ Route::post('customer/ajax/update',[customerController::class,'ajaxUpdate'])->na
 
 //Debits
 Route::get('debit/create/{invoiceModel}',[debitController::class,'create'])->name('debit.create');
-Route::get('debit/edit/{invoiceModel}',[debitController::class,'edit'])->name('debit.create');
+Route::get('debit/edit/{invoiceModel}',[debitController::class,'edit'])->name('debit.edit');
 Route::put('debit/update/{invoiceModel}',[debitController::class,'update'])->name('debit.update');
 Route::post('debit/store/',[debitController::class,'store'])->name('debit.store');
