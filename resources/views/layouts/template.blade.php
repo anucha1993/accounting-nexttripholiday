@@ -1660,7 +1660,7 @@
                                     class="hide-menu">ระบบสมาชิก </span></a>
                             <ul aria-expanded="false" class="collapse first-level">
                                 <li class="sidebar-item">
-                                    <a href="/users" class="sidebar-link">
+                                    <a href="{{route('users.index')}}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">
                                             สมาชิก</span>

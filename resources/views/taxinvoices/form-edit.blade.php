@@ -7,7 +7,7 @@
         <!-- -------------------------------------------------------------- -->
 
 
-        <form action="{{ route('invoice.update',$invoiceModel->invoice_id) }}" id="form-create" method="post">
+        <form action="{{ route('taxinvoice.update',$invoiceModel->invoice_id) }}" id="form-create" method="post">
             @csrf
             @method('put')
 
@@ -139,7 +139,7 @@
                     <!-- Todo list-->
                     <div class="todo-listing ">
                         <div class="container border bg-white">
-                            <h4 class="text-center my-4">แก้ไขเแจ้งหนี้ </h4>
+                            <h4 class="text-center my-4">แก้ไขใบกำกับภาษี </h4>
                             <div class="row">
                                 <div class="col-md-8 border" style="padding: 10px">
                                     <div class="row">
@@ -169,21 +169,19 @@
                                     <div class="row">
                                         <div class="col-md-12 ">
                                             <b>Date :</b> <span style="margin: 50px;">
-                                                <input type="date" class="date-create" name="invoice_date" value="{{$invoiceModel->invoice_date}}"></span></br>
-                                            <b>Booking No :</b> <span style="margin: 5px;">
-                                                {{ $invoiceModel->invoice_booking }}</span></br>
+                                                <input type="date" class="date-create" name="taxinvoice_date" value="{{$taxinvoice->taxinvoice_date}}"></span></br>
+                                            <b>Tax Invoice :</b> <span style="margin: 10px;" class="bg-dark text-white">
+                                                {{ $taxinvoice->taxinvoice_number }}</span></br>
                                             <b>Sale :</b> <span style="margin: 53px;"> {{ $sale->name }}</span></br>
                                             <b>Email :</b> <span style="margin: 45px;"> {{ $sale->email }}</span></br>
                                             <b>Tour Code :</b> <span style="margin: 15px;"> {{ $tour->code }}</span></br>
                                             <b>Airline :</b> <span style="margin: 40px;">
                                                 {{ $airline->travel_name }}</span></br>
-                                            <b>Invoice No :</b> <span style="margin: 12px;" class="text-white bg-dark">
+                                            <b>Invoice No :</b> <span style="margin: 12px;" class="">
                                                 {{ $invoiceModel->invoice_number }}</span></br>
 
                                             <b>ยอดยกมา : <span style="margin: 15px;"
                                                     class="bg-primary text-white">{{ number_format($invoiceModel->invoice_grand_total, 2, '.', ',') }}</span></b>
-
-
                                             </br>
                                         </div>
                                     </div>
@@ -309,7 +307,7 @@
 
                                         <div class="col-md-12" style="padding-bottom: 10px">
                                             <label>บันทึกเพิ่มเติม</label>
-                                            <textarea name="invoice_note" class="form-control" cols="30" rows="2">{{ $invoiceModel->invoice_note }}</textarea>
+                                            <textarea name="taxinvoice_note" class="form-control" cols="30" rows="2">{{ $taxinvoice->taxinvoice_note }}</textarea>
                                         </div>
                                     </div>
 

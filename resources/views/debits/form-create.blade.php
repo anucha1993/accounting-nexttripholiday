@@ -7,9 +7,9 @@
         <!-- -------------------------------------------------------------- -->
 
 
-        <form action="{{ route('invoice.update',$invoiceModel->invoice_id) }}" id="form-create" method="post">
+        <form action="{{ route('debit.store') }}" id="form-create" method="post">
             @csrf
-            @method('put')
+            @method('post')
 
 
             <div class="left-part list-of-tasks bg-white">
@@ -139,7 +139,8 @@
                     <!-- Todo list-->
                     <div class="todo-listing ">
                         <div class="container border bg-white">
-                            <h4 class="text-center my-4">แก้ไขเแจ้งหนี้ </h4>
+                            <h4 class="text-center my-4">สร้างใบเพิ่มหนี้ / Debit Note</h4>
+
                             <div class="row">
                                 <div class="col-md-8 border" style="padding: 10px">
                                     <div class="row">
@@ -169,21 +170,15 @@
                                     <div class="row">
                                         <div class="col-md-12 ">
                                             <b>Date :</b> <span style="margin: 50px;">
-                                                <input type="date" class="date-create" name="invoice_date" value="{{$invoiceModel->invoice_date}}"></span></br>
+                                                <input type="date" class="date-create" name="invoice_date" value="{{date('Y-m-d',strtotime(now()))}}"></span></br>
                                             <b>Booking No :</b> <span style="margin: 5px;">
-                                                {{ $invoiceModel->invoice_booking }}</span></br>
+                                                {{ $quotationModel->quote_booking }}</span></br>
                                             <b>Sale :</b> <span style="margin: 53px;"> {{ $sale->name }}</span></br>
                                             <b>Email :</b> <span style="margin: 45px;"> {{ $sale->email }}</span></br>
                                             <b>Tour Code :</b> <span style="margin: 15px;"> {{ $tour->code }}</span></br>
-                                            <b>Airline :</b> <span style="margin: 40px;">
-                                                {{ $airline->travel_name }}</span></br>
-                                            <b>Invoice No :</b> <span style="margin: 12px;" class="text-white bg-dark">
-                                                {{ $invoiceModel->invoice_number }}</span></br>
-
-                                            <b>ยอดยกมา : <span style="margin: 15px;"
-                                                    class="bg-primary text-white">{{ number_format($invoiceModel->invoice_grand_total, 2, '.', ',') }}</span></b>
-
-
+                                            <b>Airline :</b> <span style="margin: 40px;"> {{ $airline->travel_name }}</span></br>
+                                            <b>Invoice No :</b> <span style="margin: 12px;" class="text-white bg-dark">{{ $invoiceModel->invoice_number }}</span></br>
+                                            <b>ยอดยกมา : <span style="margin: 15px;" class="bg-primary text-white">{{ number_format($invoiceModel->invoice_grand_total, 2, '.', ',') }}</span></b>
                                             </br>
                                         </div>
                                     </div>
@@ -204,10 +199,9 @@
                                     <div class="col-md-2">ยอดรวม</div>
                                 </div>
                                 <hr>
-                                @forelse ($invoiceProducts as $key => $item)
-    
+                               
                                         <div class="row item-row">
-                                            <div class="col-md-1"><span class="row-number"> {{ $key + 1 }}</span> <a
+                                            <div class="col-md-1"><span class="row-number"></span> <a
                                                     href="javascript:void(0)" class="remove-row-btn text-danger"><span
                                                         class=" fa fa-trash"></span></a></div>
                                             <div class="col-md-3">
@@ -215,50 +209,33 @@
                                                 <select name="product_id[]" class="form-select">
                                                     <option value="">กรุณาเลือกรายการ</option>
                                                     @forelse ($products as $product)
-                                                        <option @if ($item->product_id == $product->id) selected @endif
-                                                            value="{{ $product->id }}">{{ $product->product_name }}
-                                                            {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
+                                                     <option value="{{ $product->id }}">{{ $product->product_name }} {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
                                                     @empty
                                                     @endforelse
                                                 </select>
 
                                             </div>
                                             <div class="col-md-2">
-
-
                                                 <select name="expense_type[]" class="form-select">
                                                     <option value="">กรุณาเลือกรายการ</option>
-                                                    <option @if ($item->expense_type === 'income') selected @endif
-                                                        value="income">
-                                                        รายได้
-                                                    </option>
-                                                    <option @if ($item->expense_type === 'discount') selected @endif
-                                                        value="discount">
-                                                        ส่วนลด</option>
+                                                    <option value="income"> รายได้</option>
+                                                    <option value="discount"> ส่วนลด</option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-1 text-center"><input type="checkbox" name="non_vat[]"
-                                                    @if ($item->vat === 'Y') checked @endif class="non-vat">
+                                            <div class="col-md-1 text-center">
+                                                <input type="checkbox" name="non_vat[]"class="non-vat">
                                             </div>
-                                            <div class="col-md-1"><input type="number" name="quantity[]"
-                                                    class="quantity form-control text-end"
-                                                    value="{{ $item->product_qty }}" step="0.01"></div>
-                                            <div class="col-md-2"><input type="number" name="price_per_unit[]"
-                                                    class="price-per-unit form-control text-end"
-                                                    value="{{ $item->product_price }}" step="0.01">
+
+                                            <div class="col-md-1">
+                                                <input type="number" name="quantity[]" class="quantity form-control text-end"step="0.01" value="0" value="1">
                                             </div>
-                                            <div class="col-md-2"><input type="number" name="total_amount[]"
-                                                    class="total-amount form-control text-end" value="0" readonly>
+                                            <div class="col-md-2">
+                                                <input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01" value="0">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="number" name="total_amount[]" class="total-amount form-control text-end" value="0" readonly>
                                             </div>
                                         </div>
-                        
-                                @empty
-                                @endforelse
-
-
-
-
-
                             </div>
                             <div class="add-row">
                                 <i class="fa fa-plus"></i><a id="add-row" href="javascript:void(0)" class="">
@@ -273,13 +250,13 @@
                                                 <label for="vat-method">การคำนวณ VAT:</label>
                                                 <div>
                                                     <input type="radio" id="vat-include" name="vat_type"
-                                                        value="include" @if ($invoiceModel->vat_type === 'include') checked @endif>
+                                                        value="include" @if ($quotationModel->vat_type === 'include') checked @endif>
                                                     <label for="vat-include">คำนวณรวมกับราคาสินค้าและบริการ (VAT
                                                         Include)</label>
                                                 </div>
                                                 <div>
                                                     <input type="radio" id="vat-exclude" name="vat_type"
-                                                        value="exclude" @if ($invoiceModel->vat_type === 'exclude') checked @endif>
+                                                        value="exclude" @if ($quotationModel->vat_type === 'exclude') checked @endif>
                                                     <label for="vat-exclude">คำนวณแยกกับราคาสินค้าและบริการ (VAT
                                                         Exclude)</label>
                                                 </div>
@@ -292,15 +269,15 @@
                                                 <div class="col-md-10">
                                                     <input type="checkbox" name="vat_3_status" value="Y"
                                                         id="withholding-tax"
-                                                        @if ($invoiceModel->vat_3_status === 'Y') checked @endif> <span
+                                                        @if ($quotationModel->vat_3_status === 'Y') checked @endif> <span
                                                         class="">
-                                                        คิดภาษีหัก ณ ที่จ่าย 3% (คำนวณจากยอด ราคาก่อนภาษีมูลค่าเพิ่ม / Pre-VAT
+                                                        คิดภาษีหัก ณ ที่จ่าย 3% (คำนวณจากยอด ราคาก่อนภาษีมูลค่าเพิ่ม /
+                                                        Pre-VAT
                                                         Amount)</span>
                                                 </div>
 
                                             </div>
                                         </div>
-
                                         <div class="col-md012">
                                             <label>จำนวนเงินภาษีหัก ณ ที่จ่าย 3% : &nbsp;</label><span class="text-danger"
                                                 id="withholding-amount"> 0.00</span> บาท
@@ -309,7 +286,7 @@
 
                                         <div class="col-md-12" style="padding-bottom: 10px">
                                             <label>บันทึกเพิ่มเติม</label>
-                                            <textarea name="invoice_note" class="form-control" cols="30" rows="2">{{ $invoiceModel->invoice_note }}</textarea>
+                                            <textarea name="invoice_note" class="form-control" cols="30" rows="2">{{ $quotationModel->quote_note }}</textarea>
                                         </div>
                                     </div>
 
@@ -317,6 +294,12 @@
                                 <div class="col-6">
                                     <div class="row">
                                         <div class="summary text-info">
+                                            <div class="row summary-row ">
+                                                <div class="col-md-10 text-end"></div>
+                                                <div class="col-md-2 text-end"><span id="sum-total">0.00</span></div>
+                                            </div>
+
+                                            <br>
                                             <div class="row summary-row ">
                                                 <div class="col-md-10 text-end">รวมเป็นเงิน</div>
                                                 <div class="col-md-2 text-end"><span id="sum-total">0.00</span></div>
@@ -357,14 +340,24 @@
                                 <input type="hidden" name="invoice_after_discount" id="quote-after-discount">
                                 <input type="hidden" name="invoice_price_excluding_vat" id="quote-price-excluding-vat">
                                 <input type="hidden" name="invoice_grand_total" id="quote-grand-total">
-                                <input type="hidden" name="vat_3_total" id="quote-withholding-amount">
+                                <input type="hidden" name="invoice_vat_3" id="quote-withholding-amount">
                                 <input type="hidden" name="invoice_vat_7" id="quote-vat-7">
-
-
+                                {{--  hidden --}}
+                                <input type="hidden" name="quote_id" value="{{ $quotationModel->quote_id }}">
+                                <input type="hidden" name="quote_number" value="{{ $quotationModel->quote_number }}">
+                                <input type="hidden" name="customer_id" value="{{ $quotationModel->customer_id }}">
+                                <input type="hidden" name="tour_id" value="{{ $quotationModel->tour_id }}">
+                                <input type="hidden" name="travel_type" value="{{ $quotationModel->travel_type }}">
+                                <input type="hidden" name="country_id" value="{{ $quotationModel->travel_type }}">
+                                <input type="hidden" name="wholesale_id" value="{{ $quotationModel->wholesale_id }}">
+                                <input type="hidden" name="invoice_booking" value="{{ $quotationModel->quote_booking }}">
+                                <input type="hidden" name="invoice_sale" value="{{ $quotationModel->quote_sale }}">
+                                <input type="hidden" name="invoice_tour_code" value="{{ $quotationModel->quote_tour_code}}">
+                                <input type="hidden" name="invoice_status" value="wait">
 
 
                                 <button type="submit" class="btn btn-success btn-sm  mx-3" form="form-create">
-                                    <i class="fa fa-save"></i> อัพเดท</button>
+                                    <i class="fa fa-save"></i> สร้างใบแจ้งหนี้</button>
                             </div>
                             <br>
                         </div>
@@ -532,7 +525,6 @@
                 const grandTotal = afterDiscount + vatAmount;
                 const withholdingTax = $('#withholding-tax').is(':checked') ? grandTotal * 0.03 : 0;
 
-
                 // อัปเดตยอดรวมบนหน้าเว็บ
                 $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
                 $('#quote-total').val(sumTotal.toFixed(2));
@@ -555,7 +547,6 @@
 
                 $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
                 $('#quote-withholding-amount').val(withholdingTax.toFixed(2));
-
             }
 
 

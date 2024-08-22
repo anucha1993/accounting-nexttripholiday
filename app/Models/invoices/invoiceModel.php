@@ -45,7 +45,9 @@ class invoiceModel extends Model
         'total_qty',
         'quote_number',
         'total_all',
+        'texinvoice_number'
     ];
+    
 
     // ความสัมพันธ์กับ BookingModel
     public function invoiceBooking()

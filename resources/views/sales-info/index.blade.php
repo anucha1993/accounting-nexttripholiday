@@ -171,7 +171,7 @@
                                     @if ($item->invoice_status === 'wait')
                                     <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
                                     @endif
-                                    @if ($item->invoice_status === 'success')
+                                    @if ($item->invoice_status === 'success' || $item->invoice_status === 'texinvoice' )
                                     <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
                                     @endif
                                     @if ($item->invoice_status === 'cancel')
@@ -187,19 +187,56 @@
                                             จัดการข้อมูล
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
-                                            <a class="dropdown-item" href="{{route('invoice.edit',$item->invoice_id)}}"><i class="fa fa-edit"></i> แก้ไข</a>
+                                          
                                             <a class="dropdown-item" href="#"><i class="fa fa-print"></i> พิมพ์ใบเสนอราคา</a>
-                                            <a class="dropdown-item" href="#"><i class="fas fa-plus"></i> ออกใบเพิ่มหนี้</a>
-                                            <a class="dropdown-item" href="#"><i class="fas fa-minus"></i> ออกใบลดหนี้</a>
+                                            @if ($item->invoice_status === 'wait')
+                                            <a class="dropdown-item" href="{{route('invoice.edit',$item->invoice_id)}}"><i class="fa fa-edit"></i> แก้ไข</a>
+                                            <a class="dropdown-item" href="{{route('invoice.texinvoice',$item->invoice_id)}}" onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i class="fas fa-plus"></i> สร้างใบกำกับภาษี</a>
                                             <a class="dropdown-item" href="#"><i class="fas fa-minus-circle"></i> ยกเลิกใบงาน</a>
+                                            @endif
+                        
                                         </div>
                                     </div>
-                                </td>
-                               
+                                </td>                              
                                </tr>
                                @empty
                                    
                                @endforelse
+
+
+                               @forelse ($taxinvoices as $item)
+
+                               <tr>
+                                <td class="text-secondary">ใบกำกับภาษี</td>
+                                <td>{{date('d/m/Y',strtotime($item->created_at))}}</td>
+                                <td><span class="badge bg-dark">{{$item->texinvoice_number}}</span></td>
+                                <td>คุณ{{$item->customer_name}}</td>
+                                <td>{{ number_format($item->invoice_grand_total, 2, '.', ',');  }}</td>
+                                <td>
+                                    <span class="badge rounded-pill bg-success">ออกใบกำกับภาษีแล้ว</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button id="btnGroupVerticalDrop2" type="button" class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            จัดการข้อมูล
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
+                                            <a class="dropdown-item" href="{{route('taxinvoice.edit',$item->invoice_id)}}"><i class="fa fa-edit"></i> แก้ไข</a>
+                                            <a class="dropdown-item" href="#"><i class="fa fa-print"></i> พิมพ์ใบเสนอราคา</a>
+                                          
+                                           
+                                        </div>
+                                    </div>
+                                </td>                              
+                               </tr>
+                               @empty
+                                   
+                               @endforelse
+
+
+
+                               
+
                             </tbody>
                         </table>
 

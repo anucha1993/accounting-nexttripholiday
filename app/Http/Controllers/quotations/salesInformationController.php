@@ -4,6 +4,7 @@ namespace App\Http\Controllers\quotations;
 
 use App\Http\Controllers\Controller;
 use App\Models\invoices\invoiceModel;
+use App\Models\invoices\taxinvoiceModel;
 use App\Models\quotations\quotationModel;
 use Illuminate\Http\Request;
 
@@ -15,6 +16,13 @@ class salesInformationController extends Controller
     {
         $quotationModel = $quotationModel->leftjoin('customer','customer.customer_id','quotation.customer_id')->first();
         $invoices= invoiceModel::where('quote_number',$quotationModel->quote_number)->leftjoin('customer','customer.customer_id','invoices.customer_id')->get();
-        return view('sales-info.index',compact('quotationModel','invoices'));
+
+        $invoice = invoiceModel::where('quote_number',$quotationModel->quote_number)->first();
+
+        $taxinvoices= taxinvoiceModel::where('taxinvoices.invoice_number',$invoice->invoice_number)
+        ->leftjoin('invoices','invoices.invoice_number','taxinvoices.invoice_number')
+        ->leftjoin('customer','customer.customer_id','invoices.customer_id')
+        ->get();
+        return view('sales-info.index',compact('quotationModel','invoices','taxinvoices','taxinvoices'));
     }
 }

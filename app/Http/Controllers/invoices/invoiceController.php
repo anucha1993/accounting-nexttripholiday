@@ -24,7 +24,7 @@ class invoiceController extends Controller
     }
 
 
-    // function Runnumber ใบเสนอราคา
+    // function Runnumber invoice
     public function generateRunningCodeIVS()
     {
         $invoice = invoiceModel::select('invoice_number')->latest()->first();
@@ -43,6 +43,7 @@ class invoiceController extends Controller
         return $runningCode;
     }
 
+    
 
     public function create(quotationModel $quotationModel, Request $request)
     {
@@ -132,9 +133,13 @@ class invoiceController extends Controller
            }
  
          }
+
+         return redirect()->back();
          
         
     }
+
+   
 
 
 }
