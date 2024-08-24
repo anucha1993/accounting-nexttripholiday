@@ -170,16 +170,21 @@
                                     <div class="row">
                                         <div class="col-md-12 ">
                                             <b>Date :</b> <span style="margin: 50px;">
-                                                <input type="date" class="date-create" name="debit_note_date" value="{{date('Y-m-d',strtotime(now()))}}"></span></br>
+                                                <input type="date" class="date-create" name="debit_note_date"
+                                                    value="{{ date('Y-m-d', strtotime(now())) }}"></span></br>
                                             <b>Debit Note No :</b> <span style="margin: 5px;">DBN??????</span></br>
-                                            <b>เอกสารอ้างอิง :</b> <span style="margin: 9px;">ใบเสร็จรับเงิน/ใบกำกับภาษี</span></br>
-                                            <b>เลขที่เอกสารอ้างอิง :</b> <span style="margin: 10px;"> {{ $invoiceModel->invoice_number }}</span></br>
+                                            <b>เอกสารอ้างอิง :</b> <span
+                                                style="margin: 9px;">ใบเสร็จรับเงิน/ใบกำกับภาษี</span></br>
+                                            <b>เลขที่เอกสารอ้างอิง :</b> <span style="margin: 10px;">
+                                                {{ $invoiceModel->invoice_number }}</span></br>
                                             <b>Sale :</b> <span style="margin: 53px;"> {{ $sale->name }}</span></br>
                                             <b>Email :</b> <span style="margin: 45px;"> {{ $sale->email }}</span></br>
-                                            
-                                           
-                                            <b>Invoice No :</b> <span style="margin: 12px;" class="text-white bg-dark">{{ $invoiceModel->invoice_number }}</span></br>
-                                            <b>ยอดยกมา : <span style="margin: 15px;" class="bg-primary text-white">{{ number_format($invoiceModel->invoice_grand_total, 2, '.', ',') }}</span></b>
+
+
+                                            <b>Invoice No :</b> <span style="margin: 12px;"
+                                                class="text-white bg-dark">{{ $invoiceModel->invoice_number }}</span></br>
+                                            <b>ยอดยกมา : <span style="margin: 15px;"
+                                                    class="bg-primary text-white">{{ number_format($invoiceModel->invoice_grand_total, 2, '.', ',') }}</span></b>
                                             </br>
                                         </div>
                                     </div>
@@ -200,43 +205,48 @@
                                     <div class="col-md-2">ยอดรวม</div>
                                 </div>
                                 <hr>
-                               
-                                        <div class="row item-row">
-                                            <div class="col-md-1"><span class="row-number"></span> <a
-                                                    href="javascript:void(0)" class="remove-row-btn text-danger"><span
-                                                        class=" fa fa-trash"></span></a></div>
-                                            <div class="col-md-3">
 
-                                                <select name="product_id[]" class="form-select">
-                                                    <option value="">กรุณาเลือกรายการ</option>
-                                                    @forelse ($products as $product)
-                                                     <option value="{{ $product->id }}">{{ $product->product_name }} {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
-                                                    @empty
-                                                    @endforelse
-                                                </select>
+                                <div class="row item-row">
+                                    <div class="col-md-1"><span class="row-number"></span> <a href="javascript:void(0)"
+                                            class="remove-row-btn text-danger"><span class=" fa fa-trash"></span></a>
+                                    </div>
+                                    <div class="col-md-3">
 
-                                            </div>
-                                            <div class="col-md-2">
-                                                <select name="expense_type[]" class="form-select">
-                                                    <option value="">กรุณาเลือกรายการ</option>
-                                                    <option value="income"> รายได้</option>
-                                                    <option value="discount"> ส่วนลด</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-1 text-center">
-                                                <input type="checkbox" name="non_vat[]"class="non-vat">
-                                            </div>
+                                        <select name="product_id[]" class="form-select">
+                                            <option value="">กรุณาเลือกรายการ</option>
+                                            @forelse ($products as $product)
+                                                <option value="{{ $product->id }}">{{ $product->product_name }}
+                                                    {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
 
-                                            <div class="col-md-1">
-                                                <input type="number" name="quantity[]" class="quantity form-control text-end"step="0.01" value="0" value="1">
-                                            </div>
-                                            <div class="col-md-2">
-                                                <input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01" value="0">
-                                            </div>
-                                            <div class="col-md-2">
-                                                <input type="number" name="total_amount[]" class="total-amount form-control text-end" value="0" readonly>
-                                            </div>
-                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select name="expense_type[]" class="form-select">
+                                            <option value="">กรุณาเลือกรายการ</option>
+                                            <option value="income"> รายได้</option>
+                                            <option value="discount"> ส่วนลด</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1 text-center">
+                                        <input type="checkbox" name="non_vat[]"class="non-vat">
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        <input type="number" name="quantity[]"
+                                            class="quantity form-control text-end"step="0.01" value="0"
+                                            value="1">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="number" name="price_per_unit[]"
+                                            class="price-per-unit form-control text-end" step="0.01" value="0">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="number" name="total_amount[]"
+                                            class="total-amount form-control text-end" value="0" readonly>
+                                    </div>
+                                </div>
                             </div>
                             <div class="add-row">
                                 <i class="fa fa-plus"></i><a id="add-row" href="javascript:void(0)" class="">
@@ -287,7 +297,8 @@
 
                                         <div class="col-md-12">
                                             <label>สาเหตุการออกใบแจ้งหนี้</label>
-                                            <input type="text" class="form-control" name="debit_note_cause" placeholder="สาเหตุการออกใบแจ้งหนี้">
+                                            <input type="text" class="form-control" name="debit_note_cause"
+                                                placeholder="สาเหตุการออกใบแจ้งหนี้">
                                             <hr>
                                         </div>
 
@@ -303,12 +314,14 @@
                                         <div class="summary text-info">
                                             <div class="row summary-row ">
                                                 <div class="col-md-10 text-end">มูลค่าตามใบกำกับภาษีเดิม</div>
-                                                <div class="col-md-2 text-end"><span id="invoice-total-old">0.00</span></div>
+                                                <div class="col-md-2 text-end"><span id="invoice-total-old">0.00</span>
+                                                </div>
                                             </div>
 
                                             <div class="row summary-row ">
                                                 <div class="col-md-10 text-end">มูลค่าที่ถูกต้อง</div>
-                                                <div class="col-md-2 text-end"><span id="grand-total-new">0.00</span></div>
+                                                <div class="col-md-2 text-end"><span id="grand-total-new">0.00</span>
+                                                </div>
                                             </div>
 
                                             <div class="row summary-row ">
@@ -367,9 +380,11 @@
                                 <input type="hidden" name="travel_type" value="{{ $quotationModel->travel_type }}">
                                 <input type="hidden" name="country_id" value="{{ $quotationModel->travel_type }}">
                                 <input type="hidden" name="wholesale_id" value="{{ $quotationModel->wholesale_id }}">
-                                <input type="hidden" name="invoice_booking" value="{{ $quotationModel->quote_booking }}">
+                                <input type="hidden" name="invoice_booking"
+                                    value="{{ $quotationModel->quote_booking }}">
                                 <input type="hidden" name="invoice_sale" value="{{ $quotationModel->quote_sale }}">
-                                <input type="hidden" name="invoice_tour_code" value="{{ $quotationModel->quote_tour_code}}">
+                                <input type="hidden" name="invoice_tour_code"
+                                    value="{{ $quotationModel->quote_tour_code }}">
                                 <input type="hidden" name="invoice_status" value="wait">
 
 
@@ -474,11 +489,11 @@
 
         $(document).ready(function() {
 
-            // ฟังก์ชันจัดรูปแบบตัวเลข
+
+
             function formatNumber(num) {
                 return parseFloat(num).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
             }
-
 
             function updateRowNumbers() {
                 $('#quotation-table .item-row').each(function(index) {
@@ -491,6 +506,7 @@
                 let sumDiscount = 0;
                 let sumPriceExcludingVat = 0;
                 let sumPriceExcludingVatNonVat = 0;
+                let totalBeforeDiscount = 0;
 
                 $('#quotation-table .item-row').each(function() {
                     const quantity = parseFloat($(this).find('.quantity').val()) || 0;
@@ -502,47 +518,49 @@
                     let total = quantity * pricePerUnit;
                     let priceExcludingVat = total;
 
-                    // คำนวณส่วนลดได้แม้เลือก NonVat
                     if (expenseType === 'discount') {
                         sumDiscount += total;
-                        total = total * -1; // ทำให้จำนวนเงินติดลบถ้าเป็นส่วนลด
+                        total = total * -1;
                     }
 
+                    totalBeforeDiscount += (expenseType !== 'discount') ? total : 0;
+
                     if (isNonVat) {
-                        // สำหรับ NonVat รายการคงยอดรวมและราคาก่อน VAT ตามเดิม
                         $(this).find('.total-amount').val(total.toFixed(2));
                         $(this).find('.price-excluding-vat').val(total.toFixed(2));
-                        sumPriceExcludingVatNonVat += total; // รวมสำหรับ NonVat รายการ
-                        sumTotal += total; // สะสมสำหรับ NonVat รายการด้วย
+                        sumPriceExcludingVatNonVat += total;
+                        sumTotal += total;
                     } else {
-                        // สำหรับ Non-NonVat รายการ คำนวณ VAT
                         if (vatMethod === 'include') {
-                            priceExcludingVat = total / 1.07; // คำนวณฐานก่อน VAT
-                            total = priceExcludingVat * 1.07; // คำนวณยอดรวมเมื่อรวม VAT แล้ว
+                            // คำนวณ VAT และราคาก่อน VAT ตามสูตรที่กำหนด
+                            const vatAmount = total - (total * 100 / 107);
+                            priceExcludingVat = total - vatAmount;
+
+                            $(this).find('.total-amount').val(total.toFixed(2));
+                            $(this).find('.price-excluding-vat').val(priceExcludingVat.toFixed(2));
+
+                            sumPriceExcludingVat += priceExcludingVat;
+                        } else {
+                            sumPriceExcludingVat += total;
                         }
-
-                        $(this).find('.total-amount').val(total.toFixed(2));
-                        $(this).find('.price-excluding-vat').val(priceExcludingVat.toFixed(2));
-
-                        sumPriceExcludingVat += priceExcludingVat;
                         sumTotal += total;
                     }
                 });
 
-                const afterDiscount = sumTotal;
+                const afterDiscount = totalBeforeDiscount - sumDiscount;
                 let vatAmount = 0;
 
-                // คำนวณ VAT ตามวิธีการที่เลือก โดยพิจารณาเฉพาะรายการที่ไม่ใช่ NonVat
                 if ($('input[name="vat_type"]:checked').val() === 'include') {
-                    vatAmount = (sumPriceExcludingVat * 0.07); // VAT รวม
+                    vatAmount = sumTotal - sumPriceExcludingVat;
+                    // เนื่องจากเป็น VAT Include ให้ตั้ง Grand Total เป็นยอดเดิม
+                    grandTotal = sumTotal;
                 } else {
-                    vatAmount = sumPriceExcludingVat * 0.07; // VAT แยก
+                    vatAmount = sumPriceExcludingVat * 0.07;
+                    grandTotal = afterDiscount + vatAmount;
                 }
 
-                const grandTotal = afterDiscount + vatAmount;
                 const withholdingTax = $('#withholding-tax').is(':checked') ? grandTotal * 0.03 : 0;
 
-                // อัปเดตยอดรวมบนหน้าเว็บ
                 $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
                 $('#quote-total').val(sumTotal.toFixed(2));
 
@@ -566,8 +584,6 @@
                 $('#quote-withholding-amount').val(withholdingTax.toFixed(2));
             }
 
-
-            // Add a new row
             $('#add-row').click(function() {
                 const newRow = $('#quotation-table .item-row:first').clone();
                 newRow.find('input').val(0);
@@ -575,23 +591,23 @@
                 newRow.find('input[type="checkbox"]').prop('checked', false);
                 newRow.appendTo('#quotation-table');
                 updateRowNumbers();
+                calculateTotals();
             });
 
-            // Remove row
             $('#quotation-table').on('click', '.remove-row-btn', function() {
                 $(this).closest('.item-row').remove();
                 updateRowNumbers();
                 calculateTotals();
             });
 
-            // Bind input changes and VAT method change to recalculate totals
             $('#quotation-table').on('input', '.quantity, .price-per-unit', calculateTotals);
             $('#quotation-table').on('change', '.non-vat, select[name="expense_type[]"]', calculateTotals);
             $('input[name="vat_type"]').change(calculateTotals);
             $('#withholding-tax').change(calculateTotals);
 
-            // Initial calculation
             calculateTotals();
+
+
 
             // Customer Edit
             $('#edit-customer').on('click', function(event) {
