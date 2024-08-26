@@ -190,7 +190,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <input type="hidden" value="{{ $invoiceModel->invoice_grand_total }}" id="quoteGrandTotal">
+                            <input type="hidden" value="{{ $invoiceModel->invoice_grand_total }}" id="GrandTotalOld">
                             <br>
 
 
@@ -490,7 +490,6 @@
         $(document).ready(function() {
 
 
-
             function formatNumber(num) {
                 return parseFloat(num).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
             }
@@ -507,6 +506,9 @@
                 let sumPriceExcludingVat = 0;
                 let sumPriceExcludingVatNonVat = 0;
                 let totalBeforeDiscount = 0;
+
+
+
 
                 $('#quotation-table .item-row').each(function() {
                     const quantity = parseFloat($(this).find('.quantity').val()) || 0;
@@ -551,7 +553,7 @@
                 let vatAmount = 0;
 
                 if ($('input[name="vat_type"]:checked').val() === 'include') {
-                    vatAmount = sumTotal - sumPriceExcludingVat;
+                    // vatAmount = sumTotal - sumPriceExcludingVat;
                     // เนื่องจากเป็น VAT Include ให้ตั้ง Grand Total เป็นยอดเดิม
                     grandTotal = sumTotal;
                 } else {
@@ -560,6 +562,12 @@
                 }
 
                 const withholdingTax = $('#withholding-tax').is(':checked') ? grandTotal * 0.03 : 0;
+
+
+                let GrandTotalOld = parseFloat($('#GrandTotalOld').val()) || 0;
+
+
+
 
                 $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
                 $('#quote-total').val(sumTotal.toFixed(2));
@@ -582,6 +590,15 @@
 
                 $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
                 $('#quote-withholding-amount').val(withholdingTax.toFixed(2));
+                // ยอดเดิม (GrandTotalOld)
+                $('#invoice-total-old').text(formatNumber(GrandTotalOld.toFixed(2)));
+
+                // มูลค่าที่ถูกต้อง (GrandTotalOld + sumPriceExcludingVat + sumPriceExcludingVatNonVat)
+                const grandTotalNew = GrandTotalOld + sumPriceExcludingVat + sumPriceExcludingVatNonVat;
+                $('#grand-total-new').text(formatNumber(grandTotalNew.toFixed(2)));
+                // ส่วนต่าง (Difference)
+                $('#difference').text(formatNumber((grandTotalNew - GrandTotalOld).toFixed(2)));
+
             }
 
             $('#add-row').click(function() {
