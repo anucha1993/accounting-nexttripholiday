@@ -31,6 +31,9 @@ class debitModel extends Model
        'grand_total_new',
        'invoice_grand_total',
        'difference',
+       'price_excluding_vat',
+       'debit_note_status',
+       'vat_type',
        'created_by',
        'updated_by',
 

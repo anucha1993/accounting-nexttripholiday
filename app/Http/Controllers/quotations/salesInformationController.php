@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\quotations;
 
 use App\Http\Controllers\Controller;
+use App\Models\debits\debitModel;
 use App\Models\invoices\invoiceModel;
 use App\Models\invoices\taxinvoiceModel;
 use App\Models\quotations\quotationModel;
@@ -23,6 +24,13 @@ class salesInformationController extends Controller
         ->leftjoin('invoices','invoices.invoice_number','taxinvoices.invoice_number')
         ->leftjoin('customer','customer.customer_id','invoices.customer_id')
         ->get();
-        return view('sales-info.index',compact('quotationModel','invoices','taxinvoices','taxinvoices'));
+
+        $debitnote = debitModel::where('debit_note.invoice_number',$invoice->invoice_number)
+        ->leftjoin('invoices','invoices.invoice_number','debit_note.invoice_number')
+        ->leftjoin('customer','customer.customer_id','invoices.customer_id')
+        ->get();
+        
+
+        return view('sales-info.index',compact('quotationModel','invoices','taxinvoices','taxinvoices','debitnote'));
     }
 }
