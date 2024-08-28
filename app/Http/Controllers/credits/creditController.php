@@ -2,8 +2,17 @@
 
 namespace App\Http\Controllers\credits;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\sales\saleModel;
+use Illuminate\Support\Facades\DB;
+use App\Models\credits\creditModel;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Models\invoices\invoiceModel;
+use App\Models\products\productModel;
+use App\Models\customers\customerModel;
+use App\Models\quotations\quotationModel;
+use App\Models\credits\creditNoteProductModel;
 
 class creditController extends Controller
 {
@@ -13,13 +22,13 @@ class creditController extends Controller
     // function Runnumber Debit
     public function generateRunningCodeDBN()
     {
-        $debitModel = debitModel::select('credit_note_number')->latest()->first();
-        if (!empty($invoice)) {
-            $Number = $debitModel->invoice_number;
+        $creditModel = creditModel::select('credit_note_number')->latest()->first();
+        if (!empty($creditModel)) {
+            $Number = $creditModel->invoice_number;
         } else {
-            $Number = 'DBN' . date('Y') . date('m') .'-'. '0000';
+            $Number = 'CBN' . date('Y') . date('m') .'-'. '0000';
         }
-        $prefix = 'DBN';
+        $prefix = 'CBN';
         $year = date('Y');
         $month = date('m');
         $lastFourDigits = substr($Number, -4);
@@ -41,7 +50,7 @@ class creditController extends Controller
         $quotationModel = quotationModel::where('quote_number',$invoiceModel->quote_number)->first();
       
         //dd($quoteProducts);
-        return view('debits.form-create',compact('invoiceModel','customer','sale','tour','airline','products','quotationModel'));
+        return view('credits.form-create',compact('invoiceModel','customer','sale','tour','airline','products','quotationModel'));
     }
 
     public function store(Request $request) 
@@ -49,14 +58,14 @@ class creditController extends Controller
         $runningCode = $this->generateRunningCodeDBN();
         $request->merge(['created_by' => Auth::user()->name]); 
         $request->merge(['credit_note_number' => $runningCode]); 
-        $debitModel = debitModel::create($request->all());
+        $creditModel = creditModel::create($request->all());
 
         foreach($request->product_id as $key => $value)
         {
           if($request->product_id[$key]){
             $product = productModel::where('id',$request->product_id[$key])->first();
             creditNoteProductModel::create([
-                'credit_note_id' => $debitModel->credit_note_id,
+                'credit_note_id' => $creditModel->credit_note_id,
                 'product_id' => $product->id,
                 'product_name' => $product->product_name,
                 'product_qty' => $request->quantity[$key],
@@ -69,12 +78,15 @@ class creditController extends Controller
           
 
         }
-        return redirect()->route('debits.form-edit',$debitModel->credit_note_id);
+        return redirect()->route('credit.edit',$creditModel->credit_note_id);
     }
 
-    public function edit(debitModel $debitModel) 
+    public function edit(creditModel $creditModel) 
     {
-      $invoiceModel = invoiceModel::where('invoice_number',$debitModel->invoice_number)->first();
+     // dd($creditModel->invoice_number);
+
+      $invoiceModel = invoiceModel::where('invoice_number',$creditModel->invoice_number)->first();
+    
       $customer = customerModel::where('customer_id',$invoiceModel->customer_id)->first();
       $sale = saleModel::where('id',$invoiceModel->invoice_sale)->first();
       $tour = DB::connection('mysql2')->table('tb_tour')->select('code','airline_id')->where('id',$invoiceModel->tour_id)->first();
@@ -82,27 +94,27 @@ class creditController extends Controller
       $products = productModel::get();
       $quotationModel = quotationModel::where('quote_number',$invoiceModel->quote_number)->first();
 
-      $debitnoteProduct = creditNoteProductModel::select('products.product_name','products.id','credit_note_product.product_qty',
+      $creditnoteProduct  = creditNoteProductModel::select('products.product_name','products.id','credit_note_product.product_qty',
       'credit_note_product.product_price','credit_note_product.product_id','credit_note_product.expense_type','credit_note_product.vat')
-      ->where('credit_note_id',$debitModel->credit_note_id)
+      ->where('credit_note_id',$creditModel->credit_note_id)
       ->leftjoin('products','products.id','credit_note_product.product_id')->get();
       //dd($quoteProducts);
-      return view('debits.form-edit',compact('invoiceModel','customer','sale','tour','airline','products','quotationModel','debitnoteProduct','debitModel'));
+      return view('credits.form-edit',compact('invoiceModel','customer','sale','tour','airline','products','quotationModel','creditnoteProduct','creditModel'));
     }
     
 
-    public function update(debitModel $debitModel, Request $request)
+    public function update(creditModel $creditModel, Request $request)
     {
       $request->merge(['updated_by' => Auth::user()->name]); 
-      $debitModel->update($request->all());
+      $creditModel->update($request->all());
 
-      creditNoteProductModel::where('credit_note_id',$debitModel->credit_note_id)->delete();
+      creditNoteProductModel::where('credit_note_id',$creditModel->credit_note_id)->delete();
       foreach($request->product_id as $key => $value)
       {
         if($request->product_id[$key]){
           $product = productModel::where('id',$request->product_id[$key])->first();
           creditNoteProductModel::create([
-              'credit_note_id' => $debitModel->credit_note_id,
+              'credit_note_id' => $creditModel->credit_note_id,
               'product_id' => $product->id,
               'product_name' => $product->product_name,
               'product_qty' => $request->quantity[$key],

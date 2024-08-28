@@ -7,7 +7,7 @@
         <!-- -------------------------------------------------------------- -->
 
 
-        <form action="{{ route('debit.store') }}" id="form-create" method="post">
+        <form action="{{ route('credit.store') }}" id="form-create" method="post">
             @csrf
             @method('post')
 
@@ -139,7 +139,7 @@
                     <!-- Todo list-->
                     <div class="todo-listing ">
                         <div class="container border bg-white">
-                            <h4 class="text-center my-4">สร้างใบเพิ่มหนี้ / Debit Note</h4>
+                            <h4 class="text-center my-4">สร้างใบลดหนี้ / Credit Note</h4>
 
                             <div class="row">
                                 <div class="col-md-8 border" style="padding: 10px">
@@ -170,9 +170,9 @@
                                     <div class="row">
                                         <div class="col-md-12 ">
                                             <b>Date :</b> <span style="margin: 50px;">
-                                                <input type="date" class="date-create" name="debit_note_date"
+                                                <input type="date" class="date-create" name="credit_note_date"
                                                     value="{{ date('Y-m-d', strtotime(now())) }}"></span></br>
-                                            <b>Debit Note No :</b> <span style="margin: 5px;">DBN??????</span></br>
+                                            <b>Credit Note No :</b> <span style="margin: 5px;">CBN??????</span></br>
                                             <b>เอกสารอ้างอิง :</b> <span
                                                 style="margin: 9px;">ใบเสร็จรับเงิน/ใบกำกับภาษี</span></br>
                                             <b>เลขที่เอกสารอ้างอิง :</b> <span style="margin: 10px;">
@@ -296,15 +296,15 @@
                                         </div>
 
                                         <div class="col-md-12">
-                                            <label>สาเหตุการออกใบเพิ่มหนี้</label>
-                                            <input type="text" class="form-control" name="debit_note_cause"
-                                                placeholder="สาเหตุการออกใบเพิ่มหนี้">
+                                            <label>สาเหตุการออกใบลดหนี้</label>
+                                            <input type="text" class="form-control" name="credit_note_cause"
+                                                placeholder="สาเหตุการออกใบลดหนี้">
                                             <hr>
                                         </div>
 
                                         <div class="col-md-12" style="padding-bottom: 10px">
                                             <label>บันทึกเพิ่มเติม</label>
-                                            <textarea name="debit_note_note" class="form-control" cols="30" placeholder="หมายเหตุ" rows="2"></textarea>
+                                            <textarea name="credit_note_note" class="form-control" cols="30" placeholder="หมายเหตุ" rows="2"></textarea>
                                         </div>
                                     </div>
 
@@ -381,7 +381,7 @@
                                 {{-- vat 7% --}}
                                 <input type="hidden" name="vat_7_total" id="quote-vat-7">
                                 {{-- สถานะ --}}
-                                <input type="hidden" name="debit_note_status" value="wait">
+                                <input type="hidden" name="credit_note_status" value="wait">
                                 {{-- เลขที่ใบแจ้งหนี้ --}}
                                 <input type="hidden" name="invoice_number" value="{{$invoiceModel->invoice_number}}">
 
@@ -394,7 +394,7 @@
 
                               
                                 <button type="submit" class="btn btn-success btn-sm  mx-3" form="form-create">
-                                    <i class="fa fa-save"></i> สร้างใบเพิ่มหนี้</button>
+                                    <i class="fa fa-save"></i> สร้างใบลดหนี้</button>
                             </div>
                             <br>
                         </div>
@@ -599,12 +599,12 @@
                 $('#invoice-total-old').text(formatNumber(GrandTotalOld.toFixed(2)));
 
                 // มูลค่าที่ถูกต้อง (GrandTotalOld + sumPriceExcludingVat + sumPriceExcludingVatNonVat)
-                const grandTotalNew = GrandTotalOld + sumPriceExcludingVat + sumPriceExcludingVatNonVat;
+                const grandTotalNew = GrandTotalOld - sumPriceExcludingVat - sumPriceExcludingVatNonVat;
                 $('#grand-total-new').text(formatNumber(grandTotalNew.toFixed(2)));
                 $('#grand-total-new-val').val(grandTotalNew);
                 // ส่วนต่าง (Difference)
-                $('#difference').text(formatNumber((grandTotalNew - GrandTotalOld).toFixed(2)));
-                $('#difference-val').val(grandTotalNew - GrandTotalOld);
+                $('#difference').text(formatNumber((GrandTotalOld - grandTotalNew).toFixed(2)));
+                $('#difference-val').val(GrandTotalOld - grandTotalNew);
 
             }
 

@@ -308,9 +308,9 @@
                                         </div>
 
                                         <div class="col-md-12">
-                                            <label>สาเหตุการออกใบแจ้งหนี้</label>
+                                            <label>สาเหตุการออกใบเพิ่มหนี้</label>
                                             <input type="text" class="form-control" name="debit_note_cause"  value="{{$debitModel->debit_note_cause}}"
-                                                placeholder="สาเหตุการออกใบแจ้งหนี้"> 
+                                                placeholder="สาเหตุการออกใบเพิ่มหนี้"> 
                                             <hr>
                                         </div>
 

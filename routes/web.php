@@ -10,6 +10,7 @@ use App\Http\Controllers\selects\periodSelect;
 use App\Http\Controllers\debits\debitController;
 use App\Http\Controllers\airline\airlineController;
 use App\Http\Controllers\booking\BookingController;
+use App\Http\Controllers\credits\creditController;
 use App\Http\Controllers\invoices\invoiceController;
 use App\Http\Controllers\products\productController;
 use App\Http\Controllers\quotations\quoteController;
@@ -122,3 +123,9 @@ Route::get('debit/create/{invoiceModel}',[debitController::class,'create'])->nam
 Route::get('debit/edit/{debitModel}',[debitController::class,'edit'])->name('debit.edit');
 Route::put('debit/update/{debitModel}',[debitController::class,'update'])->name('debit.update');
 Route::post('debit/store/',[debitController::class,'store'])->name('debit.store');
+// Credits 
+Route::get('credit/create/{invoiceModel}',[creditController::class,'create'])->name('credit.create');
+Route::get('credit/edit/{creditModel}',[creditController::class,'edit'])->name('credit.edit');
+Route::put('credit/update/{creditModel}',[creditController::class,'update'])->name('credit.update');
+Route::post('credit/store/',[creditController::class,'store'])->name('credit.store');
+

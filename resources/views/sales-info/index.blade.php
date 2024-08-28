@@ -224,6 +224,7 @@
                                             <a class="dropdown-item" href="{{route('taxinvoice.edit',$item->invoice_id)}}"><i class="fa fa-edit"></i> แก้ไข</a>
                                             <a class="dropdown-item" href="#"><i class="fa fa-print"></i> พิมพ์ใบเสนอราคา</a>
                                             <a class="dropdown-item" href="{{route('debit.create',$item->invoice_id)}}"><i class="fa fa-file"></i> ออกใบเพิ่มหนี้</a>
+                                            <a class="dropdown-item" href="{{route('credit.create',$item->invoice_id)}}"><i class="fa fa-file"></i> ออกใบลดหนี้</a>
                                           
                                            
                                         </div>
@@ -275,6 +276,49 @@
                                @empty
                                    
                                @endforelse
+
+                                {{-- debit note ใบเพิ่มหนี้ --}}
+
+                                @forelse ($creditnote as $item)
+
+                                <tr>
+                                 <td class="text-info">ใบเพิ่มหนี้</td>
+                                 <td>{{date('d/m/Y',strtotime($item->created_at))}}</td>
+                                 <td><span class="badge bg-info">{{$item->credit_note_number}}</span></td>
+                                 <td>คุณ{{$item->customer_name}}</td>
+                                 <td>{{ number_format($item->grand_total, 2, '.', ',');  }}</td>
+                                 <td>
+                                     @if ($item->credit_note_status === 'wait')
+                                     <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
+                                     @endif
+                                     @if ($item->credit_note_status === 'success')
+                                     <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
+                                     @endif
+                                     @if ($item->credit_note_status === 'cancel')
+                                     <span class="badge rounded-pill bg-danger">ยกเลิก</span>
+                                     @endif
+                                     @if ($item->credit_note_status === 'payment')
+                                     <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
+                                     @endif
+                                 </td>
+                                 <td>
+                                     <div class="btn-group" role="group">
+                                         <button id="btnGroupVerticalDrop2" type="button" class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                             จัดการข้อมูล
+                                         </button>
+                                         <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
+                                             <a class="dropdown-item" href="{{route('credit.edit',$item->credit_note_id)}}"><i class="fa fa-edit"></i> แก้ไข</a>
+                                             <a class="dropdown-item" href="#"><i class="fa fa-print"></i> พิมพ์ใบเสนอราคา</a>
+                                           
+                                            
+                                         </div>
+                                     </div>
+                                 </td>                              
+                                </tr>
+                                @empty
+                                    
+                                @endforelse
+ 
 
 
 

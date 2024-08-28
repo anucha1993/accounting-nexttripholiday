@@ -23,7 +23,7 @@ class debitController extends Controller
     public function generateRunningCodeDBN()
     {
         $debitModel = debitModel::select('debit_note_number')->latest()->first();
-        if (!empty($invoice)) {
+        if (!empty($debitModel)) {
             $Number = $debitModel->invoice_number;
         } else {
             $Number = 'DBN' . date('Y') . date('m') .'-'. '0000';
