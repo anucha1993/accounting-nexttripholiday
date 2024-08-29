@@ -479,6 +479,10 @@
                 let sumDiscount = 0;
                 let sumPriceExcludingVat = 0;
                 let sumPriceExcludingVatNonVat = 0;
+                let totalBeforeDiscount = 0;
+
+
+
 
                 $('#quotation-table .item-row').each(function() {
                     const quantity = parseFloat($(this).find('.quantity').val()) || 0;
@@ -490,48 +494,55 @@
                     let total = quantity * pricePerUnit;
                     let priceExcludingVat = total;
 
-                    // คำนวณส่วนลดได้แม้เลือก NonVat
                     if (expenseType === 'discount') {
                         sumDiscount += total;
-                        total = total * -1; // ทำให้จำนวนเงินติดลบถ้าเป็นส่วนลด
+                        total = total * -1;
                     }
 
+                    totalBeforeDiscount += (expenseType !== 'discount') ? total : 0;
+
                     if (isNonVat) {
-                        // สำหรับ NonVat รายการคงยอดรวมและราคาก่อน VAT ตามเดิม
                         $(this).find('.total-amount').val(total.toFixed(2));
                         $(this).find('.price-excluding-vat').val(total.toFixed(2));
-                        sumPriceExcludingVatNonVat += total; // รวมสำหรับ NonVat รายการ
-                        sumTotal += total; // สะสมสำหรับ NonVat รายการด้วย
+                        sumPriceExcludingVatNonVat += total;
+                        sumTotal += total;
                     } else {
-                        // สำหรับ Non-NonVat รายการ คำนวณ VAT
                         if (vatMethod === 'include') {
-                            priceExcludingVat = total / 1.07; // คำนวณฐานก่อน VAT
-                            total = priceExcludingVat * 1.07; // คำนวณยอดรวมเมื่อรวม VAT แล้ว
+                            // คำนวณ VAT และราคาก่อน VAT ตามสูตรที่กำหนด
+                            const vatAmount = total - (total * 100 / 107);
+                            priceExcludingVat = total - vatAmount;
+
+                            $(this).find('.total-amount').val(total.toFixed(2));
+                            $(this).find('.price-excluding-vat').val(priceExcludingVat.toFixed(2));
+
+                            sumPriceExcludingVat += priceExcludingVat;
+                        } else {
+                            sumPriceExcludingVat += total;
                         }
-
-                        $(this).find('.total-amount').val(total.toFixed(2));
-                        $(this).find('.price-excluding-vat').val(priceExcludingVat.toFixed(2));
-
-                        sumPriceExcludingVat += priceExcludingVat;
                         sumTotal += total;
                     }
                 });
 
-                const afterDiscount = sumTotal;
+                const afterDiscount = totalBeforeDiscount - sumDiscount;
                 let vatAmount = 0;
 
-                // คำนวณ VAT ตามวิธีการที่เลือก โดยพิจารณาเฉพาะรายการที่ไม่ใช่ NonVat
                 if ($('input[name="vat_type"]:checked').val() === 'include') {
-                    vatAmount = (sumPriceExcludingVat * 0.07); // VAT รวม
+                    // vatAmount = sumTotal - sumPriceExcludingVat;
+                    // เนื่องจากเป็น VAT Include ให้ตั้ง Grand Total เป็นยอดเดิม
+                    grandTotal = sumTotal;
                 } else {
-                    vatAmount = sumPriceExcludingVat * 0.07; // VAT แยก
+                    vatAmount = sumPriceExcludingVat * 0.07;
+                    grandTotal = afterDiscount + vatAmount;
                 }
 
-                const grandTotal = afterDiscount + vatAmount;
                 const withholdingTax = $('#withholding-tax').is(':checked') ? grandTotal * 0.03 : 0;
 
 
-                // อัปเดตยอดรวมบนหน้าเว็บ
+                let GrandTotalOld = parseFloat($('#GrandTotalOld').val()) || 0;
+
+
+
+
                 $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
                 $('#quote-total').val(sumTotal.toFixed(2));
 
@@ -553,9 +564,18 @@
 
                 $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
                 $('#quote-withholding-amount').val(withholdingTax.toFixed(2));
+                // ยอดเดิม (GrandTotalOld)
+                $('#invoice-total-old').text(formatNumber(GrandTotalOld.toFixed(2)));
+
+                // มูลค่าที่ถูกต้อง (GrandTotalOld + sumPriceExcludingVat + sumPriceExcludingVatNonVat)
+                const grandTotalNew = GrandTotalOld - sumPriceExcludingVat - sumPriceExcludingVatNonVat;
+                $('#grand-total-new').text(formatNumber(grandTotalNew.toFixed(2)));
+                $('#grand-total-new-val').val(grandTotalNew);
+                // ส่วนต่าง (Difference)
+                $('#difference').text(formatNumber((GrandTotalOld - grandTotalNew).toFixed(2)));
+                $('#difference-val').val(GrandTotalOld - grandTotalNew);
 
             }
-
 
             // Add a new row
             $('#add-row').click(function() {
