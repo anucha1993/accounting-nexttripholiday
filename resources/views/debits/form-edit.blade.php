@@ -486,24 +486,7 @@
 
 
     <script>
-        // $(document).ready(function() {
-        //     // ใช้ฟังก์ชันนี้ถ้าคุณต้องการทำบางอย่างก่อน submit ฟอร์ม
-        //     $('#form-create').on('submit', function(event) {
-        //         // ตรวจสอบหรือทำงานเพิ่มเติมก่อน submit
-        //         var isValid = false; // สมมติว่าคุณมีการตรวจสอบอะไรบางอย่าง
-        //         var quoteGrandTotal = $('#quoteGrandTotal').val();
-        //         var quoteGrandTotalNew = $('#quote-grand-total').val();
-
-        //         if (quoteGrandTotal === quoteGrandTotalNew) {
-        //             isValid = true;;
-        //         }
-
-        //         if (!isValid) {
-        //             event.preventDefault(); // หยุดการ submit ฟอร์ม
-        //             alert('ยอดไม่ตรงกันกับใบเสนอราคากรุณาตรวจสอบ!');
-        //         }
-        //     });
-        // });
+       
 
         $(document).ready(function() {
 

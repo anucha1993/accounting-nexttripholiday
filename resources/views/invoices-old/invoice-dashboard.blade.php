@@ -8,6 +8,7 @@
                     <div class="card-header bg-primary">
                         <h4 class="mb-0 text-white">รายละเอียดลูกค้า (Customer)</h4>
                     </div>
+
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 ">
@@ -38,14 +39,10 @@
                                     </tr>
                                 </table>
                             </div>
-
-
                         </div>
-
-
-
-
                     </div>
+
+                    
                 </div>
             </div>
 

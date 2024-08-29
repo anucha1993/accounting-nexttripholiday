@@ -19,7 +19,7 @@
                         <small class="p-3 d-block text-uppercase text-dark font-weight-medium"> ข้อมูลการขาย</small>
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" id="invoice-dashboard"
+                        <a href="{{route('saleInfo.info',$quotationModel->quote_id)}}" id="invoice-dashboard" 
                             class="todo-link list-group-item-action p-3 d-flex align-items-center">
                             <i class="far fa-file-alt"></i>
                             &nbsp; รายละเอียดรวม
@@ -187,7 +187,7 @@
                                             จัดการข้อมูล
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
-                                          
+
                                             <a class="dropdown-item" href="#"><i class="fa fa-print"></i> พิมพ์ใบเสนอราคา</a>
                                             @if ($item->invoice_status === 'wait')
                                             <a class="dropdown-item" href="{{route('invoice.edit',$item->invoice_id)}}"><i class="fa fa-edit"></i> แก้ไข</a>
@@ -277,14 +277,14 @@
                                    
                                @endforelse
 
-                                {{-- debit note ใบเพิ่มหนี้ --}}
+                                {{-- Credit note ใบเพิ่มหนี้ --}}
 
                                 @forelse ($creditnote as $item)
 
                                 <tr>
-                                 <td class="text-info">ใบเพิ่มหนี้</td>
+                                 <td class="text-danger">ใบลดหนี้</td>
                                  <td>{{date('d/m/Y',strtotime($item->created_at))}}</td>
-                                 <td><span class="badge bg-info">{{$item->credit_note_number}}</span></td>
+                                 <td><span class="badge bg-danger">{{$item->credit_note_number}}</span></td>
                                  <td>คุณ{{$item->customer_name}}</td>
                                  <td>{{ number_format($item->grand_total, 2, '.', ',');  }}</td>
                                  <td>

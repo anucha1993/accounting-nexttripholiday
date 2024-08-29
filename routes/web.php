@@ -102,7 +102,8 @@ Route::get('quote/edit/{quotationModel}',[quoteController::class,'edit'])->name(
 Route::put('quote/update/{quotationModel}',[quoteController::class,'update'])->name('quote.update');//
 
 // Sales info
-Route::get('quote/sales/info/{quotationModel}',[salesInformationController::class,'index'])->name('saleInfo.index');
+Route::get('quote/sales/{quotationModel}',[salesInformationController::class,'index'])->name('saleInfo.index');
+Route::get('quote/sales/info/{quotationModel}',[salesInformationController::class,'info'])->name('saleInfo.info');
 //selects
 Route::get('/selects/period',[periodSelect::class,'index'])->name('select.period');
 
