@@ -19,6 +19,7 @@ use App\Http\Controllers\wholeSales\wholeSaleController;
 use App\Http\Controllers\Invoices\InvoiceBookingController;
 use App\Http\Controllers\invoices\invoiceDashboardController;
 use App\Http\Controllers\invoices\taxInvoiceController;
+use App\Http\Controllers\payments\paymentController;
 use App\Http\Controllers\quotations\salesInformationController;
 use App\Models\invoices\taxinvoiceModel;
 
@@ -129,4 +130,8 @@ Route::get('credit/create/{invoiceModel}',[creditController::class,'create'])->n
 Route::get('credit/edit/{creditModel}',[creditController::class,'edit'])->name('credit.edit');
 Route::put('credit/update/{creditModel}',[creditController::class,'update'])->name('credit.update');
 Route::post('credit/store/',[creditController::class,'store'])->name('credit.store');
+
+//Payment
+Route::get('payments/{invoiceModel}',[paymentController::class,'index'])->name('payments');
+Route::get('payment/invoice/{invoiceModel}',[paymentController::class,'invoice'])->name('payment.invoice');
 

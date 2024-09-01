@@ -19,7 +19,7 @@
                         <small class="p-3 d-block text-uppercase text-dark font-weight-medium"> ข้อมูลการขาย</small>
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="{{route('saleInfo.info',$quotationModel->quote_id)}}" id="invoice-dashboard" 
+                        <a href="{{ route('saleInfo.info', $quotationModel->quote_id) }}" id="invoice-dashboard"
                             class="todo-link list-group-item-action p-3 d-flex align-items-center">
                             <i class="far fa-file-alt"></i>
                             &nbsp; รายละเอียดรวม
@@ -30,7 +30,7 @@
                     </li>
 
                     <li class="list-group-item p-0 border-0">
-                        <a href="{{route('saleInfo.index',$quotationModel->quote_id)}}"
+                        <a href="{{ route('saleInfo.index', $quotationModel->quote_id) }}"
                             class="todo-link list-group-item-action p-3 d-flex align-items-center btn-booking active">
                             <i class="far fa-file-alt"></i>
                             &nbsp; ข้อมูลการขาย
@@ -40,10 +40,11 @@
 
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" class="todo-link list-group-item-action p-3 d-flex align-items-center"
+                        <a href="{{ route('payments', $invoice->invoice_id) }}"
+                            class="todo-link list-group-item-action p-3 d-flex align-items-center"
                             id="current-task-important">
                             <i data-feather="star" class="feather-sm me-2"></i>
-                            Important
+                            แจ้งชำระเงิน
                             <span
                                 class="todo-badge badge rounded-pill px-3 bg-light-danger ms-auto text-danger font-weight-medium"></span>
                         </a>
@@ -103,7 +104,7 @@
                 <!-- Todo list-->
                 <div class="todo-listing ">
                     <div class="container border bg-white">
-                        <h4 class="text-center my-4">ข้อมูลการขาย Quotation No #{{$quotationModel->quote_number}}</h4>
+                        <h4 class="text-center my-4">ข้อมูลการขาย Quotation No #{{ $quotationModel->quote_number }}</h4>
 
 
                         <table class="table">
@@ -112,219 +113,252 @@
                                     <th>ประเภท</th>
                                     <th>วันที่</th>
                                     <th>Doc. Number</th>
-                                    <th  style="width: 400px">ชื่อลูกค้า</th>
+                                    <th style="width: 400px">ชื่อลูกค้า</th>
                                     <th>ยอดรวมสุทธิ</th>
                                     <th>สถานะ </th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                               <tr>
-                                <td class="text-primary">ใบเสนอราคา</td>
-                                <td>{{date('d/m/Y',strtotime($quotationModel->created_at))}}</td>
-                                <td><span class="badge bg-dark">{{$quotationModel->quote_number}}</span></td>
-                                <td>คุณ{{$quotationModel->customer_name}}</td>
-                                <td>{{ number_format($quotationModel->quote_grand_total, 2, '.', ',');  }}</td>
-                                <td>
-                                    @if ($quotationModel->quote_status === 'wait' || $quotationModel->quote_status === 'invoice' )
-                                    <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
-                                    @endif
-                                    @if ($quotationModel->quote_status === 'success')
-                                    <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
-                                    @endif
-                                    @if ($quotationModel->quote_status === 'cancel')
-                                    <span class="badge rounded-pill bg-danger">ยกเลิก</span>
-                                    @endif
-                                    @if ($quotationModel->quote_status === 'payment')
-                                    <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <button id="btnGroupVerticalDrop2" type="button" class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            จัดการข้อมูล
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
-                                            
-                                            <a class="dropdown-item" href="#"><i class="fa fa-print"></i> พิมพ์ใบเสนอราคา</a>
-                                            @if ($quotationModel->quote_status != 'invoice')
-                                            <a class="dropdown-item" href="{{route('quote.edit',$quotationModel->quote_id)}}"><i class="fa fa-edit"></i> แก้ไข</a>
-                                            <a class="dropdown-item" href="{{route('invoice.create',$quotationModel->quote_id)}}"><i class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
-                                            <a class="dropdown-item" href="#"><i class="fas fa-minus-circle"></i> ยกเลิกใบงาน</a>
-                                            @endif
-                                           
-                                         
-                                           
-                                        </div>
-                                    </div>
-                                </td>
-                               
-                               </tr>
-                               @forelse ($invoices as $item)
-                               <tr>
-                                <td class="text-success">ใบแจ้งหนี้</td>
-                                <td>{{date('d/m/Y',strtotime($item->created_at))}}</td>
-                                <td><span class="badge bg-dark">{{$item->invoice_number}}</span></td>
-                                <td>คุณ{{$item->customer_name}}</td>
-                                <td>{{ number_format($item->invoice_grand_total, 2, '.', ',');  }}</td>
-                                <td>
-                                    @if ($item->invoice_status === 'wait')
-                                    <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
-                                    @endif
-                                    @if ($item->invoice_status === 'success' || $item->invoice_status === 'texinvoice' )
-                                    <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
-                                    @endif
-                                    @if ($item->invoice_status === 'cancel')
-                                    <span class="badge rounded-pill bg-danger">ยกเลิก</span>
-                                    @endif
-                                    @if ($item->invoice_status === 'payment')
-                                    <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <button id="btnGroupVerticalDrop2" type="button" class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            จัดการข้อมูล
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
+                                <tr>
+                                    <td class="text-primary">ใบเสนอราคา</td>
+                                    <td>{{ date('d/m/Y', strtotime($quotationModel->created_at)) }}</td>
+                                    <td><span class="badge bg-dark">{{ $quotationModel->quote_number }}</span></td>
+                                    <td>คุณ{{ $quotationModel->customer_name }}</td>
+                                    <td>{{ number_format($quotationModel->quote_grand_total, 2, '.', ',') }}</td>
+                                    <td>
+                                        @if ($quotationModel->quote_status === 'wait' || $quotationModel->quote_status === 'invoice')
+                                            <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
+                                        @endif
+                                        @if ($quotationModel->quote_status === 'success')
+                                            <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
+                                        @endif
+                                        @if ($quotationModel->quote_status === 'cancel')
+                                            <span class="badge rounded-pill bg-danger">ยกเลิก</span>
+                                        @endif
+                                        @if ($quotationModel->quote_status === 'payment')
+                                            <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <button id="btnGroupVerticalDrop2" type="button"
+                                                class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle"
+                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                จัดการข้อมูล
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
 
-                                            <a class="dropdown-item" href="#"><i class="fa fa-print"></i> พิมพ์ใบเสนอราคา</a>
+                                                <a class="dropdown-item" href="#"><i class="fa fa-print"></i>
+                                                    พิมพ์ใบเสนอราคา</a>
+                                                @if ($quotationModel->quote_status != 'invoice')
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('quote.edit', $quotationModel->quote_id) }}"><i
+                                                            class="fa fa-edit"></i> แก้ไข</a>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('invoice.create', $quotationModel->quote_id) }}"><i
+                                                            class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
+                                                    <a class="dropdown-item" href="#"><i
+                                                            class="fas fa-minus-circle"></i> ยกเลิกใบงาน</a>
+                                                @endif
+
+
+
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                @forelse ($invoices as $item)
+                                    <tr>
+                                        <td class="text-success">ใบแจ้งหนี้</td>
+                                        <td>{{ date('d/m/Y', strtotime($item->created_at)) }}</td>
+                                        <td><span class="badge bg-dark">{{ $item->invoice_number }}</span></td>
+                                        <td>คุณ{{ $item->customer_name }}</td>
+                                        <td>{{ number_format($item->invoice_grand_total, 2, '.', ',') }}</td>
+                                        <td>
                                             @if ($item->invoice_status === 'wait')
-                                            <a class="dropdown-item" href="{{route('invoice.edit',$item->invoice_id)}}"><i class="fa fa-edit"></i> แก้ไข</a>
-                                            <a class="dropdown-item" href="{{route('invoice.texinvoice',$item->invoice_id)}}" onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i class="fas fa-plus"></i> สร้างใบกำกับภาษี</a>
-                                            <a class="dropdown-item" href="#"><i class="fas fa-minus-circle"></i> ยกเลิกใบงาน</a>
+                                                <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
                                             @endif
-                        
-                                        </div>
-                                    </div>
-                                </td>                              
-                               </tr>
-                               @empty
-                                   
-                               @endforelse
+                                            @if ($item->invoice_status === 'success' || $item->invoice_status === 'texinvoice')
+                                                <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
+                                            @endif
+                                            @if ($item->invoice_status === 'cancel')
+                                                <span class="badge rounded-pill bg-danger">ยกเลิก</span>
+                                            @endif
+                                            @if ($item->invoice_status === 'payment')
+                                                <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <button id="btnGroupVerticalDrop2" type="button"
+                                                    class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle"
+                                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    จัดการข้อมูล
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
+
+                                                    <a class="dropdown-item" href="#"><i class="fa fa-print"></i>
+                                                        พิมพ์ใบเสนอราคา</a>
+                                                    <a class="dropdown-item invoice-modal"
+                                                        href="{{ route('payment.invoice', $item->invoice_id) }}"><i
+                                                            class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
+
+                                                    @if ($item->invoice_status === 'wait')
+                                                        <a class="dropdown-item"
+                                                            href="{{ route('invoice.edit', $item->invoice_id) }}"><i
+                                                                class="fa fa-edit"></i> แก้ไข</a>
+                                                        <a class="dropdown-item"
+                                                            href="{{ route('invoice.texinvoice', $item->invoice_id) }}"
+                                                            onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
+                                                                class="fas fa-plus"></i> สร้างใบกำกับภาษี</a>
+                                                        <a class="dropdown-item" href="#"><i
+                                                                class="fas fa-minus-circle"></i> ยกเลิกใบงาน</a>
+                                                    @endif
+
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                @endforelse
 
 
-                               @forelse ($taxinvoices as $item)
+                                @forelse ($taxinvoices as $item)
+                                    <tr>
+                                        <td class="text-secondary">ใบกำกับภาษี</td>
+                                        <td>{{ date('d/m/Y', strtotime($item->created_at)) }}</td>
+                                        <td><span class="badge bg-dark">{{ $item->texinvoice_number }}</span></td>
+                                        <td>คุณ{{ $item->customer_name }}</td>
+                                        <td>{{ number_format($item->invoice_grand_total, 2, '.', ',') }}</td>
+                                        <td>
+                                            <span class="badge rounded-pill bg-success">ออกใบกำกับภาษีแล้ว</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <button id="btnGroupVerticalDrop2" type="button"
+                                                    class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle"
+                                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    จัดการข้อมูล
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('taxinvoice.edit', $item->invoice_id) }}"><i
+                                                            class="fa fa-edit"></i> แก้ไข</a>
+                                                    <a class="dropdown-item" href="#"><i class="fa fa-print"></i>
+                                                        พิมพ์ใบเสนอราคา</a>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('debit.create', $item->invoice_id) }}"><i
+                                                            class="fa fa-file"></i> ออกใบเพิ่มหนี้</a>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('credit.create', $item->invoice_id) }}"><i
+                                                            class="fa fa-file"></i> ออกใบลดหนี้</a>
 
-                               <tr>
-                                <td class="text-secondary">ใบกำกับภาษี</td>
-                                <td>{{date('d/m/Y',strtotime($item->created_at))}}</td>
-                                <td><span class="badge bg-dark">{{$item->texinvoice_number}}</span></td>
-                                <td>คุณ{{$item->customer_name}}</td>
-                                <td>{{ number_format($item->invoice_grand_total, 2, '.', ',');  }}</td>
-                                <td>
-                                    <span class="badge rounded-pill bg-success">ออกใบกำกับภาษีแล้ว</span>
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <button id="btnGroupVerticalDrop2" type="button" class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            จัดการข้อมูล
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
-                                            <a class="dropdown-item" href="{{route('taxinvoice.edit',$item->invoice_id)}}"><i class="fa fa-edit"></i> แก้ไข</a>
-                                            <a class="dropdown-item" href="#"><i class="fa fa-print"></i> พิมพ์ใบเสนอราคา</a>
-                                            <a class="dropdown-item" href="{{route('debit.create',$item->invoice_id)}}"><i class="fa fa-file"></i> ออกใบเพิ่มหนี้</a>
-                                            <a class="dropdown-item" href="{{route('credit.create',$item->invoice_id)}}"><i class="fa fa-file"></i> ออกใบลดหนี้</a>
-                                          
-                                           
-                                        </div>
-                                    </div>
-                                </td>                              
-                               </tr>
-                               @empty
-                                   
-                               @endforelse
 
-                               {{-- debit note ใบเพิ่มหนี้ --}}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                @endforelse
 
-                               @forelse ($debitnote as $item)
+                                {{-- debit note ใบเพิ่มหนี้ --}}
 
-                               <tr>
-                                <td class="text-info">ใบเพิ่มหนี้</td>
-                                <td>{{date('d/m/Y',strtotime($item->created_at))}}</td>
-                                <td><span class="badge bg-info">{{$item->debit_note_number}}</span></td>
-                                <td>คุณ{{$item->customer_name}}</td>
-                                <td>{{ number_format($item->grand_total, 2, '.', ',');  }}</td>
-                                <td>
-                                    @if ($item->debit_note_status === 'wait')
-                                    <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
-                                    @endif
-                                    @if ($item->debit_note_status === 'success')
-                                    <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
-                                    @endif
-                                    @if ($item->debit_note_status === 'cancel')
-                                    <span class="badge rounded-pill bg-danger">ยกเลิก</span>
-                                    @endif
-                                    @if ($item->debit_note_status === 'payment')
-                                    <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <button id="btnGroupVerticalDrop2" type="button" class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            จัดการข้อมูล
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
-                                            <a class="dropdown-item" href="{{route('debit.edit',$item->debit_note_id)}}"><i class="fa fa-edit"></i> แก้ไข</a>
-                                            <a class="dropdown-item" href="#"><i class="fa fa-print"></i> พิมพ์ใบเสนอราคา</a>
-                                          
-                                           
-                                        </div>
-                                    </div>
-                                </td>                              
-                               </tr>
-                               @empty
-                                   
-                               @endforelse
+                                @forelse ($debitnote as $item)
+                                    <tr>
+                                        <td class="text-info">ใบเพิ่มหนี้</td>
+                                        <td>{{ date('d/m/Y', strtotime($item->created_at)) }}</td>
+                                        <td><span class="badge bg-info">{{ $item->debit_note_number }}</span></td>
+                                        <td>คุณ{{ $item->customer_name }}</td>
+                                        <td>{{ number_format($item->grand_total, 2, '.', ',') }}</td>
+                                        <td>
+                                            @if ($item->debit_note_status === 'wait')
+                                                <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
+                                            @endif
+                                            @if ($item->debit_note_status === 'success')
+                                                <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
+                                            @endif
+                                            @if ($item->debit_note_status === 'cancel')
+                                                <span class="badge rounded-pill bg-danger">ยกเลิก</span>
+                                            @endif
+                                            @if ($item->debit_note_status === 'payment')
+                                                <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <button id="btnGroupVerticalDrop2" type="button"
+                                                    class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle"
+                                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    จัดการข้อมูล
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('debit.edit', $item->debit_note_id) }}"><i
+                                                            class="fa fa-edit"></i> แก้ไข</a>
+                                                    <a class="dropdown-item" href="#"><i class="fa fa-print"></i>
+                                                        พิมพ์ใบเสนอราคา</a>
+
+
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                @endforelse
 
                                 {{-- Credit note ใบเพิ่มหนี้ --}}
 
                                 @forelse ($creditnote as $item)
+                                    <tr>
+                                        <td class="text-danger">ใบลดหนี้</td>
+                                        <td>{{ date('d/m/Y', strtotime($item->created_at)) }}</td>
+                                        <td><span class="badge bg-danger">{{ $item->credit_note_number }}</span></td>
+                                        <td>คุณ{{ $item->customer_name }}</td>
+                                        <td>{{ number_format($item->grand_total, 2, '.', ',') }}</td>
+                                        <td>
+                                            @if ($item->credit_note_status === 'wait')
+                                                <span class="badge rounded-pill bg-primary">รอคืนเงิน</span>
+                                            @endif
+                                            @if ($item->credit_note_status === 'success')
+                                                <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
+                                            @endif
+                                            @if ($item->credit_note_status === 'cancel')
+                                                <span class="badge rounded-pill bg-danger">ยกเลิก</span>
+                                            @endif
+                                            @if ($item->credit_note_status === 'payment')
+                                                <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <button id="btnGroupVerticalDrop2" type="button"
+                                                    class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle"
+                                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    จัดการข้อมูล
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('credit.edit', $item->credit_note_id) }}"><i
+                                                            class="fa fa-edit"></i> แก้ไข</a>
+                                                    <a class="dropdown-item" href="#"><i class="fa fa-print"></i>
+                                                        พิมพ์ใบเสนอราคา</a>
 
-                                <tr>
-                                 <td class="text-danger">ใบลดหนี้</td>
-                                 <td>{{date('d/m/Y',strtotime($item->created_at))}}</td>
-                                 <td><span class="badge bg-danger">{{$item->credit_note_number}}</span></td>
-                                 <td>คุณ{{$item->customer_name}}</td>
-                                 <td>{{ number_format($item->grand_total, 2, '.', ',');  }}</td>
-                                 <td>
-                                     @if ($item->credit_note_status === 'wait')
-                                     <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
-                                     @endif
-                                     @if ($item->credit_note_status === 'success')
-                                     <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
-                                     @endif
-                                     @if ($item->credit_note_status === 'cancel')
-                                     <span class="badge rounded-pill bg-danger">ยกเลิก</span>
-                                     @endif
-                                     @if ($item->credit_note_status === 'payment')
-                                     <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
-                                     @endif
-                                 </td>
-                                 <td>
-                                     <div class="btn-group" role="group">
-                                         <button id="btnGroupVerticalDrop2" type="button" class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                             จัดการข้อมูล
-                                         </button>
-                                         <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
-                                             <a class="dropdown-item" href="{{route('credit.edit',$item->credit_note_id)}}"><i class="fa fa-edit"></i> แก้ไข</a>
-                                             <a class="dropdown-item" href="#"><i class="fa fa-print"></i> พิมพ์ใบเสนอราคา</a>
-                                           
-                                            
-                                         </div>
-                                     </div>
-                                 </td>                              
-                                </tr>
+
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @empty
-                                    
                                 @endforelse
- 
 
 
 
 
 
-                               
+
+
 
                             </tbody>
                         </table>
@@ -337,4 +371,29 @@
 
             </div>
         </div>
+
+        {{-- invoice payment Modal --}}
+        <div class="modal fade bd-example-modal-sm modal-lg" id="invoice-payment" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function() {
+
+                // modal add user
+                $(".invoice-modal").click("click", function(e) {
+                    e.preventDefault();
+                    $("#invoice-payment")
+                        .modal("show")
+                        .addClass("modal-lg")
+                        .find(".modal-content")
+                        .load($(this).attr("href"));
+                });
+            });
+        </script>
     @endsection

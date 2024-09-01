@@ -43,7 +43,7 @@ class salesInformationController extends Controller
         ->get();
         
 
-        return view('sales-info.index',compact('creditnote','quotationModel','invoices','taxinvoices','taxinvoices','debitnote'));
+        return view('sales-info.index',compact('creditnote','quotationModel','invoices','taxinvoices','taxinvoices','debitnote','invoice'));
     }
 
     public function info(quotationModel $quotationModel)
