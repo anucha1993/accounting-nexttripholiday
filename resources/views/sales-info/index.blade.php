@@ -40,8 +40,7 @@
 
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="{{ route('payments', $invoice->invoice_id) }}"
-                            class="todo-link list-group-item-action p-3 d-flex align-items-center"
+                        <a href="" class="todo-link list-group-item-action p-3 d-flex align-items-center"
                             id="current-task-important">
                             <i data-feather="star" class="feather-sm me-2"></i>
                             แจ้งชำระเงิน
@@ -125,7 +124,8 @@
                                     <td>{{ date('d/m/Y', strtotime($quotationModel->created_at)) }}</td>
                                     <td><span class="badge bg-dark">{{ $quotationModel->quote_number }}</span></td>
                                     <td>คุณ{{ $quotationModel->customer_name }}</td>
-                                    <td>{{ number_format($quotationModel->quote_grand_total, 2, '.', ',') }}</td>
+                                    <td>{{ number_format($quotationModel->quote_grand_total ? $quotationModel->quote_grand_total : $quotationModel->quote_total, 2, '.', ',') }}
+                                    </td>
                                     <td>
                                         @if ($quotationModel->quote_status === 'wait' || $quotationModel->quote_status === 'invoice')
                                             <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
@@ -158,6 +158,9 @@
                                                     <a class="dropdown-item"
                                                         href="{{ route('invoice.create', $quotationModel->quote_id) }}"><i
                                                             class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
+                                                    <a class="dropdown-item invoice-modal"
+                                                        href="{{ route('payment.invoice', $quotationModel->quote_id) }}"><i
+                                                            class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
                                                     <a class="dropdown-item" href="#"><i
                                                             class="fas fa-minus-circle"></i> ยกเลิกใบงาน</a>
                                                 @endif
@@ -201,9 +204,7 @@
 
                                                     <a class="dropdown-item" href="#"><i class="fa fa-print"></i>
                                                         พิมพ์ใบเสนอราคา</a>
-                                                    <a class="dropdown-item invoice-modal"
-                                                        href="{{ route('payment.invoice', $item->invoice_id) }}"><i
-                                                            class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
+
 
                                                     @if ($item->invoice_status === 'wait')
                                                         <a class="dropdown-item"

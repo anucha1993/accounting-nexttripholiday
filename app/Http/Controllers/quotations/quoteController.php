@@ -32,9 +32,9 @@ class quoteController extends Controller
         if (!empty($quote)) {
             $quoteNumber = $quote->quote_number;
         } else {
-            $quoteNumber = 'IV' . date('y') . date('m') . '0000';
+            $quoteNumber = 'QT' . date('y') . date('m') . '0000';
         }
-        $prefix = 'IV';
+        $prefix = 'QT';
         $year = date('y');
         $month = date('m');
         $lastFourDigits = substr($quoteNumber, -4);
@@ -89,7 +89,7 @@ class quoteController extends Controller
         $quote->update(['quote_total' => $sum]);
 
         //Update status ใบจองทัวเป็น status = 'invoice'
-        bookingModel::where('code', $request->invoice_booking)->update(['status' => 'invoice']);
+        bookingModel::where('code', $quote->quote_booking)->update(['status' => 'quote']);
         $quoteID = $quote->quote_id;
         return redirect('quote/edit/' . $quoteID);
     }
