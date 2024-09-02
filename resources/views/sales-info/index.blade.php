@@ -151,18 +151,19 @@
 
                                                 <a class="dropdown-item" href="#"><i class="fa fa-print"></i>
                                                     พิมพ์ใบเสนอราคา</a>
-                                                @if ($quotationModel->quote_status != 'invoice')
+                                                    <a class="dropdown-item invoice-modal"
+                                                    href="{{ route('payment.quotation', $quotationModel->quote_id) }}"><i
+                                                        class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
+                                                @if ($quotationModel->quote_status != 'invoice' && $quotationModel->quote_status != 'cancel' )
                                                     <a class="dropdown-item"
                                                         href="{{ route('quote.edit', $quotationModel->quote_id) }}"><i
                                                             class="fa fa-edit"></i> แก้ไข</a>
                                                     <a class="dropdown-item"
                                                         href="{{ route('invoice.create', $quotationModel->quote_id) }}"><i
                                                             class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
-                                                    <a class="dropdown-item invoice-modal"
-                                                        href="{{ route('payment.invoice', $quotationModel->quote_id) }}"><i
-                                                            class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
-                                                    <a class="dropdown-item" href="#"><i
-                                                            class="fas fa-minus-circle"></i> ยกเลิกใบงาน</a>
+                                                   
+                                                    <a class="dropdown-item" href="{{route('quote.cancel',$quotationModel->quote_id)}}" onclick="return confirm('ยืนยันการยกเลิกใบเสนอราคา')"><i
+                                                            class="fas fa-minus-circle" ></i> ยกเลิกใบงาน</a>
                                                 @endif
 
 
@@ -211,7 +212,7 @@
                                                             href="{{ route('invoice.edit', $item->invoice_id) }}"><i
                                                                 class="fa fa-edit"></i> แก้ไข</a>
                                                         <a class="dropdown-item"
-                                                            href="{{ route('invoice.texinvoice', $item->invoice_id) }}"
+                                                            href="{{ route('invoice.taxinvoice', $item->invoice_id) }}"
                                                             onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
                                                                 class="fas fa-plus"></i> สร้างใบกำกับภาษี</a>
                                                         <a class="dropdown-item" href="#"><i

@@ -101,6 +101,7 @@ Route::get('quotations/',[quoteController::class,'index'])->name('quote.index');
 Route::post('quote/store',[quoteController::class,'store'])->name('quote.store');
 Route::get('quote/edit/{quotationModel}',[quoteController::class,'edit'])->name('quote.edit');
 Route::put('quote/update/{quotationModel}',[quoteController::class,'update'])->name('quote.update');//
+Route::get('quote/cancel/{quotationModel}',[quoteController::class,'cancel'])->name('quote.cancel');
 
 // Sales info
 Route::get('quote/sales/{quotationModel}',[salesInformationController::class,'index'])->name('saleInfo.index');
@@ -133,5 +134,6 @@ Route::post('credit/store/',[creditController::class,'store'])->name('credit.sto
 
 //Payment
 Route::get('payments/{invoiceModel}',[paymentController::class,'index'])->name('payments');
-Route::get('payment/invoice/{invoiceModel}',[paymentController::class,'invoice'])->name('payment.invoice');
+Route::get('payment/quotation/{quotationModel}',[paymentController::class,'quotation'])->name('payment.quotation');
+Route::post('payment/quotation/store',[paymentController::class,'payment'])->name('payment.payment');
 

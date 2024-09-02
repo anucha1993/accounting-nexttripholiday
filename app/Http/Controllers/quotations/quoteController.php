@@ -140,4 +140,10 @@ class quoteController extends Controller
 
         return redirect()->back()->with('success','Update Quotation Successfully.');
     }
+
+    public function cancel(quotationModel $quotationModel)
+    {
+        $quotationModel->update(['quote_status' => 'cancel']);
+        return redirect()->back();
+    }
 }

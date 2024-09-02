@@ -4,160 +4,190 @@
 
 
     <div class="email-app todo-box-container container-fluid">
-<br>
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            <strong>Success - </strong>{{ session('success') }}
-        </div>
-    @endif
+        <br>
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <strong>Success - </strong>{{ session('success') }}
+            </div>
+        @endif
 
-    @if (session('error'))
-        <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            <strong>Error - </strong>{{ session('error') }}
-        </div>
-    @endif
-    <div class="email-app todo-box-container">
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <strong>Error - </strong>{{ session('error') }}
+            </div>
+        @endif
+        <div class="email-app todo-box-container">
 
-    <div class="card">
-        <div class="card-body">
-            <h4 class="card-title">ใบเสนอราคา/ใบแจ้งหนี้  <a href="{{route('booking.create')}}" class="btn btn-primary float-end">เพิ่มใบจองทัวร์</a></h4>
-            <hr>
-            <form action="" method="GET">
-                <div class="row">
-                    <div class="col-md-2">
-                        <label>ค้นหา ชื่อ-นามสกุล</label>
-                        <div class="input-group mb-3 pull-right">
-                            <input type="text" class="form-control" placeholder="ค้นหา... ชื่อ-นามสกุล"
-                                name="search_name" value="{{ request('search_name') }}">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">ใบเสนอราคา/ใบแจ้งหนี้ <a href="{{ route('booking.create') }}"
+                            class="btn btn-primary float-end">เพิ่มใบจองทัวร์</a></h4>
+                    <hr>
+                    <form action="" method="GET">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label>ค้นหา ชื่อ-นามสกุล</label>
+                                <div class="input-group mb-3 pull-right">
+                                    <input type="text" class="form-control" placeholder="ค้นหา... ชื่อ-นามสกุล"
+                                        name="search_name" value="{{ request('search_name') }}">
 
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label>ค้นหา วันที่เดินทางเริ่มต้น</label>
+                                <div class="input-group mb-3 pull-right">
+                                    <input type="date" class="form-control" name="search_tour_date_start"
+                                        value="{{ request('search_tour_date_start') }}">
+
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label>ถึงวันที่</label>
+                                <div class="input-group mb-3 pull-right">
+                                    <input type="date" class="form-control" name="search_tour_date_end"
+                                        value="{{ request('search_tour_date_end') }}">
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label>ค้นหา วันที่จอง เริ่มต้น</label>
+                                <div class="input-group mb-3 pull-right">
+                                    <input type="date" class="form-control" name="search_tour_date_start_created"
+                                        value="{{ request('search_tour_date_start_created') }}">
+
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label>ถึงวันที่</label>
+                                <div class="input-group mb-3 pull-right">
+                                    <input type="date" class="form-control" name="search_tour_date_end_created"
+                                        value="{{ request('search_tour_date_end_created') }}">
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+
+                                <label>Sales</label>
+                                <div class="input-group mb-3 pull-right">
+                                    <select name="search_sale" class="form-select">
+                                        <option value="all">ทั้งหมด</option>
+                                        @forelse ($sales as $item)
+                                            <option value="{{ $item->id }}">
+                                                {{ $item->name }}</option>
+                                        @empty
+                                            <option value="" disabled>ไม่มีข้อมูล</option>
+                                        @endforelse
+                                    </select>
+
+
+                                </div>
+                            </div>
+
+
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary float-end mx-3" type="submit">ค้นหา</button>
+                                <a href="{{ route('booking.index') }}" class="btn btn-outline-secondary float-end mx-3"
+                                    type="submit">ล้างข้อมูล</a>
+
+                            </div>
                         </div>
-                    </div>
+                    </form>
 
-                    <div class="col-md-2">
-                        <label>ค้นหา วันที่เดินทางเริ่มต้น</label>
-                        <div class="input-group mb-3 pull-right">
-                            <input type="date" class="form-control" name="search_tour_date_start"
-                                value="{{ request('search_tour_date_start') }}">
+                </div>
 
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <label>ถึงวันที่</label>
-                        <div class="input-group mb-3 pull-right">
-                            <input type="date" class="form-control" name="search_tour_date_end"
-                                value="{{ request('search_tour_date_end') }}">
+            </div>
+            @bathText(12000)
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table customize-table table-hover mb-0 v-middle table-striped table-bordered "
+                            style="font-size: 12px">
+                            <thead class="table text-white bg-info">
+                                <tr>
+                                    <th>ลำดับ</th>
+                                    <th>เลขที่ใบเสนอราคา</th>
+                                    <th>เลขที่ใบจองทัวร์</th>
+                                    <th>วันที่เดินทาง</th>
+                                    <th>ชื่อลูกค้า</th>
+                                    <th>ประเทศ</th>
+                                    <th>โฮลเซลล์</th>
+                                    <th>การชำระของลูกค้า</th>
+                                    <th>ยอดใบแจ้งหนี้</th>
+                                    <th>การชำระโฮลเซลล์</th>
+                                    <th>ผู้ขาย</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($quotations as $key => $item)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $item->quote_number }}</td>
+                                        <td>{{ $item->quote_booking }}</td>
+                                        <td>{{ date('d/m/Y', strtotime($item->quotebooking->start_date)) . '-' . date('d/m/Y', strtotime($item->quotebooking->end_date)) }}
+                                        </td>
+                                        <td>{{ $item->quotecustomer->customer_name }}</td>
+                                        <td>
+                                            @foreach ($item->quote_countries as $country)
+                                                {{ $country->country_name_th }}
+                                            @endforeach
 
-                        </div>
-                    </div>
+                                        </td>
 
-                    <div class="col-md-2">
-                        <label>ค้นหา วันที่จอง เริ่มต้น</label>
-                        <div class="input-group mb-3 pull-right">
-                            <input type="date" class="form-control" name="search_tour_date_start_created"
-                                value="{{ request('search_tour_date_start_created') }}">
+                                        <td>{{ $item->quoteWholesale->wholesale_name_th }}</td>
+                                        <td>
+                                            @if ($item->quote_status === 'wait' || $item->quote_status === 'invoice')
+                                                <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
+                                            @endif
+                                            @if ($item->quote_status === 'success')
+                                                <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
+                                            @endif
+                                            @if ($item->quote_status === 'cancel')
+                                                <span class="badge rounded-pill bg-danger">ยกเลิก</span>
+                                            @endif
+                                            @if ($item->quote_status === 'payment')
+                                                <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ number_format($item->quote_total, 2, '.', ',') }}</td>
+                                        <td>
+                                            @if ($item->quote_status != 'cancel')
+                                                @if ($item->quote_status === 'wait')
+                                                    <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
+                                                @endif
+                                                @if ($item->quote_status === 'success')
+                                                <span class="badge rounded-pill bg-success">ชำระเงินแล้ว</span>
+                                            @endif
+                                            @else
+                                                <span class="badge rounded-pill bg-danger">ยกเลิก</span>
+                                            @endif
 
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <label>ถึงวันที่</label>
-                        <div class="input-group mb-3 pull-right">
-                            <input type="date" class="form-control" name="search_tour_date_end_created"
-                                value="{{ request('search_tour_date_end_created') }}">
+                                        </td>
 
-                        </div>
-                    </div>
+                                        <td> {{ $item->quoteBooking->bookingSale->name }}</td>
+                                        <td><a href="{{ route('saleInfo.index', $item->quote_id) }}"
+                                                class="btn btn-info btn-sm">จัดการข้อมูล</a></td>
 
-                    <div class="col-md-2">
-
-                        <label>Sales</label>
-                        <div class="input-group mb-3 pull-right">
-                            <select name="search_sale" class="form-select">
-                                <option value="all">ทั้งหมด</option>
-                                @forelse ($sales as $item)
-                                    <option value="{{ $item->id }}">
-                                        {{ $item->name }}</option>
+                                    </tr>
                                 @empty
-                                    <option value="" disabled>ไม่มีข้อมูล</option>
+                                    No data
                                 @endforelse
-                            </select>
 
-
-                        </div>
-                    </div>
-
-
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary float-end mx-3" type="submit">ค้นหา</button>
-                        <a href="{{ route('booking.index') }}" class="btn btn-outline-secondary float-end mx-3"
-                            type="submit">ล้างข้อมูล</a>
-
+                            </tbody>
+                        </table>
+                        {!! $quotations->withQueryString()->links('pagination::bootstrap-5') !!}
                     </div>
                 </div>
-            </form>
-
-        </div>
-
-    </div>
-    @bathText(12000)
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table customize-table table-hover mb-0 v-middle table-striped table-bordered " style="font-size: 12px">
-                    <thead class="table text-white bg-info">
-                        <tr>
-                            <th>ลำดับ</th>
-                            <th>เลขที่ใบแจ้งหนี้</th>
-                            <th>เลขที่ใบจองทัวร์</th>
-                            <th>วันที่เดินทาง</th>
-                            <th>ชื่อลูกค้า</th>
-                            <th>ประเทศ</th>
-                            <th>โฮลเซลล์</th>
-                            <th>การชำระของลูกค้า</th>
-                            <th>ยอดใบแจ้งหนี้</th>
-                            <th>การชำระโฮลเซลล์</th>
-                            <th>ผู้ขาย</th>
-                            <th class="text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                       @forelse ($quotations as $key => $item)
-                         <tr>
-                              <td>{{$key+1}}</td>
-                              <td >{{$item->quote_number}}</td>
-                              <td>{{$item->quote_booking}}</td>
-                              <td>{{date('d/m/Y',strtotime($item->quotebooking->start_date)).'-'.date('d/m/Y',strtotime($item->quotebooking->end_date))}}</td>
-                              <td>{{$item->quotecustomer->customer_name}}</td>
-                              <td>
-                                @foreach($item->quote_countries as $country)
-                                {{ $country->country_name_th }}
-                               @endforeach
-
-                              </td>
-
-                              <td>{{$item->quoteWholesale->wholesale_name_th}}</td>
-                              <td><span class="badge rounded-pill bg-primary">รอชำระ</span> </td>
-                              <td>{{ number_format($item->quote_total, 2, '.', ',');  }}</td>
-                              <td> <span class="badge rounded-pill bg-primary">รอชำระ</span></td>
-                              <td> {{$item->quoteBooking->bookingSale->name}}</td>
-                              <td><a href="{{route('saleInfo.index',$item->quote_id)}}" class="btn btn-info btn-sm">จัดการข้อมูล</a></td>
-                              
-                          </tr>
-                       @empty
-                           No data 
-                       @endforelse
-                       
-                    </tbody>
-                </table>
-                {!! $quotations->withQueryString()->links('pagination::bootstrap-5') !!}
-            </div>
-            </div>
             </div>
         </div>
-        
-   
-     
 
 
-@endsection
+
+
+
+    @endsection

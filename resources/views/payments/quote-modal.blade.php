@@ -3,12 +3,14 @@
         <h4>แจ้งชำระเงิน</h4>
     </div>
     <div class="card-body">
-        <form action="#">
+        <form action="{{route('payment.payment')}}" method="post" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" name="payment_quote" value="{{$quotationModel->quote_number}}">
             <div class="row">
                 <div class="col-md-3 mt-3">
                     <label for="">จำนวนเงินที่จะชำระ</label>
-                    <input type="number" value="{{ $invoiceModel->invoice_grand_total }}" name="payment_total"
-                        class="form-control bg-success" step="0.1" min="0.1">
+                    <input type="number" value="{{ $quotationModel->quote_grand_total -  $quotationModel->payment }}" name="payment_total"
+                        class="form-control bg-success" step="0.01" >
                 </div>
                 <div class="col-md-3 mt-3">
                     <label>การชำระเงิน </label>
@@ -81,7 +83,11 @@
             </div>
             
 
-
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-success float-end"> บันทึกข้อมูล</button>
+                </div>
+            </div>
         </form>
     </div>
 </div>

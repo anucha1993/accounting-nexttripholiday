@@ -41,6 +41,9 @@ class quotationModel extends Model
         'payment_type',
         'deposit',
         'total_qty',
+        'wholesale_payment_status',
+        'wholesale_payment_total',
+        'payment',
     ];
 
     

@@ -156,15 +156,15 @@
                                       <table class="">
                                           <tr>
                                               <td class="text-end"><b>เลขที่ใบแจ้งหนี้ :</b> </td>
-                                              <td>{{ $invoice->invoice_number }}</td>
+                                              <td>{{ $invoice ? $invoice->invoice_number : '-'  }}</td>
                                           </tr>
                                           <tr>
                                               <td class="text-end"><b>วันที่ออกใบแจ้งหนี้ :</b> </td>
-                                              <td>{{ date('d/M/Y', strtotime($invoice->crated_at)) }}</td>
+                                              <td>{{ date('d/M/Y', strtotime($invoice ? $invoice->crated_at : "")) }}</td>
                                           </tr>
                                           <tr>
                                               <td class="text-end"><b>เลขที่ใบจองทัวร์ :</b> </td>
-                                              <td>{{ $invoice->invoice_booking }}</td>
+                                              <td>{{ $quotationModel ? $quotationModel->quote_booking : '' }}</td>
                                           </tr>
                                           <tr>
                                               <td class="text-end"><b>ผู้ขาย :</b> </td>
@@ -213,6 +213,10 @@
                                               <td class="text-end"><b>โฮลเซลล์:</b></td>
                                               <td>{{ $wholesale->wholesale_name_th }}</td>
                                           </tr>
+                                          <tr>
+                                             <td class="text-end"><b>-</b></td>
+                                             <td></td>
+                                         </tr>
                                       </table>
                                   </div>
                               </div>
@@ -228,21 +232,31 @@
                                   <div class="card-body">
                                       <table>
                                           <tr>
-                                              <td class="text-end"><b>ราคารวมสุทธิ:</b></td>
-                                              <td style="font-size: 30px; border-bottom: 1px solid;" class="text-primary align-top"> <b  style="" class=" text-primary" id="TotalAllLabel"> </b> {{ number_format($invoice->invoice_grand_total, 2, '.', ',') }}บาท  </td>
+                                              <td class="text-end"><b>ราคารวมสุทธิ Quotation :</b></td>
+                                              <td style="border-bottom: 1px solid;" class="text-primary align-top"> <b  style="" class=" text-primary" id="TotalAllLabel"> </b> {{ number_format($quotationModel ? $quotationModel->quote_grand_total : $quotationModel->quote_total , 2, '.', ',') }} บาท  </td>
                                           </tr>
+
                                           <tr>
-                                              <td class="text-end"><b>ชำระแล้ว:</b></td>
+                                              <td class="text-end"><b>ราคารวมสุทธิ Debit Note :</b></td>
                                               <td class="text-success"> <b  class=" text-success" id=""></b>00.00 บาท</td>
                                           </tr>
+
                                           <tr>
-                                              <td class="text-end"><b>ยอดคงค้าง:</b></td>
+                                              <td class="text-end"><b>ราคารวมสุทธิ Credit Note:</b></td>
                                               <td class="text-danger"> <b  class=" text-danger" id=""></b>00.00 บาท</td>
                                           </tr>
                                           <tr>
-                                              <td class="text-end"><b>ชำระให้โฮลเซลล์:</b></td>
+                                              <td class="text-end"><b>ชำระให้โฮลเซลล์ : </b></td>
                                               <td class="text-info"> <b  class=" text-info" id=""></b>00.00 บาท</td>
                                           </tr>
+                                          <tr>
+                                             <td class="text-end"><b>ยอดรวมทั้งหมด : </b></td>
+                                             <td class="text-info"> <b  class=" text-info" id=""></b>00.00 บาท</td>
+                                         </tr>
+                                         <tr>
+                                             <td class="text-end"><b>กำไรขั้นต้น : </b></td>
+                                             <td class="text-info"> <b  class=" text-info" id=""></b>00.00 บาท</td>
+                                         </tr>
                                          
                                       </table>
               
