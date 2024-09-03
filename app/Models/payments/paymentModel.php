@@ -11,7 +11,8 @@ class paymentModel extends Model
     protected $table = 'payments';
     protected $primaryKey = 'payment_id';
     protected $fillable = [
-        'payment_quote',
+        'payment_doc_type',
+        'payment_doc_number',
         'payment_type',
         'payment_total',
         'payment_method',

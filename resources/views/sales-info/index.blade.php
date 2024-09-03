@@ -127,7 +127,7 @@
                                     <td>{{ number_format($quotationModel->quote_grand_total ? $quotationModel->quote_grand_total : $quotationModel->quote_total, 2, '.', ',') }}
                                     </td>
                                     <td>
-                                        @if ($quotationModel->quote_status === 'wait' || $quotationModel->quote_status === 'invoice')
+                                        @if ($quotationModel->quote_status === 'wait')
                                             <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
                                         @endif
                                         @if ($quotationModel->quote_status === 'success')
@@ -138,6 +138,20 @@
                                         @endif
                                         @if ($quotationModel->quote_status === 'payment')
                                             <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
+                                        @endif
+                                        @if ($quotationModel->quote_status === 'invoice')
+                                        <span class="badge rounded-pill bg-info">ออกใบแจ้งหนี้แล้ว</span>
+
+                                        @if ($quotationModel->payment >=  $quotationModel->quote_grand_total)
+                                          <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
+                                        @else
+
+                                        @if ($quotationModel->payment > 0 )
+                                        <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
+                                        @endif
+                                            
+                                        @endif
+
                                         @endif
                                     </td>
                                     <td>
@@ -154,7 +168,7 @@
                                                     <a class="dropdown-item invoice-modal"
                                                     href="{{ route('payment.quotation', $quotationModel->quote_id) }}"><i
                                                         class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
-                                                @if ($quotationModel->quote_status != 'invoice' && $quotationModel->quote_status != 'cancel' )
+                                                @if ($quotationModel->quote_status === 'wait' && $quotationModel->quote_status != 'cancel' )
                                                     <a class="dropdown-item"
                                                         href="{{ route('quote.edit', $quotationModel->quote_id) }}"><i
                                                             class="fa fa-edit"></i> แก้ไข</a>

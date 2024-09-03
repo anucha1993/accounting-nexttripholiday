@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\payments;
 
-use File;
+
 use Illuminate\Http\Request;
 use Spatie\FlareClient\View;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use App\Models\invoices\invoiceModel;
 use App\Models\payments\paymentModel;
 use Illuminate\Database\Eloquent\Model;
@@ -30,48 +31,48 @@ class paymentController extends Controller
 
     public function payment(Request $request)
     {
-        // dd($request);
-        $quote = quotationModel::where('quote_number', $request->payment_quote)->first();
+        // ตรวจสอบข้อมูลที่รับมาจาก request
+        $quote = quotationModel::where('quote_number', $request->payment_doc_number)->first();
         $paymentModel = paymentModel::create($request->all());
     
-        // สร้างพาธที่ถูกต้องโดยการต่อพาธให้เป็นพาธสัมพันธ์ (relative path)
-        $folderPath = 'public/storage/' . $quote->customer_id . '/' . $quote->quote_number;
-       
+        // สร้างพาธที่ถูกต้อง
+        $folderPath = 'public/' . $quote->customer_id . '/' . $quote->quote_number;
+        $absolutePath = storage_path('app/' . $folderPath);
+    
         // เช็คว่าไดเร็กทอรีมีอยู่แล้วหรือไม่ หากไม่มีให้สร้างขึ้นมา
-        if (!File::exists(public_path($folderPath))) {
-            \File::makeDirectory(public_path($folderPath), 0777, true);
+        if (!File::exists($absolutePath)) {
+            File::makeDirectory($absolutePath, 0775, true);
         }
     
         $file = $request->file('payment_file');
-        $path = null; // กำหนดค่าเริ่มต้นของ path เป็น null
+    
         if ($file) {
             $extension = $file->getClientOriginalExtension(); // นามสกุลไฟล์
-            $uniqueName = $paymentModel->payment_id . '_' . $paymentModel->payment_quote . '_' . date('Ymd') . '.' . $extension;
-            $payment_file_path = $quote->customer_id . '/' . $quote->quote_number.'/'.$uniqueName;
-            // ใช้พาธสัมพันธ์ในการจัดเก็บไฟล์
-            $path = $file->storeAs($folderPath, $uniqueName, 'public');
+            $uniqueName = $paymentModel->payment_id . '_' . $paymentModel->payment_doc_number . '_' . date('Ymd') . '.' . $extension;
+            $filePath = $absolutePath . '/' . $uniqueName;
+            
+            // ย้ายไฟล์ไปยังตำแหน่งที่ต้องการ
+            $file->move($absolutePath, $uniqueName);
+    
+            // อัปเดตพาธไฟล์ในฐานข้อมูล
+            $paymentModel->update(['payment_file_path' => $folderPath . '/' . $uniqueName]);
         }
     
-        if ($path) {
-            $paymentModel->update(['payment_file_path' => $payment_file_path]);
-        }
-    
-        $checkPayment = paymentModel::where('payment_quote', $request->payment_quote)->get();
-
-    
-        // Loop จำนวนเงินทั้งหมดที่ชำระไปแล้ว
+        // การจัดการการชำระเงิน
         $totalOld = $quote->payment !== NULL ? $quote->payment : 0;
-        $total = $totalOld+$request->payment_total;
-       
-        $quotationModel = quotationModel::where('quote_number', $request->payment_quote)->update(['payment' => $total]);
+        $total = $totalOld + $request->payment_total;
+        quotationModel::where('quote_number', $request->payment_doc_number)->update(['payment' => $total]);
     
-        if($total >= $quote->quote_grand_total) {
-           quotationModel::where('quote_number', $request->payment_quote)->update(['quote_status' => 'success']);
-        }else{
-          quotationModel::where('quote_number', $request->payment_quote)->update(['quote_status' => 'payment']);
+        // การอัปเดตสถานะของใบเสนอราคา
+        if ($total >= $quote->quote_grand_total) {
+            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'success']);
+        } else {
+            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'payment']);
         }
-
-        return redirect()->back();
+    
+        return redirect()->back()->with('success', 'Payment processed successfully.');
     }
+    
+    
     
 }
