@@ -40,7 +40,7 @@
 
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="" class="todo-link list-group-item-action p-3 d-flex align-items-center"
+                        <a href="{{route('payments',$quotationModel->quote_id)}}" class="todo-link list-group-item-action p-3 d-flex align-items-center"
                             id="current-task-important">
                             <i data-feather="star" class="feather-sm me-2"></i>
                             แจ้งชำระเงิน
@@ -196,18 +196,18 @@
                                         <td>{{ number_format($item->invoice_grand_total, 2, '.', ',') }}</td>
                                         <td>
                                             @if ($item->invoice_status === 'wait')
-                                                <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
+                                                <span class="badge rounded-pill bg-primary">กำลังดำเนินการ</span>
                                             @endif
-                                            @if ($item->invoice_status === 'success' || $item->invoice_status === 'texinvoice')
-                                                <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
+
+                                            @if ($item->invoice_status === 'success')
+                                                <span class="badge rounded-pill bg-success">ออกใบกำกับภาษีแล้ว</span>
                                             @endif
                                             @if ($item->invoice_status === 'cancel')
                                                 <span class="badge rounded-pill bg-danger">ยกเลิก</span>
                                             @endif
-                                            @if ($item->invoice_status === 'payment')
-                                                <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
-                                            @endif
+                                           
                                         </td>
+
                                         <td>
                                             <div class="btn-group" role="group">
                                                 <button id="btnGroupVerticalDrop2" type="button"
@@ -218,7 +218,7 @@
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
 
                                                     <a class="dropdown-item" href="#"><i class="fa fa-print"></i>
-                                                        พิมพ์ใบเสนอราคา</a>
+                                                        พิมพ์ใบแจ้งหนี้</a>
 
 
                                                     @if ($item->invoice_status === 'wait')
@@ -229,7 +229,7 @@
                                                             href="{{ route('invoice.taxinvoice', $item->invoice_id) }}"
                                                             onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
                                                                 class="fas fa-plus"></i> สร้างใบกำกับภาษี</a>
-                                                        <a class="dropdown-item" href="#"><i
+                                                        <a class="dropdown-item"  href="{{route('invoice.cancel',$invoice->invoice_id)}}"  onclick="return confirm('ยืนยันการยกเลิกใบแจ้งหนี้')"><i
                                                                 class="fas fa-minus-circle"></i> ยกเลิกใบงาน</a>
                                                     @endif
 
@@ -245,7 +245,7 @@
                                     <tr>
                                         <td class="text-secondary">ใบกำกับภาษี</td>
                                         <td>{{ date('d/m/Y', strtotime($item->created_at)) }}</td>
-                                        <td><span class="badge bg-dark">{{ $item->texinvoice_number }}</span></td>
+                                        <td><span class="badge bg-dark">{{ $item->taxinvoice_number }}</span></td>
                                         <td>คุณ{{ $item->customer_name }}</td>
                                         <td>{{ number_format($item->invoice_grand_total, 2, '.', ',') }}</td>
                                         <td>

@@ -49,7 +49,7 @@ class taxInvoiceController extends Controller
             'invoice_number' => $invoiceModel->invoice_number,
             'created_by' => Auth::user()->name, 
           ]);
-          $invoiceModel->update(['taxinvoice_number' => $runningCode, 'invoice_status' => 'taxinvoice']);
+          $invoiceModel->update(['taxinvoice_number' => $runningCode, 'invoice_status' => 'success']);
  
          return redirect()->back();
  

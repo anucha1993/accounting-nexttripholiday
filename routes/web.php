@@ -71,7 +71,7 @@ Route::get('/booking/delete/{bookingModel}',[BookingController::class,'destroy']
 //invoices
 Route::get('invoice/create/{quotationModel}',[invoiceController::class,'create'])->name('invoice.create');
 Route::get('invoice/edit/{invoiceModel}',[invoiceController::class,'edit'])->name('invoice.edit');
-
+Route::get('invoice/cancel/{invoiceModel}',[invoiceController::class,'cancel'])->name('invoice.cancel');
 Route::put('invoice/update/{invoiceModel}',[invoiceController::class,'update'])->name('invoice.update');
 Route::post('invoice/store',[invoiceController::class,'store'])->name('invoice.store');
 
@@ -133,7 +133,7 @@ Route::put('credit/update/{creditModel}',[creditController::class,'update'])->na
 Route::post('credit/store/',[creditController::class,'store'])->name('credit.store');
 
 //Payment
-Route::get('payments/{invoiceModel}',[paymentController::class,'index'])->name('payments');
+Route::get('payments/{quotationModel}',[paymentController::class,'index'])->name('payments');
 Route::get('payment/quotation/{quotationModel}',[paymentController::class,'quotation'])->name('payment.quotation');
 Route::post('payment/quotation/store',[paymentController::class,'payment'])->name('payment.payment');
 

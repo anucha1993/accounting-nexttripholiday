@@ -40,10 +40,10 @@
 
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" class="todo-link list-group-item-action p-3 d-flex align-items-center"
+                        <a href="{{route('payments',$quotationModel->quote_id)}}" class="todo-link list-group-item-action p-3 d-flex align-items-center"
                             id="current-task-important">
                             <i data-feather="star" class="feather-sm me-2"></i>
-                            Important
+                            แจ้งชำระเงิน
                             <span
                                 class="todo-badge badge rounded-pill px-3 bg-light-danger ms-auto text-danger font-weight-medium"></span>
                         </a>
@@ -105,9 +105,7 @@
                     <div class="container border bg-white">
                         <h4 class="text-center my-4">แจ้งชำระเงิน Payments</h4>
 
-                    <button class=" btn btn-primary btn-lg px-4 fs-4 font-weight-medium btn-sm" data-bs-toggle="modal" data-bs-target="#bs-example-modal-xlg">
-                        แจ้งชำระเงิน
-                    </button>
+
 
                         <table class="table table">
                             <thead>
@@ -117,11 +115,77 @@
                                     <th>รายละเอียดการชำระเงิน</th>
                                     <th>จำนวนเงิน</th>
                                     <th>ไฟล์แนบ</th>
-                                    <th>ประเทภ</th>
+                                    <th>ประเภท</th>
                                     <th>ใบเสร็จรับเงิน</th>
                                     <th>จัดการ</th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                @forelse ($payments as $key => $item)
+                                    <tr>
+                                        <td>{{ ++$key }}</td>
+                                        <td>{{ date('d-m-Y', strtotime($item->payment_in_date)) }}</td>
+                                        <td>
+                                           @if ($item->payment_method === 'cash')
+                                             วิธีการชำระเงิน : เงินสด </br>
+                                           @endif
+                                           @if ($item->payment_method === 'transfer-money')
+                                           วิธีการชำระเงิน : โอนเงิน</br>
+                                           วันที่ : {{date('d-m-Y : H:m', strtotime($item->payment_date_time))}}</br>
+                                           เช็คธนาคาร : {{$item->payment_bank}}
+                                           @endif
+                                           @if ($item->payment_method === 'check')
+                                           วิธีการชำระเงิน : เช็ค</br>
+                                           โอนเข้าบัญชี : {{$item->payment_bank}} </br>
+                                           เลขที่เช็ค : {{$item->payment_check_number}} </br>
+                                           วันที่ : {{date('d-m-Y : H:m', strtotime($item->payment_check_date))}}</br>
+                                          
+                                           @endif
+
+                                           @if ($item->payment_method === 'credit')
+                                             วิธีการชำระเงิน : บัตรเครดิต </br>
+                                             เลขที่สลิป : {{$item->payment_credit_slip_number}} </br>
+                                            @endif
+
+                                        </td>
+                                        <td>{{ number_format($item->payment_total, 2, '.', ',') }}</td>
+                                        <td>
+                                            @if ($item->payment_file_path)
+                                                <a href="{{ asset('storage/' . $item->payment_file_path) }}"><i
+                                                        class="fa fa-file text-danger"></i></a>
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($item->payment_type === 'deposit')
+                                                ชำระมัดจำ
+                                            @else
+                                                ชำระเงินเต็มจำนวน
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <a href="#"><i class="fa fa-print"></i> พิมพ์</a>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <button id="btnGroupVerticalDrop2" type="button"
+                                                    class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle"
+                                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    จัดการข้อมูล
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
+                                                    <a class="dropdown-item" href="#"><i class="fa fa-edit"></i> แก้ไข</a>
+                                                    <a class="dropdown-item text-danger" href="#"><i class="fas fa-minus-circle "></i> ยกเลิก</a>
+
+
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                @endforelse
+                            </tbody>
 
                         </table>
                     </div>
@@ -131,45 +195,4 @@
 
             </div>
         </div>
-
-        {{-- Modal --}}
-       
-        {{-- <!-- sample modal content -->
-        <div class="modal fade" id="bs-example-modal-xlg" tabindex="-1" aria-labelledby="bs-example-modal-lg"
-            aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header d-flex align-items-center">
-                        <h4 class="modal-title" id="myLargeModalLabel">
-                            แจ้งชำระเงิน
-                        </h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                       <form action="">
-                        <div class="row">
-                            <label>เลขที่เอกเอกสาร</label>
-                            <select name="docs" id="" class="form-select"></select>
-                        </div>
-                       </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                            class="
-                                  btn btn-light-danger
-                                  text-danger
-                                  font-weight-medium
-                                  waves-effect
-                                  text-start
-                                "
-                            data-bs-dismiss="modal">
-                            Close
-                        </button>
-                    </div>
-                </div>
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div> --}}
-        <!-- /.modal -->
     @endsection

@@ -139,6 +139,12 @@ class invoiceController extends Controller
         
     }
 
+    public function cancel(invoiceModel $invoiceModel)
+    {
+        $invoiceModel->update(['invoice_status' => 'cancel']);
+        return redirect()->back();
+    }
+
    
 
 

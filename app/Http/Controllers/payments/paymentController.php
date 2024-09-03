@@ -16,11 +16,11 @@ class paymentController extends Controller
 {
     //
 
-    public function index(invoiceModel $invoiceModel, Request $request)
+    public function index(quotationModel $quotationModel, Request $request)
     {
-        $quotationModel = quotationModel::where('quote_number', $invoiceModel->quote_number)->first();
-
-        return view('payments.index', compact('quotationModel', 'invoiceModel'));
+        $quotationModel = quotationModel::where('quote_number', $quotationModel->quote_number)->first();
+        $payments = paymentModel::where('payment_doc_number',$quotationModel->quote_number)->latest()->get();
+        return view('payments.index', compact('quotationModel','payments'));
     }
 
     public function quotation(quotationModel $quotationModel, Request $request)
@@ -49,13 +49,13 @@ class paymentController extends Controller
         if ($file) {
             $extension = $file->getClientOriginalExtension(); // นามสกุลไฟล์
             $uniqueName = $paymentModel->payment_id . '_' . $paymentModel->payment_doc_number . '_' . date('Ymd') . '.' . $extension;
-            $filePath = $absolutePath . '/' . $uniqueName;
+            $filePath = $quote->customer_id . '/' . $quote->quote_number. '/' . $uniqueName;
             
             // ย้ายไฟล์ไปยังตำแหน่งที่ต้องการ
             $file->move($absolutePath, $uniqueName);
     
             // อัปเดตพาธไฟล์ในฐานข้อมูล
-            $paymentModel->update(['payment_file_path' => $folderPath . '/' . $uniqueName]);
+            $paymentModel->update(['payment_file_path' => $filePath]);
         }
     
         // การจัดการการชำระเงิน
