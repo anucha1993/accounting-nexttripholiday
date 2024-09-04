@@ -78,7 +78,7 @@ class debitController extends Controller
           
 
         }
-        return redirect()->route('debits.form-edit',$debitModel->debit_note_id);
+        return redirect()->route('debit.edit',$debitModel->debit_note_id);
     }
 
     public function edit(debitModel $debitModel) 

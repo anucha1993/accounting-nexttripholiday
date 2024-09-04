@@ -2,41 +2,32 @@
 
 namespace App\Http\Controllers\payments;
 
-
 use Illuminate\Http\Request;
-use Spatie\FlareClient\View;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\File;
+use App\Models\debits\debitModel;
 use App\Models\invoices\invoiceModel;
+use Illuminate\Support\Facades\File;
 use App\Models\payments\paymentModel;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\quotations\quotationModel;
 
-class paymentController extends Controller
+class paymentDebitController extends Controller
 {
     //
-
-    public function index(quotationModel $quotationModel, Request $request)
+    public function debit(debitModel $debitModel, Request $request)
     {
-        $quotationModel = quotationModel::where('quote_number', $quotationModel->quote_number)->first();
-        $payments = paymentModel::where('payment_doc_number', $quotationModel->quote_number)->latest()->get();
-        return view('payments.index', compact('quotationModel', 'payments'));
+        return view('payments.debit-modal', compact('debitModel'));
     }
-
-    public function quotation(quotationModel $quotationModel, Request $request)
-    {
-        return view('payments.quote-modal', compact('quotationModel'));
-    }
-
-
     public function payment(Request $request)
     {
         // ตรวจสอบข้อมูลที่รับมาจาก request
-        $quote = quotationModel::where('quote_number', $request->payment_doc_number)->first();
+        $debit = quotationModel::where('debit_note_number', $request->payment_doc_number)->first();
+
+        $invoice = invoiceModel::where('invoice_number', $debit->invoice_number)->first();
+
         $paymentModel = paymentModel::create($request->all());
 
         // สร้างพาธที่ถูกต้อง
-        $folderPath = 'public/' . $quote->customer_id . '/' . $quote->quote_number;
+        $folderPath = 'public/' . $invoice->customer_id . '/' . $debit->debit_note_number;
         $absolutePath = storage_path('app/' . $folderPath);
 
         // เช็คว่าไดเร็กทอรีมีอยู่แล้วหรือไม่ หากไม่มีให้สร้างขึ้นมา
@@ -49,7 +40,7 @@ class paymentController extends Controller
         if ($file) {
             $extension = $file->getClientOriginalExtension(); // นามสกุลไฟล์
             $uniqueName = $paymentModel->payment_id . '_' . $paymentModel->payment_doc_number . '_' . date('Ymd') . '.' . $extension;
-            $filePath = $quote->customer_id . '/' . $quote->quote_number . '/' . $uniqueName;
+            $filePath = $invoice->customer_id . '/' . $debit->debit_note_number . '/' . $uniqueName;
 
             // ย้ายไฟล์ไปยังตำแหน่งที่ต้องการ
             $file->move($absolutePath, $uniqueName);
@@ -59,15 +50,16 @@ class paymentController extends Controller
         }
 
         // การจัดการการชำระเงิน
-        $totalOld = $quote->payment !== NULL ? $quote->payment : 0;
+        $totalOld = $debit->payment !== NULL ? $debit->payment : 0;
         $total = $totalOld + $request->payment_total;
-        quotationModel::where('quote_number', $request->payment_doc_number)->update(['payment' => $total]);
 
-        // การอัปเดตสถานะของใบเสนอราคา
-        if ($total >= $quote->quote_grand_total) {
-            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'success']);
+        debitModel::where('debit_note_number', $request->payment_doc_number)->update(['payment' => $total]);
+
+        // การอัปเดตสถานะของใบเพิ่มหนี้
+        if ($total >= $debit->grand_total) {
+            debitModel::where('debit_note_number', $request->payment_doc_number)->update(['debit_note_status' => 'success']);
         } else {
-            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'payment']);
+            debitModel::where('debit_note_number', $request->payment_doc_number)->update(['debit_note_status' => 'payment']);
         }
 
         return redirect()->back()->with('success', 'Payment processed successfully.');
@@ -79,16 +71,16 @@ class paymentController extends Controller
         $paymentModel->update(['payment_total' => NULL, 'payment_status' => 'cancel']);
 
         // quote
-        $quotationModel = quotationModel::where('quote_number', $paymentModel->payment_doc_number)->first();
-        $quoteTotalOld = $quotationModel->payment;
-        $totalNew = $quoteTotalOld - $totalOld;
-        $quotationModel->update(['payment' => $totalNew, 'quote_status' => 'payment']);
+        $debitModel = debitModel::where('debit_note_number', $paymentModel->payment_doc_number)->first();
+        $debitTotalOld = $debitModel->payment;
+        $totalNew = $debitTotalOld - $totalOld;
+        $debitModel->update(['payment' => $totalNew, 'debit_note_status' => 'payment']);
 
-         // การอัปเดตสถานะของใบเสนอราคา
-         if ($quotationModel->payment <= 0) {
-            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'wait']);
+          // การอัปเดตสถานะของใบเพิ่มหนี้
+          if ($debitModel->payment <= 0 ) {
+            debitModel::where('debit_note_number', $request->payment_doc_number)->update(['debit_note_status' => 'wait']);
         } else {
-            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'payment']);
+            debitModel::where('debit_note_number', $request->payment_doc_number)->update(['debit_note_status' => 'payment']);
         }
 
         return redirect()->back();
@@ -96,8 +88,8 @@ class paymentController extends Controller
 
     public function edit(paymentModel $paymentModel)
     {
-        $quotationModel = quotationModel::where('quote_number', $paymentModel->payment_doc_number)->first();
-        return view('payments.quote-modal-edit', compact('quotationModel', 'paymentModel'));
+        $debitModel = debitModel::where('debit_note_number', $paymentModel->payment_doc_number)->first();
+        return view('payments.debit-modal-edit', compact('debitModel', 'paymentModel'));
     }
 
     public function update(paymentModel $paymentModel, Request $request)
@@ -109,14 +101,16 @@ class paymentController extends Controller
         $paymentModel->update($request->all());
 
 
-        $quote = quotationModel::where('quote_number', $paymentModel->payment_doc_number)->first();
-        $quote->update(['payment' => $quote->payment - $totalOld]);
-        $quote->update(['payment' => $totaNew + $quote->payment]);
+        $debit = debitModel::where('debit_note_number', $paymentModel->payment_doc_number)->first();
+        $debit->update(['payment' => $debit->debit - $totalOld]);
+        $debit->update(['payment' => $debit + $debit->payment]);
 
-        if ($quote->payment >= $quote->quote_grand_total) {
-            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'success']);
+        $invoice = invoiceModel::where('invoice_number', $debit->invoice_number)->first();
+
+        if ($debit->payment >= $debit->grand_total) {
+            debitModel::where('debit_note_number', $request->payment_doc_number)->update(['quote_status' => 'success']);
         } else {
-            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'payment']);
+            debitModel::where('debit_note_number', $request->payment_doc_number)->update(['quote_status' => 'payment']);
         }
 
         $file = $request->file('payment_file');
@@ -128,7 +122,7 @@ class paymentController extends Controller
             }
 
             // สร้างพาธที่ถูกต้อง
-            $folderPath = 'public/' . $quote->customer_id . '/' . $quote->quote_number;
+            $folderPath = 'public/' . $invoice->customer_id . '/' . $debit->debit_note_number;
             $absolutePath = storage_path('app/' . $folderPath);
 
             // เช็คว่าไดเร็กทอรีมีอยู่แล้วหรือไม่ หากไม่มีให้สร้างขึ้นมา
@@ -139,7 +133,7 @@ class paymentController extends Controller
 
             $extension = $file->getClientOriginalExtension(); // นามสกุลไฟล์
             $uniqueName = $paymentModel->payment_id . '_' . $paymentModel->payment_doc_number . '_' . date('Ymd') . '.' . $extension;
-            $filePath = $quote->customer_id . '/' . $quote->quote_number . '/' . $uniqueName;
+            $filePath = $invoice->customer_id . '/' .$debit->debit_note_number . '/' . $uniqueName;
 
             // ย้ายไฟล์ไปยังตำแหน่งที่ต้องการ
             $file->move($absolutePath, $uniqueName);

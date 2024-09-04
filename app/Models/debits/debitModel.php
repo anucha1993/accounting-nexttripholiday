@@ -34,6 +34,7 @@ class debitModel extends Model
        'price_excluding_vat',
        'debit_note_status',
        'vat_type',
+       'payment',
        'created_by',
        'updated_by',
 

@@ -40,7 +40,8 @@
 
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="{{route('payments',$quotationModel->quote_id)}}" class="todo-link list-group-item-action p-3 d-flex align-items-center"
+                        <a href="{{ route('payments', $quotationModel->quote_id) }}"
+                            class="todo-link list-group-item-action p-3 d-flex align-items-center"
                             id="current-task-important">
                             <i data-feather="star" class="feather-sm me-2"></i>
                             แจ้งชำระเงิน
@@ -117,6 +118,7 @@
                                     <th>ไฟล์แนบ</th>
                                     <th>ประเภท</th>
                                     <th>ใบเสร็จรับเงิน</th>
+                                    <th>Status</th>
                                     <th>จัดการ</th>
                                 </tr>
                             </thead>
@@ -126,29 +128,37 @@
                                         <td>{{ ++$key }}</td>
                                         <td>{{ date('d-m-Y', strtotime($item->payment_in_date)) }}</td>
                                         <td>
-                                           @if ($item->payment_method === 'cash')
-                                             วิธีการชำระเงิน : เงินสด </br>
-                                           @endif
-                                           @if ($item->payment_method === 'transfer-money')
-                                           วิธีการชำระเงิน : โอนเงิน</br>
-                                           วันที่ : {{date('d-m-Y : H:m', strtotime($item->payment_date_time))}}</br>
-                                           เช็คธนาคาร : {{$item->payment_bank}}
-                                           @endif
-                                           @if ($item->payment_method === 'check')
-                                           วิธีการชำระเงิน : เช็ค</br>
-                                           โอนเข้าบัญชี : {{$item->payment_bank}} </br>
-                                           เลขที่เช็ค : {{$item->payment_check_number}} </br>
-                                           วันที่ : {{date('d-m-Y : H:m', strtotime($item->payment_check_date))}}</br>
-                                          
-                                           @endif
+                                            @if ($item->payment_method === 'cash')
+                                                วิธีการชำระเงิน : เงินสด </br>
+                                            @endif
+                                            @if ($item->payment_method === 'transfer-money')
+                                                วิธีการชำระเงิน : โอนเงิน</br>
+                                                วันที่ : {{ date('d-m-Y : H:m', strtotime($item->payment_date_time)) }}</br>
+                                                เช็คธนาคาร : {{ $item->payment_bank }}
+                                            @endif
+                                            @if ($item->payment_method === 'check')
+                                                วิธีการชำระเงิน : เช็ค</br>
+                                                โอนเข้าบัญชี : {{ $item->payment_bank }} </br>
+                                                เลขที่เช็ค : {{ $item->payment_check_number }} </br>
+                                                วันที่ :
+                                                {{ date('d-m-Y : H:m', strtotime($item->payment_check_date)) }}</br>
+                                            @endif
 
-                                           @if ($item->payment_method === 'credit')
-                                             วิธีการชำระเงิน : บัตรเครดิต </br>
-                                             เลขที่สลิป : {{$item->payment_credit_slip_number}} </br>
+                                            @if ($item->payment_method === 'credit')
+                                                วิธีการชำระเงิน : บัตรเครดิต </br>
+                                                เลขที่สลิป : {{ $item->payment_credit_slip_number }} </br>
                                             @endif
 
                                         </td>
-                                        <td>{{ number_format($item->payment_total, 2, '.', ',') }}</td>
+                                        <td>
+
+                                            @if ($item->payment_status === 'cancel')
+                                                -
+                                            @else
+                                                {{ number_format($item->payment_total, 2, '.', ',') }}
+                                            @endif
+
+                                        </td>
                                         <td>
                                             @if ($item->payment_file_path)
                                                 <a href="{{ asset('storage/' . $item->payment_file_path) }}"><i
@@ -158,29 +168,60 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($item->payment_type === 'deposit')
-                                                ชำระมัดจำ
+
+                                            @if ($item->payment_status === 'cancel')
+                                                -
                                             @else
-                                                ชำระเงินเต็มจำนวน
+                                                @if ($item->payment_type === 'deposit')
+                                                    ชำระมัดจำ
+                                                @else
+                                                    ชำระเงินเต็มจำนวน
+                                                @endif
                                             @endif
+
+
                                         </td>
                                         <td>
                                             <a href="#"><i class="fa fa-print"></i> พิมพ์</a>
                                         </td>
                                         <td>
-                                            <div class="btn-group" role="group">
-                                                <button id="btnGroupVerticalDrop2" type="button"
-                                                    class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle"
-                                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    จัดการข้อมูล
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
-                                                    <a class="dropdown-item" href="#"><i class="fa fa-edit"></i> แก้ไข</a>
-                                                    <a class="dropdown-item text-danger" href="#"><i class="fas fa-minus-circle "></i> ยกเลิก</a>
+                                            @if ($item->payment_status === 'success')
+                                                <span class="badge rounded-pill bg-success">Success</span>
+                                            @endif
+                                            @if ($item->payment_status === 'cancel')
+                                                <span class="badge rounded-pill bg-danger">Cancel</span>
+                                            @endif
+                                            @if ($item->payment_status === null)
+                                                <span class="badge rounded-pill bg-warning">NULL</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($item->payment_status !== 'cancel')
+                                                <div class="btn-group" role="group">
+                                                    <button id="btnGroupVerticalDrop2" type="button"
+                                                        class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle"
+                                                        data-bs-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false">
+                                                        จัดการข้อมูล
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
+                                                        <a class="dropdown-item payment-modal" href="{{route('payment.edit',$item->payment_id)}}"><i class="fa fa-edit"></i>
+                                                            แก้ไข</a>
+
+                                                        <a class="dropdown-item text-danger"
+                                                            onclick="return confirm('หากยกเลิกระบบจะ คืนจำนวนเงิน ที่ชำระ ไปยังยอดค้างชำระ')"
+                                                            href="{{ route('payment.cancel', $item->payment_id) }}"><i
+                                                                class="fas fa-minus-circle "></i> ยกเลิก</a>
 
 
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            @else
+                                                -
+                                            @endif
+
+
+
                                         </td>
                                     </tr>
                                 @empty
@@ -195,4 +236,31 @@
 
             </div>
         </div>
+
+           {{-- invoice payment Modal --}}
+           <div class="modal fade bd-example-modal-sm modal-lg" id="payment-edit" tabindex="-1" role="dialog"
+           aria-labelledby="mySmallModalLabel" aria-hidden="true">
+           <div class="modal-dialog modal-xl">
+               <div class="modal-content">
+                   ...
+               </div>
+           </div>
+       </div>
+
+       <script>
+           $(document).ready(function() {
+
+               // modal add user
+               $(".payment-modal").click("click", function(e) {
+                   e.preventDefault();
+                   $("#payment-edit")
+                       .modal("show")
+                       .addClass("modal-lg")
+                       .find(".modal-content")
+                       .load($(this).attr("href"));
+               });
+           });
+       </script>
+
+
     @endsection

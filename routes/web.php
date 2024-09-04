@@ -20,6 +20,7 @@ use App\Http\Controllers\Invoices\InvoiceBookingController;
 use App\Http\Controllers\invoices\invoiceDashboardController;
 use App\Http\Controllers\invoices\taxInvoiceController;
 use App\Http\Controllers\payments\paymentController;
+use App\Http\Controllers\payments\paymentDebitController;
 use App\Http\Controllers\quotations\salesInformationController;
 use App\Models\invoices\taxinvoiceModel;
 
@@ -134,6 +135,16 @@ Route::post('credit/store/',[creditController::class,'store'])->name('credit.sto
 
 //Payment
 Route::get('payments/{quotationModel}',[paymentController::class,'index'])->name('payments');
+Route::get('payments/edit/{paymentModel}',[paymentController::class,'edit'])->name('payment.edit');
+Route::put('payments/update/{paymentModel}',[paymentController::class,'update'])->name('payment.update');
 Route::get('payment/quotation/{quotationModel}',[paymentController::class,'quotation'])->name('payment.quotation');
+Route::get('payment/cancel/{paymentModel}',[paymentController::class,'cancel'])->name('payment.cancel');
 Route::post('payment/quotation/store',[paymentController::class,'payment'])->name('payment.payment');
+
+//payment debit
+Route::get('payments/debit/edit/{paymentModel}',[paymentDebitController::class,'edit'])->name('payment.debit-edit');
+Route::put('payments/debit/update/{paymentModel}',[paymentDebitController::class,'update'])->name('payment.debit-update');
+Route::get('payment/debit/{debitModel}',[paymentDebitController::class,'debit'])->name('payment.debit');
+Route::get('payment/debit/cancel/{paymentModel}',[paymentDebitController::class,'cancel'])->name('payment.debit-cancel');
+Route::post('payment/debit/store',[paymentDebitController::class,'payment'])->name('payment.debit-payment');
 

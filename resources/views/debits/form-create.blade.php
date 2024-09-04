@@ -533,11 +533,16 @@
                     totalBeforeDiscount += (expenseType !== 'discount') ? total : 0;
 
                     if (isNonVat) {
-                        $(this).find('.total-amount').val(total.toFixed(2));
-                        $(this).find('.price-excluding-vat').val(total.toFixed(2));
+                     
                         sumPriceExcludingVatNonVat += total;
                         sumTotal += total;
+
+                        $(this).find('.total-amount').val(total.toFixed(2));
+                        $(this).find('.price-excluding-vat').val(total.toFixed(2));
                     } else {
+                        $(this).find('.total-amount').val(total.toFixed(2));
+                        $(this).find('.price-excluding-vat').val(priceExcludingVat.toFixed(2));
+
                         if (vatMethod === 'include') {
                             // คำนวณ VAT และราคาก่อน VAT ตามสูตรที่กำหนด
                             const vatAmount = total - (total * 100 / 107);

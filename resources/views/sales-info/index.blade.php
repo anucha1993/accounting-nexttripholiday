@@ -114,6 +114,8 @@
                                     <th>Doc. Number</th>
                                     <th style="width: 400px">ชื่อลูกค้า</th>
                                     <th>ยอดรวมสุทธิ</th>
+                                    <th>ยอดชำระ</th>
+                                    <th>ยอดคงค้าง</th>
                                     <th>สถานะ </th>
                                     <th>Action</th>
                                 </tr>
@@ -126,6 +128,8 @@
                                     <td>คุณ{{ $quotationModel->customer_name }}</td>
                                     <td>{{ number_format($quotationModel->quote_grand_total ? $quotationModel->quote_grand_total : $quotationModel->quote_total, 2, '.', ',') }}
                                     </td>
+                                    <td>{{number_format($quotationModel->payment ? $quotationModel->payment: 0, 2, '.', ',')}}</td>
+                                    <td>{{number_format($quotationModel->quote_grand_total - $quotationModel->payment, 2, '.', ',')}}</td>
                                     <td>
                                         @if ($quotationModel->quote_status === 'wait')
                                             <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
@@ -194,6 +198,8 @@
                                         <td><span class="badge bg-dark">{{ $item->invoice_number }}</span></td>
                                         <td>คุณ{{ $item->customer_name }}</td>
                                         <td>{{ number_format($item->invoice_grand_total, 2, '.', ',') }}</td>
+                                        <td>N/A</td>
+                                        <td>N/A</td>
                                         <td>
                                             @if ($item->invoice_status === 'wait')
                                                 <span class="badge rounded-pill bg-primary">กำลังดำเนินการ</span>
@@ -207,6 +213,7 @@
                                             @endif
                                            
                                         </td>
+                                       
 
                                         <td>
                                             <div class="btn-group" role="group">
@@ -248,9 +255,12 @@
                                         <td><span class="badge bg-dark">{{ $item->taxinvoice_number }}</span></td>
                                         <td>คุณ{{ $item->customer_name }}</td>
                                         <td>{{ number_format($item->invoice_grand_total, 2, '.', ',') }}</td>
+                                        <td>N/A</td>
+                                        <td>N/A</td>
                                         <td>
                                             <span class="badge rounded-pill bg-success">ออกใบกำกับภาษีแล้ว</span>
                                         </td>
+                                        
                                         <td>
                                             <div class="btn-group" role="group">
                                                 <button id="btnGroupVerticalDrop2" type="button"
@@ -288,6 +298,8 @@
                                         <td><span class="badge bg-info">{{ $item->debit_note_number }}</span></td>
                                         <td>คุณ{{ $item->customer_name }}</td>
                                         <td>{{ number_format($item->grand_total, 2, '.', ',') }}</td>
+                                        <td>N/A</td>
+                                        <td>N/A</td>
                                         <td>
                                             @if ($item->debit_note_status === 'wait')
                                                 <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
@@ -310,6 +322,10 @@
                                                     จัดการข้อมูล
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
+                                                    <a class="dropdown-item debit-modal"
+                                                    href="{{ route('payment.debit', $item->debit_note_id) }}"><i
+                                                        class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
+
                                                     <a class="dropdown-item"
                                                         href="{{ route('debit.edit', $item->debit_note_id) }}"><i
                                                             class="fa fa-edit"></i> แก้ไข</a>
@@ -333,6 +349,8 @@
                                         <td><span class="badge bg-danger">{{ $item->credit_note_number }}</span></td>
                                         <td>คุณ{{ $item->customer_name }}</td>
                                         <td>{{ number_format($item->grand_total, 2, '.', ',') }}</td>
+                                        <td>N/A</td>
+                                        <td>N/A</td>
                                         <td>
                                             @if ($item->credit_note_status === 'wait')
                                                 <span class="badge rounded-pill bg-primary">รอคืนเงิน</span>
@@ -354,14 +372,16 @@
                                                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     จัดการข้อมูล
                                                 </button>
+                                                <a class="dropdown-item invoice-modal"
+                                                href="{{ route('payment.debit', $quotationModel->quote_id) }}"><i
+                                                    class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
+
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
                                                     <a class="dropdown-item"
                                                         href="{{ route('credit.edit', $item->credit_note_id) }}"><i
                                                             class="fa fa-edit"></i> แก้ไข</a>
                                                     <a class="dropdown-item" href="#"><i class="fa fa-print"></i>
                                                         พิมพ์ใบเสนอราคา</a>
-
-
                                                 </div>
                                             </div>
                                         </td>
@@ -398,10 +418,19 @@
             </div>
         </div>
 
+          {{-- debit payment Modal --}}
+          <div class="modal fade bd-example-modal-sm modal-lg" id="debit-payment" tabindex="-1" role="dialog"
+          aria-labelledby="mySmallModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+              <div class="modal-content">
+                  ...
+              </div>
+          </div>
+      </div>
+
         <script>
             $(document).ready(function() {
-
-                // modal add user
+                // modal add payment invoice
                 $(".invoice-modal").click("click", function(e) {
                     e.preventDefault();
                     $("#invoice-payment")
@@ -410,6 +439,16 @@
                         .find(".modal-content")
                         .load($(this).attr("href"));
                 });
+                 // modal add payment debit
+                 $(".debit-modal").click("click", function(e) {
+                    e.preventDefault();
+                    $("#debit-payment")
+                        .modal("show")
+                        .addClass("modal-lg")
+                        .find(".modal-content")
+                        .load($(this).attr("href"));
+                });
             });
+
         </script>
     @endsection
