@@ -123,6 +123,9 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr>
+                                    <td colspan="9">แจ้งชำระเงิน ใบเสนอราคา</td>
+                                </tr>
                                 @forelse ($payments as $key => $item)
                                     <tr>
                                         <td>{{ ++$key }}</td>
@@ -223,6 +226,9 @@
 
 
                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="9">แจ้งชำระเงิน ใบเพิ่มหนี้</td>
                                     </tr>
                                 @empty
                                 @endforelse

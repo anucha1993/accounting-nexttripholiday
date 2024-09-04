@@ -18,8 +18,12 @@ class paymentController extends Controller
 
     public function index(quotationModel $quotationModel, Request $request)
     {
-        $quotationModel = quotationModel::where('quote_number', $quotationModel->quote_number)->first();
-        $payments = paymentModel::where('payment_doc_number', $quotationModel->quote_number)->latest()->get();
+        $quotationModel = quotationModel::where('quote_number', $quotationModel->quote_number)
+        ->first();
+
+        $payments = paymentModel::where('payment_doc_number', $quotationModel->quote_number)
+        ->where('payment_doc_type','quote')
+        ->latest()->get();
         return view('payments.index', compact('quotationModel', 'payments'));
     }
 
