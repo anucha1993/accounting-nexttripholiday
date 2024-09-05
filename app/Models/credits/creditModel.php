@@ -29,6 +29,7 @@ class creditModel extends Model
        'price_excluding_vat',
        'credit_note_status',
        'vat_type',
+       'payment',
        'created_by',
        'updated_by',
 

@@ -43,6 +43,11 @@
                     <label>ธนาคาร</label>
                     <select name="payment_bank_number" id="bank-number" class="form-select">
                         <option value="">--กรุณาเลือก--</option>
+                        @forelse ($bankCompany as $item)
+                        <option value="{{$item->bank_company_id}}">{{$item->bank_company_name}}</option>
+                        @empty
+                            
+                        @endforelse
                     </select>
                 </div>
                 <div class="col-md-3 mt-3">
@@ -57,11 +62,15 @@
                 <label for="">ธนาคาร</label>
                 <select name="payment_bank" id="bank" class="form-select">
                     <option value="">--กรุณาเลือก--</option>
+                    @forelse ($bank as $item)
+                    <option value="{{$item->bank_id}}">{{$item->bank_name}}</option>
+                    @empty
+                    @endforelse
                 </select>
                </div>
                <div class="col-md-3">
                 <label for="">เลขที่เช็ค</label>
-                <input type="text" class="form-control" name="payment_check_number">
+                <input type="text" class="form-control" name="payment_check_number" placeholder="เลขที่เช็ค">
                </div>
                <div class="col-md-3">
                 <label for="">ลงวันที่</label>
@@ -72,7 +81,7 @@
             <div class="row mt-3" id="credit" style="display: none">
                 <div class="col-md-3">
                     <label for="">เลขที่สลิป</label>
-                    <input type="text" class="form-control" name="payment_credit_slip_number">
+                    <input type="text" class="form-control" name="payment_credit_slip_number" placeholder="เลขที่สลิป">
                 </div>
             </div>
 

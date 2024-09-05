@@ -6,6 +6,8 @@ namespace App\Http\Controllers\payments;
 use Illuminate\Http\Request;
 use Spatie\FlareClient\View;
 use App\Http\Controllers\Controller;
+use App\Models\bank\bankCompanyModel;
+use App\Models\bank\bankModel;
 use Illuminate\Support\Facades\File;
 use App\Models\invoices\invoiceModel;
 use App\Models\payments\paymentModel;
@@ -18,18 +20,38 @@ class paymentController extends Controller
 
     public function index(quotationModel $quotationModel, Request $request)
     {
-        $quotationModel = quotationModel::where('quote_number', $quotationModel->quote_number)
+
+        $quotationModel = quotationModel::where('quotation.quote_number', $quotationModel->quote_number)
+        ->leftjoin('invoices','invoices.quote_number','quotation.quote_number')
+        ->leftjoin('debit_note','debit_note.invoice_number','invoices.invoice_number')
+        ->leftjoin('credit_note','credit_note.invoice_number','invoices.invoice_number')
         ->first();
+        
 
         $payments = paymentModel::where('payment_doc_number', $quotationModel->quote_number)
         ->where('payment_doc_type','quote')
         ->latest()->get();
-        return view('payments.index', compact('quotationModel', 'payments'));
+        
+        
+        $paymentDebit = paymentModel::where('payment_doc_number', $quotationModel->debit_note_number)
+        ->where('payment_doc_type','debit-note')
+        ->latest()->get();
+
+        $paymentCredit = paymentModel::where('payment_doc_number', $quotationModel->credit_note_number)
+        ->where('payment_doc_type','credit-note')
+        ->latest()->get();
+        
+        
+        return view('payments.index', compact('quotationModel', 'payments','paymentDebit','paymentCredit'));
     }
+
 
     public function quotation(quotationModel $quotationModel, Request $request)
     {
-        return view('payments.quote-modal', compact('quotationModel'));
+        $bank = bankModel::where('bank_status','active')->get();
+
+        $bankCompany = bankCompanyModel::where('bank_company_status','active')->get();
+        return view('payments.quote-modal', compact('quotationModel','bank','bankCompany'));
     }
 
 
@@ -100,8 +122,10 @@ class paymentController extends Controller
 
     public function edit(paymentModel $paymentModel)
     {
+        $bank = bankModel::where('bank_status','active')->get();
+        $bankCompany = bankCompanyModel::where('bank_company_status','active')->get();
         $quotationModel = quotationModel::where('quote_number', $paymentModel->payment_doc_number)->first();
-        return view('payments.quote-modal-edit', compact('quotationModel', 'paymentModel'));
+        return view('payments.quote-modal-edit', compact('quotationModel', 'paymentModel','bankCompany','bank'));
     }
 
     public function update(paymentModel $paymentModel, Request $request)

@@ -6,23 +6,24 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Models\invoices\taxinvoiceModel;
 use App\Http\Controllers\selects\periodSelect;
 use App\Http\Controllers\debits\debitController;
+use App\Http\Controllers\credits\creditController;
 use App\Http\Controllers\airline\airlineController;
 use App\Http\Controllers\booking\BookingController;
-use App\Http\Controllers\credits\creditController;
 use App\Http\Controllers\invoices\invoiceController;
+use App\Http\Controllers\payments\paymentController;
 use App\Http\Controllers\products\productController;
 use App\Http\Controllers\quotations\quoteController;
 use App\Http\Controllers\customers\customerController;
+use App\Http\Controllers\invoices\taxInvoiceController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
+use App\Http\Controllers\payments\paymentDebitController;
+use App\Http\Controllers\payments\paymentCreditController;
 use App\Http\Controllers\Invoices\InvoiceBookingController;
 use App\Http\Controllers\invoices\invoiceDashboardController;
-use App\Http\Controllers\invoices\taxInvoiceController;
-use App\Http\Controllers\payments\paymentController;
-use App\Http\Controllers\payments\paymentDebitController;
 use App\Http\Controllers\quotations\salesInformationController;
-use App\Models\invoices\taxinvoiceModel;
 
 /*
 |--------------------------------------------------------------------------
@@ -147,4 +148,11 @@ Route::put('payments/debit/update/{paymentModel}',[paymentDebitController::class
 Route::get('payment/debit/{debitModel}',[paymentDebitController::class,'debit'])->name('payment.debit');
 Route::get('payment/debit/cancel/{paymentModel}',[paymentDebitController::class,'cancel'])->name('payment.debit-cancel');
 Route::post('payment/debit/store',[paymentDebitController::class,'payment'])->name('payment.debit-payment');
+
+//payment credit
+Route::get('payments/credit/edit/{paymentModel}',[paymentCreditController::class,'edit'])->name('payment.credit-edit');
+Route::put('payments/credit/update/{paymentModel}',[paymentCreditController::class,'update'])->name('payment.credit-update');
+Route::get('payment/credit/{creditModel}',[paymentCreditController::class,'credit'])->name('payment.credit');
+Route::get('payment/credit/cancel/{paymentModel}',[paymentCreditController::class,'cancel'])->name('payment.credit-cancel');
+Route::post('payment/credit/store',[paymentCreditController::class,'payment'])->name('payment.credit-payment');
 

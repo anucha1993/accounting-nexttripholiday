@@ -28,8 +28,8 @@
                 <div class="col-md-3 mt-3">
                     <label>วิธีการชำระเงิน </label>
                     <select id="payment-method" class="form-select" name="payment_method">
-                        <option value="">--กรุณาเลือก--</option>
-                        <option @if($paymentModel->payment_method === 'cash') selected @endif  value="cash">เงินสด</option>
+                        <option  value="">--กรุณาเลือก--</option>
+                        <option  @if($paymentModel->payment_method === 'cash') selected @endif  value="cash">เงินสด</option>
                         <option  @if($paymentModel->payment_method === 'transfer-money') selected @endif value="transfer-money">โอนเงินเข้าบัญชี</option>
                         <option  @if($paymentModel->payment_method === 'check') selected @endif value="check">เช็คธนาคาร</option>
                         <option  @if($paymentModel->payment_method === 'credit') selected @endif value="credit">บัตรเครดิต</option>
@@ -48,6 +48,11 @@
                     <label>ธนาคาร</label>
                     <select name="payment_bank_number" id="bank-number" class="form-select">
                         <option value="">--กรุณาเลือก--</option>
+                        @forelse ($bankCompany as $item)
+                        <option @if($paymentModel->payment_bank_number = $item->bank_company_id) selected @endif value="{{$item->bank_company_id}}">{{$item->bank_company_name}}</option>
+                        @empty
+                            
+                        @endforelse
                        
                     </select>
                 </div>
@@ -63,6 +68,10 @@
                 <label for="">ธนาคาร</label>
                 <select name="payment_bank" id="bank" class="form-select">
                     <option value="">--กรุณาเลือก--</option>
+                    @forelse ($bank as $item)
+                    <option @if($paymentModel->payment_bank = $item->bank_id) selected @endif value="{{$item->bank_id}}">{{$item->bank_name}}</option>
+                    @empty
+                    @endforelse
                 </select>
                </div>
                <div class="col-md-3">

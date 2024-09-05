@@ -5,8 +5,8 @@
     <div class="card-body">
         <form action="{{route('payment.debit-payment')}}" method="post" enctype="multipart/form-data">
             @csrf
-            <input type="hidden" name="payment_doc_number" value="{{$debitModel->debit_note_numner}}">
-            <input type="hidden" name="payment_doc_type" value="debit">
+            <input type="hidden" name="payment_doc_number" value="{{$debitModel->debit_note_number}}">
+            <input type="hidden" name="payment_doc_type" value="debit-note">
             <div class="row">
                 <div class="col-md-3 mt-3">
                     <label for="">จำนวนเงินที่จะชำระ</label>
@@ -43,6 +43,11 @@
                     <label>ธนาคาร</label>
                     <select name="payment_bank_number" id="bank-number" class="form-select">
                         <option value="">--กรุณาเลือก--</option>
+                        @forelse ($bankCompany as $item)
+                        <option value="{{$item->bank_company_id}}">{{$item->bank_company_name}}</option>
+                        @empty
+                            
+                        @endforelse
                     </select>
                 </div>
                 <div class="col-md-3 mt-3">
@@ -57,6 +62,11 @@
                 <label for="">ธนาคาร</label>
                 <select name="payment_bank" id="bank" class="form-select">
                     <option value="">--กรุณาเลือก--</option>
+                    @forelse ($bank as $item)
+                        <option value="{{$item->bank_id}}">{{$item->bank_name}}</option>
+                        @empty
+                            
+                        @endforelse
                 </select>
                </div>
                <div class="col-md-3">

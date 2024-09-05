@@ -322,8 +322,7 @@
                                                     จัดการข้อมูล
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
-                                                    <a class="dropdown-item debit-modal"
-                                                    href="{{ route('payment.debit', $item->debit_note_id) }}"><i
+                                                    <a class="dropdown-item debit-modal" href="{{ route('payment.debit', $item->debit_note_id) }}"><i
                                                         class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
 
                                                     <a class="dropdown-item"
@@ -340,7 +339,7 @@
                                 @empty
                                 @endforelse
 
-                                {{-- Credit note ใบเพิ่มหนี้ --}}
+                                {{-- Credit note ใบลดหนี้ --}}
 
                                 @forelse ($creditnote as $item)
                                     <tr>
@@ -372,17 +371,20 @@
                                                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     จัดการข้อมูล
                                                 </button>
-                                                <a class="dropdown-item invoice-modal"
-                                                href="{{ route('payment.debit', $quotationModel->quote_id) }}"><i
-                                                    class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
+                                           
 
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
-                                                    <a class="dropdown-item"
+
+                                                    <a class="dropdown-item credit-modal" href="{{ route('payment.credit', $item->credit_note_id) }}"><i
+                                                        class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
+
+                                                    <a class="dropdown-item"    
                                                         href="{{ route('credit.edit', $item->credit_note_id) }}"><i
                                                             class="fa fa-edit"></i> แก้ไข</a>
                                                     <a class="dropdown-item" href="#"><i class="fa fa-print"></i>
                                                         พิมพ์ใบเสนอราคา</a>
                                                 </div>
+
                                             </div>
                                         </td>
                                     </tr>
@@ -428,6 +430,16 @@
           </div>
       </div>
 
+        {{-- credit payment Modal --}}
+        <div class="modal fade bd-example-modal-sm modal-lg" id="credit-payment" tabindex="-1" role="dialog"
+        aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                ...
+            </div>
+        </div>
+    </div>
+
         <script>
             $(document).ready(function() {
                 // modal add payment invoice
@@ -443,6 +455,15 @@
                  $(".debit-modal").click("click", function(e) {
                     e.preventDefault();
                     $("#debit-payment")
+                        .modal("show")
+                        .addClass("modal-lg")
+                        .find(".modal-content")
+                        .load($(this).attr("href"));
+                });
+                 // modal add payment credit
+                 $(".credit-modal").click("click", function(e) {
+                    e.preventDefault();
+                    $("#credit-payment")
                         .modal("show")
                         .addClass("modal-lg")
                         .find(".modal-content")

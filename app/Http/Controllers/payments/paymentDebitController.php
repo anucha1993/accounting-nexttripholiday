@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\payments;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Models\bank\bankModel;
 use App\Models\debits\debitModel;
-use App\Models\invoices\invoiceModel;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
+use App\Models\bank\bankCompanyModel;
+use App\Models\invoices\invoiceModel;
 use App\Models\payments\paymentModel;
 use App\Models\quotations\quotationModel;
 
@@ -15,12 +17,14 @@ class paymentDebitController extends Controller
     //
     public function debit(debitModel $debitModel, Request $request)
     {
-        return view('payments.debit-modal', compact('debitModel'));
+        $bank = bankModel::where('bank_status','active')->get();
+        $bankCompany = bankCompanyModel::where('bank_company_status','active')->get();
+        return view('payments.debit-modal', compact('debitModel','bank','bankCompany'));
     }
     public function payment(Request $request)
     {
         // ตรวจสอบข้อมูลที่รับมาจาก request
-        $debit = quotationModel::where('debit_note_number', $request->payment_doc_number)->first();
+        $debit = debitModel::where('debit_note_number', $request->payment_doc_number)->first();
 
         $invoice = invoiceModel::where('invoice_number', $debit->invoice_number)->first();
 
@@ -88,8 +92,10 @@ class paymentDebitController extends Controller
 
     public function edit(paymentModel $paymentModel)
     {
+        $bank = bankModel::where('bank_status','active')->get();
+        $bankCompany = bankCompanyModel::where('bank_company_status','active')->get();
         $debitModel = debitModel::where('debit_note_number', $paymentModel->payment_doc_number)->first();
-        return view('payments.debit-modal-edit', compact('debitModel', 'paymentModel'));
+        return view('payments.debit-modal-edit', compact('debitModel', 'paymentModel','bank','bankCompany'));
     }
 
     public function update(paymentModel $paymentModel, Request $request)
