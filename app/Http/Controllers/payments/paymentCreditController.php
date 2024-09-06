@@ -112,14 +112,14 @@ class paymentCreditController extends Controller
  
          $credit = creditModel::where('credit_note_number', $paymentModel->payment_doc_number)->first();
          $credit->update(['payment' => $credit->credit - $totalOld]);
-         $credit->update(['payment' => $credit + $credit->payment]);
+         $credit->update(['payment' => $totaNew + $credit->payment]);
  
          $invoice = invoiceModel::where('invoice_number', $credit->invoice_number)->first();
  
          if ($credit->payment >= $credit->grand_total) {
-             creditModel::where('credit_note_number', $request->payment_doc_number)->update(['quote_status' => 'success']);
+             creditModel::where('credit_note_number', $request->payment_doc_number)->update(['credit_note_status' => 'success']);
          } else {
-             creditModel::where('credit_note_number', $request->payment_doc_number)->update(['quote_status' => 'payment']);
+             creditModel::where('credit_note_number', $request->payment_doc_number)->update(['credit_note_status' => 'payment']);
          }
  
          $file = $request->file('payment_file');

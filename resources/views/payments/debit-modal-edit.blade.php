@@ -7,7 +7,7 @@
             @csrf
             @method('PUT')
             <input type="hidden" name="payment_doc_number" value="{{$debitModel->debit_note_number}}">
-            <input type="hidden" name="payment_doc_type" value="quote">
+            <input type="hidden" name="payment_doc_type" value="debit-note">
             <div class="row">
                 <div class="col-md-3 mt-3">
                     <label for="">จำนวนเงินที่จะชำระ</label>

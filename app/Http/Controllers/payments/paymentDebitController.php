@@ -109,14 +109,14 @@ class paymentDebitController extends Controller
 
         $debit = debitModel::where('debit_note_number', $paymentModel->payment_doc_number)->first();
         $debit->update(['payment' => $debit->debit - $totalOld]);
-        $debit->update(['payment' => $debit + $debit->payment]);
+        $debit->update(['payment' => $totaNew + $debit->payment]);
 
         $invoice = invoiceModel::where('invoice_number', $debit->invoice_number)->first();
 
         if ($debit->payment >= $debit->grand_total) {
-            debitModel::where('debit_note_number', $request->payment_doc_number)->update(['quote_status' => 'success']);
+            debitModel::where('debit_note_number', $request->payment_doc_number)->update(['debit_note_status' => 'success']);
         } else {
-            debitModel::where('debit_note_number', $request->payment_doc_number)->update(['quote_status' => 'payment']);
+            debitModel::where('debit_note_number', $request->payment_doc_number)->update(['debit_note_status' => 'payment']);
         }
 
         $file = $request->file('payment_file');
