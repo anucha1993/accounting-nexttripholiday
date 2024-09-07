@@ -24,6 +24,26 @@ class paymentCreditController extends Controller
          return view('payments.credit-modal', compact('creditModel','bank','bankCompany'));
 
      }
+
+      // function Runnumber Payment
+      public function generateRunningCodePM()
+      {
+          $code = paymentModel::latest()->first();
+          if (!empty($code)) {
+              $codeNumber = $code->payment_number;
+          } else {
+              $codeNumber = 'PM' . date('y') . date('m'). '-' . '0000';
+          }
+          $prefix = 'PM';
+          $year = date('y');
+          $month = date('m');
+          $lastFourDigits = substr($codeNumber, -4);
+          $incrementedNumber = intval($lastFourDigits) + 1;
+          $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
+          $runningCode = $prefix . $year . $month . '-' . $newNumber;
+          return $runningCode;
+      }
+
      public function payment(Request $request)
      {
          // ตรวจสอบข้อมูลที่รับมาจาก request
@@ -31,6 +51,10 @@ class paymentCreditController extends Controller
  
          $invoice = invoiceModel::where('invoice_number', $credit->invoice_number)->first();
  
+         $request->merge([
+            'payment_number' => $this->generateRunningCodePM()
+        ]);
+        
          $paymentModel = paymentModel::create($request->all());
  
          // สร้างพาธที่ถูกต้อง

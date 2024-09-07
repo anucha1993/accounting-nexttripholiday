@@ -21,12 +21,36 @@ class paymentDebitController extends Controller
         $bankCompany = bankCompanyModel::where('bank_company_status','active')->get();
         return view('payments.debit-modal', compact('debitModel','bank','bankCompany'));
     }
+
+     // function Runnumber Payment
+     public function generateRunningCodePM()
+     {
+         $code = paymentModel::latest()->first();
+         if (!empty($code)) {
+             $codeNumber = $code->payment_number;
+         } else {
+             $codeNumber = 'PM' . date('y') . date('m'). '-' . '0000';
+         }
+         $prefix = 'PM';
+         $year = date('y');
+         $month = date('m');
+         $lastFourDigits = substr($codeNumber, -4);
+         $incrementedNumber = intval($lastFourDigits) + 1;
+         $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
+         $runningCode = $prefix . $year . $month . '-' . $newNumber;
+         return $runningCode;
+     }
+
+
     public function payment(Request $request)
     {
         // ตรวจสอบข้อมูลที่รับมาจาก request
         $debit = debitModel::where('debit_note_number', $request->payment_doc_number)->first();
-
         $invoice = invoiceModel::where('invoice_number', $debit->invoice_number)->first();
+
+        $request->merge([
+            'payment_number' => $this->generateRunningCodePM()
+        ]);
 
         $paymentModel = paymentModel::create($request->all());
 

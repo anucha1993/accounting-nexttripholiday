@@ -31,7 +31,7 @@
 
                     <li class="list-group-item p-0 border-0">
                         <a href="{{ route('saleInfo.index', $quotationModel->quote_id) }}"
-                            class="todo-link list-group-item-action p-3 d-flex align-items-center btn-booking active">
+                            class="todo-link list-group-item-action p-3 d-flex align-items-center btn-booking ">
                             <i class="far fa-file-alt"></i>
                             &nbsp; ข้อมูลการขาย
                             <span
@@ -41,7 +41,7 @@
                     </li>
                     <li class="list-group-item p-0 border-0">
                         <a href="{{ route('payments', $quotationModel->quote_id) }}"
-                            class="todo-link list-group-item-action p-3 d-flex align-items-center"
+                            class="todo-link list-group-item-action p-3 d-flex align-items-center active"
                             id="current-task-important">
                             <i data-feather="star" class="feather-sm me-2"></i>
                             แจ้งชำระเงิน
@@ -50,26 +50,31 @@
                         </a>
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" class="todo-link list-group-item-action p-3 d-flex align-items-center"
+                        <a href="{{route('quotefile.index',$quotationModel->quote_id)}}" class="todo-link list-group-item-action p-3 d-flex align-items-center"
                             id="current-task-done">
                             <i data-feather="send" class="feather-sm me-2"></i>
-                            Complete
+                            ไฟล์เอกสาร
                             <span
                                 class="todo-badge badge rounded-pill px-3 text-success font-weight-medium bg-light-success ms-auto"></span>
                         </a>
                     </li>
+
+                    <li class="list-group-item p-0 border-0">
+                        <a href="{{ route('paymentWholesale.index', $quotationModel->quote_id) }}"
+                            class="todo-link list-group-item-action p-3 d-flex align-items-center" id="current-task-done">
+                            <i data-feather="dollar-sign" class="feather-sm me-2"></i>
+                            การชำระเงินโฮลเซลล์
+                            <span
+                                class="todo-badge badge rounded-pill px-3 text-success font-weight-medium bg-light-success ms-auto"></span>
+                        </a>
+                    </li>
+                    
                     <li class="list-group-item p-0 border-0">
                         <hr />
                     </li>
 
 
-                    <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" class="list-group-item-action p-3 d-flex align-items-center"
-                            id="current-todo-delete">
-                            <i data-feather="trash-2" class="feather-sm me-2"></i>
-                            Trash
-                        </a>
-                    </li>
+                   
                 </ul>
             </div>
         </div>
@@ -208,7 +213,9 @@
                                                         จัดการข้อมูล
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
-                                                        <a class="dropdown-item payment-modal" href="{{route('payment.edit',$item->payment_id)}}"><i class="fa fa-edit"></i>
+                                                        <a class="dropdown-item payment-modal"
+                                                            href="{{ route('payment.edit', $item->payment_id) }}"><i
+                                                                class="fa fa-edit"></i>
                                                             แก้ไข</a>
 
                                                         <a class="dropdown-item text-danger"
@@ -227,13 +234,20 @@
 
                                         </td>
                                     </tr>
-                                   
+
                                 @empty
+                                    <tr>
+                                        <td colspan="9"> Not found</td>
+                                    </tr>
                                 @endforelse
 
-                                <tr>
-                                    <td colspan="9">แจ้งชำระเงิน ใบเพิ่มหนี้</td>
-                                </tr>
+                                @if ($paymentDebit)
+                                    <tr>
+                                        <td colspan="9">แจ้งชำระเงิน ใบเพิ่มหนี้</td>
+                                    </tr>
+                                @endif
+
+
 
 
                                 @forelse ($paymentDebit as $key => $item)
@@ -246,7 +260,8 @@
                                             @endif
                                             @if ($item->payment_method === 'transfer-money')
                                                 วิธีการชำระเงิน : โอนเงิน</br>
-                                                วันที่ : {{ date('d-m-Y : H:m', strtotime($item->payment_date_time)) }}</br>
+                                                วันที่ :
+                                                {{ date('d-m-Y : H:m', strtotime($item->payment_date_time)) }}</br>
                                                 เช็คธนาคาร : {{ $item->payment_bank }}
                                             @endif
                                             @if ($item->payment_method === 'check')
@@ -318,7 +333,9 @@
                                                         จัดการข้อมูล
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
-                                                        <a class="dropdown-item debit-modal" href="{{route('payment.debit-edit',$item->payment_id)}}"><i class="fa fa-edit"></i>
+                                                        <a class="dropdown-item debit-modal"
+                                                            href="{{ route('payment.debit-edit', $item->payment_id) }}"><i
+                                                                class="fa fa-edit"></i>
                                                             แก้ไข</a>
 
                                                         <a class="dropdown-item text-danger"
@@ -337,14 +354,19 @@
 
                                         </td>
                                     </tr>
-                                   
+
                                 @empty
+                                    <tr>
+                                        <td colspan="9"> Not found</td>
+                                    </tr>
                                 @endforelse
 
+                                @if ($paymentCredit)
+                                    <tr>
+                                        <td colspan="9">แจ้งชำระเงิน ใบลดหนี้</td>
+                                    </tr>
+                                @endif
 
-                                <tr>
-                                    <td colspan="9">แจ้งชำระเงิน ใบลดหนี้</td>
-                                </tr>
                                 @forelse ($paymentCredit as $key => $item)
                                     <tr>
                                         <td>{{ ++$key }}</td>
@@ -355,7 +377,8 @@
                                             @endif
                                             @if ($item->payment_method === 'transfer-money')
                                                 วิธีการชำระเงิน : โอนเงิน</br>
-                                                วันที่ : {{ date('d-m-Y : H:m', strtotime($item->payment_date_time)) }}</br>
+                                                วันที่ :
+                                                {{ date('d-m-Y : H:m', strtotime($item->payment_date_time)) }}</br>
                                                 เช็คธนาคาร : {{ $item->payment_bank }}
                                             @endif
                                             @if ($item->payment_method === 'check')
@@ -427,7 +450,9 @@
                                                         จัดการข้อมูล
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
-                                                        <a class="dropdown-item credit-modal" href="{{route('payment.credit-edit',$item->payment_id)}}"><i class="fa fa-edit"></i>
+                                                        <a class="dropdown-item credit-modal"
+                                                            href="{{ route('payment.credit-edit', $item->payment_id) }}"><i
+                                                                class="fa fa-edit"></i>
                                                             แก้ไข</a>
 
                                                         <a class="dropdown-item text-danger"
@@ -439,20 +464,22 @@
                                                     </div>
                                                 </div>
                                             @else
-                                                -
                                             @endif
 
 
 
                                         </td>
                                     </tr>
-                                   
+
                                 @empty
+                                    <tr>
+                                        <td colspan="9"> Not found</td>
+                                    </tr>
                                 @endforelse
-                                
 
 
-                                
+
+
                             </tbody>
 
                         </table>
@@ -464,70 +491,70 @@
             </div>
         </div>
 
-           {{-- invoice payment Modal --}}
-           <div class="modal fade bd-example-modal-sm modal-lg" id="payment-edit" tabindex="-1" role="dialog"
-           aria-labelledby="mySmallModalLabel" aria-hidden="true">
-           <div class="modal-dialog modal-xl">
-               <div class="modal-content">
-                   ...
-               </div>
-           </div>
-       </div>
+        {{-- invoice payment Modal --}}
+        <div class="modal fade bd-example-modal-sm modal-lg" id="payment-edit" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
+            </div>
+        </div>
 
         {{-- debit payment Modal --}}
         <div class="modal fade bd-example-modal-sm modal-lg" id="debit-edit" tabindex="-1" role="dialog"
-        aria-labelledby="mySmallModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                ...
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
             </div>
         </div>
-    </div>
 
-    
+
         {{-- Credit payment Modal --}}
         <div class="modal fade bd-example-modal-sm modal-lg" id="credit-edit" tabindex="-1" role="dialog"
-        aria-labelledby="mySmallModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                ...
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
             </div>
         </div>
-    </div>
 
-       <script>
-           $(document).ready(function() {
+        <script>
+            $(document).ready(function() {
 
-               // modal add user
-               $(".payment-modal").click("click", function(e) {
-                   e.preventDefault();
-                   $("#payment-edit")
-                       .modal("show")
-                       .addClass("modal-lg")
-                       .find(".modal-content")
-                       .load($(this).attr("href"));
-               });
+                // modal add user
+                $(".payment-modal").click("click", function(e) {
+                    e.preventDefault();
+                    $("#payment-edit")
+                        .modal("show")
+                        .addClass("modal-lg")
+                        .find(".modal-content")
+                        .load($(this).attr("href"));
+                });
 
                 // modal debit
                 $(".debit-modal").click("click", function(e) {
-                   e.preventDefault();
-                   $("#debit-edit")
-                       .modal("show")
-                       .addClass("modal-lg")
-                       .find(".modal-content")
-                       .load($(this).attr("href"));
-               });
-                  // modal Credit
-                  $(".credit-modal").click("click", function(e) {
-                   e.preventDefault();
-                   $("#credit-edit")
-                       .modal("show")
-                       .addClass("modal-lg")
-                       .find(".modal-content")
-                       .load($(this).attr("href"));
-               });
-           });
-       </script>
+                    e.preventDefault();
+                    $("#debit-edit")
+                        .modal("show")
+                        .addClass("modal-lg")
+                        .find(".modal-content")
+                        .load($(this).attr("href"));
+                });
+                // modal Credit
+                $(".credit-modal").click("click", function(e) {
+                    e.preventDefault();
+                    $("#credit-edit")
+                        .modal("show")
+                        .addClass("modal-lg")
+                        .find(".modal-content")
+                        .load($(this).attr("href"));
+                });
+            });
+        </script>
 
 
     @endsection

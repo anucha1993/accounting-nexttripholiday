@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class debitModel extends Model
 {
-    use HasFactory;
+    
     use HasFactory;
     protected $table = 'debit_note';
     protected $primaryKey = 'debit_note_id';

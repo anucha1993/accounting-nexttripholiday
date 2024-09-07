@@ -20,10 +20,13 @@ use App\Http\Controllers\customers\customerController;
 use App\Http\Controllers\invoices\taxInvoiceController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
 use App\Http\Controllers\payments\paymentDebitController;
+use App\Http\Controllers\quotefiles\QuoteFilesController;
 use App\Http\Controllers\payments\paymentCreditController;
 use App\Http\Controllers\Invoices\InvoiceBookingController;
+use App\Http\Controllers\paymentWholesale\paymentWholesale;
 use App\Http\Controllers\invoices\invoiceDashboardController;
 use App\Http\Controllers\quotations\salesInformationController;
+use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -156,3 +159,13 @@ Route::get('payment/credit/{creditModel}',[paymentCreditController::class,'credi
 Route::get('payment/credit/cancel/{paymentModel}',[paymentCreditController::class,'cancel'])->name('payment.credit-cancel');
 Route::post('payment/credit/store',[paymentCreditController::class,'payment'])->name('payment.credit-payment');
 
+// Quote Files Upload
+Route::get('quotefiles/{quotationModel}',[QuoteFilesController::class,'index'])->name('quotefile.index');
+Route::get('quotefile/delete/{quoteFileModel}',[QuoteFilesController::class,'delete'])->name('quotefile.delete');
+Route::post('quotefile/upload',[QuoteFilesController::class,'upload'])->name('quotefile.upload');
+
+// Payment Wholesale
+Route::get('payment/wholesales/{quotationModel}',[paymentWholesaleController::class,'index'])->name('paymentWholesale.index');
+Route::get('payment/wholesale/delete/{paymentWholesaleModel}',[paymentWholesaleController::class,'delete'])->name('paymentWholesale.delete');
+Route::get('payment/wholesales/quote/{quotationModel}',[paymentWholesaleController::class,'quote'])->name('paymentWholesale.quote');
+Route::post('payment/wholesales/store',[paymentWholesaleController::class,'store'])->name('paymentWholesale.store');

@@ -25,6 +25,7 @@ class paymentModel extends Model
         'payment_credit_slip_number',
         'payment_file_path',
         'payment_status',
+        'payment_number',
         'created_by',
     ];
 }

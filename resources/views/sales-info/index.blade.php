@@ -49,26 +49,29 @@
                         </a>
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" class="todo-link list-group-item-action p-3 d-flex align-items-center"
+                        <a href="{{route('quotefile.index',$quotationModel->quote_id)}}" class="todo-link list-group-item-action p-3 d-flex align-items-center"
                             id="current-task-done">
                             <i data-feather="send" class="feather-sm me-2"></i>
-                            Complete
+                            ไฟล์เอกสาร
                             <span
                                 class="todo-badge badge rounded-pill px-3 text-success font-weight-medium bg-light-success ms-auto"></span>
                         </a>
                     </li>
                     <li class="list-group-item p-0 border-0">
+                        <a href="{{ route('paymentWholesale.index', $quotationModel->quote_id) }}"
+                            class="todo-link list-group-item-action p-3 d-flex align-items-center" id="current-task-done">
+                            <i data-feather="dollar-sign" class="feather-sm me-2"></i>
+                            การชำระเงินโฮลเซลล์
+                            <span
+                                class="todo-badge badge rounded-pill px-3 text-success font-weight-medium bg-light-success ms-auto"></span>
+                        </a>
+                    </li>
+                    
+                    <li class="list-group-item p-0 border-0">
                         <hr />
                     </li>
 
 
-                    <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" class="list-group-item-action p-3 d-flex align-items-center"
-                            id="current-todo-delete">
-                            <i data-feather="trash-2" class="feather-sm me-2"></i>
-                            Trash
-                        </a>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -172,6 +175,13 @@
                                                     <a class="dropdown-item invoice-modal"
                                                     href="{{ route('payment.quotation', $quotationModel->quote_id) }}"><i
                                                         class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
+
+                                                        <a class="dropdown-item payment-quote-wholesale"
+                                                        href="{{ route('paymentWholesale.quote', $quotationModel->quote_id) }}"><i
+                                                        class="fas fa-credit-card"></i> แจ้งชำระเงินโฮลเซลล์</a>
+
+                                                      
+                                                        
                                                 @if ($quotationModel->quote_status === 'wait' && $quotationModel->quote_status != 'cancel' )
                                                     <a class="dropdown-item"
                                                         href="{{ route('quote.edit', $quotationModel->quote_id) }}"><i
@@ -297,9 +307,11 @@
                                         <td>{{ date('d/m/Y', strtotime($item->created_at)) }}</td>
                                         <td><span class="badge bg-info">{{ $item->debit_note_number }}</span></td>
                                         <td>คุณ{{ $item->customer_name }}</td>
+
                                         <td>{{ number_format($item->grand_total, 2, '.', ',') }}</td>
-                                        <td>N/A</td>
-                                        <td>N/A</td>
+                                        <td>{{number_format($item->payment ? $item->payment : 0, 2, '.', ',')}}</td>
+                                        <td>{{number_format($item->grand_total - $item->payment, 2, '.', ',')}}</td>
+
                                         <td>
                                             @if ($item->debit_note_status === 'wait')
                                                 <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
@@ -348,8 +360,9 @@
                                         <td><span class="badge bg-danger">{{ $item->credit_note_number }}</span></td>
                                         <td>คุณ{{ $item->customer_name }}</td>
                                         <td>{{ number_format($item->grand_total, 2, '.', ',') }}</td>
-                                        <td>N/A</td>
-                                        <td>N/A</td>
+                                        <td>{{number_format($item->payment ? $item->payment : 0, 2, '.', ',')}}</td>
+                                        <td>{{number_format($item->grand_total - $item->payment, 2, '.', ',')}}</td>
+
                                         <td>
                                             @if ($item->credit_note_status === 'wait')
                                                 <span class="badge rounded-pill bg-primary">รอคืนเงิน</span>
@@ -440,8 +453,30 @@
         </div>
     </div>
 
+     {{-- credit payment WholeSale  Quote --}}
+     <div class="modal fade bd-example-modal-sm modal-lg" id="quote-payment-wholesale" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-xl">
+         <div class="modal-content">
+             ...
+         </div>
+     </div>
+ </div>
+
         <script>
             $(document).ready(function() {
+                 // modal add payment wholesale quote
+                 $(".payment-quote-wholesale").click("click", function(e) {
+                    e.preventDefault();
+                    $("#quote-payment-wholesale")
+                        .modal("show")
+                        .addClass("modal-lg")
+                        .find(".modal-content")
+                        .load($(this).attr("href"));
+                });
+
+                
+
                 // modal add payment invoice
                 $(".invoice-modal").click("click", function(e) {
                     e.preventDefault();

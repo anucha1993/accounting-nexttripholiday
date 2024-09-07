@@ -55,19 +55,46 @@ class paymentController extends Controller
     }
 
 
+      // function Runnumber Payment
+      public function generateRunningCodePM()
+      {
+          $code = paymentModel::latest()->first();
+          if (!empty($code)) {
+              $codeNumber = $code->payment_number;
+          } else {
+              $codeNumber = 'PM' . date('y') . date('m'). '-' . '0000';
+          }
+          $prefix = 'PM';
+          $year = date('y');
+          $month = date('m');
+          $lastFourDigits = substr($codeNumber, -4);
+          $incrementedNumber = intval($lastFourDigits) + 1;
+          $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
+          $runningCode = $prefix . $year . $month . '-' . $newNumber;
+          return $runningCode;
+      }
+
+
     public function payment(Request $request)
     {
+
         // ตรวจสอบข้อมูลที่รับมาจาก request
         $quote = quotationModel::where('quote_number', $request->payment_doc_number)->first();
+        $request->merge([
+            'payment_number' => $this->generateRunningCodePM()
+        ]);
+
+        
         $paymentModel = paymentModel::create($request->all());
 
+       
         // สร้างพาธที่ถูกต้อง
         $folderPath = 'public/' . $quote->customer_id . '/' . $quote->quote_number;
         $absolutePath = storage_path('app/' . $folderPath);
 
         // เช็คว่าไดเร็กทอรีมีอยู่แล้วหรือไม่ หากไม่มีให้สร้างขึ้นมา
         if (!File::exists($absolutePath)) {
-            File::makeDirectory($absolutePath, 0775, true);
+             File::makeDirectory($absolutePath, 0775, true);
         }
 
         $file = $request->file('payment_file');

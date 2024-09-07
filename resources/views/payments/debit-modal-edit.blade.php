@@ -93,9 +93,8 @@
             <br>
             <label for="">แนบไฟล์เอกสาร</label></br>
           
-            <a href="{{ asset('storage/' . $paymentModel->payment_file_path) }}"><i
-                class="fa fa-file text-danger"></i> {{$paymentModel->payment_file_path}}</a>
-
+            <a href="{{ asset('storage/' . $paymentModel->payment_file_path) }}"><i class="fa fa-file text-danger"></i> 
+                {{$paymentModel->payment_file_path}}</a>
                 <a href="#"></a>
         
             <div class="row mt-3">
