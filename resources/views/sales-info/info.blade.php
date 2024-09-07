@@ -243,24 +243,34 @@
 
                                           <tr>
                                               <td class="text-end"><b>ราคารวมสุทธิ Debit Note :</b></td>
-                                              <td class="text-success"> <b  class=" text-success" id=""></b>00.00 บาท</td>
+                                              <td class="text-success"> <b  class=" text-success" id=""></b>{{ number_format($debitnote ? $debitnote->grand_total : 00.00 , 2, '.', ',') }} บาท</td>
                                           </tr>
 
                                           <tr>
                                               <td class="text-end"><b>ราคารวมสุทธิ Credit Note:</b></td>
-                                              <td class="text-danger"> <b  class=" text-danger" id=""></b>00.00 บาท</td>
+                                              <td class="text-danger"> <b  class=" text-danger" id=""></b>{{ number_format($creditnote ? $creditnote->grand_total : 00.0 , 2, '.', ',') }} บาท</td>
                                           </tr>
                                           <tr>
                                               <td class="text-end"><b>ชำระให้โฮลเซลล์ : </b></td>
-                                              <td class="text-info"> <b  class=" text-info" id=""></b>00.00 บาท</td>
+                                              <td class="text-info"> <b  class=" text-info" id=""></b>{{ number_format($paymentWholesaleTotalSum ? $paymentWholesaleTotalSum : 00.0 , 2, '.', ',') }}  บาท</td>
                                           </tr>
+                                          @php
+                                              $quoteTotal = $quotationModel ? $quotationModel->quote_grand_total : $quotationModel->quote_total;
+                                              $debitnoteTotal = $debitnote ? $debitnote->grand_total : 0;
+                                              $creditnote = $creditnote ? $creditnote->grand_total : 0;
+                                              $wholesaleTotal = $paymentWholesaleTotalSum ? $paymentWholesaleTotalSum : 0;
+
+                                              $sumTotal = ($quoteTotal+$debitnoteTotal) - $creditnote;
+
+                                              $grandTotal = $sumTotal - $wholesaleTotal;
+                                          @endphp
                                           <tr>
                                              <td class="text-end"><b>ยอดรวมทั้งหมด : </b></td>
-                                             <td class="text-info"> <b  class=" text-info" id=""></b>00.00 บาท</td>
+                                             <td class="text-info"> <b  class=" text-info" id=""></b>{{number_format($sumTotal, 2, '.', ',')}} บาท</td>
                                          </tr>
                                          <tr>
                                              <td class="text-end"><b>กำไรขั้นต้น : </b></td>
-                                             <td class="text-info"> <b  class=" text-info" id=""></b>00.00 บาท</td>
+                                             <td class="bg-info"> <b  class=" text-info" id=""></b>{{number_format($grandTotal, 2, '.', ',')}} บาท</td>
                                          </tr>
                                          
                                       </table>

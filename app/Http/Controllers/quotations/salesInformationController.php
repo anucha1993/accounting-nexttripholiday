@@ -12,6 +12,7 @@ use App\Models\booking\bookingModel;
 use App\Models\invoices\invoiceModel;
 use App\Models\customers\customerModel;
 use App\Models\invoices\taxinvoiceModel;
+use App\Models\payments\paymentWholesaleModel;
 use App\Models\quotations\quotationModel;
 use App\Models\wholesale\wholesaleModel;
 
@@ -74,6 +75,12 @@ class salesInformationController extends Controller
             ->first();
         $booking = bookingModel::where('code', $quotationModel->quote_booking)->first();
         $wholesale = wholesaleModel::where('id', $tour->wholesale_id)->first();
-        return view('sales-info.info', compact('quotationModel', 'customer', 'invoice', 'sale', 'tour', 'airline', 'booking', 'wholesale'));
+        $debitnote = debitModel::where('invoice_number',$invoice->invoice_number)->first();
+        $creditnote = creditModel::where('invoice_number',$invoice->invoice_number)->first();
+
+        $paymentWholesaleTotalSum = paymentWholesaleModel::where('payment_wholesale_doc', $quotationModel->quote_number)
+        ->sum('payment_wholesale_total');
+
+        return view('sales-info.info', compact('paymentWholesaleTotalSum','quotationModel','creditnote','debitnote', 'customer', 'invoice', 'sale', 'tour', 'airline', 'booking', 'wholesale'));
     }
 }

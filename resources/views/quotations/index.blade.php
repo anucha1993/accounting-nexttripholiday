@@ -22,8 +22,8 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">ใบเสนอราคา/ใบแจ้งหนี้ <a href="{{ route('booking.create') }}"
-                            class="btn btn-primary float-end">เพิ่มใบจองทัวร์</a></h4>
+                    <h4 class="card-title">ใบเสนอราคา/ใบแจ้งหนี้ <a href="{{ route('quote.createNew') }}"
+                            class="btn btn-primary float-end">สร้างใบเสนอราคา</a></h4>
                     <hr>
                     <form action="" method="GET">
                         <div class="row">

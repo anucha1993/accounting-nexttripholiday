@@ -119,6 +119,7 @@
                             <thead>
                                 <tr class="bg-info text-white custom-row-height" style="line-height: -500px;">
                                     <th>ลำดับ</th>
+                                    <th>ตำแหน่งไฟล์</th>
                                     <th>ไฟล์</th>
                                     <th>Action</th>
                                 </tr>
@@ -127,6 +128,9 @@
                                 @forelse ($quoteFiles as $key => $item)
                                     <tr>
                                         <td>{{$key+1}}</td>
+                                        <td>
+                                            {{$item->quote_file_path}}
+                                        </td>
                                         <td>
                                             <a target="_blank" href="{{asset($item->quote_file_path)}}">{{$item->quote_file_name}}</a>
                                         </td>

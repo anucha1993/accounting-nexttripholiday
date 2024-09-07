@@ -146,4 +146,15 @@ class quoteController extends Controller
         $quotationModel->update(['quote_status' => 'cancel']);
         return redirect()->back();
     }
+
+    // Create Quotation New not Create Booking
+
+    public function createNew()
+    {
+        $products = productModel::get();
+        $customers = DB::table('customer')->get();
+        $sales = saleModel::select('name', 'id')->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])->get();
+        $tours = DB::connection('mysql2')->table('tb_tour')->where('status','on')->get();
+        return view('quotations.create',compact('products','customers','sales','tours'));
+    }
 }

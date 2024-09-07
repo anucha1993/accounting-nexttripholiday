@@ -118,6 +118,7 @@
                                 <tr>
                                     <th>ลำดับ</th>
                                     <th>เลขที่ชำระ</th>
+                                    <th>วันที่ชำระ</th>
                                     <th>รายละเอียดการชำระเงิน</th>
                                     <th>จำนวนเงิน</th>
                                     <th>ไฟล์แนบ</th>
@@ -129,13 +130,19 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="9">แจ้งชำระเงิน ใบเสนอราคา</td>
+                                    <td colspan="10">แจ้งชำระเงิน ใบเสนอราคา</td>
                                 </tr>
                                 @forelse ($payments as $key => $item)
                                     <tr>
                                         <td>{{ ++$key }}</td>
-                                        <td>{{ date('d-m-Y', strtotime($item->payment_in_date)) }}</td>
                                         <td>
+                                            {{$item->payment_number}} 
+                                        </td>
+                                        <td>
+                                            {{ date('d-m-Y', strtotime($item->payment_in_date)) }}
+                                        </td>
+                                        <td>
+                                           
                                             @if ($item->payment_method === 'cash')
                                                 วิธีการชำระเงิน : เงินสด </br>
                                             @endif
@@ -237,13 +244,13 @@
 
                                 @empty
                                     <tr>
-                                        <td colspan="9"> Not found</td>
+                                        <td colspan="10"> Not found</td>
                                     </tr>
                                 @endforelse
 
                                 @if ($paymentDebit)
                                     <tr>
-                                        <td colspan="9">แจ้งชำระเงิน ใบเพิ่มหนี้</td>
+                                        <td colspan="10">แจ้งชำระเงิน ใบเพิ่มหนี้</td>
                                     </tr>
                                 @endif
 
@@ -253,6 +260,9 @@
                                 @forelse ($paymentDebit as $key => $item)
                                     <tr>
                                         <td>{{ ++$key }}</td>
+                                        <td>
+                                            {{$item->payment_number}} 
+                                        </td>
                                         <td>{{ date('d-m-Y', strtotime($item->payment_in_date)) }}</td>
                                         <td>
                                             @if ($item->payment_method === 'cash')
@@ -357,19 +367,22 @@
 
                                 @empty
                                     <tr>
-                                        <td colspan="9"> Not found</td>
+                                        <td colspan="10"> Not found</td>
                                     </tr>
                                 @endforelse
 
                                 @if ($paymentCredit)
                                     <tr>
-                                        <td colspan="9">แจ้งชำระเงิน ใบลดหนี้</td>
+                                        <td colspan="10">แจ้งชำระเงิน ใบลดหนี้</td>
                                     </tr>
                                 @endif
 
                                 @forelse ($paymentCredit as $key => $item)
                                     <tr>
                                         <td>{{ ++$key }}</td>
+                                        <td>
+                                            {{$item->payment_number}} 
+                                        </td>
                                         <td>{{ date('d-m-Y', strtotime($item->payment_in_date)) }}</td>
                                         <td>
                                             @if ($item->payment_method === 'cash')
@@ -473,7 +486,7 @@
 
                                 @empty
                                     <tr>
-                                        <td colspan="9"> Not found</td>
+                                        <td colspan="10"> Not found</td>
                                     </tr>
                                 @endforelse
 
