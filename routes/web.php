@@ -1,12 +1,10 @@
 <?php
 
-use App\Models\debits\debitModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use App\Models\invoices\taxinvoiceModel;
 use App\Http\Controllers\selects\periodSelect;
 use App\Http\Controllers\debits\debitController;
 use App\Http\Controllers\credits\creditController;
@@ -17,16 +15,17 @@ use App\Http\Controllers\payments\paymentController;
 use App\Http\Controllers\products\productController;
 use App\Http\Controllers\quotations\quoteController;
 use App\Http\Controllers\customers\customerController;
+use App\Http\Controllers\FPDF\FPDF_QuotatioController;
 use App\Http\Controllers\invoices\taxInvoiceController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
 use App\Http\Controllers\payments\paymentDebitController;
 use App\Http\Controllers\quotefiles\QuoteFilesController;
 use App\Http\Controllers\payments\paymentCreditController;
 use App\Http\Controllers\Invoices\InvoiceBookingController;
-use App\Http\Controllers\paymentWholesale\paymentWholesale;
 use App\Http\Controllers\invoices\invoiceDashboardController;
 use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
+use App\Http\Controllers\MPDF\MPDF_QuotationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -170,3 +169,9 @@ Route::get('payment/wholesales/{quotationModel}',[paymentWholesaleController::cl
 Route::get('payment/wholesale/delete/{paymentWholesaleModel}',[paymentWholesaleController::class,'delete'])->name('paymentWholesale.delete');
 Route::get('payment/wholesales/quote/{quotationModel}',[paymentWholesaleController::class,'quote'])->name('paymentWholesale.quote');
 Route::post('payment/wholesales/store',[paymentWholesaleController::class,'store'])->name('paymentWholesale.store');
+
+// FPDF Quotation
+Route::get('fpdf/quote/{quotationModel}',[FPDF_QuotatioController::class,'generatePDF'])->name('quote.generatePDF');
+
+// MPDF Quotation
+Route::get('mpdf/quote/{quotationModel}',[MPDF_QuotationController::class,'generatePDF']);

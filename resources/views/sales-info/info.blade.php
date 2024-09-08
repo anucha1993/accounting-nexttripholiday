@@ -238,7 +238,7 @@
                                       <table>
                                           <tr>
                                               <td class="text-end"><b>ราคารวมสุทธิ Quotation :</b></td>
-                                              <td style="border-bottom: 1px solid;" class="text-primary align-top"> <b  style="" class=" text-primary" id="TotalAllLabel"> </b> {{ number_format($quotationModel ? $quotationModel->quote_grand_total : $quotationModel->quote_total , 2, '.', ',') }} บาท  </td>
+                                              <td style="border-bottom: 1px solid;" class="text-primary align-top"> <b  style="" class=" text-primary" id="TotalAllLabel"> </b> {{ number_format($quotationModel->quote_grand_total ? $quotationModel->quote_grand_total : $quotationModel->quote_total , 2, '.', ',') }} บาท  </td>
                                           </tr>
 
                                           <tr>
@@ -255,7 +255,7 @@
                                               <td class="text-info"> <b  class=" text-info" id=""></b>{{ number_format($paymentWholesaleTotalSum ? $paymentWholesaleTotalSum : 00.0 , 2, '.', ',') }}  บาท</td>
                                           </tr>
                                           @php
-                                              $quoteTotal = $quotationModel ? $quotationModel->quote_grand_total : $quotationModel->quote_total;
+                                              $quoteTotal = $quotationModel->quote_grand_total ? $quotationModel->quote_grand_total : $quotationModel->quote_total;
                                               $debitnoteTotal = $debitnote ? $debitnote->grand_total : 0;
                                               $creditnote = $creditnote ? $creditnote->grand_total : 0;
                                               $wholesaleTotal = $paymentWholesaleTotalSum ? $paymentWholesaleTotalSum : 0;

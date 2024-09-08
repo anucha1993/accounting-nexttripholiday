@@ -25,7 +25,7 @@
                 <span class="float-end">วันที่จอง : <b
                         class="text-info">{{ date('d/m/Y', strtotime($bookingModel->created_at)) }}</b></span>
                         
-              <button type="submit" form="form2" class="mx-3 btn btn-sm btn-primary"><i class=" fas fa-redo "></i> Convert</button>
+             
 
             </div>
 
@@ -241,6 +241,7 @@
                         <div class="col-md-12">
                             <button type="submit" form="form1" class="btn btn btn-success float-end"><i class="fas fa-save"></i>
                                 อัพเดทข้อมูล</button>
+                                <button type="submit" form="form2" class="mx-3 btn btn-sm btn-primary"><i class=" fas fa-redo "></i> สร้างใบเสนอราคา</button>
                         </div>
                     </div>
                 </form>
@@ -253,6 +254,10 @@
 
     <form action="{{ route('booking.convert') }}" id="form2" method="get">
 
+        {{-- @php
+            $tourFirst = $tours->where('id',$bookingModel->tour_id)->first();
+        @endphp --}}
+
         <input type="hidden" name="customer_name"
             value="{{ $bookingModel->name . ' ' . $bookingModel->surname }}">
         <input type="hidden" name="customer_email" value="{{ $bookingModel->email }}">
@@ -262,36 +267,48 @@
         <input type="hidden" name="booking_sale" value="{{ $sale->name }}">
 
         <input type="hidden" name="booking_tour_number" value="{{ $bookingModel->tour_code }}">
-        <input type="hidden" name="booking_tour_name" value="{{ $tour->tour_name }}">
+
+        <input type="hidden" name="booking_tour_number" value="{{ $bookingModel->tour_code }}">
+ 
         <input type="hidden" name="tour_country" value="{{ $tour->country_id }}">
         <input type="hidden" name="wholesale_name_th" value="{{ $tour->wholesale_name_th }}">
         <input type="hidden" name="airline_name" value="{{ $tour->airline_name }}">
         <input type="hidden" name="start_date" value="{{ $bookingModel->start_date }}">
         <input type="hidden" name="end_date" value="{{ $bookingModel->end_date }}">
         <input type="hidden" name="num_day" value="{{ $tour->num_day }}">
+        <input type="hidden" name="sale_id" value="{{ $bookingModel->sale_id }}">
+        <input type="hidden" name="tour_id" value="{{ $tour->id }}">
+        <input type="hidden" name="booking_tour_number" value="{{ $tour->code }}">
+        <input type="hidden" name="travel_type" value="{{ $tour->travel_type_id }}">
+        <input type="hidden" name="wholesale_id" value="{{ $tour->wholesale_id }}">
+        <input type="hidden" name="total_qty" value="{{ $bookingModel->total_qty }}">
 
 
         @php
         $products = [
             [
+                'id' => 189 ,
                 'name' => 'ผู้ใหญ่พักคู่',
                 'qty' => $bookingModel->num_twin,
                 'price' => $bookingModel->price1,
                 'sum' => $bookingModel->sum_price1,
             ],
             [
+                'id' => 185,
                 'name' => 'ผู้ใหญ่พักเดี่ยว',
                 'qty' => $bookingModel->num_single,
                 'price' => $bookingModel->price2,
                 'sum' => $bookingModel->sum_price2,
             ],
             [
+                'id' => 187,
                 'name' => 'เด็กไมีเตียง',
                 'qty' => $bookingModel->num_child,
                 'price' => $bookingModel->price3,
                 'sum' => $bookingModel->sum_price3,
             ],
             [
+                'id' => 186,
                 'name' => 'เด็กไม่มีเตียง',
                 'qty' => $bookingModel->num_childnb,
                 'price' => $bookingModel->price4,
@@ -301,6 +318,7 @@
     @endphp
     
     @foreach ($products as $index => $product)
+        <input type="hidden" name="products[{{ $index }}][id]" value="{{ $product['id'] }}">
         <input type="hidden" name="products[{{ $index }}][name]" value="{{ $product['name'] }}">
         <input type="hidden" name="products[{{ $index }}][qty]" value="{{ $product['qty'] }}">
         <input type="hidden" name="products[{{ $index }}][price]" value="{{ $product['price'] }}">

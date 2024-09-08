@@ -173,7 +173,7 @@ class BookingController extends Controller
         $sale =  DB::connection('mysql2')->table('users')->where('id',$bookingModel->sale_id)->first();
 
         $tour = DB::connection('mysql2')->table('tb_tour')
-        ->select('tb_tour.country_id','tb_tour.name as tour_name', 'tb_wholesale.wholesale_name_th as wholesale_name_th','tb_tour.num_day','tb_travel_type.travel_name as airline_name')
+        ->select('tb_tour.code','tb_tour.wholesale_id','tb_tour.id','tb_tour.country_id','tb_tour.name as tour_name', 'tb_wholesale.wholesale_name_th as wholesale_name_th','tb_tour.num_day','tb_travel_type.id as travel_type_id','tb_travel_type.travel_name as airline_name')
         ->leftJoin('tb_wholesale', 'tb_wholesale.id', 'tb_tour.wholesale_id')
         ->leftJoin('tb_travel_type', 'tb_travel_type.id', 'tb_tour.airline_id')
         ->where('tb_tour.id',$bookingModel->tour_id)->first();
@@ -204,7 +204,7 @@ class BookingController extends Controller
     
     public static function generateRunningCode()
     {
-        $prefix = 'B';
+        $prefix = 'BK';
         $year = date('y'); // ปีสองหลัก เช่น 24
         $month = date('m'); // เดือนสองหลัก เช่น 07
 

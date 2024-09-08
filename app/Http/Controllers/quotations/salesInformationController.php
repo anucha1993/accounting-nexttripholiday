@@ -22,7 +22,7 @@ class salesInformationController extends Controller
 
     public function index(quotationModel $quotationModel)
     {
-        $quotationModel = $quotationModel->leftjoin('customer', 'customer.customer_id', 'quotation.customer_id')->first();
+        $quotationModel = $quotationModel->where('quote_id',$quotationModel->quote_id)->leftjoin('customer', 'customer.customer_id', 'quotation.customer_id')->first();
         $invoices = invoiceModel::where('quote_number', $quotationModel->quote_number)
             ->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')
             ->get();
@@ -75,8 +75,20 @@ class salesInformationController extends Controller
             ->first();
         $booking = bookingModel::where('code', $quotationModel->quote_booking)->first();
         $wholesale = wholesaleModel::where('id', $tour->wholesale_id)->first();
-        $debitnote = debitModel::where('invoice_number',$invoice->invoice_number)->first();
-        $creditnote = creditModel::where('invoice_number',$invoice->invoice_number)->first();
+        
+
+       
+
+        if(!empty($invoice->invoice_number)){
+            $debitnote = debitModel::where('invoice_number',$invoice->invoice_number)->first();
+            $creditnote = creditModel::where('invoice_number',$invoice->invoice_number)->first();
+            $debitnote = debitModel::where('invoice_number',$invoice->invoice_number)->first();
+        }else{
+            $creditnote =[];
+            $debitnote = [];
+            $debitnote = [];
+        }
+      
 
         $paymentWholesaleTotalSum = paymentWholesaleModel::where('payment_wholesale_doc', $quotationModel->quote_number)
         ->sum('payment_wholesale_total');

@@ -12,7 +12,7 @@
                 <input type="hidden" name="quote_tour_code" value="{{$request->booking_tour_number}}">
                 <input type="hidden"  name="quote_date" value="{{date('Y-m-d',strtotime(now()))}}">
                 <input type="hidden"  name="tour_id" value="{{$request->tour_id}}">
-                <input type="hidden"  name="country_id" value="{{$request->country_id}}">
+                <input type="hidden"  name="country_id" value="{{$request->country_id ? $request->country_id  : $request->tour_country}}">
                 <input type="hidden"  name="travel_type" value="{{$request->travel_type}}">
                 <input type="hidden"  name="wholesale_id" value="{{$request->wholesale_id}}">
                 <input type="hidden"  name="total_qty" value="{{$request->total_qty}}">
