@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\booking\bookingModel;
 use App\Models\customers\customerModel;
 use App\Models\quotations\quotationModel;
+use App\Models\quotations\quoteProductModel;
 
 class MPDF_QuotationController extends Controller
 {
@@ -27,13 +29,15 @@ class MPDF_QuotationController extends Controller
         ->table('tb_tour')
         ->where('id', $quotationModel->tour_id)
         ->first();
-    $airline = DB::connection('mysql2')
+         $airline = DB::connection('mysql2')
         ->table('tb_travel_type')
         ->select('travel_name')
         ->where('id', $tour->airline_id)
         ->first();
+        $booking = bookingModel::where('code', $quotationModel->quote_booking)->first();
+        $productLists = quoteProductModel::where('quote_id',$quotationModel->quote_id)->get();
         // ดึง HTML จาก Blade Template
-        $html = view('MPDF.mpdf_quote',compact('quotationModel','customer','sale','airline'))->render();
+        $html = view('MPDF.mpdf_quote',compact('quotationModel','customer','sale','airline','booking','productLists'))->render();
     
         // กำหนดค่าเริ่มต้นของ mPDF และเพิ่มฟอนต์ภาษาไทย
         $mpdf = new \Mpdf\Mpdf([

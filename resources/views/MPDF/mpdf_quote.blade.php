@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>pdf</title>
+    <title>{{$quotationModel->quote_number}}</title>
     <meta http-equiv="Content-Language" content="th" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <style>
@@ -10,25 +10,29 @@
             font-size: 20px;
             margin-top: 0; 
             padding-top: 0;
+             flex-grow: 1;
+    
         },
         table {
             border-collapse: collapse; /* รวมขอบของเซลล์ */
             margin: 20px; /* ระยะห่างรอบตาราง */
         }
         td {
-            border: 2px solid #f9c68f; /* สีกรอบ */
+            border: 2px solid #ffaa50; /* สีกรอบ */
            /* padding: 10px; /* ระยะห่างระหว่างข้อความกับกรอบ */
             background-color: #fff; /* สีพื้นหลัง */
             border-radius: 5px; /* มุมกรอบที่มน */
             text-align: left; /* จัดข้อความให้อยู่กลาง */
             font-size: 18px
         }
+        
+        
        
         
     </style>
 </head>
 <body style="margin-top: 0px; padding-top: 0;">
-    <header>
+    <header class="content">
         <div style="width: 15%; float: left; padding: 10px;">
             <img src="{{asset('logo/Logo-docs.png')}}" alt="">
         </div>
@@ -84,160 +88,311 @@
         <div style="margin-top: -35px">
             <table style="margin-right: -35px; margin-left: -35px;">
                 <tr>
-                    {{-- <td style="width: 100px; padding-left: 5px; border-right: none;">
-                        <p><b>Customer ID:</span></p>
-                        <p><b>Name:</b> </p>
-                        <p><b>Address:</b> </p>
-                        <p><b>Mobile:</b> </p>
-                        <p><b>Fax:</b></p>
-                        <p><b>Email:</b></p>
-                    </td>
-                    <td style="width: 500px; padding-left: 5px; border-left: none;">
-                      <p><span>{{$customer->customer_number}}</span></p>
-                      <p><span>{{$customer->customer_name}}</span></p>
-                      <p><span>{{$customer->customer_address}}</span></p>
-                      <p><span>{{$customer->customer_tel}}</span></p>
-                      <p><span>{{$customer->customer_fax ? $customer->customer_fax : '-'}}</span></p>
-                      <p><span>{{$customer->customer_email ? $customer->customer_email: '-' }}</span></p>
-                     
-                    </td>
                     
-                    <td style="border: none;"></td>
-                    <td style="width: 100px; padding-left: 5px; border-right: none;">
-                        <h4><b>Date:</b></h4>
-                        <h4><b>Booking No:</b></h4>
-                        <h4><b>Sale:</b></h4>
-                        <h4><b>Email:</b></h4>
-                        <h4><b>Tour Code:</b></h4>
-                        <h4><b>Airline:</b></h4>
-
-                    </td>
-
-                    <td style="width: 300px; padding-left: 5px; border-left: none; background-color: #f9c68f;">
-                        <p><span>{{thaidate('j F Y',$quotationModel->quote_date)}}</span></p>
-                        <p><span>{{$quotationModel->quote_booking}}</span></p>
-                        <p><span>{{$sale->name}}</span></p>
-                        <p><span>{{$sale->email}}</span></p>
-                        <p><span>{{$quotationModel->quote_tour_code}}</span></p>
-                        <p ><span>{{$airline->travel_name }}</span></p>
-                       
-                      </td> --}}
-
-                      <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none;">
+                      <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
                         <p><b>Customer ID:</span></p>
                      </td>
                     
-                     <td style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none;">
+                     <td style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; vertical-align: top;">
                         <p><span>{{$customer->customer_number}}</span></p>
                      </td>
                      <td style="border: none;"></td>
-                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none;">
+                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
                         <h4><b>Date:</b></h4>
                      </td>
                      
-                     <td style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none;">
+                     <td style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; vertical-align: top;">
                         <p><span>{{thaidate('j F Y',$quotationModel->quote_date)}}</span></p>
                      </td>
                 </tr>
                 <tr>
-                    <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none;">
+                    <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
                         <p><b>Name :</span></p>
                      </td>
                     
-                     <td style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none;">
+                     <td style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none; vertical-align: top;">
                         <p><span>{{$customer->customer_name}}</span></p>
                      </td>
                      <td style="border: none;"></td>
-                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none;">
+                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
                         <h4><b>Boonking No:</b></h4>
                      </td>
                      
-                     <td style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none;">
+                     <td style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top; ">
                         <p><span>{{$quotationModel->quote_booking}}</span></p>
                      </td>
                 </tr>
                 <tr>
-                    <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none;">
+                    <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
                         <p><b>Address:</span></p>
                      </td>
                     
-                     <td style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none;">
+                     <td style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none; vertical-align: top;">
                         <p><span>{{$customer->customer_address}}</span></p>
                      </td>
                      <td style="border: none;"></td>
-                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none;">
+                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
                         <h4><b>Sale:</b></h4>
                      </td>
                      
-                     <td style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none;">
+                     <td style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
                         <p><span>{{$sale->name}}</span></p>
                      </td>
                 </tr>
                 <tr>
-                    <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none;">
+                    <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
                         <p><b>Mobile:</span></p>
                      </td>
                     
-                     <td style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none;">
+                     <td style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none; vertical-align: top;">
                         <p><span>{{$customer->customer_tel}}</span></p>
                      </td>
                      <td style="border: none;"></td>
-                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none;">
+                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
                         <h4><b>Email:</b></h4>
                      </td>
                      
-                     <td style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none;">
+                     <td style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
                         <p><span>{{$sale->email}}</span></p>
                      </td>
                 </tr>
                 <tr>
-                    <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none;">
+                    <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
                         <p><b>Fax:</span></p>
                      </td>
                     
-                     <td style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none;">
+                     <td style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none; vertical-align: top;">
                         <p><span>{{$customer->customer_fax}}</span></p>
                      </td>
                      <td style="border: none;"></td>
-                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none;">
+                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
                         <h4><b>Tour Code:</b></h4>
                      </td>
                      
-                     <td style="width: 150px; padding-left: 5px5px; border-left: none; border-bottom: none; border-top: none;">
+                     <td style="width: 150px; padding-left: 5px5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
                         <p><span>{{$quotationModel->quote_tour_code}}</span></p>
                      </td>
                 </tr>
                 <tr style="padding: 3px">
-                    <td style="width: 100px; padding-left: 5px; border-right: none;  border-top: none;">
+                    <td style="width: 100px; padding-left: 5px; border-right: none;  border-top: none; vertical-align: top; ">
                         <p><b>Email:</span></p>
                      </td>
                     
-                     <td style="width: 400px; padding-left: 5px; border-left: none; border-top: none;">
+                     <td style="width: 400px; padding-left: 5px; border-left: none; border-top: none; vertical-align: top;">
                         <p><span>{{$customer->customer_email}}</span></p>
                      </td>
                      <td style="border: none;"></td>
-                     <td style="width: 100px; padding-left: 5px; border-right: none;   border-top: none;">
+                     <td style="width: 100px; padding-left: 5px; border-right: none;   border-top: none; vertical-align: top;">
                         <h4><b>Airline:</b></h4>
                      </td>
-                     
-                     <td style="width: 150px; padding: 0; text-align: center; border-left: none; border-top: none; background-color: #f9c68f;">
+                     <td style="width: 150px; padding: 0; text-align: center; border-left: none; border-top: none; background-color: #f9c68f; vertical-align: top;">
                         <p style="margin: 0; padding: 10px;">
                             <span>{{$airline->travel_name}}</span>
                         </p>
                     </td>
-                   
-                    
-                    
-                    
                 </tr>
-              
-                
+                <tr>
+                    <td style="border: none;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 100px; padding-right: 5px; text-align: right;">
+                        <p><b>Program:</span></p>
+                     </td>
+                    
+                     <td style="width: 400px; padding-left: 5px; background-color: #f9c68f;">
+                        <p><span>{{$quotationModel->quote_tour_code}}</span></p>
+                     </td>
+                     <td style="border: none;"></td>
+                     <td style="width: 100px; padding-left: 5px">
+                        <h4><b> Period:</b></h4>
+                     </td>
+                     <td style="width: 150px; padding: 0; text-align: center; background-color: #f9c68f;">
+                        <p style="margin: 0; padding: 10px;">
+                            <span>{{ date('d', strtotime($booking->start_date)) }}-{{  thaidate('j F Y',$booking->end_date) }}</span>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+           
+           
+        </div>
+
+        <div style="margin-top: -36px">
+            <table style="margin-right: -35px; margin-left: -35px;">
+                <tr>
+                    <td style="width: 65px; text-align: center; background-color: #f9c68f;">
+                        <b>ลำดับ</br><p>Item</p></b>
+                    </td>
+
+                    <td style="width: 400px; text-align: center; background-color: #f9c68f;"><b>รายการ </br><p>Descriptons</p></b></td>
+                    <td style="width: 65px; text-align: center; background-color: #f9c68f;"><b>จำนวน </br><p>Quanily</p></b></td>
+                    <td style="width: 120px; text-align: center; background-color: #f9c68f;"><b>ราคาต่อหน่วย </br><p>Unit Price</p></b></td>
+                    <td style="width: 120px; text-align: center; background-color: #f9c68f;"><b>ราคารวม </br><p>Total Amout</p></b></td>
+                </tr>
+
+                <tr>
+                    <td style="width: 65px; height: 300px; text-align: center; vertical-align: top;">
+                        @forelse ($productLists as $key => $item)
+                        <p style="margin: 0;">{{ $key+1}}</p>
+                        @empty
+                            
+                        @endforelse
+                    
+                    </td>
+                    
+                    <td style="width: 270px;  text-align: left; vertical-align: top;">
+                        @forelse ($productLists as $key => $item)
+                        <p style="margin: 0;">{{ $item->product_name}}</p>
+                        @empty
+                            
+                        @endforelse
+                    </td>
+                    <td style="width: 70px; text-align: center; vertical-align: top;">
+                        @forelse ($productLists as $key => $item)
+                        <p style="margin: 0;">{{ $item->product_qty}}</p>
+                        @empty
+                            
+                        @endforelse
+                    </td>
+                    <td style="width: 120px; text-align: center; vertical-align: top;">
+                        @forelse ($productLists as $key => $item)
+                        <p style="margin: 0;">{{  number_format( $item->product_price  , 2, '.', ',')}}</p>
+                        @empty
+                            
+                        @endforelse
+                    </td>
+                    <td style="width: 120px; text-align: center; vertical-align: top;">
+                        @forelse ($productLists as $key => $item)
+                        <p style="margin: 0;">{{  number_format($item->product_sum  , 2, '.', ',')}}</p>
+                        @empty
+                            
+                        @endforelse
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2"  style="width: 465px; text-align: right; background-color: #f9c68f;">
+                       <h3> @bathText($quotationModel->quote_total)</h3>
+                    </td>
+                    <td colspan="2"  style="width: 185px; text-align: center; background-color: #f9c68f;"><h3> ยอดรวม / Grand Total</h3></td>
+                    <td style="width: 120px; text-align: center; background-color: #f9c68f;"><h3>  <p style="margin: 0;">{{  number_format($quotationModel->quote_total  , 2, '.', ',')}}</p></h3></td>
+                </tr>
+
+
             </table>
         </div>
 
+        <footer>
+           
+            <div style="line-height: 1; text-align: left; display: block; margin-top: -15px">
+                <b>หมายเหตุ : </b> <span style="">-หากไม่ชำระเงินตามกำหนดด้านล่าง ทางบริษัทฯ ขอสงวนสิทธิ์ในการตัดที่นั่งโดยไม่แจ้งให้ทราบล่วงหน้า,-หากชำระมัดจำมาแล้วท่านไม่ชำระส่วนที่เหลือ ขออนุญาตยึดเงินมัดจำตามเงื่อนไขบริษัท
+                    -สำเนาพาสปอร์ตกรุณาจัดส่งให้บริษัทก่อนเดินทาง 30 วันผ่านทางไลน์หรืออีเมลล์,-ใบนัดหมายการเดินทาง จะจัดส่งให้ก่อนการเดินทางระยะเวลา 1-3 วัน</span>
+            </div>
+
+            <div style="margin-top: -20px">
+                <table style="margin-right: -35px; margin-left: -35px;">
+                    <tr style="border-right: none;">
+                        <td style="width: 100px; padding: 5x; border-right: none; border-bottom: none;"><b>วันที่ชำระเงินมัดจำ</b></td>
+                        <td style="width: 110px; border-right: none; border-left: none; border-bottom: none; " >-</td>
+                        <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;"><b>ก่อนเวลา</b></td>
+                        <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">-น.</td>
+                        <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;"><b>จำนวนเงิน</b></td>
+                        <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">-</td>
+                        <td style="width: 100px; text-align: right; border-left: none; border-bottom: none;"><b>บาท</b></td>
+                    </tr>
+                    <tr style="border-right: none;">
+                        <td style="width: 100px; padding: 5x; border-right: none; border-top: none;"><b>วันที่ชำระยอดเต็ม</b></td>
+                        <td style="width: 110px; border-right: none; border-left: none; border-top: none; " >-</td>
+                        <td style="width: 100px; border-right: none; border-left: none; border-top: none;"><b>ก่อนเวลา</b></td>
+                        <td style="width: 110px; border-right: none; border-left: none; border-top: none;">-น.</td>
+                        <td style="width: 100px; border-right: none; border-left: none; border-top: none;"><b>จำนวนเงิน</b></td>
+                        <td style="width: 110px; border-right: none; border-left: none; border-top: none;">-</td>
+                        <td style="width: 100px; text-align: right; border-left: none; border-top: none;"><b>บาท</b></td>
+                    </tr>
+                    
+                </table>
+            </div>
+
+            <div style="margin-top: -37px">
+                <table style="margin-right: -35px; margin-left: -35px;">
+                    <tr style="border-right: none;">
+                        <td style="width: 241px; padding: 5x; text-align: center;">
+                            <b>{{$sale->name}}</b></br>
+                           <p>___________________________</p>
+                           <p><b>Sale / Operation</b></p>
+                           <p><b>{{thaidate('j F Y',$quotationModel->quote_date)}}</b></p>
+                        </td>
+                        <td style="border: none;"></td>
+                        <td style="width: 241px; text-align: center;" >
+                             <b style="color: #fff">ว่าง</b></br>
+                           <p>___________________________</p>
+                           <p><b>Sale / Operation</b></p>
+                           <p><b>{{thaidate('j F Y',$quotationModel->quote_date)}}</b></p>
+                        </td>
+                        <td style="border: none;"></td>
+                        <td style="width: 241px; text-align: right; text-align: center;">
+                            <b style="color: #fff">ว่าง</b></br>
+                            <p style="color: #fff">ว่าง</p></br>
+                            <p style="color: #fff">ว่าง</p></br>
+                            <p><b>ผู้อนุมัติ</b></p>
+                            <p><b>{{thaidate('j F Y',$quotationModel->quote_date)}}</b></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div style="margin-top: -17px">
+                กรุณาชำระเงินค่าทัวร์ หรือตั๋วเครื่องบินโดยการโอน
+                <p style="margin-top: -5px"><b>ชื่อบัญชี บจก.เน็กซ์ ทริป ฮอลิเดย์</b></p>
+            </div>
+            <div style="margin-top: -20px; margin-bottom: -300px;">
+                <div style="float: left; width: 25%; text-align: left;">
+                    <b>ธนาคาร</b>
+                </div>
+                <div style="float: left; width: 25%; text-align: left;">
+                    <b>ประเภทบัญชี</b>
+                </div>
+                <div style="float: left; width: 25%; text-align: left;">
+                    <b>สาขา</b>
+                </div>
+                <div style="float: left; width: 25%; text-align: left;">
+                    <b>เลขบัญชี</b>
+                </div>
+                
+            </div>
+
+            <div style="margin-top: 0px; ">
+                <div style="float: left; width: 25%; text-align: left;">
+                    <span>กรุงศรีอยุธยา</span>
+                </div>
+                <div style="float: left; width: 25%; text-align: left;">
+                    <span>ออมทรัพย์</span>
+                </div>
+                <div style="float: left; width: 25%; text-align: left;">
+                    <span>เมกาบางนา</span>
+                </div>
+                <div style="float: left; width: 25%; text-align: left;">
+                    <span>688-1-28842-5</span>
+                </div>
+                <div style="clear: both;"></div> <!-- Clear float -->
+            </div>
+            
+           <b>แจ้งชำระเงิน</b>
+           <p style="margin-top: -5px">สามารถแจ้งได้ทุกช่องทาง Line :@nexttripholiday ,อีเมล:nexttripholiday@gmail.com หรือทางไลน์กับพนักงานขายที่ท่านทำการจอง</p>
+           
+            
+        
+        </footer>
         
 
     </header>
+
+    <style>
+        footer {
+            margin-top: 0px;
+            font-size: 16px;
+        }
+    </style>
     
 </body>
 </html>
