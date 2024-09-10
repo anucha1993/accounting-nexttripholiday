@@ -44,6 +44,10 @@ class quotationModel extends Model
         'wholesale_payment_status',
         'wholesale_payment_total',
         'payment',
+        'quote_payment_type',
+        'quote_payment_date',
+        'quote_payment_price',
+        'quote_payment_total',
     ];
 
     

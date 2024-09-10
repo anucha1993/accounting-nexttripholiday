@@ -369,7 +369,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <span for="">ภายในวันที่</span>
-                                            <input type="datetime-local" class="form-control" name="quote_payment_total">
+                                            <input type="datetime-local" class="form-control" name="quote_payment_date">
                                         </div>
                                         <div class="col-md-4">
                                             <span for="">เรทเงินมัดจำ</span>
