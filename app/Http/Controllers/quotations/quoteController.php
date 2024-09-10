@@ -137,8 +137,9 @@ class quoteController extends Controller
             ->where('quote_id', $quotationModel->quote_id)
             ->leftjoin('products', 'products.id', 'quote_product.product_id')
             ->get();
+        $bookingModel = bookingModel::where('code',$quotationModel->quote_booking)->first();
         //dd($quoteProducts);
-        return view('quotations.edit', compact('quotationModel', 'customer', 'sale', 'tour', 'airline', 'products', 'quoteProducts', 'quoteProducts'));
+        return view('quotations.edit', compact('bookingModel','quotationModel', 'customer', 'sale', 'tour', 'airline', 'products', 'quoteProducts', 'quoteProducts'));
     }
 
     public function update(quotationModel $quotationModel, Request $request)
