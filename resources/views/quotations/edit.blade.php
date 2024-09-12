@@ -5,10 +5,6 @@
         <!-- -------------------------------------------------------------- -->
         <!-- Left Part -->
         <!-- -------------------------------------------------------------- -->
-
-
-
-
         <div class="left-part list-of-tasks bg-white">
             <a class="ti-menu ti-close btn btn-success show-left-part d-block d-md-none" href="javascript:void(0)"></a>
             <div class="scrollable" style="height: 100%">
@@ -22,7 +18,7 @@
                     </li>
                     <li class="list-group-item p-0 border-0">
                         <a href="javascript:void(0)" id="invoice-dashboard"
-                            class="todo-link list-group-item-action p-3 d-flex align-items-center">
+                            class="todo-link list-group-item-action p-3 d-flex align-items-center active">
                             <i class="far fa-file-alt"></i>
                             &nbsp; รายละเอียดรวม
                             <span
@@ -33,7 +29,7 @@
 
                     <li class="list-group-item p-0 border-0">
                         <a href="{{ route('saleInfo.index', $quotationModel->quote_id) }}"
-                            class="todo-link list-group-item-action p-3 d-flex align-items-center btn-booking">
+                            class="todo-link list-group-item-action p-3 d-flex align-items-center btn-booking ">
                             <i class="far fa-file-alt"></i>
                             &nbsp; ข้อมูลการขาย
                             <span
@@ -42,36 +38,40 @@
 
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" class="todo-link list-group-item-action p-3 d-flex align-items-center"
+                        <a href="{{ route('payments', $quotationModel->quote_id) }}"
+                            class="todo-link list-group-item-action p-3 d-flex align-items-center"
                             id="current-task-important">
                             <i data-feather="star" class="feather-sm me-2"></i>
-                            Important
+                            แจ้งชำระเงิน
                             <span
                                 class="todo-badge badge rounded-pill px-3 bg-light-danger ms-auto text-danger font-weight-medium"></span>
                         </a>
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" class="todo-link list-group-item-action p-3 d-flex align-items-center"
+                        <a href="{{route('quotefile.index',$quotationModel->quote_id)}}" class="todo-link list-group-item-action p-3 d-flex align-items-center"
                             id="current-task-done">
                             <i data-feather="send" class="feather-sm me-2"></i>
-                            Complete
+                            ไฟล์เอกสาร
                             <span
                                 class="todo-badge badge rounded-pill px-3 text-success font-weight-medium bg-light-success ms-auto"></span>
                         </a>
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <hr />
-                    </li>
-
-
-                    <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" class="list-group-item-action p-3 d-flex align-items-center"
-                            id="current-todo-delete">
-                            <i data-feather="trash-2" class="feather-sm me-2"></i>
-                            Trash
+                        <a href="{{ route('paymentWholesale.index', $quotationModel->quote_id) }}"
+                            class="todo-link list-group-item-action p-3 d-flex align-items-center" id="current-task-done">
+                            <i data-feather="dollar-sign" class="feather-sm me-2"></i>
+                            การชำระเงินโฮลเซลล์
+                            <span
+                                class="todo-badge badge rounded-pill px-3 text-success font-weight-medium bg-light-success ms-auto"></span>
                         </a>
                     </li>
+
+                    <li class="list-group-item p-0 border-0">
+                        <hr />
+                    </li>
                 </ul>
+
+
             </div>
         </div>
         <!-- -------------------------------------------------------------- -->
@@ -355,12 +355,12 @@
                                         <div class="col-md-12 ">
                                             <div class="row">
                                                 <div class="col-md-3">
-                                                    <input type="radio" name="quote_payment_type"
+                                                    <input type="radio" name="quote_payment_type" @if($quotationModel->quote_payment_type === 'deposit') checked @endif
                                                         id="quote-payment-deposit" value="deposit"> <label
                                                         for="quote-payment-type"> เงินมัดจำ </label>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <input type="radio" name="quote_payment_type"
+                                                    <input type="radio" name="quote_payment_type" @if($quotationModel->quote_payment_type === 'full') checked @endif
                                                         id="quote-payment-full" value="full"> <label
                                                         for="quote-payment-type"> ชำระเต็มจำนวน </label>
                                                 </div>
@@ -369,43 +369,43 @@
                                         </div>
                                         <div class="col-md-4">
                                             <span for="">ภายในวันที่</span>
-                                            <input type="datetime-local" class="form-control" name="quote_payment_date">
+                                            <input type="datetime-local" class="form-control" name="quote_payment_date" value="{{$quotationModel->quot_payment_date}}">
                                         </div>
                                         <div class="col-md-4">
                                             <span for="">เรทเงินมัดจำ</span>
-                                            <select name="quote_payment_price" class="form-select"
+                                            <select name="quote_payment_price" class="form-select" 
                                                 id="quote-payment-price">
-                                                <option value="0.00">0.00</option>
-                                                <option value="1000">1,000</option>
-                                                <option value="1500">1,500</option>
-                                                <option value="2000">2,000</option>
-                                                <option value="3000">3,000</option>
-                                                <option value="4000">4,000</option>
-                                                <option value="5000" selected="selected">5,000</option>
-                                                <option value="6000">6,000</option>
-                                                <option value="7000">7,000</option>
-                                                <option value="8000">8,000</option>
-                                                <option value="9000">9,000</option>
-                                                <option value="10000">10,000</option>
-                                                <option value="15000">15,000</option>
-                                                <option value="20000">20,000</option>
-                                                <option value="30000">30,000</option>
-                                                <option value="24000">24,000</option>
-                                                <option value="25000">25,000</option>
-                                                <option value="28000">28,000</option>
-                                                <option value="29000">29,000</option>
-                                                <option value="34000">34,000</option>
-                                                <option value="50000">50,000</option>
-                                                <option value="70000">70,000</option>
-                                                <option value="35000">35,000</option>
-                                                <option value="40000">40,000</option>
-                                                <option value="45000">45,000</option>
-                                                <option value="80000">80,000</option>
-                                                <option value="30500">30,500</option>
-                                                <option value="35500">35,500</option>
-                                                <option value="36000">36,000</option>
-                                                <option value="38000">38,000</option>
-                                                <option value="100000">100,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 0.00) selected @endif value="0.00">0.00</option>
+                                                <option  @if($quotationModel->quote_payment_price == 1000) selected @endif value="1000">1,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 1500) selected @endif value="1500">1,500</option>
+                                                <option  @if($quotationModel->quote_payment_price == 2000) selected @endif value="2000">2,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 3000) selected @endif value="3000">3,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 4000) selected @endif value="4000">4,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 5000) selected @endif value="5000" >5,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 6000) selected @endif value="6000">6,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 7000) selected @endif value="7000">7,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 8000) selected @endif value="8000">8,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 9000) selected @endif value="9000">9,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 10000) selected @endif value="10000">10,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 15000) selected @endif value="15000">15,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 20000) selected @endif value="20000">20,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 30000) selected @endif value="30000">30,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 24000) selected @endif value="24000">24,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 25000) selected @endif value="25000">25,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 28000) selected @endif value="28000">28,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 29000) selected @endif value="29000">29,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 34000) selected @endif value="34000">34,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 50000) selected @endif value="50000">50,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 70000) selected @endif value="70000">70,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 35000) selected @endif value="35000">35,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 40000) selected @endif value="40000">40,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 45000) selected @endif value="45000">45,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 80000) selected @endif value="80000">80,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 30500) selected @endif value="30500">30,500</option>
+                                                <option  @if($quotationModel->quote_payment_price == 35500) selected @endif value="35500">35,500</option>
+                                                <option  @if($quotationModel->quote_payment_price == 36000) selected @endif value="36000">36,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 38000) selected @endif value="38000">38,000</option>
+                                                <option  @if($quotationModel->quote_payment_price == 100000) selected @endif value="100000">100,000</option>
                                             </select>
                                         </div>
                                         <input type="hidden" id="booking-create-date"
@@ -414,23 +414,21 @@
                                             value="{{ date('Y-m-d', strtotime($bookingModel->created_at)) }}">
                                         <div class="col-md-4 ">
                                             <span for="">จำนวนเงินที่ต้องชำระ</span>
-                                            <input type="number" class="form-control pax-total"
+                                            <input type="number" class="form-control pax-total" value="{{$quotationModel->quote_payment_total}}"
                                                 name="quote_payment_total" step="0.01" placeholder="0.00">
                                         </div>
                                     </div>
                                     <br>
+
                                     <span>วันที่จอง : <label class="text-info">
                                             {{ thaidate('j F Y', $bookingModel->created_at) }}</label></span>
                                     <span>วันที่เดินทาง <label class="text-info">
                                             {{ thaidate('j F Y', $bookingModel->start_date) }}</label></span>
-
                                     {{-- <input type="text" class="form-control pax-total" readonly
                                         placeholder="ยอด Pax ที่คำนวณได้"> --}}
                                 </div>
-
-
-
                             </div>
+
                             <div class="text-end mt-3">
                                 {{-- hidden --}}
                                 <input type="hidden" name="quote_total" id="quote-total">
@@ -742,6 +740,7 @@
                     // เงื่อนไข 1: เลือกวิธีชำระเงินมัดจำ
                     $('#quote-payment-deposit').prop('checked', true);
                     $('#quote-payment-price').prop('disabled', false); // เปิดการใช้งาน dropdown
+                    
                 } else {
                     // หากไม่เข้าเงื่อนไข 1: เลือกชำระเต็มจำนวน
                     $('#quote-payment-full').prop('checked', true);
@@ -766,9 +765,9 @@
                 var minutes = ('0' + bookingCreateDate.getMinutes()).slice(-2);
                 var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
                 // ตั้งค่าให้กับ input datetime-local
-                $('input[name="quote_payment_total"]').val(formattedDate);
+                $('input[name="quote_payment_date"]').val(formattedDate);
             }
-            checkPaymentCondition();
+           checkPaymentCondition();
             // ตั้งค่าฟิลด์ "ภายในวันที่" เมื่อโหลดหน้าเว็บ
             setPaymentDueDate();
             // ตรวจสอบเมื่อผู้ใช้เลือกชำระเงินเต็มจำนวน
@@ -782,13 +781,15 @@
             $('#quote-payment-full').on('change', function() {
                 checkedPaymentFull();
             });
-            checkedPaymentFull();
+            //checkedPaymentFull();
 
             // ตรวจสอบเมื่อผู้ใช้เลือกชำระเงินมัดจำ
             $('#quote-payment-deposit').on('change', function() {
                 if ($(this).is(':checked')) {
                     $('#quote-payment-price').prop('disabled', false); // เปิด dropdown เรทเงินมัดจำ
+                    $('#quote-payment-price').val(0.00); 
                 }
+            
             });
 
             function calculatePaxAndTotal() {
@@ -840,7 +841,7 @@
             });
 
             // เรียกใช้ฟังก์ชันเมื่อเริ่มต้น
-            calculatePaxAndTotal();
+            //calculatePaxAndTotal();
         });
     </script>
 

@@ -162,8 +162,9 @@
                      </td>
                     
                      <td style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{$customer->customer_fax}}</span></p>
+                        <p><span>{{$customer->customer_fax ? $customer->customer_fax : '-' }}</span></p>
                      </td>
+
                      <td style="border: none;"></td>
                      <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
                         <h4><b>Tour Code:</b></h4>
@@ -291,15 +292,38 @@
 
             <div style="margin-top: -20px">
                 <table style="margin-right: -35px; margin-left: -35px;">
+                    @if ($quotationModel->quote_payment_type === 'deposit')
                     <tr style="border-right: none;">
                         <td style="width: 100px; padding: 5x; border-right: none; border-bottom: none;"><b>วันที่ชำระเงินมัดจำ</b></td>
-                        <td style="width: 110px; border-right: none; border-left: none; border-bottom: none; " >-</td>
+                        <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;" >{{ thaidate('j f Y',$quotationModel->quote_payment_date) }}</td>
                         <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;"><b>ก่อนเวลา</b></td>
-                        <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">-น.</td>
+                        <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">{{date('H:m',strtotime($quotationModel->quote_payment_date))}} น.</td>
                         <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;"><b>จำนวนเงิน</b></td>
                         <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">-</td>
                         <td style="width: 100px; text-align: right; border-left: none; border-bottom: none;"><b>บาท</b></td>
                     </tr>
+                    @else
+                    <tr style="border-right: none;">
+                    <td style="width: 100px; padding: 5x; border-right: none; border-bottom: none;"><b>วันที่ชำระเงินมัดจำ</b></td>
+                    <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;" >-</td>
+                    <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;"><b>ก่อนเวลา</b></td>
+                    <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">-น.</td>
+                    <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;"><b>จำนวนเงิน</b></td>
+                    <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">-</td>
+                    <td style="width: 100px; text-align: right; border-left: none; border-bottom: none;"><b>บาท</b></td>
+                    </tr>
+                    @endif
+                    @if ($quotationModel->quote_payment_type === 'full')
+                    <tr style="border-right: none;">
+                        <td style="width: 100px; padding: 5x; border-right: none; border-top: none;"><b>วันที่ชำระยอดเต็ม</b></td>
+                        <td style="width: 110px; border-right: none; border-left: none; border-top: none; " >{{ thaidate('j M Y',$quotationModel->quote_payment_date) }}</td>
+                        <td style="width: 100px; border-right: none; border-left: none; border-top: none;"><b>ก่อนเวลา</b></td>
+                        <td style="width: 110px; border-right: none; border-left: none; border-top: none;">{{date('H:m',strtotime($quotationModel->quote_payment_date))}} น.</td>
+                        <td style="width: 100px; border-right: none; border-left: none; border-top: none;"><b>จำนวนเงิน</b></td>
+                        <td style="width: 110px; border-right: none; border-left: none; border-top: none;">{{  number_format($quotationModel->quote_payment_total  , 2, '.', ',')}}</td>
+                        <td style="width: 100px; text-align: right; border-left: none; border-top: none;"><b>บาท</b></td>
+                    </tr>
+                    @else
                     <tr style="border-right: none;">
                         <td style="width: 100px; padding: 5x; border-right: none; border-top: none;"><b>วันที่ชำระยอดเต็ม</b></td>
                         <td style="width: 110px; border-right: none; border-left: none; border-top: none; " >-</td>
@@ -309,6 +333,7 @@
                         <td style="width: 110px; border-right: none; border-left: none; border-top: none;">-</td>
                         <td style="width: 100px; text-align: right; border-left: none; border-top: none;"><b>บาท</b></td>
                     </tr>
+                    @endif
                     
                 </table>
             </div>

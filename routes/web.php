@@ -174,4 +174,4 @@ Route::post('payment/wholesales/store',[paymentWholesaleController::class,'store
 Route::get('fpdf/quote/{quotationModel}',[FPDF_QuotatioController::class,'generatePDF'])->name('quote.generatePDF');
 
 // MPDF Quotation
-Route::get('mpdf/quote/{quotationModel}',[MPDF_QuotationController::class,'generatePDF']);
+Route::get('mpdf/quote/{quotationModel}',[MPDF_QuotationController::class,'generatePDF'])->name('mpdf.quote');

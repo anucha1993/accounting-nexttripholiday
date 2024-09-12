@@ -19,8 +19,8 @@
                         <small class="p-3 d-block text-uppercase text-dark font-weight-medium"> ข้อมูลการขาย</small>
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" id="invoice-dashboard"
-                            class="todo-link list-group-item-action p-3 d-flex align-items-center active">
+                        <a href="{{ route('saleInfo.info', $quotationModel->quote_id) }}" id="invoice-dashboard"
+                            class="todo-link list-group-item-action p-3 d-flex align-items-center">
                             <i class="far fa-file-alt"></i>
                             &nbsp; รายละเอียดรวม
                             <span

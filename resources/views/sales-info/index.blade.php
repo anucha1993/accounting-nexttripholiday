@@ -170,7 +170,7 @@
                                             </button>
                                             <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
 
-                                                <a class="dropdown-item" href="#"><i class="fa fa-print"></i>
+                                                <a class="dropdown-item" target="_blank" href="{{route('mpdf.quote',$quotationModel->quote_id)}}"><i class="fa fa-print"></i>
                                                     พิมพ์ใบเสนอราคา</a>
                                                     <a class="dropdown-item invoice-modal"
                                                     href="{{ route('payment.quotation', $quotationModel->quote_id) }}"><i

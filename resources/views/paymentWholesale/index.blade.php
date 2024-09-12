@@ -23,8 +23,7 @@
                             class="todo-link list-group-item-action p-3 d-flex align-items-center">
                             <i class="far fa-file-alt"></i>
                             &nbsp; รายละเอียดรวม
-                            <span
-                                class="todo-badge badge bg-light-info text-info rounded-pill px-3 font-weight-medium ms-auto"></span>
+                            <span class="todo-badge badge bg-light-info text-info rounded-pill px-3 font-weight-medium ms-auto"></span>
                         </a>
 
                     </li>
