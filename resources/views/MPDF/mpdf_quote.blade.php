@@ -232,6 +232,7 @@
                 </tr>
 
                 <tr>
+
                     <td style="width: 65px; height: 300px; text-align: center; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
                         <p style="margin: 0;">{{ $key+1}}</p>
@@ -243,7 +244,12 @@
                     
                     <td style="width: 270px;  text-align: left; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
+                        @if ($item->expense_type === 'discount')
+                        <p style="margin: 0;">{{ $item->product_name}} <b>(ส่วนลด)</b></p>
+                        @else
                         <p style="margin: 0;">{{ $item->product_name}}</p>
+                        @endif
+                       
                         @empty
                             
                         @endforelse

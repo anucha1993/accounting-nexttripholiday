@@ -17,8 +17,8 @@
                         <small class="p-3 d-block text-uppercase text-dark font-weight-medium"> ข้อมูลการขาย</small>
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="javascript:void(0)" id="invoice-dashboard"
-                            class="todo-link list-group-item-action p-3 d-flex align-items-center active">
+                        <a href="{{ route('saleInfo.info', $quotationModel->quote_id) }}" id="invoice-dashboard"
+                            class="todo-link list-group-item-action p-3 d-flex align-items-center">
                             <i class="far fa-file-alt"></i>
                             &nbsp; รายละเอียดรวม
                             <span
@@ -126,7 +126,9 @@
                     <!-- Todo list-->
                     <div class="todo-listing ">
                         <div class="container border bg-white">
-                            <h4 class="text-center my-4">สร้างใบเสนอราคา / ใบจองทัวร์</h4>
+                            <h4 class="text-center my-4">สร้างใบเสนอราคา / ใบจองทัวร์  
+                                <a target="_blank" href="{{route('mpdf.quote',$quotationModel->quote_id)}}" class="float-end" >พิมพ์ <i class="text-danger fa fa-print"></i></a> </h4>
+                           
                             <div class="row">
                                 <div class="col-md-8 border" style="padding: 10px">
                                     <div class="row">
