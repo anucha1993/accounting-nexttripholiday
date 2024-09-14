@@ -320,7 +320,7 @@
 
                                         </td>
                                         <td>
-                                            <a href="{{route('mpdf.payment',$item->payment_id)}}" target="_blank"><i class="fa fa-print"></i> พิมพ์</a>
+                                            <a href="{{route('mpdf.paymentDebit',$item->payment_id)}}" target="_blank"><i class="fa fa-print"></i> พิมพ์</a>
                                         </td>
                                         <td>
                                             @if ($item->payment_status === 'success')

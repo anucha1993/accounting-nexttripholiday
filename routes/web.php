@@ -23,6 +23,8 @@ use App\Http\Controllers\quotefiles\QuoteFilesController;
 use App\Http\Controllers\payments\paymentCreditController;
 use App\Http\Controllers\Invoices\InvoiceBookingController;
 use App\Http\Controllers\invoices\invoiceDashboardController;
+use App\Http\Controllers\MPDF\MPDF_invoiceController;
+use App\Http\Controllers\MPDF\MPDF_PaymentDebitController;
 use App\Http\Controllers\MPDF\MPDF_PaymentController;
 use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
@@ -177,3 +179,5 @@ Route::get('fpdf/quote/{quotationModel}',[FPDF_QuotatioController::class,'genera
 // MPDF 
 Route::get('mpdf/quote/{quotationModel}',[MPDF_QuotationController::class,'generatePDF'])->name('mpdf.quote');
 Route::get('mpdf/payment/{paymentModel}',[MPDF_PaymentController::class,'generatePDF'])->name('mpdf.payment');
+Route::get('mpdf/payment/debit/{paymentModel}',[MPDF_PaymentDebitController::class,'generatePDF'])->name('mpdf.paymentDebit');
+Route::get('mpdf/invoice/{invoiceModel}',[MPDF_invoiceController::class,'generatePDF'])->name('mpdf.invoice');

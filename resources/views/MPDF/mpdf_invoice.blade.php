@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{$quotationModel->quote_number}}</title>
+    <title>{{$invoiceModel->invoice_number}}</title>
     <meta http-equiv="Content-Language" content="th" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <style>
@@ -49,19 +49,15 @@
                     โทรศัพท์:02-136-9144 อัตโนมัติ 16 คู่สาย โทรสาร(Fax): 02-136-9146
                 </span>
             </div>
-            <div style="padding-top: -7px;"> 
-                <span style="font-size: 14px; display: block;">
-                    Hotline: 091-091-6364 ,091-091-6463
-                </span>
-            </div>
-            <div style="padding-top: -7px;">
-                <span style="font-size: 14px; display: block;">
-                    TAT License: 11/07440 ,TTAA License:1469
-                </span>
-            </div>
+            
             <div style="padding-top: -7px;">
                 <span style="font-size: 14px; display: block;">
                     Website: https://www.nexttripholiday.com , Email : nexttripholiday@gmail.com
+                </span>
+            </div>
+            <div style="padding-top: -7px;">
+                <span style="font-size: 15px; display: block;">
+                    <b>เลขประจำตัวผู้เสียภาษี TaxID: 0115556013658</b>
                 </span>
             </div>
             
@@ -69,79 +65,77 @@
         </div>
     
         <div style="width: 30%; float: left; padding: 0px;">
-            <div class="text-center pt-6 " style="padding-left: 73px">
-                <h5>ใบจองทัวร์ / ใบเสนอราคา</h5>
+            <div class="text-center pt-6 " style="padding-left: 85px">
+                <h4>ต้นฉบับใบแจ้งหนี้</h4>
             </div>
            
-            <div class="text-center pt-6 " style="padding-left: 80px; padding-top: -55px;">
-                <h5><b>Booking / Quotation</b></h5>
+            <div class="text-center pt-6 " style="padding-left: 85px; padding-top: -55px;">
+                <h4><b>Original Invoice</b></h4>
             </div>
             <div class="" style="padding-left: 67px; padding-top: -55px;">
                 <h5><b>สำหรับลูกค้า </b> <span style="font-size: 14px">(ไม่ใช่ใบกำกับภาษี)</span></h5>  
             </div>
-            <div style="margin-top: -45px; text-align: right;">
-                <h4 style="background-color: #f9c68f; display: inline-block; padding-left: 73px"><b>{{$quotationModel->quote_number}}</b></h4>
-            </div>
+           
             
             
         </div>
-        <div style="margin-top: -35px">
+        <div style="margin-top: -25px">
             <table style="margin-right: -35px; margin-left: -35px;">
                 <tr>
                     
-                      <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
-                        <p><b>Customer ID:</span></p>
+                      <td style="width: 180px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
+                        <p><b>ชื่อลูกค้า/Customer Name:</span></p>
                      </td>
                     
-                     <td style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; vertical-align: top;">
-                        <p><span>{{$customer->customer_number}}</span></p>
-                     </td>
-                     <td style="border: none;"></td>
-                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
-                        <h4><b>Date:</b></h4>
-                     </td>
-                     
-                     <td style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; vertical-align: top;">
-                        <p><span>{{thaidate('j F Y',$quotationModel->quote_date)}}</span></p>
-                     </td>
-                </tr>
-                <tr>
-                    <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><b>Name :</span></p>
-                     </td>
-                    
-                     <td style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none; vertical-align: top;">
+                     <td style="width: 380px; padding-left: 5px; border-left: none;  border-bottom: none; vertical-align: top;">
                         <p><span>{{$customer->customer_name}}</span></p>
                      </td>
                      <td style="border: none;"></td>
-                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <h4><b>Boonking No:</b></h4>
+                     <td style="width: 170px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
+                        <h4><b>เลขที่/No:</b></h4>
+                     </td>
+                     
+                     <td style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; vertical-align: top;">
+                        <p><span>{{$invoiceModel->invoice_number}}</span></p>
+                     </td>
+                </tr>
+                <tr>
+                    <td style="width: 180px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
+                        <p><b>อีเมล์/Email:</span></p>
+                     </td>
+                    
+                     <td style="width: 380px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none; vertical-align: top;">
+                        <p><span>{{$customer->customer_email}}</span></p>
+                     </td>
+                     <td style="border: none;"></td>
+                     <td style="width: 170px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
+                        <h4><b>วันที่/Date:</b></h4>
                      </td>
                      
                      <td style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top; ">
-                        <p><span>{{$quotationModel->quote_booking}}</span></p>
+                        <p><span>{{thaidate('j M Y',$invoiceModel->invoice_date)}}</span></p>
                      </td>
                 </tr>
                 <tr>
-                    <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><b>Address:</span></p>
+                    <td style="width: 180px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
+                        <p><b>ที่อยู่/Address:</span></p>
                      </td>
                     
-                     <td style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none; vertical-align: top;">
+                     <td style="width: 380px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none; vertical-align: top;">
                         <p><span>{{$customer->customer_address}}</span></p>
                      </td>
                      <td style="border: none;"></td>
-                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <h4><b>Sale:</b></h4>
+                     <td style="width: 170px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
+                        <h4><b>เลขที่อ้างอิง/Ref No.:</b></h4>
                      </td>
                      
                      <td style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{$sale->name}}</span></p>
+                        <p><span>{{$invoiceModel->quote_number}}</span></p>
                      </td>
                 </tr>
                 <tr>
                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><b>Mobile:</span></p>
+                        <p><b>เบอร์โทรศัพท์/Phone No.:</span></p>
                      </td>
                     
                      <td style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none; vertical-align: top;">
@@ -149,44 +143,44 @@
                      </td>
                      <td style="border: none;"></td>
                      <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <h4><b>Email:</b></h4>
+                        <h4><b>เลขที่จอง/Booking No.:</b></h4>
                      </td>
                      
                      <td style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{$sale->email}}</span></p>
+                        <p><span>{{$invoiceModel->invoice_booking}}</span></p>
                      </td>
                 </tr>
                 <tr>
                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><b>Fax:</span></p>
+                        <p><b>แฟกซ์/Fax:</span></p>
                      </td>
                     
-                     <td style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none; vertical-align: top;">
+                     <td style="width: 380px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none; vertical-align: top;">
                         <p><span>{{$customer->customer_fax ? $customer->customer_fax : '-' }}</span></p>
                      </td>
 
                      <td style="border: none;"></td>
-                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <h4><b>Tour Code:</b></h4>
+                     <td style="width: 170px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
+                        <h4><b>รหัสทัวร์/Tour Code:</b></h4>
                      </td>
                      
-                     <td style="width: 150px; padding-left: 5px5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{$quotationModel->quote_tour_code}}</span></p>
+                     <td style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
+                        <p><span>{{$invoiceModel->invoice_tour_code}}</span></p>
                      </td>
                 </tr>
                 <tr style="padding: 3px">
                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-top: none; vertical-align: top; ">
-                        <p><b>Email:</span></p>
+                        <p><b>เลขประจำตัวผู้เสียภาษี/Tax ID:</span></p>
                      </td>
                     
                      <td style="width: 400px; padding-left: 5px; border-left: none; border-top: none; vertical-align: top;">
-                        <p><span>{{$customer->customer_email}}</span></p>
+                        <p><span>{{$customer->customer_texid}}</span></p>
                      </td>
                      <td style="border: none;"></td>
                      <td style="width: 100px; padding-left: 5px; border-right: none;   border-top: none; vertical-align: top;">
-                        <h4><b>Airline:</b></h4>
+                        <h4><b>ชำระเงินมัดจำ/deposit Date:</b></h4>
                      </td>
-                     <td style="width: 150px; padding: 0; text-align: center; border-left: none; border-top: none; background-color: #f9c68f; vertical-align: top;">
+                     <td style="width: 150px; padding: 0; text-align: left; border-left: none; border-top: none; background-color: #f9c68f; vertical-align: top;">
                         <p style="margin: 0; padding: 10px;">
                             <span>{{$airline->travel_name}}</span>
                         </p>
@@ -201,7 +195,7 @@
                      </td>
                     
                      <td style="width: 400px; padding-left: 5px; background-color: #f9c68f;">
-                        <p><span>{{$quotationModel->quote_tour_code}}</span></p>
+                        <p><span>{{$invoiceModel->invoice_tour_code}}</span></p>
                      </td>
                      <td style="border: none;"></td>
                      <td style="width: 100px; padding-left: 5px">
@@ -279,10 +273,10 @@
 
                 <tr>
                     <td colspan="2"  style="width: 465px; text-align: right; background-color: #f9c68f;">
-                       <h3> @bathText($quotationModel->quote_total)</h3>
+                       <h3> @bathText($invoiceModel->invoice_total)</h3>
                     </td>
                     <td colspan="2"  style="width: 185px; text-align: center; background-color: #f9c68f;"><h3> ยอดรวม / Grand Total</h3></td>
-                    <td style="width: 120px; text-align: center; background-color: #f9c68f;"><h3>  <p style="margin: 0;">{{  number_format($quotationModel->quote_total  , 2, '.', ',')}}</p></h3></td>
+                    <td style="width: 120px; text-align: center; background-color: #f9c68f;"><h3>  <p style="margin: 0;">{{  number_format($invoiceModel->invoice_total  , 2, '.', ',')}}</p></h3></td>
                 </tr>
 
 
@@ -298,7 +292,7 @@
 
             <div style="margin-top: -20px">
                 <table style="margin-right: -35px; margin-left: -35px;">
-                    @if ($quotationModel->quote_payment_type === 'deposit')
+                    @if ($invoiceModel->invoice_payment_type === 'deposit')
                     <tr style="border-right: none;">
                         <td style="width: 100px; padding: 5x; border-right: none; border-bottom: none;"><b>วันที่ชำระเงินมัดจำ</b></td>
                         <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;" >{{ thaidate('j f Y',$quotationModel->quote_payment_date) }}</td>
@@ -319,7 +313,7 @@
                     <td style="width: 200px; text-align: right; border-left: none; border-bottom: none;"><b>บาท</b></td>
                     </tr>
                     @endif
-                    @if ($quotationModel->quote_payment_type === 'full')
+                    @if ($invoiceModel->invoice_payment_type === 'full')
                     <tr style="border-right: none;">
                         <td style="width: 100px; padding: 5x; border-right: none; border-top: none;"><b>วันที่ชำระยอดเต็ม</b></td>
                         <td style="width: 110px; border-right: none; border-left: none; border-top: none; " >{{ thaidate('j M Y',$quotationModel->quote_payment_date) }}</td>
@@ -351,14 +345,14 @@
                             <b>{{$sale->name}}</b></br>
                            <p>___________________________</p>
                            <p><b>Sale / Operation</b></p>
-                           <p><b>{{thaidate('j F Y',$quotationModel->quote_date)}}</b></p>
+                           <p><b>{{thaidate('j F Y',$invoiceModel->invoice_date)}}</b></p>
                         </td>
                         <td style="border: none;"></td>
                         <td style="width: 276.6px; text-align: center;" >
                              <b style="color: #fff">ว่าง</b></br>
                            <p>___________________________</p>
                            <p><b>Sale / Operation</b></p>
-                           <p><b>{{thaidate('j F Y',$quotationModel->quote_date)}}</b></p>
+                           <p><b>{{thaidate('j F Y',$invoiceModel->invoice_date)}}</b></p>
                         </td>
                         <td style="border: none;"></td>
                         <td style="width: 277px; text-align: right; text-align: center;">
@@ -366,7 +360,7 @@
                             <p style="color: #fff">ว่าง</p></br>
                             <p style="color: #fff">ว่าง</p></br>
                             <p><b>ผู้อนุมัติ</b></p>
-                            <p><b>{{thaidate('j F Y',$quotationModel->quote_date)}}</b></p>
+                            <p><b>{{thaidate('j F Y',$invoiceModel->invoice_date)}}</b></p>
                         </td>
                     </tr>
                 </table>

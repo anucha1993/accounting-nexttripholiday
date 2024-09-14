@@ -234,7 +234,7 @@
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
 
-                                                    <a class="dropdown-item" href="#"><i class="fa fa-print"></i>
+                                                    <a class="dropdown-item" target="_blank" href="{{route('mpdf.invoice',$item->invoice_id)}}"><i class="fa fa-print"></i>
                                                         พิมพ์ใบแจ้งหนี้</a>
 
 
