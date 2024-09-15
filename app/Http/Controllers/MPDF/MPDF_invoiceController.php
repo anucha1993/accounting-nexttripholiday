@@ -10,6 +10,7 @@ use App\Models\booking\bookingModel;
 use App\Models\invoices\invoiceModel;
 use App\Models\customers\customerModel;
 use App\Models\invoices\invoicePorductsModel;
+use App\Models\quotations\quotationModel;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\quotations\quoteProductModel;
 
@@ -24,6 +25,8 @@ class MPDF_invoiceController extends Controller
         $fontDirs = $defaultConfig['fontDir'];
         $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
+
+        $quotationModel = quotationModel::where('quote_number',$invoiceModel->quote_number)->first();
         
         $customer = customerModel::where('customer_id',$invoiceModel->customer_id)->first();
         $sale = saleModel::where('id',$invoiceModel->invoice_sale)->first();
@@ -39,7 +42,7 @@ class MPDF_invoiceController extends Controller
         $booking = bookingModel::where('code', $invoiceModel->invoice_booking)->first();
         $productLists = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->get();
         // ดึง HTML จาก Blade Template
-        $html = view('MPDF.mpdf_invoice',compact('invoiceModel','customer','sale','airline','booking','productLists'))->render();
+        $html = view('MPDF.mpdf_invoice',compact('quotationModel','invoiceModel','customer','sale','airline','booking','productLists'))->render();
     
         // กำหนดค่าเริ่มต้นของ mPDF และเพิ่มฟอนต์ภาษาไทย
         $mpdf = new \Mpdf\Mpdf([

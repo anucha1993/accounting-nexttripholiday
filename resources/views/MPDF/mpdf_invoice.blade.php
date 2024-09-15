@@ -18,7 +18,7 @@
             margin: 20px; /* ระยะห่างรอบตาราง */
         }
         td {
-            border: 2px solid #ffaa50; /* สีกรอบ */
+            border: 1px solid #ffaa50; /* สีกรอบ */
            /* padding: 10px; /* ระยะห่างระหว่างข้อความกับกรอบ */
             background-color: #fff; /* สีพื้นหลัง */
             border-radius: 5px; /* มุมกรอบที่มน */
@@ -80,18 +80,18 @@
             
         </div>
         <div style="margin-top: -25px">
-            <table style="margin-right: -35px; margin-left: -35px;">
+            <table style="margin-right: -41px; margin-left: -37px;">
                 <tr>
                     
                       <td style="width: 180px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
                         <p><b>ชื่อลูกค้า/Customer Name:</span></p>
                      </td>
                     
-                     <td style="width: 380px; padding-left: 5px; border-left: none;  border-bottom: none; vertical-align: top;">
+                     <td style="width: 340px; padding-left: 5px; border-left: none;  border-bottom: none; vertical-align: top;">
                         <p><span>{{$customer->customer_name}}</span></p>
                      </td>
                      <td style="border: none;"></td>
-                     <td style="width: 170px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
+                     <td style="width: 210px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
                         <h4><b>เลขที่/No:</b></h4>
                      </td>
                      
@@ -169,65 +169,76 @@
                      </td>
                 </tr>
                 <tr style="padding: 3px">
-                    <td style="width: 100px; padding-left: 5px; border-right: none;  border-top: none; vertical-align: top; ">
+                    <td style="width: 100px; padding-left: 5px; border-right: none; border-bottom: none; border-top: none; vertical-align: top; ">
                         <p><b>เลขประจำตัวผู้เสียภาษี/Tax ID:</span></p>
                      </td>
                     
-                     <td style="width: 400px; padding-left: 5px; border-left: none; border-top: none; vertical-align: top;">
+                     <td style="width: 400px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
                         <p><span>{{$customer->customer_texid}}</span></p>
                      </td>
                      <td style="border: none;"></td>
-                     <td style="width: 100px; padding-left: 5px; border-right: none;   border-top: none; vertical-align: top;">
+                     <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none;  border-top: none; vertical-align: top;">
                         <h4><b>ชำระเงินมัดจำ/deposit Date:</b></h4>
                      </td>
-                     <td style="width: 150px; padding: 0; text-align: left; border-left: none; border-top: none; background-color: #f9c68f; vertical-align: top;">
+                     <td style="width: 150px; padding: 0; text-align: left; border-left: none;border-bottom:  none;  border-top: none; background-color: #f9c68f; vertical-align: top;">
                         <p style="margin: 0; padding: 10px;">
-                            <span>{{$airline->travel_name}}</span>
+                            @if ($quotationModel->quote_payment_type === 'deposit')
+                            <span> {{ thaidate('j M Y',$quotationModel->quote_payment_date) }} เวลา {{date('H:m',strtotime($quotationModel->quote_payment_date))}} น.</span>
+                            @else
+                                 - ก่อนเวลา - น.
+                            @endif
+                            
+                        </p>
+                    </td>
+                </tr>
+                <tr style="padding: 3px">
+                    <td style="width: 100px; padding-left: 5px; border-right: none;  border-top: none; vertical-align: top; ">
+                        
+                     </td>
+                    
+                     <td style="width: 400px; padding-left: 5px; border-left: none; border-top: none; vertical-align: top;">
+                        
+                     </td>
+                     <td style="border: none;"></td>
+                     <td style="width: 100px; padding-left: 5px; border-right: none;   border-top: none; vertical-align: top;">
+                        <h4><b>ชำระส่วนที่เหลือ/Full Payment Date:</b></h4>
+                     </td>
+                     <td style="width: 150px; padding: 0; text-align: left; border-left: none;  ; background-color: #f9c68f; vertical-align: top;">
+                        <p style="margin: 0; padding: 10px;">
+                            @if ($quotationModel->quote_payment_type === 'full')
+                            <span> {{ thaidate('j M Y',$quotationModel->quote_payment_date) }} เวลา {{date('H:m',strtotime($quotationModel->quote_payment_date))}} น.</span>
+                            @else
+                                 - ก่อนเวลา - น.
+                            @endif
+                            
                         </p>
                     </td>
                 </tr>
                 <tr>
                     <td style="border: none;"></td>
                 </tr>
-                <tr>
-                    <td style="width: 100px; padding-right: 5px; text-align: right;">
-                        <p><b>Program:</span></p>
-                     </td>
-                    
-                     <td style="width: 400px; padding-left: 5px; background-color: #f9c68f;">
-                        <p><span>{{$invoiceModel->invoice_tour_code}}</span></p>
-                     </td>
-                     <td style="border: none;"></td>
-                     <td style="width: 100px; padding-left: 5px">
-                        <h4><b> Period:</b></h4>
-                     </td>
-                     <td style="width: 150px; padding: 0; text-align: center; background-color: #f9c68f;">
-                        <p style="margin: 0; padding: 10px;">
-                            <span>{{ date('d', strtotime($booking->start_date)) }}-{{  thaidate('j F Y',$booking->end_date) }}</span>
-                        </p>
-                    </td>
-                </tr>
+               
             </table>
            
            
         </div>
 
-        <div style="margin-top: -36px">
-            <table style="margin-right: -35px; margin-left: -35px;">
+        <div style="margin-top: -35px">
+            <table style="margin-right: -33px; margin-left: -30px;">
                 <tr>
-                    <td style="width: 65px; text-align: center; background-color: #f9c68f;">
+                    <td style="width: 55px; text-align: center; background-color: #f9c68f;">
                         <b>ลำดับ</br><p>Item</p></b>
                     </td>
 
-                    <td style="width: 400px; text-align: center; background-color: #f9c68f;"><b>รายการ </br><p>Descriptons</p></b></td>
-                    <td style="width: 65px; text-align: center; background-color: #f9c68f;"><b>จำนวน </br><p>Quanily</p></b></td>
-                    <td style="width: 120px; text-align: center; background-color: #f9c68f;"><b>ราคาต่อหน่วย </br><p>Unit Price</p></b></td>
-                    <td style="width: 120px; text-align: center; background-color: #f9c68f;"><b>ราคารวม </br><p>Total Amout</p></b></td>
+                    <td style="width: 330px; text-align: center; background-color: #f9c68f;"><b>รายการ </br><p>Descriptons</p></b></td>
+                    <td style="width: 100px; text-align: center; background-color: #f9c68f;"><b>จำนวน </br><p>Quanily</p></b></td>
+                    <td style="width: 140px; text-align: right; background-color: #f9c68f;"><b>ราคาต่อหน่วย </br><p>Unit Price</p></b></td>
+                    <td style="width: 120px; text-align: right; background-color: #f9c68f;"><b>ราคารวม </br><p>Total Amout</p></b></td>
                 </tr>
 
                 <tr>
 
-                    <td style="width: 65px; height: 300px; text-align: center; vertical-align: top;">
+                    <td style="width: 65px; height: 310px; text-align: center; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
                         <p style="margin: 0;">{{ $key+1}}</p>
                         @empty
@@ -255,14 +266,14 @@
                             
                         @endforelse
                     </td>
-                    <td style="width: 120px; text-align: center; vertical-align: top;">
+                    <td style="width: 120px; text-align: right; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
                         <p style="margin: 0;">{{  number_format( $item->product_price  , 2, '.', ',')}}</p>
                         @empty
                             
                         @endforelse
                     </td>
-                    <td style="width: 120px; text-align: center; vertical-align: top;">
+                    <td style="width: 120px; text-align: right; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
                         <p style="margin: 0;">{{  number_format($item->product_sum  , 2, '.', ',')}}</p>
                         @empty
@@ -270,13 +281,54 @@
                         @endforelse
                     </td>
                 </tr>
-
                 <tr>
-                    <td colspan="2"  style="width: 465px; text-align: right; background-color: #f9c68f;">
+                    <td colspan="2" rowspan="8" style="text-align: left; vertical-align: top; padding: 10px;">
+                        **(Non VAT) = ค่าบริการไม่คิดภาษีมูลค่าเพิ่ม<br><br>
+                       <b>หมายเหตุ / Remark:</b><br>
+                        -<br>
+                        ภาษีหัก ณ ที่จ่าย 3%: 39.25 บาท<br>
+                        (คำนวณจากยอดรวมก่อนภาษีมูลค่าเพิ่ม / Pre-VAT Amount)<br>
+                        ข้อสังเกต: กรุณาตรวจสอบกับบริษัทเกี่ยวกับการหักภาษี ณ ที่จ่าย 3% ภายใต้เงื่อนไขที่กำหนด
+                    </td>
+                    <td colspan="2" style="text-align: right; padding: 3px;">ยอดรวมยกเว้นภาษี / Vat-Exempted Amount</td>
+                    <td style="text-align: right; padding: 3px;">24,580.00</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: right; padding: 3px;">ราคาสุทธิสินค้าที่เสียภาษี / Pre-Tax Amount</td>
+                    <td style="text-align: right; padding: 3px;">1,400.00</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: right; padding: 3px;">ส่วนลด / Discount</td>
+                    <td style="text-align: right; padding: 3px;">0.00</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: right; padding: 3px;">ราคาก่อนภาษีมูลค่าเพิ่ม / Pre-VAT Amount</td>
+                    <td style="text-align: right; padding: 3px;">1,308.41</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: right; padding: 3px;">ภาษีมูลค่าเพิ่ม VAT 7%</td>
+                    <td style="text-align: right; padding: 3px;">91.59</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: right; padding: 3px;">ราคาพร้อมภาษีมูลค่าเพิ่ม / Include VAT</td>
+                    <td style="text-align: right; padding: 3px;">1,400.00</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: right; padding: 3px;">หักเงินมัดจำ / Deposit</td>
+                    <td style="text-align: right; padding: 3px;">0.00</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: right; padding: 3px;">ยอดชำระทั้งสิ้น / Grand Total</td>
+                    <td style="text-align: right; padding: 3px;">25,980.00</td>
+                </tr>
+                <tr>
+                    <td colspan="2"  style="text-align: right; background-color: #fff;">
+                        <h3>จำนวนเงินตัวอักษร:</h3>
+                     </td>
+                    <td colspan="3"  style="text-align: right; background-color: #f9c68f;">
                        <h3> @bathText($invoiceModel->invoice_total)</h3>
                     </td>
-                    <td colspan="2"  style="width: 185px; text-align: center; background-color: #f9c68f;"><h3> ยอดรวม / Grand Total</h3></td>
-                    <td style="width: 120px; text-align: center; background-color: #f9c68f;"><h3>  <p style="margin: 0;">{{  number_format($invoiceModel->invoice_total  , 2, '.', ',')}}</p></h3></td>
+                   
                 </tr>
 
 
@@ -284,93 +336,13 @@
         </div>
 
         <footer>
-           
-            <div style="line-height: 1; text-align: left; display: block; margin-top: -15px">
-                <b>หมายเหตุ : </b> <span style="">-หากไม่ชำระเงินตามกำหนดด้านล่าง ทางบริษัทฯ ขอสงวนสิทธิ์ในการตัดที่นั่งโดยไม่แจ้งให้ทราบล่วงหน้า,-หากชำระมัดจำมาแล้วท่านไม่ชำระส่วนที่เหลือ ขออนุญาตยึดเงินมัดจำตามเงื่อนไขบริษัท
-                    -สำเนาพาสปอร์ตกรุณาจัดส่งให้บริษัทก่อนเดินทาง 30 วันผ่านทางไลน์หรืออีเมลล์,-ใบนัดหมายการเดินทาง จะจัดส่งให้ก่อนการเดินทางระยะเวลา 1-3 วัน</span>
-            </div>
-
-            <div style="margin-top: -20px">
-                <table style="margin-right: -35px; margin-left: -35px;">
-                    @if ($invoiceModel->invoice_payment_type === 'deposit')
-                    <tr style="border-right: none;">
-                        <td style="width: 100px; padding: 5x; border-right: none; border-bottom: none;"><b>วันที่ชำระเงินมัดจำ</b></td>
-                        <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;" >{{ thaidate('j f Y',$quotationModel->quote_payment_date) }}</td>
-                        <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;"><b>ก่อนเวลา</b></td>
-                        <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">{{date('H:m',strtotime($quotationModel->quote_payment_date))}} น.</td>
-                        <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;"><b>จำนวนเงิน</b></td>
-                        <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">-</td>
-                        <td style="width: 200px; text-align: right; border-left: none; border-bottom: none;"><b>บาท</b></td>
-                    </tr>
-                    @else
-                    <tr style="border-right: none;">
-                    <td style="width: 100px; padding: 5x; border-right: none; border-bottom: none;"><b>วันที่ชำระเงินมัดจำ</b></td>
-                    <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;" >-</td>
-                    <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;"><b>ก่อนเวลา</b></td>
-                    <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">-น.</td>
-                    <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;"><b>จำนวนเงิน</b></td>
-                    <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">-</td>
-                    <td style="width: 200px; text-align: right; border-left: none; border-bottom: none;"><b>บาท</b></td>
-                    </tr>
-                    @endif
-                    @if ($invoiceModel->invoice_payment_type === 'full')
-                    <tr style="border-right: none;">
-                        <td style="width: 100px; padding: 5x; border-right: none; border-top: none;"><b>วันที่ชำระยอดเต็ม</b></td>
-                        <td style="width: 110px; border-right: none; border-left: none; border-top: none; " >{{ thaidate('j M Y',$quotationModel->quote_payment_date) }}</td>
-                        <td style="width: 100px; border-right: none; border-left: none; border-top: none;"><b>ก่อนเวลา</b></td>
-                        <td style="width: 110px; border-right: none; border-left: none; border-top: none;">{{date('H:m',strtotime($quotationModel->quote_payment_date))}} น.</td>
-                        <td style="width: 100px; border-right: none; border-left: none; border-top: none;"><b>จำนวนเงิน</b></td>
-                        <td style="width: 110px; border-right: none; border-left: none; border-top: none;">{{  number_format($quotationModel->quote_payment_total  , 2, '.', ',')}}</td>
-                        <td style="width: 200px; text-align: right; border-left: none; border-top: none;"><b>บาท</b></td>
-                    </tr>
-                    @else
-                    <tr style="border-right: none;">
-                        <td style="width: 100px; padding: 5x; border-right: none; border-top: none;"><b>วันที่ชำระยอดเต็ม</b></td>
-                        <td style="width: 110px; border-right: none; border-left: none; border-top: none; " >-</td>
-                        <td style="width: 100px; border-right: none; border-left: none; border-top: none;"><b>ก่อนเวลา</b></td>
-                        <td style="width: 110px; border-right: none; border-left: none; border-top: none;">-น.</td>
-                        <td style="width: 100px; border-right: none; border-left: none; border-top: none;"><b>จำนวนเงิน</b></td>
-                        <td style="width: 110px; border-right: none; border-left: none; border-top: none;">-</td>
-                        <td style="width: 200px; text-align: right; border-left: none; border-top: none;"><b>บาท</b></td>
-                    </tr>
-                    @endif
-                    
-                </table>
-            </div>
-
-            <div style="margin-top: -32px">
-                <table style="margin-right: -35px; margin-left: -35px;">
-                    <tr style="border-right: none;">
-                        <td style="width: 276.6px; padding: 5x; text-align: center;">
-                            <b>{{$sale->name}}</b></br>
-                           <p>___________________________</p>
-                           <p><b>Sale / Operation</b></p>
-                           <p><b>{{thaidate('j F Y',$invoiceModel->invoice_date)}}</b></p>
-                        </td>
-                        <td style="border: none;"></td>
-                        <td style="width: 276.6px; text-align: center;" >
-                             <b style="color: #fff">ว่าง</b></br>
-                           <p>___________________________</p>
-                           <p><b>Sale / Operation</b></p>
-                           <p><b>{{thaidate('j F Y',$invoiceModel->invoice_date)}}</b></p>
-                        </td>
-                        <td style="border: none;"></td>
-                        <td style="width: 277px; text-align: right; text-align: center;">
-                            <b style="color: #fff">ว่าง</b></br>
-                            <p style="color: #fff">ว่าง</p></br>
-                            <p style="color: #fff">ว่าง</p></br>
-                            <p><b>ผู้อนุมัติ</b></p>
-                            <p><b>{{thaidate('j F Y',$invoiceModel->invoice_date)}}</b></p>
-                        </td>
-                    </tr>
-                </table>
-            </div>
+         
 
             <div style="margin-top: -17px">
-                กรุณาชำระเงินค่าทัวร์ หรือตั๋วเครื่องบินโดยการโอน
-                <p style="margin-top: -5px"><b>ชื่อบัญชี บจก.เน็กซ์ ทริป ฮอลิเดย์</b></p>
+                <b>วิธีการชำระเงิน: </b>
+                <span style="margin-top: px">ชื่อบัญชี บจก.เน็กซ์ ทริป ฮอลิเดย์</p>
             </div>
-            <div style="margin-top: -20px; margin-bottom: -300px;">
+            <div style="margin-top: 0px; margin-bottom: -300px;">
                 <div style="float: left; width: 25%; text-align: left;">
                     <b>ธนาคาร</b>
                 </div>
@@ -402,10 +374,37 @@
                 <div style="clear: both;"></div> <!-- Clear float -->
             </div>
             
-           <b>แจ้งชำระเงิน</b>
-           <p style="margin-top: -5px">สามารถแจ้งได้ทุกช่องทาง Line :@nexttripholiday ,อีเมล:nexttripholiday@gmail.com หรือทางไลน์กับพนักงานขายที่ท่านทำการจอง</p>
+           <b>แจ้งชำระเงิน :</b>
+           <span style="margin-top: -5px">สามารถแจ้งได้ทุกช่องทาง Line :@nexttripholiday ,อีเมล:nexttripholiday@gmail.com หรือทางไลน์กับพนักงานขายที่ท่านทำการจอง</p>
            
-            
+           <div style="margin-top: -10px">
+            <table style="margin-right: -35px; margin-left: -35px;">
+                <tr style="border-right: none;">
+                    <td style="width: 276.6px; padding: 5x; text-align: center;">
+                        <b>{{$sale->name}}</b></br>
+                       <p>___________________________</p>
+                       <p><b>Sale / Operation</b></p>
+                       <p><b>{{thaidate('j F Y',$invoiceModel->invoice_date)}}</b></p>
+                    </td>
+                    <td style="border: none;"></td>
+                    <td style="width: 276.6px; text-align: center;" >
+                         <b style="color: #fff">ว่าง</b></br>
+                       <p>___________________________</p>
+                       <p><b>Sale / Operation</b></p>
+                       <p><b>{{thaidate('j F Y',$invoiceModel->invoice_date)}}</b></p>
+                    </td>
+                    <td style="border: none;"></td>
+                    <td style="width: 277px; text-align: right; text-align: center;">
+                        <b style="color: #fff">ว่าง</b></br>
+                        <p style="color: #fff">ว่าง</p></br>
+                        <p style="color: #fff">ว่าง</p></br>
+                        <p><b>ผู้อนุมัติ</b></p>
+                        <p><b>{{thaidate('j F Y',$invoiceModel->invoice_date)}}</b></p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
         
         </footer>
         
