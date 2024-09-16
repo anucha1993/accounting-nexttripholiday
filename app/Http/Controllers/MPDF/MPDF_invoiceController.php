@@ -10,6 +10,7 @@ use App\Models\booking\bookingModel;
 use App\Models\invoices\invoiceModel;
 use App\Models\customers\customerModel;
 use App\Models\invoices\invoicePorductsModel;
+use App\Models\payments\paymentModel;
 use App\Models\quotations\quotationModel;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\quotations\quoteProductModel;
@@ -41,8 +42,17 @@ class MPDF_invoiceController extends Controller
         ->first();
         $booking = bookingModel::where('code', $invoiceModel->invoice_booking)->first();
         $productLists = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->get();
+        $NonVat = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)
+        ->where('expense_type', 'income')
+        ->where('vat', 'Y')
+        ->sum('product_sum');
+        $VatTotal = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)
+        ->where('expense_type', 'income')
+        ->where('vat', 'N')
+        ->sum('product_sum');
+        $paymentDeposit = paymentModel::where('payment_doc_number',$invoiceModel->quote_number)->sum('payment_total');
         // ดึง HTML จาก Blade Template
-        $html = view('MPDF.mpdf_invoice',compact('quotationModel','invoiceModel','customer','sale','airline','booking','productLists'))->render();
+        $html = view('MPDF.mpdf_invoice',compact('paymentDeposit','VatTotal','NonVat','quotationModel','invoiceModel','customer','sale','airline','booking','productLists'))->render();
     
         // กำหนดค่าเริ่มต้นของ mPDF และเพิ่มฟอนต์ภาษาไทย
         $mpdf = new \Mpdf\Mpdf([

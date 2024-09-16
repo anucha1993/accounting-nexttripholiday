@@ -17,7 +17,7 @@ use App\Models\quotations\quoteProductModel;
 
 class MPDF_PaymentController extends Controller
 {
-    // TEST 
+    // TEST //
     public function generatePDF(paymentModel $paymentModel)
     {
         // การตั้งค่า font สำหรับภาษาไทย
@@ -30,6 +30,7 @@ class MPDF_PaymentController extends Controller
         $fontDirs = $defaultConfig['fontDir'];
         $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
+        
         
         $customer = customerModel::where('customer_id',$quotationModel->customer_id)->first();
         $sale = saleModel::where('id',$quotationModel->quote_sale)->first();

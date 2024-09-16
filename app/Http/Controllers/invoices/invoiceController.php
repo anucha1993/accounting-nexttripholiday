@@ -110,7 +110,9 @@ class invoiceController extends Controller
 
     public function update(invoiceModel $invoiceModel, Request $request)
     {
-        //dd($invoiceModel->invoice_id);
+        //dd($request);
+       
+        $request->merge(['invoice_vat_3' => $request->vat_3_total]); 
         $invoiceModel->update($request->all());
         
          // delete product lits Old
@@ -119,6 +121,8 @@ class invoiceController extends Controller
          {
            if($request->product_id[$key]){
              $product = productModel::where('id',$request->product_id[$key])->first();
+
+             $request->merge(['vat' => isset($request->non_vat[$key]) ? 'Y' : 'N']); 
              
              invoicePorductsModel::create([
                  'invoice_id' => $invoiceModel->invoice_id,
@@ -128,7 +132,7 @@ class invoiceController extends Controller
                  'product_price' => $request->price_per_unit[$key],
                  'product_sum' => $request->total_amount[$key],
                  'expense_type' => $request->expense_type[$key],
-                 'vat' => isset($request->non_vat[$key]) ? 'Y' : 'N',
+                 'vat' => $request->vat,
              ]);
            }
  

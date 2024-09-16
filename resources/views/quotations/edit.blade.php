@@ -540,6 +540,7 @@
                 let sumPriceExcludingVat = 0;
                 let sumPriceExcludingVatNonVat = 0;
                 let totalBeforeDiscount = 0;
+                let withholdingTaxTotal = 0
 
                 $('#quotation-table .item-row').each(function() {
                     const quantity = parseFloat($(this).find('.quantity').val()) || 0;
@@ -579,6 +580,7 @@
                             sumPriceExcludingVat += total;
                         }
                         sumTotal += total;
+                        withholdingTaxTotal += total;
                     }
                 });
 
@@ -594,7 +596,8 @@
                     grandTotal = afterDiscount + vatAmount;
                 }
 
-                const withholdingTax = $('#withholding-tax').is(':checked') ? grandTotal * 0.03 : 0;
+                const withholdingTax = $('#withholding-tax').is(':checked') ? withholdingTaxTotal  * 0.03 : 0;
+                $('#quote-withholding-amount').val(withholdingTax.toFixed(2));
 
                 let GrandTotalOld = parseFloat($('#GrandTotalOld').val()) || 0;
 
@@ -620,7 +623,7 @@
                 $('#quote-grand-total').val(grandTotal.toFixed(2));
 
                 $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
-                $('#quote-withholding-amount').val(withholdingTax.toFixed(2));
+               
                 // ยอดเดิม (GrandTotalOld)
                 $('#invoice-total-old').text(formatNumber(GrandTotalOld.toFixed(2)));
 

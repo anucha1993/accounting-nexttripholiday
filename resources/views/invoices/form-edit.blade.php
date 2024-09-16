@@ -237,8 +237,11 @@
                                                         ส่วนลด</option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-1 text-center"><input type="checkbox" name="non_vat[]"
-                                                    @if ($item->vat === 'Y') checked @endif class="non-vat">
+                                            <div class="col-md-1 text-center">
+                                              
+
+                                                <input type="checkbox" name="non_vat[]" 
+                                                    @if ($item->vat === 'Y') checked @endif class="non-vat" >
                                             </div>
                                             <div class="col-md-1"><input type="number" name="quantity[]"
                                                     class="quantity form-control text-end"
@@ -357,7 +360,7 @@
                                 <input type="hidden" name="invoice_after_discount" id="quote-after-discount">
                                 <input type="hidden" name="invoice_price_excluding_vat" id="quote-price-excluding-vat">
                                 <input type="hidden" name="invoice_grand_total" id="quote-grand-total">
-                                <input type="hidden" name="vat_3_total" id="quote-withholding-amount">
+                                <input type="text"   name="vat_3_total" id="quote-withholding-amount">
                                 <input type="hidden" name="invoice_vat_7" id="quote-vat-7">
 
 
@@ -464,11 +467,9 @@
 
         $(document).ready(function() {
 
-            // ฟังก์ชันจัดรูปแบบตัวเลข
             function formatNumber(num) {
                 return parseFloat(num).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
             }
-
 
             function updateRowNumbers() {
                 $('#quotation-table .item-row').each(function(index) {
@@ -482,6 +483,7 @@
                 let sumPriceExcludingVat = 0;
                 let sumPriceExcludingVatNonVat = 0;
                 let totalBeforeDiscount = 0;
+                let withholdingTaxTotal = 0
 
 
 
@@ -509,6 +511,8 @@
                         sumPriceExcludingVatNonVat += total;
                         sumTotal += total;
                     } else {
+                        $(this).find('.total-amount').val(total.toFixed(2));
+                        $(this).find('.price-excluding-vat').val(priceExcludingVat.toFixed(2));
                         if (vatMethod === 'include') {
                             // คำนวณ VAT และราคาก่อน VAT ตามสูตรที่กำหนด
                             const vatAmount = total - (total * 100 / 107);
@@ -522,6 +526,8 @@
                             sumPriceExcludingVat += total;
                         }
                         sumTotal += total;
+                         // คำนวณหักภาษี ณ ที่จ่ายเฉพาะรายการที่ไม่ใช่ NonVat
+                        withholdingTaxTotal += total;
                     }
                 });
 
@@ -537,12 +543,9 @@
                     grandTotal = afterDiscount + vatAmount;
                 }
 
-                const withholdingTax = $('#withholding-tax').is(':checked') ? grandTotal * 0.03 : 0;
-
-
+                const withholdingTax = $('#withholding-tax').is(':checked') ? withholdingTaxTotal  * 0.03 : 0;
+                $('#quote-withholding-amount').val(withholdingTax.toFixed(2));
                 let GrandTotalOld = parseFloat($('#GrandTotalOld').val()) || 0;
-
-
 
 
                 $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
@@ -565,22 +568,20 @@
                 $('#quote-grand-total').val(grandTotal.toFixed(2));
 
                 $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
-                $('#quote-withholding-amount').val(withholdingTax.toFixed(2));
+             
                 // ยอดเดิม (GrandTotalOld)
                 $('#invoice-total-old').text(formatNumber(GrandTotalOld.toFixed(2)));
 
                 // มูลค่าที่ถูกต้อง (GrandTotalOld + sumPriceExcludingVat + sumPriceExcludingVatNonVat)
-                const grandTotalNew = GrandTotalOld - sumPriceExcludingVat - sumPriceExcludingVatNonVat;
+                const grandTotalNew = GrandTotalOld + sumPriceExcludingVat + sumPriceExcludingVatNonVat;
                 $('#grand-total-new').text(formatNumber(grandTotalNew.toFixed(2)));
                 $('#grand-total-new-val').val(grandTotalNew);
                 // ส่วนต่าง (Difference)
-                $('#difference').text(formatNumber((GrandTotalOld - grandTotalNew).toFixed(2)));
-                $('#difference-val').val(GrandTotalOld - grandTotalNew);
+                $('#difference').text(formatNumber((grandTotalNew - GrandTotalOld).toFixed(2)));
+                $('#difference-val').val(grandTotalNew - GrandTotalOld);
 
             }
 
-
-            // Add a new row
             $('#add-row').click(function() {
                 const newRow = $('#quotation-table .item-row:first').clone();
                 newRow.find('input').val(0);
@@ -588,24 +589,21 @@
                 newRow.find('input[type="checkbox"]').prop('checked', false);
                 newRow.appendTo('#quotation-table');
                 updateRowNumbers();
+                calculateTotals();
             });
 
-            // Remove row
             $('#quotation-table').on('click', '.remove-row-btn', function() {
                 $(this).closest('.item-row').remove();
                 updateRowNumbers();
                 calculateTotals();
             });
 
-            // Bind input changes and VAT method change to recalculate totals
             $('#quotation-table').on('input', '.quantity, .price-per-unit', calculateTotals);
             $('#quotation-table').on('change', '.non-vat, select[name="expense_type[]"]', calculateTotals);
             $('input[name="vat_type"]').change(calculateTotals);
             $('#withholding-tax').change(calculateTotals);
 
-            // Initial calculation
             calculateTotals();
-
             // Customer Edit
             $('#edit-customer').on('click', function(event) {
                 event.preventDefault();
