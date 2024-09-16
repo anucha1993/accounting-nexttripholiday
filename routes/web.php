@@ -29,6 +29,7 @@ use App\Http\Controllers\MPDF\MPDF_PaymentController;
 use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
 use App\Http\Controllers\MPDF\MPDF_QuotationController;
+use App\Http\Controllers\MPDF\MPDF_taxReceiptController;
 
 /*
 |--------------------------------------------------------------------------
@@ -181,3 +182,4 @@ Route::get('mpdf/quote/{quotationModel}',[MPDF_QuotationController::class,'gener
 Route::get('mpdf/payment/{paymentModel}',[MPDF_PaymentController::class,'generatePDF'])->name('mpdf.payment');
 Route::get('mpdf/payment/debit/{paymentModel}',[MPDF_PaymentDebitController::class,'generatePDF'])->name('mpdf.paymentDebit');
 Route::get('mpdf/invoice/{invoiceModel}',[MPDF_invoiceController::class,'generatePDF'])->name('mpdf.invoice');
+Route::get('mpdf/texreceipt/{invoiceModel}',[MPDF_taxReceiptController::class,'generatePDF'])->name('mpdf.texreceipt');

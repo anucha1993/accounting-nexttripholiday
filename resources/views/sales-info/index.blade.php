@@ -282,8 +282,8 @@
                                                     <a class="dropdown-item"
                                                         href="{{ route('taxinvoice.edit', $item->invoice_id) }}"><i
                                                             class="fa fa-edit"></i> แก้ไข</a>
-                                                    <a class="dropdown-item" href="#"><i class="fa fa-print"></i>
-                                                        พิมพ์ใบเสนอราคา</a>
+                                                            <a class="dropdown-item" target="_blank" href="{{route('mpdf.texreceipt',$item->invoice_id)}}"><i class="fa fa-print"></i>
+                                                                พิมพ์ใบกำกับภาษี</a>
                                                     <a class="dropdown-item"
                                                         href="{{ route('debit.create', $item->invoice_id) }}"><i
                                                             class="fa fa-file"></i> ออกใบเพิ่มหนี้</a>
