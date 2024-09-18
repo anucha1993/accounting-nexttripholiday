@@ -337,12 +337,15 @@
                                                     <a class="dropdown-item debit-modal" href="{{ route('payment.debit', $item->debit_note_id) }}"><i
                                                         class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
 
+                                                      
+    
+
                                                     <a class="dropdown-item"
                                                         href="{{ route('debit.edit', $item->debit_note_id) }}"><i
                                                             class="fa fa-edit"></i> แก้ไข</a>
-                                                    <a class="dropdown-item" href="#"><i class="fa fa-print"></i>
-                                                        พิมพ์ใบเสนอราคา</a>
-
+                                                  
+                                                            <a class="dropdown-item" target="_blank" href="{{route('mpdf.debitreceipt',$item->debit_note_id)}}"><i class="fa fa-print"></i>
+                                                                พิมพ์ใบเพิ่มหนี้</a>
 
                                                 </div>
                                             </div>

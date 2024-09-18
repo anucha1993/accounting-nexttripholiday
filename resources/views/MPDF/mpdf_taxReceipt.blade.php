@@ -397,44 +397,32 @@
 
 
             <div style="margin-top: -17px">
-                <b>วิธีการชำระเงิน: </b>
-                <span style="margin-top: px">ชื่อบัญชี บจก.เน็กซ์ ทริป ฮอลิเดย์</p>
-            </div>
-            <div style="margin-top: 0px; margin-bottom: -300px;">
-                <div style="float: left; width: 25%; text-align: left;">
-                    <b>ธนาคาร</b>
-                </div>
-                <div style="float: left; width: 25%; text-align: left;">
-                    <b>ประเภทบัญชี</b>
-                </div>
-                <div style="float: left; width: 25%; text-align: left;">
-                    <b>สาขา</b>
-                </div>
-                <div style="float: left; width: 25%; text-align: left;">
-                    <b>เลขบัญชี</b>
-                </div>
+                <b>ชำระเงินโดย / Form of payment: </b><br>
+                <span style="font-family: @if($payment->payment_method === 'cash') DejaVuSans; @endif">&#9745;</span> <b>เงินสด</b><br>
+               
+                <span style="font-family: @if($payment->payment_method === 'check') DejaVuSans; @endif">&#9745;</span> <b>เช็คธนาคาร</b><br>
 
-            </div>
+                @if($payment->payment_method === 'check') 
+                {{$payment->bank_name}} เลขที่เช็ค : {{$payment->payment_check_number}}  โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_date_time) }} เวลา: {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.
+                @endif
 
-            <div style="margin-top: 0px; ">
-                <div style="float: left; width: 25%; text-align: left;">
-                    <span>กรุงศรีอยุธยา</span>
-                </div>
-                <div style="float: left; width: 25%; text-align: left;">
-                    <span>ออมทรัพย์</span>
-                </div>
-                <div style="float: left; width: 25%; text-align: left;">
-                    <span>เมกาบางนา</span>
-                </div>
-                <div style="float: left; width: 25%; text-align: left;">
-                    <span>688-1-28842-5</span>
-                </div>
-                <div style="clear: both;"></div> <!-- Clear float -->
-            </div>
+                <span style="font-family: @if($payment->payment_method === 'credit') DejaVuSans; @endif">&#9745;</span> <b>บัตรเครดิต</b><br>
+                
+                @if($payment->payment_method === 'credit') 
+                {{$payment->bank_name}}  เลขที่สลิป : {{$payment->payment_credit_slip_number}}
+                @endif
 
-            <b>แจ้งชำระเงิน :</b>
-            <span style="margin-top: -5px">สามารถแจ้งได้ทุกช่องทาง Line :@nexttripholiday
-                ,อีเมล:nexttripholiday@gmail.com หรือทางไลน์กับพนักงานขายที่ท่านทำการจอง</p>
+                <span style="font-family: @if($payment->payment_method === 'transfer-money') DejaVuSans; @endif">&#9745;</span> <b>โอนเงินเข้าบัญชี</b>
+                @if($payment->payment_method === 'transfer-money') 
+                {{$payment->bank_name}}   โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_date_time) }} เวลา: {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.
+                @endif
+                <br>
+                
+            </div>
+            
+            
+
+            
 
                 <div style="margin-top: -10px">
                       <table style="margin-right: -41px; margin-left: -37px;">

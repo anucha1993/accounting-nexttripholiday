@@ -51,8 +51,11 @@ class MPDF_taxReceiptController extends Controller
         ->where('vat', 'N')
         ->sum('product_sum');
         $paymentDeposit = paymentModel::where('payment_doc_number',$invoiceModel->quote_number)->sum('payment_total');
+        $payment = paymentModel::where('payment_doc_number',$invoiceModel->quote_number)
+        ->leftjoin('bank','bank.bank_id','payments.payment_bank_number')
+        ->latest('payments.payment_date_time')->first();
         // ดึง HTML จาก Blade Template
-        $html = view('MPDF.mpdf_taxReceipt',compact('paymentDeposit','VatTotal','NonVat','quotationModel','invoiceModel','customer','sale','airline','booking','productLists'))->render();
+        $html = view('MPDF.mpdf_taxReceipt',compact('payment','paymentDeposit','VatTotal','NonVat','quotationModel','invoiceModel','customer','sale','airline','booking','productLists'))->render();
     
         // กำหนดค่าเริ่มต้นของ mPDF และเพิ่มฟอนต์ภาษาไทย
         $mpdf = new \Mpdf\Mpdf([

@@ -157,7 +157,7 @@
                                         <td>{{ number_format($item->quote_total, 2, '.', ',') }}</td>
                                         <td>
                                             @if ($item->quote_status != 'cancel')
-                                                @if ($item->quote_status === 'wait')
+                                                @if ($item->wholesale_payment_status === 'wait')
                                                     <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
                                                 @endif
                                                 @if ($item->quote_status === 'success')
