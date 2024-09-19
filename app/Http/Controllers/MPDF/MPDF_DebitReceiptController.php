@@ -10,6 +10,7 @@ use App\Models\booking\bookingModel;
 use App\Models\invoices\invoiceModel;
 use App\Models\customers\customerModel;
 use App\Models\debits\debitModel;
+use App\Models\debits\debitNoteProductModel;
 use App\Models\invoices\invoicePorductsModel;
 use App\Models\payments\paymentModel;
 use App\Models\quotations\quotationModel;
@@ -43,17 +44,19 @@ class MPDF_DebitReceiptController extends Controller
         ->where('id', $tour->airline_id)
         ->first();
         $booking = bookingModel::where('code', $invoiceModel->invoice_booking)->first();
-        $productLists = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->get();
-        $NonVat = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)
+        $productLists = debitNoteProductModel::where('debit_note_id',$debitModel->debit_note_id)->get();
+
+        $NonVat = debitNoteProductModel::where('debit_note_id',$debitModel->debit_note_id)
         ->where('expense_type', 'income')
         ->where('vat', 'Y')
         ->sum('product_sum');
-        $VatTotal = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)
+
+        $VatTotal = debitNoteProductModel::where('debit_note_id',$debitModel->debit_note_id)
         ->where('expense_type', 'income')
         ->where('vat', 'N')
         ->sum('product_sum');
-        $paymentDeposit = paymentModel::where('payment_doc_number',$invoiceModel->quote_number)->sum('payment_total');
-        $payment = paymentModel::where('payment_doc_number',$invoiceModel->quote_number)
+        $paymentDeposit = paymentModel::where('payment_doc_number',$debitModel->debit_note_number)->sum('payment_total');
+        $payment = paymentModel::where('payment_doc_number',$debitModel->debit_note_number)
         ->leftjoin('bank','bank.bank_id','payments.payment_bank_number')
         ->latest('payments.payment_date_time')->first();
         // ดึง HTML จาก Blade Template

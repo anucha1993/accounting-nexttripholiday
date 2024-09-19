@@ -43,9 +43,9 @@ use App\Http\Controllers\MPDF\MPDF_DebitReceiptController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Auth::routes();
 
@@ -107,6 +107,7 @@ Route::post('/product/store',[productController::class,'store'])->name('product.
 
 // quote
 Route::get('quotations/',[quoteController::class,'index'])->name('quote.index');
+Route::get('/',[quoteController::class,'index'])->name('quote.index');
 Route::post('quote/store',[quoteController::class,'store'])->name('quote.store');
 Route::get('quote/edit/{quotationModel}',[quoteController::class,'edit'])->name('quote.edit');
 Route::put('quote/update/{quotationModel}',[quoteController::class,'update'])->name('quote.update');//
