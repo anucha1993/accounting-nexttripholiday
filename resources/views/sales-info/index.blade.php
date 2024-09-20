@@ -132,7 +132,7 @@
                                     <td>{{ number_format($quotationModel->quote_grand_total ? $quotationModel->quote_grand_total : $quotationModel->quote_total, 2, '.', ',') }}
                                     </td>
                                     <td>{{number_format($quotationModel->payment ? $quotationModel->payment: 0, 2, '.', ',')}}</td>
-                                    <td>{{number_format($quotationModel->quote_grand_total - $quotationModel->payment, 2, '.', ',')}}</td>
+                                    <td>{{number_format(($quotationModel->quote_grand_total ? $quotationModel->quote_grand_total : $quotationModel->quote_total) - $quotationModel->payment, 2, '.', ',')}}</td>
                                     <td>
                                         @if ($quotationModel->quote_status === 'wait')
                                             <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
