@@ -509,10 +509,6 @@
                 let sumPriceExcludingVat = 0;
                 let sumPriceExcludingVatNonVat = 0;
                 let totalBeforeDiscount = 0;
-
-
-
-
                 $('#quotation-table .item-row').each(function() {
                     const quantity = parseFloat($(this).find('.quantity').val()) || 0;
                     const pricePerUnit = parseFloat($(this).find('.price-per-unit').val()) || 0;

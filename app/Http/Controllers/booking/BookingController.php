@@ -143,25 +143,30 @@ class BookingController extends Controller
         return view('bookings.index', compact('booking', 'sales', 'keyword_sale'));
     }
 
-    public function convert(Request $request)
+    public function convert(Request $request, bookingModel $bookingModel)
     {
-        $checkCustomer = DB::connection('mysql')
-            ->table('customer')
-            ->where('customer_name', $request->customer_name)
-            ->orWhere('customer_email',$request->customer_email)
-            ->orWhere('customer_tel',$request->customer_tel)
-            ->first();
+    //     $checkCustomer = DB::connection('mysql')
+    //         ->table('customer')
+    //         ->where('customer_name', $request->customer_name)
+    //         ->orWhere('customer_email',$request->customer_email)
+    //         ->orWhere('customer_tel',$request->customer_tel)
+    //         ->first();
 
-        $country_name = '';
-        $array = json_decode($request->tour_country);
-        $country_ids = explode(',', $request->tour_country);
-        $countrys =  DB::connection('mysql2')->table('tb_country')->whereIn('id', $array)->get();
+    //     $country_name = '';
+    //     $array = json_decode($request->tour_country);
+    //     $country_ids = explode(',', $request->tour_country);
+    //     $countrys =  DB::connection('mysql2')->table('tb_country')->whereIn('id', $array)->get();
 
-        foreach ($countrys as $country) {
-            $country_name .= $country->country_name_th . ' ';
-        }
-       // dd($country_name);
-        return view('bookings.convert-booking', compact('checkCustomer', 'request', 'country_name'));
+    //     foreach ($countrys as $country) {
+    //         $country_name .= $country->country_name_th . ' ';
+    //     }
+    //    // dd($country_name);
+    //     return view('bookings.convert-booking', compact('checkCustomer', 'request', 'country_name'));
+    $sales = saleModel::select('name', 'id')->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])->get();
+    $tour = DB::connection('mysql2')->table('tb_tour')->where('id',$bookingModel->tour_id)->first();
+    $quotationModel = [];
+    $quoteProducts  = [];
+      return view('bookings.convert-booking',compact('quotationModel','quoteProducts','sales','bookingModel','tour'));
     }
     
 

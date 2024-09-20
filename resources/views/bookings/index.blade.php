@@ -1,7 +1,7 @@
 @extends('layouts.template')
 
 @section('content')
-<br>
+    <br>
     @if (session('success'))
         <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -21,8 +21,9 @@
 
         <div class="card-body">
 
-            <h4 class="card-title">ใบจองทัวร์ จากเว็บไซต์  <a href="{{route('booking.create')}}" class="btn btn-primary float-end">เพิ่มใบจองทัวร์</a></h4>
-           
+            <h4 class="card-title">ใบจองทัวร์ จากเว็บไซต์ <a href="{{ route('booking.create') }}"
+                    class="btn btn-primary float-end">เพิ่มใบจองทัวร์</a></h4>
+
             <hr>
 
             <form action="" method="GET">
@@ -148,7 +149,7 @@
                                 </td>
                                 <td>{{ date('d-m-Y H:m', strtotime($item->created_at)) }}</td>
                                 <td>
-                                    <form action="{{ route('booking.convert') }}" method="get">
+                                    {{-- <form action="{{route('booking.convert')}}" method="get">
 
                                         <input type="hidden" name="customer_name" value="{{ $item->name . ' ' . $item->surname }}">
                                         <input type="hidden" name="customer_email" value="{{ $item->email }}">
@@ -204,7 +205,6 @@
                                             ],
                                         ];
                                     @endphp
-                                    
                                     @foreach ($products as $index => $product)
                                         <input type="hidden" name="products[{{ $index }}][id]" value="{{ $product['id'] }}">
                                         <input type="hidden" name="products[{{ $index }}][name]" value="{{ $product['name'] }}">
@@ -212,22 +212,22 @@
                                         <input type="hidden" name="products[{{ $index }}][price]" value="{{ $product['price'] }}">
                                         <input type="hidden" name="products[{{ $index }}][sum]" value="{{ $product['sum'] }}">
                                     @endforeach
-                                
-
-
                                         <button type="submit" class="mx-3 btn btn-sm btn-primary"><i
                                                 class=" fas fa-redo "></i> Convert</button>
-
-                                        @can('edit-booking')
-                                            <a href="{{route('booking.edit',$item->id)}}" class="  mx-3"><i class="fas fa-edit"></i> แก้ไข</a>
-                                        @endcan
-                                        @can('delete-booking')
-                                            <a href="{{route('booking.delete',$item->id)}}" class="text-danger  mx-3"  onclick="return confirm('Do you want to delete this booking?');"><i class="fas fa-trash"></i> ลบ</a>
-                                        @endcan
-                                    </form>
-
-
-
+                                            </form> --}}
+                                    @can('edit-booking')
+                                        <a href="{{route('booking.convert',$item->id)}}" class="text-primary mx-3"><i
+                                                class="fas fa-edit"></i> สร้างใบเสนอราคา</a>
+                                    @endcan
+                                    @can('edit-booking')
+                                        <a href="{{ route('booking.edit', $item->id) }}" class="  mx-3"><i
+                                                class="fas fa-edit"></i> แก้ไข</a>
+                                    @endcan
+                                    @can('delete-booking')
+                                        <a href="{{ route('booking.delete', $item->id) }}" class="text-danger  mx-3"
+                                            onclick="return confirm('Do you want to delete this booking?');"><i
+                                                class="fas fa-trash"></i> ลบ</a>
+                                    @endcan
                                 </td>
 
                             </tr>

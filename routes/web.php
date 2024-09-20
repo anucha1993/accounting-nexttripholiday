@@ -9,6 +9,7 @@ use App\Http\Controllers\selects\periodSelect;
 use App\Http\Controllers\debits\debitController;
 use App\Http\Controllers\credits\creditController;
 use App\Http\Controllers\airline\airlineController;
+use App\Http\Controllers\api\apiTourController;
 use App\Http\Controllers\booking\BookingController;
 use App\Http\Controllers\invoices\invoiceController;
 use App\Http\Controllers\payments\paymentController;
@@ -47,6 +48,9 @@ use App\Http\Controllers\MPDF\MPDF_DebitReceiptController;
 //     return view('welcome');
 // });
 
+// api
+Route::get('/api/tours',[apiTourController::class,'index'])->name('api.tours');
+
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
@@ -72,7 +76,7 @@ Route::get('/airline/delete/{airlineModel}',[airlineController::class,'destroy']
 Route::get('/booking',[BookingController::class,'index'])->name('booking.index');
 Route::get('/booking/create',[BookingController::class,'create'])->name('booking.create');
 Route::post('/booking/store',[BookingController::class,'store'])->name('booking.store');
-Route::get('/booking/convert',[BookingController::class,'convert'])->name('booking.convert');
+Route::get('/booking/convert/{bookingModel}',[BookingController::class,'convert'])->name('booking.convert');
 Route::get('/booking/edit/{bookingModel}',[BookingController::class,'edit'])->name('booking.edit');
 Route::put('/booking/update/{bookingModel}',[BookingController::class,'update'])->name('booking.update');
 Route::get('/booking/delete/{bookingModel}',[BookingController::class,'destroy'])->name('booking.delete');

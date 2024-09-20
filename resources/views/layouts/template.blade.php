@@ -25,6 +25,12 @@
     <!-- Custom CSS -->
     <link href="{{ URL::asset('template/dist/css/style.min.css') }}" rel="stylesheet" />
     <script src="{{ URL::asset('template/assets/libs/jquery/dist/jquery.min.js') }}"></script>
+
+    <!-- รวมไฟล์ jQuery และ jQuery UI -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -2300,6 +2306,7 @@
     <script src="{{ URL::asset('template/assets/libs/select2/dist/js/select2.full.min.js') }}"></script>
     <script src="{{ URL::asset('template/assets/libs/select2/dist/js/select2.min.js') }}"></script>
     <script src="{{ URL::asset('template/dist/js/pages/forms/select2/select2.init.js') }}"></script>
+    
 </body>
 
 </html>
