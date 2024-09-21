@@ -4,12 +4,15 @@ namespace App\Http\Controllers\booking;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\sales\saleModel;
+use App\Models\mumday\numDayModel;
 use Illuminate\Support\Facades\DB;
+use function Laravel\Prompts\table;
 use App\Http\Controllers\Controller;
 use App\Models\booking\bookingModel;
-use App\Models\sales\saleModel;
 
-use function Laravel\Prompts\table;
+use App\Models\products\productModel;
+use App\Models\wholesale\wholesaleModel;
 
 class BookingController extends Controller
 {
@@ -24,7 +27,7 @@ class BookingController extends Controller
         $this->middleware('permission:delete-booking', ['only' => ['destroy']]);
     }
 
-    
+
 
     public function index(Request $request)
     {
@@ -99,12 +102,13 @@ class BookingController extends Controller
                 //sales
                 'users.name as sale_name',
                 'users.id as sale_id',
-                 //wholesale
-                 'tb_wholesale.wholesale_name_th as wholesale_name_th',
-                 //airline
-                 'tb_travel_type.travel_name as airline_name','tb_travel_type.id as travel_type_id',
-                 //country
-                 'tb_tour.country_id as country_id'
+                //wholesale
+                'tb_wholesale.wholesale_name_th as wholesale_name_th',
+                //airline
+                'tb_travel_type.travel_name as airline_name',
+                'tb_travel_type.id as travel_type_id',
+                //country
+                'tb_tour.country_id as country_id'
             )
             ->leftJoin('tb_tour', 'tb_tour.id', 'tb_booking_form.tour_id')
             ->leftJoin('users', 'users.id', 'tb_booking_form.sale_id')
@@ -145,68 +149,113 @@ class BookingController extends Controller
 
     public function convert(Request $request, bookingModel $bookingModel)
     {
-    //     $checkCustomer = DB::connection('mysql')
-    //         ->table('customer')
-    //         ->where('customer_name', $request->customer_name)
-    //         ->orWhere('customer_email',$request->customer_email)
-    //         ->orWhere('customer_tel',$request->customer_tel)
-    //         ->first();
 
-    //     $country_name = '';
-    //     $array = json_decode($request->tour_country);
-    //     $country_ids = explode(',', $request->tour_country);
-    //     $countrys =  DB::connection('mysql2')->table('tb_country')->whereIn('id', $array)->get();
+        //     $country_name = '';
+        //     $array = json_decode($request->tour_country);
+        //     $country_ids = explode(',', $request->tour_country);
+        //     $countrys =  DB::connection('mysql2')->table('tb_country')->whereIn('id', $array)->get();
 
-    //     foreach ($countrys as $country) {
-    //         $country_name .= $country->country_name_th . ' ';
-    //     }
-    //    // dd($country_name);
-    //     return view('bookings.convert-booking', compact('checkCustomer', 'request', 'country_name'));
-    $sales = saleModel::select('name', 'id')->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])->get();
-    $tour = DB::connection('mysql2')->table('tb_tour')->where('id',$bookingModel->tour_id)->first();
-    $quotationModel = [];
-    $quoteProducts  = [];
-      return view('bookings.convert-booking',compact('quotationModel','quoteProducts','sales','bookingModel','tour'));
+        //     foreach ($countrys as $country) {
+        //         $country_name .= $country->country_name_th . ' ';
+        //     }
+        //    // dd($country_name);
+        //     return view('bookings.convert-booking', compact('checkCustomer', 'request', 'country_name'));
+
+
+        $checkCustomer = DB::connection('mysql')
+            ->table('customer')
+            ->where('customer_name', $bookingModel->name)
+            ->orWhere('customer_email', $bookingModel->email)
+            ->orWhere('customer_tel', $bookingModel->phone)
+            ->first();
+
+        $sales = saleModel::select('name', 'id')->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])->get();
+        $tour = DB::connection('mysql2')->table('tb_tour')->where('id', $bookingModel->tour_id)->first();
+        $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
+        $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
+        $numDays = numDayModel::orderBy('num_day_total')->get();
+        $wholesale = wholesaleModel::where('status', 'on')->get();
+        $products = productModel::get();
+
+
+        $quotationModel = [];
+        $quoteProducts  = [];
+
+        $productBooking = [
+            [
+                'product_id' => 189,
+                'product_name' => 'ผู้ใหญ่พักคู่',
+                'expense_type' => 'income',
+                'product_qty' => $bookingModel->num_twin,
+                'product_price' => $bookingModel->price1,
+            ],
+            [
+                'product_id' => 185,
+                'product_name' => 'ผู้ใหญ่พักเดี่ยว',
+                'expense_type' => 'income',
+                'product_qty' => $bookingModel->num_single,
+                'product_price' => $bookingModel->price2,
+            ],
+            [
+                'product_id' => 187,
+                'product_name' => 'เด็กมีเตียง',
+                'expense_type' => 'income',
+                'product_qty' => $bookingModel->num_child,
+                'product_price' => $bookingModel->price3, // ลบช่องว่างออก
+            ],
+            [
+                'product_id' => 186,
+                'product_name' => 'เด็กไม่มีเตียง',
+                'expense_type' => 'income',
+                'product_qty' => $bookingModel->num_childnb,
+                'product_price' => $bookingModel->price4,
+            ],
+        ];
+        
+
+        $quoteProducts = array_merge($quoteProducts, $productBooking);
+
+        return view('bookings.convert-booking', compact('products', 'checkCustomer', 'quotationModel', 'quoteProducts', 'sales', 'bookingModel', 'tour', 'numDays', 'country', 'wholesale', 'airline'));
     }
-    
+
 
     public function edit(bookingModel $bookingModel)
     {
-        $sales = saleModel::whereNot('role',1)->get();
-        $tours = DB::connection('mysql2')->table('tb_tour')->where('status','on')->get();
-        $periods = DB::connection('mysql2')->table('tb_tour_period')->where('tour_id',$bookingModel->tour_id)->get();
-        $sale =  DB::connection('mysql2')->table('users')->where('id',$bookingModel->sale_id)->first();
+        $sales = saleModel::whereNot('role', 1)->get();
+        $tours = DB::connection('mysql2')->table('tb_tour')->where('status', 'on')->get();
+        $periods = DB::connection('mysql2')->table('tb_tour_period')->where('tour_id', $bookingModel->tour_id)->get();
+        $sale =  DB::connection('mysql2')->table('users')->where('id', $bookingModel->sale_id)->first();
 
         $tour = DB::connection('mysql2')->table('tb_tour')
-        ->select('tb_tour.code','tb_tour.wholesale_id','tb_tour.id','tb_tour.country_id','tb_tour.name as tour_name', 'tb_wholesale.wholesale_name_th as wholesale_name_th','tb_tour.num_day','tb_travel_type.id as travel_type_id','tb_travel_type.travel_name as airline_name')
-        ->leftJoin('tb_wholesale', 'tb_wholesale.id', 'tb_tour.wholesale_id')
-        ->leftJoin('tb_travel_type', 'tb_travel_type.id', 'tb_tour.airline_id')
-        ->where('tb_tour.id',$bookingModel->tour_id)->first();
+            ->select('tb_tour.code', 'tb_tour.wholesale_id', 'tb_tour.id', 'tb_tour.country_id', 'tb_tour.name as tour_name', 'tb_wholesale.wholesale_name_th as wholesale_name_th', 'tb_tour.num_day', 'tb_travel_type.id as travel_type_id', 'tb_travel_type.travel_name as airline_name')
+            ->leftJoin('tb_wholesale', 'tb_wholesale.id', 'tb_tour.wholesale_id')
+            ->leftJoin('tb_travel_type', 'tb_travel_type.id', 'tb_tour.airline_id')
+            ->where('tb_tour.id', $bookingModel->tour_id)->first();
         //dd($tour);
-        
-        return view('bookings.edit-booking',compact('bookingModel','sales','tours','periods','sale','tour'));
+
+        return view('bookings.edit-booking', compact('bookingModel', 'sales', 'tours', 'periods', 'sale', 'tour'));
     }
 
     public function update(bookingModel $bookingModel, Request $request)
     {
         $check = $bookingModel->update($request->all());
 
-        if($check){
-            return redirect()->back()->with('success','Updated booking Successfully');
-        }else{
-            return redirect()->back()->with('error','Update booking Error');
+        if ($check) {
+            return redirect()->back()->with('success', 'Updated booking Successfully');
+        } else {
+            return redirect()->back()->with('error', 'Update booking Error');
         }
     }
 
     public function create()
     {
-        $sales = saleModel::whereNot('role',1)->get();
-        $tours = DB::connection('mysql2')->table('tb_tour')->where('status','on')->get();
-        return view('bookings.create-booking',compact('sales','tours'));
+        $sales = saleModel::whereNot('role', 1)->get();
+        $tours = DB::connection('mysql2')->table('tb_tour')->where('status', 'on')->get();
+        return view('bookings.create-booking', compact('sales', 'tours'));
     }
 
     //รันเลขอัตโนมัติในรูปแบบ BYYMM001
-    
+
     public static function generateRunningCode()
     {
         $prefix = 'BK';
@@ -232,34 +281,33 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $code = $this->generateRunningCode();
-        $request->merge(['code'=> $code]);
+        $request->merge(['code' => $code]);
 
-        $periods = DB::connection('mysql2')->table('tb_tour_period')->where('id',$request->period_id)->first();
-        $request->merge(['start_date'=> $periods->start_date]);
-        $request->merge(['end_date'=> $periods->end_date]);
+        $periods = DB::connection('mysql2')->table('tb_tour_period')->where('id', $request->period_id)->first();
+        $request->merge(['start_date' => $periods->start_date]);
+        $request->merge(['end_date' => $periods->end_date]);
 
-        $request->merge(['total_price'=> $request->sum_price1]);
-        $request->merge(['total_qty'=> $request->num_twin]);
+        $request->merge(['total_price' => $request->sum_price1]);
+        $request->merge(['total_qty' => $request->num_twin]);
 
 
         $check = bookingModel::create($request->all());
 
-        if($check){
-            return redirect()->route('booking.edit',$check->id)->with('success','Created booking Successfully');
-        }else{
-            return redirect()->back()->with('error','Create booking Error');
+        if ($check) {
+            return redirect()->route('booking.edit', $check->id)->with('success', 'Created booking Successfully');
+        } else {
+            return redirect()->back()->with('error', 'Create booking Error');
         }
     }
 
-    public function destroy(bookingModel $bookingModel) 
+    public function destroy(bookingModel $bookingModel)
     {
         $check = $bookingModel->delete();
 
-        if($check){
-            return redirect()->back()->with('success','Deleted booking Successfully');
-        }else{
-            return redirect()->back()->with('error','Delete booking Error');
+        if ($check) {
+            return redirect()->back()->with('success', 'Deleted booking Successfully');
+        } else {
+            return redirect()->back()->with('error', 'Delete booking Error');
         }
-
     }
 }
