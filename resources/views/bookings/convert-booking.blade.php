@@ -210,8 +210,8 @@
                     <div id="quotation-table" class="table-custom text-center">
                         <div class="row header-row" style="padding: 5px">
                             <div class="col-md-1">ลำดับ</div>
-                            <div class="col-md-3">รายการสินค้า</div>
-                            <div class="col-md-2">ประเภทค่าใช้จ่าย</div>
+                            <div class="col-md-4">รายการสินค้า</div>
+                            <div class="col-md-1">รวม 3%</div>
                             <div class="col-md-1">NonVat</div>
                             <div class="col-md-1">จำนวน</div>
                             <div class="col-md-2">ราคา/หน่วย</div>
@@ -224,7 +224,7 @@
                                     <div class="col-md-1"><span class="row-number"> {{ $key + 1 }}</span> <a
                                             href="javascript:void(0)" class="remove-row-btn text-danger"><span
                                                 class=" fa fa-trash"></span></a></div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <select name="product_id[]" class="form-select product-select"
                                             id="product-select" style="width: 100%;">
                                             @forelse ($products as $product)
@@ -237,7 +237,10 @@
                                         </select>
 
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-1" >
+                                        <input type="checkbox" name="vat3[]" class="vat-3">
+                                    </div>
+                                    <div class="col-md-1" style="display: none">
                                         <select name="expense_type[]" class="form-select">
                                             <option selected value="income"> รายได้ </option>
                                         </select>
@@ -481,131 +484,161 @@
             }
 
             function calculateTotals() {
-                let sumTotal = 0;
-                let sumDiscount = 0;
-                let sumPriceExcludingVat = 0;
-                let sumPriceExcludingVatNonVat = 0;
-                let totalBeforeDiscount = 0;
-                let withholdingTaxTotal = 0
+    let sumTotal = 0;
+    let sumDiscount = 0;
+    let sumPriceExcludingVat = 0;
+    let sumPriceExcludingVatNonVat = 0;
+    let totalBeforeDiscount = 0;
+    let withholdingTaxTotal = 0;
 
-                $('#quotation-table .item-row').each(function() {
-                    const quantity = parseFloat($(this).find('.quantity').val()) || 0;
-                    const pricePerUnit = parseFloat($(this).find('.price-per-unit').val()) || 0;
-                    const isNonVat = $(this).find('.non-vat').is(':checked');
-                    const expenseType = $(this).find('select[name="expense_type[]"]').val();
-                    const vatMethod = $('input[name="vat_type"]:checked').val();
+    $('#quotation-table .item-row').each(function() {
+        const quantity = parseFloat($(this).find('.quantity').val()) || 0;
+        const pricePerUnit = parseFloat($(this).find('.price-per-unit').val()) || 0;
+        const isNonVat = $(this).find('.non-vat').is(':checked');
+        const isVat3 = $(this).find('.vat-3').is(':checked');  // ตรวจสอบการติ๊ก checkbox
+        const expenseType = $(this).find('select[name="expense_type[]"]').val();
+        const vatMethod = $('input[name="vat_type"]:checked').val();
 
-                    let total = quantity * pricePerUnit;
-                    let priceExcludingVat = total;
+        // คำนวณ total เบื้องต้น
+        let total = quantity * pricePerUnit;
+        let priceExcludingVat = total;
 
-                    if (expenseType === 'discount') {
-                        sumDiscount += total;
-                        total = total * -1;
-                    }
+        // ตรวจสอบหากเป็น discount
+        if (expenseType === 'discount') {
+            sumDiscount += total;
+            total = total * -1;  // Discount เป็นค่าลบ
+        }
 
-                    totalBeforeDiscount += (expenseType !== 'discount') ? total : 0;
+        // คำนวณ VAT 3% หากติ๊ก checkbox
+        if (isVat3) {
+            const vat3 = total * 0.03;
+            total += vat3;
+        }
 
-                    if (isNonVat) {
-                        $(this).find('.total-amount').val(total.toFixed(2));
-                        $(this).find('.price-excluding-vat').val(total.toFixed(2));
-                        sumPriceExcludingVatNonVat += total;
-                        sumTotal += total;
-                    } else {
-                        $(this).find('.total-amount').val(total.toFixed(2));
-                        $(this).find('.price-excluding-vat').val(priceExcludingVat.toFixed(2));
-                        if (vatMethod === 'include') {
-                            // คำนวณ VAT และราคาก่อน VAT ตามสูตรที่กำหนด
-                            const vatAmount = total - (total * 100 / 107);
-                            priceExcludingVat = total - vatAmount;
+        // แสดงผลยอดรวมในฟิลด์ total-amount
+        $(this).find('.total-amount').val(total.toFixed(2));
 
-                            $(this).find('.total-amount').val(total.toFixed(2));
-                            $(this).find('.price-excluding-vat').val(priceExcludingVat.toFixed(2));
+        totalBeforeDiscount += (expenseType !== 'discount') ? total : 0;
 
-                            sumPriceExcludingVat += priceExcludingVat;
-                        } else {
-                            sumPriceExcludingVat += total;
-                        }
-                        sumTotal += total;
-                        withholdingTaxTotal += total;
-                    }
-                });
+        // กรณี Non-VAT
+        if (isNonVat) {
+            $(this).find('.price-excluding-vat').val(total.toFixed(2));
+            sumPriceExcludingVatNonVat += total;
+        } else {
+            // คำนวณ VAT (Include หรือ Exclude)
+            if (vatMethod === 'include') {
+                const vatAmount = total - (total * 100 / 107);
+                priceExcludingVat = total - vatAmount;
 
-                const afterDiscount = totalBeforeDiscount - sumDiscount;
-                let vatAmount = 0;
+                $(this).find('.price-excluding-vat').val(priceExcludingVat.toFixed(2));
 
-                if ($('input[name="vat_type"]:checked').val() === 'include') {
-                    // vatAmount = sumTotal - sumPriceExcludingVat;
-                    // เนื่องจากเป็น VAT Include ให้ตั้ง Grand Total เป็นยอดเดิม
-                    grandTotal = sumTotal;
-                } else {
-                    vatAmount = sumPriceExcludingVat * 0.07;
-                    grandTotal = afterDiscount + vatAmount;
-                }
-
-                const withholdingTax = $('#withholding-tax').is(':checked') ? withholdingTaxTotal * 0.03 : 0;
-                $('#quote-withholding-amount').val(withholdingTax.toFixed(2));
-
-                let GrandTotalOld = parseFloat($('#GrandTotalOld').val()) || 0;
-
-
-
-                $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
-                $('#quote-total').val(sumTotal.toFixed(2));
-
-                $('#sum-discount').text(formatNumber(sumDiscount.toFixed(2)));
-                $('#quote-discount').val(sumDiscount.toFixed(2));
-
-                $('#after-discount').text(formatNumber(afterDiscount.toFixed(2)));
-                $('#quote-after-discount').val(afterDiscount.toFixed(2));
-
-                $('#vat-amount').text(formatNumber(vatAmount.toFixed(2)));
-                $('#quote-vat-7').val(vatAmount.toFixed(2));
-
-                $('#price-excluding-vat').text(formatNumber((sumPriceExcludingVat + sumPriceExcludingVatNonVat)
-                    .toFixed(2)));
-                $('#quote-price-excluding-vat').val((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(2));
-
-                $('#grand-total').text(formatNumber(grandTotal.toFixed(2)));
-                $('#quote-grand-total').val(grandTotal.toFixed(2));
-
-                $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
-
-                // ยอดเดิม (GrandTotalOld)
-                $('#invoice-total-old').text(formatNumber(GrandTotalOld.toFixed(2)));
-
-                // มูลค่าที่ถูกต้อง (GrandTotalOld + sumPriceExcludingVat + sumPriceExcludingVatNonVat)
-                const grandTotalNew = GrandTotalOld - sumPriceExcludingVat - sumPriceExcludingVatNonVat;
-                $('#grand-total-new').text(formatNumber(grandTotalNew.toFixed(2)));
-                $('#grand-total-new-val').val(grandTotalNew);
-                // ส่วนต่าง (Difference)
-                $('#difference').text(formatNumber((GrandTotalOld - grandTotalNew).toFixed(2)));
-                $('#difference-val').val(GrandTotalOld - grandTotalNew);
+                sumPriceExcludingVat += priceExcludingVat;
+            } else {
+                sumPriceExcludingVat += total;
             }
+        }
+
+        sumTotal += total;
+        withholdingTaxTotal += total;
+    });
+
+    // คำนวณยอดหลังส่วนลด
+    const afterDiscount = totalBeforeDiscount - sumDiscount;
+    let vatAmount = 0;
+    let grandTotal = 0;
+
+    if ($('input[name="vat_type"]:checked').val() === 'include') {
+        // VAT รวมอยู่ในยอดแล้ว
+        grandTotal = sumTotal;
+    } else {
+        // คำนวณ VAT 7% กรณี Exclude VAT
+        vatAmount = sumPriceExcludingVat * 0.07;
+        grandTotal = afterDiscount + vatAmount;
+    }
+
+    // คำนวณหักภาษี ณ ที่จ่าย (Withholding Tax)
+    const withholdingTax = $('#withholding-tax').is(':checked') ? withholdingTaxTotal * 0.03 : 0;
+    $('#quote-withholding-amount').val(withholdingTax.toFixed(2));
+
+    // อัปเดตค่าทั้งหมดที่จะแสดงในหน้าจอ
+    $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
+    $('#quote-total').val(sumTotal.toFixed(2));
+
+    $('#sum-discount').text(formatNumber(sumDiscount.toFixed(2)));
+    $('#quote-discount').val(sumDiscount.toFixed(2));
+
+    $('#after-discount').text(formatNumber(afterDiscount.toFixed(2)));
+    $('#quote-after-discount').val(afterDiscount.toFixed(2));
+
+    $('#vat-amount').text(formatNumber(vatAmount.toFixed(2)));
+    $('#quote-vat-7').val(vatAmount.toFixed(2));
+
+    $('#price-excluding-vat').text(formatNumber((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(2)));
+    $('#quote-price-excluding-vat').val((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(2));
+
+    $('#grand-total').text(formatNumber(grandTotal.toFixed(2)));
+    $('#quote-grand-total').val(grandTotal.toFixed(2));
+
+    $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
+}
+
+// เรียกฟังก์ชันนี้เมื่อมีการเปลี่ยนแปลงที่ checkbox vat-3
+$('.vat-3').on('change', function() {
+    calculateTotals();  // เรียกฟังก์ชันคำนวณใหม่ทุกครั้งที่มีการเปลี่ยนแปลง checkbox
+});
 
             // Add a new row
 
             $('#add-row').click(function() {
-                // Clone แถวแรกในตาราง
-                const newRow = $('#quotation-table .item-row:first').clone();
-                // ทำลาย Select2 ออกก่อนที่จะทำการ clone
-                newRow.find('.product-select').select2('destroy');
-                // รีเซ็ตค่าใน input และ select ใหม่
-                newRow.find('input').val(0); // Clear all input values
+    // สร้างแถวใหม่แบบ dynamic พร้อมข้อมูลจาก products
+    const newRow = `
+        <div class="row item-row">
+            <div class="col-md-1">
+                <span class="row-number"></span> 
+                <a href="javascript:void(0)" class="remove-row-btn text-danger">
+                    <span class="fa fa-trash"></span>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <select name="product_id[]" class="form-select product-select" style="width: 100%;">
+                    <option value="">กรุณาเลือกรายการ</option>
+                    @foreach($products as $product)
+                        <option value="{{ $product->id }}">{{ $product->product_name }} {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="expense_type[]" class="form-select">
+                    <option value="income">รายได้</option>
+                    <option value="expense">รายจ่าย</option>
+                </select>
+            </div>
+            <div class="col-md-1 text-center">
+                <input type="checkbox" name="non_vat[]" class="non-vat">
+            </div>
+            <div class="col-md-1">
+                <input type="number" name="quantity[]" class="quantity form-control text-end" value="0" step="0.01">
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" value="0" step="0.01">
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="total_amount[]" class="total-amount form-control text-end" value="0" readonly>
+            </div>
+        </div>`;
 
-                newRow.find('input[type="checkbox"]').prop('checked', false); // Uncheck all checkboxes
-                // ลบ class ที่เกี่ยวข้องกับ Select2 ที่เหลืออยู่
-                newRow.find('.select2').remove(); // Remove existing select2 container
-                newRow.find('.product-select').removeClass(
-                'select2-hidden-accessible'); // Remove select2-hidden-accessible class
-                // Append แถวใหม่ไปที่ตาราง
-                newRow.appendTo('#quotation-table');
-                // Initialize select2 สำหรับ select element ใหม่
-                newRow.find('.product-select').select2({
-                    width: 'resolve' // ตั้งค่า width ให้กับ select2
-                });
-                // อัปเดตลำดับแถว (ถ้ามีฟังก์ชันนี้อยู่)
-                updateRowNumbers();
-            });
+    // Append แถวใหม่ไปที่ตาราง
+    $('#quotation-table').append(newRow);
+
+    // Initialize Select2 สำหรับ select element ใหม่
+    $('#quotation-table .product-select').select2({
+        width: 'resolve' // ตั้งค่า width ให้กับ select2
+    });
+
+    // อัปเดตลำดับแถว (ถ้ามีฟังก์ชันนี้อยู่)
+    updateRowNumbers();
+});
+
 
 
 
