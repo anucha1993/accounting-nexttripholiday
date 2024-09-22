@@ -50,6 +50,8 @@ use App\Http\Controllers\MPDF\MPDF_DebitReceiptController;
 
 // api
 Route::get('/api/tours',[apiTourController::class,'index'])->name('api.tours');
+Route::get('/api/wholesale',[apiTourController::class,'wholesale'])->name('api.wholesale');
+Route::get('/api/country',[apiTourController::class,'country'])->name('api.country');
 
 Auth::routes();
 

@@ -175,7 +175,8 @@ class BookingController extends Controller
         $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
         $numDays = numDayModel::orderBy('num_day_total')->get();
         $wholesale = wholesaleModel::where('status', 'on')->get();
-        $products = productModel::get();
+        $products = productModel::where('product_type','income')->get();
+        $productDiscount = productModel::where('product_type','discount')->get();
 
 
         $quotationModel = [];
@@ -215,7 +216,7 @@ class BookingController extends Controller
 
         $quoteProducts = array_merge($quoteProducts, $productBooking);
 
-        return view('bookings.convert-booking', compact('products', 'checkCustomer', 'quotationModel', 'quoteProducts', 'sales', 'bookingModel', 'tour', 'numDays', 'country', 'wholesale', 'airline'));
+        return view('bookings.convert-booking', compact('productDiscount','products', 'checkCustomer', 'quotationModel', 'quoteProducts', 'sales', 'bookingModel', 'tour', 'numDays', 'country', 'wholesale', 'airline'));
     }
 
 

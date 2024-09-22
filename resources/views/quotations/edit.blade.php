@@ -832,6 +832,7 @@
                     $('#quotation-table .pax-total').val();
                 }
             }
+            calculatePaxAndTotal()
 
             // เรียกใช้ calculatePaxAndTotal เมื่อมีการเปลี่ยนแปลงใน quantity, product-select หรือ quote-payment-price
             $(document).on('change', '.quantity, .product-select, #quote-payment-price', function() {
@@ -846,7 +847,8 @@
             });
 
             // เรียกใช้ฟังก์ชันเมื่อเริ่มต้น
-            //calculatePaxAndTotal();
+            checkedPaymentFull()
+            calculatePaxAndTotal();
         });
     </script>
 

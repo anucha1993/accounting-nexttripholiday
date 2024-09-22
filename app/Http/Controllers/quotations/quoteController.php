@@ -66,9 +66,36 @@ class quoteController extends Controller
         return $runningCode;
     }
 
+
+    public function generateRunningCodeTour($prefix,)
+    {
+        $quote = quotationModel::select('quote_tour_code')->latest()->first();
+        $prefix = $prefix;
+
+        if (!empty($quote)) {
+            $quoteCode = $quote->quote_tour_code;
+        } else {
+            $quoteCode = $prefix . date('y') . date('m') . '0000';
+        }
+      
+        $year = date('y');
+        $month = date('m');
+        $lastFourDigits = substr($quoteCode, -4);
+        $incrementedNumber = intval($lastFourDigits) + 1;
+        $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
+        $runningCode = $prefix . $year . $month . $newNumber;
+        return $runningCode;
+    }
+
     public function store(Request $request)
     {
         //dd($request);
+        $wholesale =   $wholesale = DB::connection('mysql2')->table('tb_wholesale')->select('code')->where('id', $request->quote_wholesale)->first();
+        $runningCodeTour = $this->generateRunningCodeTour($wholesale->code);
+
+     
+       
+
         $runningCode = $this->generateRunningCodeIV();
         if ($request->customer_type_new !== 'customerold') {
             //customerNew
@@ -87,30 +114,36 @@ class quoteController extends Controller
             ]);
             $customerModel = customerModel::where('customer_id', $request->customer_id)->first();
         }
+        $request->merge([
+            'quote_tour_code'=> $runningCodeTour,
+            'quote_number' => $runningCode,
+            'quote_status' => 'wait',
+            'customer_id'=> $customerModel->customer_id,
+            'created_by' => Auth::user()->name,
+        ]);
 
-        $request->merge(['quote_number' => $runningCode]); //เลขที่ใบแจ้งหนี้
-        $request->merge(['quote_status' => 'wait']); //เลขที่ใบแจ้งหนี้
-        $request->merge(['customer_id' => $customerModel->customer_id]); // id ลูกค้า
-        $request->merge(['created_by' => Auth::user()->name]); // id ลูกค้า
         $quote = quotationModel::create($request->all());
 
         //ลงข้อมูลรายการสินค้า
         $sum = 0;
         foreach ($request->product_id as $key => $product) {
+            $productName = productModel::where('id',$request->product_id[$key])->first();
             if ($request->product_id) {
                 quoteProductModel::create([
                     'quote_id' => $quote->quote_id,
                     'product_id' => $request->product_id[$key],
-                    'product_name' => $request->product_name[$key],
-                    'product_qty' => $request->product_qty[$key],
-                    'product_price' => $request->product_price[$key],
-                    'product_sum' => $request->product_sum[$key],
+                    'product_name' => $productName->product_name,
+                    'product_qty' => $request->quantity[$key],
+                    'product_price' => $request->price_per_unit[$key],
+                    'product_sum' => $request->total_amount[$key],
                     'expense_type' => $request->expense_type[$key],
+                    'vat_status' => $request->vat_status[$key],
+                    'withholding_tax' => isset($request->withholding_tax[$key]) ? 'Y' : 'N',
                 ]);
             }
-            $sum += $request->product_sum[$key];
+           
         }
-        $quote->update(['quote_total' => $sum]);
+
 
         //Update status ใบจองทัวเป็น status = 'invoice'
         bookingModel::where('code', $quote->quote_booking)->update(['status' => 'quote']);

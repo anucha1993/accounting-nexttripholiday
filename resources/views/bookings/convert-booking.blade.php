@@ -38,14 +38,39 @@
         <div class="todo-listing ">
             <div class="container border bg-white">
                 <h4 class="text-center my-4">สร้างใบเสนอราคา
+
+
+
                 </h4>
+                <div class="">
+                    @if ($checkCustomer)
+                        <input type="hidden" name="customer_id" value="{{ $checkCustomer->customer_id ?: null }}">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input success" type="radio" name="customer_type_new"
+                                id="success-radio-old" value="customerold" checked>
+                            <label class="form-check-label" for="success-radio-old">อัพเดทข้อมูลเดิม</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input success" type="radio" name="customer_type_new"
+                                id="success-radio-new" value="customerNew">
+                            <label class="form-check-label" for="success-radio-new">สร้างลูกค้าใหม่</label>
+                        </div>
+
+                        <span class="badge rounded-pill bg-success">ลูกค้าเก่า</span>
+                    @else
+                        <span class="badge rounded-pill bg-primary">ลูกค้าใหม่</span>
+                    @endif
+                </div>
+
+
+
                 <hr>
 
-                <form action="" method="post">
+                <form action="{{ route('quote.store') }}" id="formQuote" method="post">
                     @csrf
 
                     <div class="row table-custom ">
-                        <div class="col-md-3 ms-auto">
+                        <div class="col-md-2 ms-auto">
                             <label><b>เซลล์ผู้ขายแพคเกจ:</b></label>
                             <select name="quote_sale" class="form-select">
                                 @forelse ($sales as $item)
@@ -56,12 +81,17 @@
                                 @endforelse
                             </select>
                         </div>
-                        <div class="col-md-3 ms-3">
+                        <div class="col-md-2 ms-3">
                             <label>วันที่สั่งซื้อ,จองแพคเกจ:</label>
                             <input type="text" id="displayDatepicker" class="form-control">
-                            <input type="hidden" id="submitDatepicker" name="date" name="quote_booking_date"
+                            <input type="hidden" id="submitDatepicker" name="quote_date"
                                 value="{{ date('Y-m-d', strtotime($bookingModel->created_at)) }}">
                         </div>
+                        <div class="col-md-2">
+                            <label>เลขที่ใบจองทัวร์</label>
+                            <input type="text" name="quote_booking" value="{{$bookingModel->code}}" class="form-control" readonly >
+                        </div>
+                       
                     </div>
                     <hr>
                     <h5 class="text-danger">รายละเอียดแพคเกจทัวร์:</h5>
@@ -69,15 +99,17 @@
                     <div class="row table-custom">
                         <div class="col-md-6">
                             <label>ชื่อแพคเกจทัวร์:</label>
-                            <input type="text" id="tourSearch" class="form-control"
+                            <input type="text" id="tourSearch" class="form-control" name="quote_tour_name"
                                 placeholder="ค้นหาแพคเกจทัวร์...ENTER เพื่อค้นหา"
                                 value="{{ $tour->code }}-{{ $tour->name }}">
-
                             <div id="tourResults" class="list-group" style="position: absolute; z-index: 1000; width: 35%;">
                             </div>
                         </div>
+
+                        <input type="hidden" id="tour-code">
+
                         <div class="col-md-3">
-                            <label>ระยะเวลาทัวร์ (วัน/คืน): {{ $tour->num_day }}</label>
+                            <label>ระยะเวลาทัวร์ (วัน/คืน): </label>
                             <select name="quote_numday" class="form-select" id="numday">
                                 <option value="">--เลือกระยะเวลา--</option>
                                 @forelse ($numDays as $item)
@@ -88,14 +120,15 @@
                                 @endforelse
 
                             </select>
+
                         </div>
                         @php
                             $countryId = json_decode($tour->country_id); // แปลงให้เป็น array
                         @endphp
 
                         <div class="col-md-3">
-                            <label>ประเทศที่เดินทาง: {{ $tour->country_id }}</label>
-                            <select name="quote_country" class="form-select country-select select" style="width: 100%">
+                            <label>ประเทศที่เดินทาง: </label>
+                            <select name="quote_country" class="form-select country-select select" id="country" style="width: 100%">
                                 <option value="">--เลือกประเทศที่เดินทาง--</option>
                                 @forelse ($country as $item)
                                     <option @if (in_array($item->id, $countryId)) selected @endif value="{{ $item->id }}">
@@ -110,7 +143,8 @@
                     <div class="row table-custom">
                         <div class="col-md-3">
                             <label>โฮลเซลล์: </label>
-                            <select name="quote_wholesale" class="form-select country-select select" style="width: 100%">
+                            <select name="quote_wholesale" class="form-select country-select select" style="width: 100%"
+                                id="wholesale">
                                 <option value="">--เลือกโฮลเซลล์--</option>
                                 @forelse ($wholesale as $item)
                                     <option @if ($tour->wholesale_id === $item->id) selected @endif value="{{ $item->id }}">
@@ -165,7 +199,7 @@
                         <div class="col-md-3">
                             <label>อีเมล์:</label>
                             <input type="email" class="form-control" name="customer_email"
-                                value="{{ $bookingModel->email }}" placeholder="email@domail.com" required
+                                value="{{ $bookingModel->email }}" placeholder="email@domail.com"
                                 aria-describedby="basic-addon1">
                             @if ($checkCustomer && $checkCustomer->customer_email !== $bookingModel->email)
                                 <small id="name" class="form-text  check-customer text-danger">ข้อมูลในระบบ :
@@ -175,15 +209,15 @@
 
                         <div class="col-md-3">
                             <label>เลขผู้เสียภาษี:</label>
-                            <input type="text" id="texid" class="form-control" name="customer_texid" mix="13"
-                                value="{{ $checkCustomer ? $checkCustomer->customer_texid : '' }}"
-                                placeholder="เลขประจำตัวผู้เสียภาษี" required aria-describedby="basic-addon1">
+                            <input type="text" id="texid" class="form-control" name="customer_texid"
+                                mix="13" value="{{ $checkCustomer ? $checkCustomer->customer_texid : '' }}"
+                                placeholder="เลขประจำตัวผู้เสียภาษี" aria-describedby="basic-addon1">
                         </div>
 
                         <div class="col-md-3">
                             <label>เบอร์โทรศัพท์ :</label>
                             <input type="text" class="form-control" name="customer_tel"
-                                value="{{ $bookingModel->phone }}" placeholder="เบอร์โทรศัพท์" required
+                                value="{{ $bookingModel->phone }}" placeholder="เบอร์โทรศัพท์"
                                 aria-describedby="basic-addon1">
                             @if ($checkCustomer && $checkCustomer->customer_tel !== $bookingModel->phone)
                                 <small id="name" class="form-text check-customer  text-danger">ข้อมูลในระบบ :
@@ -199,13 +233,13 @@
                         <div class="col-md-9">
                             <label>ที่อยู่:</label>
                             <textarea name="customer_address" id="address" class="form-control" cols="30" rows="2"
-                                placeholder="ที่อยู่" required>{{ $checkCustomer ? $checkCustomer->customer_address : '' }}</textarea>
+                                placeholder="ที่อยู่">{{ $checkCustomer ? $checkCustomer->customer_address : '' }}</textarea>
                         </div>
                     </div>
                     <br>
 
 
-                    <h5 style="background: #e0e0e0; padding: 5px">ข้อมูลค่าบริการ-รายได้</h5>
+                    <h5 style="background: #e0e0e0; padding: 5px">ข้อมูลค่าบริการ</h5>
                     <hr>
                     <div id="quotation-table" class="table-custom text-center">
                         <div class="row header-row" style="padding: 5px">
@@ -218,57 +252,82 @@
                             <div class="col-md-2">ยอดรวม</div>
                         </div>
                         <hr>
+
                         @forelse ($quoteProducts as $key => $item)
                             @if ($item['product_qty'])
-                                <div class="row item-row">
-                                    <div class="col-md-1"><span class="row-number"> {{ $key + 1 }}</span> <a
-                                            href="javascript:void(0)" class="remove-row-btn text-danger"><span
-                                                class=" fa fa-trash"></span></a></div>
-                                    <div class="col-md-4">
-                                        <select name="product_id[]" class="form-select product-select"
-                                            id="product-select" style="width: 100%;">
-                                            @forelse ($products as $product)
-                                                <option @if ($item['product_id'] === $product->id) selected @endif
-                                                    data-pax="{{ $product->product_pax }}" value="{{ $product->id }}">
-                                                    {{ $product->product_name }}
-                                                    {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
-                                            @empty
-                                            @endforelse
-                                        </select>
+                                <div class="row item-row table-income" id="table-income">
+                                    <div class="row">
+                                        <div class="col-md-1"><span class="row-number"> {{ $key + 1 }}</span> <a
+                                                href="javascript:void(0)" class="remove-row-btn text-danger"><span
+                                                    class=" fa fa-trash"></span></a></div>
+                                        <div class="col-md-4">
+                                            <select name="product_id[]" class="form-select product-select"
+                                                id="product-select" style="width: 100%;">
+                                                @forelse ($products as $product)
+                                                    <option @if ($item['product_id'] === $product->id) selected @endif
+                                                        data-pax="{{ $product->product_pax }}"
+                                                        value="{{ $product->id }}">
+                                                        {{ $product->product_name }}
+                                                        {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
+                                                @empty
+                                                @endforelse
+                                            </select>
 
+                                        </div>
+                                        <div class="col-md-1">
+                                            <input type="checkbox" name="vat3[]" class="vat-3" value="Y">
+                                        </div>
+                                        <div class="col-md-1" style="display: none">
+                                            <select name="expense_type[]" class="form-select">
+                                                <option selected value="income"> รายได้ </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1 text-center">
+                                            <select name="vat_status[]" class="vat-status form-select"
+                                                style="width: 110%;">
+                                                <option value="vat">Vat</option>
+                                                <option value="nonvat">nonVat</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1"><input type="number" name="quantity[]"
+                                                class="quantity form-control text-end" value="{{ $item['product_qty'] }}"
+                                                step="0.01"></div>
+                                        <div class="col-md-2"><input type="number" name="price_per_unit[]"
+                                                class="price-per-unit form-control text-end"
+                                                value="{{ $item['product_price'] }}" step="0.01">
+                                        </div>
+                                        <div class="col-md-2"><input type="number" name="total_amount[]"
+                                                class="total-amount form-control text-end" value="0" readonly></div>
                                     </div>
-                                    <div class="col-md-1" >
-                                        <input type="checkbox" name="vat3[]" class="vat-3">
-                                    </div>
-                                    <div class="col-md-1" style="display: none">
-                                        <select name="expense_type[]" class="form-select">
-                                            <option selected value="income"> รายได้ </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-1 text-center"><input type="checkbox" name="non_vat[]"
-                                            class="non-vat">
-                                    </div>
-                                    <div class="col-md-1"><input type="number" name="quantity[]"
-                                            class="quantity form-control text-end" value="{{ $item['product_qty'] }}"
-                                            step="0.01"></div>
-                                    <div class="col-md-2"><input type="number" name="price_per_unit[]"
-                                            class="price-per-unit form-control text-end"
-                                            value="{{ $item['product_price'] }}" step="0.01">
-                                    </div>
-                                    <div class="col-md-2"><input type="number" name="total_amount[]"
-                                            class="total-amount form-control text-end" value="0" readonly></div>
                                 </div>
                             @endif
 
                         @empty
                         @endforelse
 
-                    </div>
-                    <div class="add-row">
-                        <i class="fa fa-plus"></i><a id="add-row" href="javascript:void(0)" class="">
-                            เพิ่มรายการ</a>
+
+                        <div class="add-row">
+                            <i class="fa fa-plus"></i><a id="add-row-service" href="javascript:void(0)" class="">
+                                เพิ่มรายการ</a>
+                        </div>
+                        <hr>
+
+                        <div class="row item-row table-discount">
+                            <div class="col-md-12 " style="text-align: left">
+                                <label class="text-danger">ส่วนลด</label>
+
+                            </div>
+                        </div>
+
+                        <div class="add-row">
+                            <i class="fa fa-plus"></i><a id="add-row-discount" href="javascript:void(0)" class="">
+                                เพิ่มส่วนลด</a>
+                        </div>
+
                     </div>
                     <hr>
+
+
                     <div class="row">
                         <div class="col-6">
                             <div class="row">
@@ -281,7 +340,8 @@
                                                 Include)</label>
                                         </div>
                                         <div>
-                                            <input type="radio" id="vat-exclude" name="vat_type" value="exclude">
+                                            <input type="radio" id="vat-exclude" name="vat_type" value="exclude"
+                                                checked>
                                             <label for="vat-exclude">คำนวณแยกกับราคาสินค้าและบริการ (VAT
                                                 Exclude)</label>
                                         </div>
@@ -292,8 +352,8 @@
                                 <div class="col-md-12">
                                     <div class="row summary-row">
                                         <div class="col-md-10">
-                                            <input type="checkbox" name="vat3_status" value="Y"
-                                                id="withholding-tax"> <span class="">
+                                            <input type="checkbox" name="quote_withholding_tax_status" id="withholding-tax"> <span
+                                                class="">
                                                 คิดภาษีหัก ณ ที่จ่าย 3% (คำนวณจากยอด ราคาก่อนภาษีมูลค่าเพิ่ม /
                                                 Pre-VAT
                                                 Amount)</span>
@@ -318,28 +378,31 @@
                             <div class="row">
                                 <div class="summary text-info">
                                     <div class="row summary-row ">
-                                        <div class="col-md-10 text-end">รวมเป็นเงิน</div>
-                                        <div class="col-md-2 text-end"><span id="sum-total">0.00</span></div>
+                                        <div class="col-md-10 text-end">ยอดรวมยกเว้นภาษี / Vat-Exempted Amount</div>
+                                        <div class="col-md-2 text-end"><span id="sum-total-nonvat">0.00</span></div>
+                                    </div>
+                                    <div class="row summary-row ">
+                                        <div class="col-md-10 text-end">ราคาสุทธิสินค้าที่เสียภาษี / Pre-Tax Amount:</div>
+                                        <div class="col-md-2 text-end"><span id="sum-total-vat">0.00</span></div>
                                     </div>
                                     <div class="row summary-row">
-                                        <div class="col-md-10 text-end">ส่วนลด</div>
+                                        <div class="col-md-10 text-end">ส่วนลด / Discount :</div>
                                         <div class="col-md-2 text-end"><span id="sum-discount">0.00</span></div>
                                     </div>
                                     <div class="row summary-row">
-                                        <div class="col-md-10 text-end">ราคาหลังหักส่วนลด</div>
-                                        <div class="col-md-2 text-end"><span id="after-discount">0.00</span></div>
+                                        <div class="col-md-10 text-end">ราคาก่อนภาษีมูลค่าเพิ่ม / Pre-VAT Amount:</div>
+                                        <div class="col-md-2 text-end"><span id="sum-pre-vat">0.00</span></div>
                                     </div>
                                     <div class="row summary-row">
-                                        <div class="col-md-10 text-end">ภาษีมูลค่าเพิ่ม 7%</div>
+                                        <div class="col-md-10 text-end">ภาษีมูลค่าเพิ่ม VAT : 7%:</div>
                                         <div class="col-md-2 text-end"><span id="vat-amount">0.00</span></div>
                                     </div>
-                                    <div class="row summary-row">
-                                        <div class="col-md-10 text-end">ราคาไม่รวมภาษีมูลค่าเพิ่ม</div>
-                                        <div class="col-md-2 text-end"><span id="price-excluding-vat">0.00</span>
-                                        </div>
+                                    <div class="row summary-row ">
+                                        <div class="col-md-10 text-end">ราคารวมภาษีมูลค่าเพิ่ม / Include VAT:</div>
+                                        <div class="col-md-2 text-end"><span id="sum-include-vat">0.00</span></div>
                                     </div>
                                     <div class="row summary-row">
-                                        <div class="col-md-10 text-end">จำนวนเงินรวมทั้งสิ้น</div>
+                                        <div class="col-md-10 text-end">จำนวนเงินรวมทั้งสิ้น / Grand Total:</div>
                                         <div class="col-md-2 text-end"><b><span class="bg-warning"
                                                     id="grand-total">0.00</span></b></div>
                                     </div>
@@ -347,9 +410,6 @@
                                 </div>
                             </div>
                             <br>
-
-
-
                             <div class="row">
                                 <div class="col-md-12">
                                     <h5>เงือนไขการชำระเงิน</h5>
@@ -408,8 +468,11 @@
                                         <option value="100000">100,000</option>
                                     </select>
                                 </div>
-                                <input type="hidden" id="booking-create-date">
-                                <input type="hidden" id="booking-date">
+                                <input type="hidden" id="booking-create-date"
+                                    value="{{ date('Y-m-d', strtotime($bookingModel->created_at)) }}">
+                                <input type="hidden" id="booking-date"
+                                    value="{{ date('Y-m-d', strtotime($bookingModel->start_date)) }}">
+
                                 <div class="col-md-4 ">
                                     <span for="">จำนวนเงินที่ต้องชำระ</span>
                                     <input type="number" class="form-control pax-total" name="quote_payment_total"
@@ -419,9 +482,10 @@
                             <br>
 
                             <span>วันที่จอง : <label class="text-info">
-                                </label></span>
+                                    {{ thaidate('j F Y', $bookingModel->created_at) }}</label></span>
                             <span>วันที่เดินทาง <label class="text-info">
-                                </label></span>
+                                    {{ thaidate('j F Y', $bookingModel->start_date) }}</label></span>
+                            </label></span>
                             {{-- <input type="text" class="form-control pax-total" readonly
                                 placeholder="ยอด Pax ที่คำนวณได้"> --}}
                         </div>
@@ -429,16 +493,19 @@
 
                     <div class="text-end mt-3">
                         {{-- hidden --}}
-                        <input type="hidden" name="quote_total" id="quote-total">
-                        <input type="hidden" name="quote_discount" id="quote-discount">
-                        <input type="hidden" name="quote_after_discount" id="quote-after-discount">
-                        <input type="hidden" name="quote_price_excluding_vat" id="quote-price-excluding-vat">
-                        <input type="hidden" name="quote_grand_total" id="quote-grand-total">
-                        <input type="hidden" name="quote_vat_3" id="quote-withholding-amount">
-                        <input type="hidden" name="quote_vat_7" id="quote-vat-7">
+                        <input type="hidden" name="quote_vat_exempted_amount">
+                        <input type="hidden" name="quote_pre_tax_amount">
+                        <input type="hidden" name="quote_discount">
+                        <input type="hidden" name="quote_pre_vat_amount">
+                        <input type="hidden" name="quote_vat">
+                        <input type="hidden" name="quote_include_vat">
+                        <input type="hidden" name="quote_grand_total">
+                        <input type="hidden" name="quote_withholding_tax">
 
-                        <button type="submit" class="btn btn-success btn-sm  mx-3" form="form-update">
-                            <i class="fa fa-save"></i> Update</button>
+
+       
+                        <button type="submit" class="btn btn-primary btn-sm  mx-3" form="formQuote">
+                            <i class="fa fa-save"></i> สร้างใบเสนอราคา</button>
                     </div>
                     <br>
             </div>
@@ -483,184 +550,275 @@
                 });
             }
 
+            // ฟังก์ชันคำนวณยอดรวม
             function calculateTotals() {
-    let sumTotal = 0;
-    let sumDiscount = 0;
-    let sumPriceExcludingVat = 0;
-    let sumPriceExcludingVatNonVat = 0;
-    let totalBeforeDiscount = 0;
-    let withholdingTaxTotal = 0;
+                let sumTotal = 0;
+                let sumDiscount = 0;
+                let sumPriceExcludingVat = 0;
+                let sumPriceExcludingVatNonVat = 0;
+                let totalBeforeDiscount = 0;
+                let withholdingTaxTotal = 0;
+                let listVatTotal = 0;
 
-    $('#quotation-table .item-row').each(function() {
-        const quantity = parseFloat($(this).find('.quantity').val()) || 0;
-        const pricePerUnit = parseFloat($(this).find('.price-per-unit').val()) || 0;
-        const isNonVat = $(this).find('.non-vat').is(':checked');
-        const isVat3 = $(this).find('.vat-3').is(':checked');  // ตรวจสอบการติ๊ก checkbox
-        const expenseType = $(this).find('select[name="expense_type[]"]').val();
-        const vatMethod = $('input[name="vat_type"]:checked').val();
+                $('#quotation-table .item-row').each(function() {
+                    const quantity = parseFloat($(this).find('.quantity').val()) || 0;
+                    const pricePerUnit = parseFloat($(this).find('.price-per-unit').val()) || 0;
+                    const vatStatus = $(this).find('.vat-status').val(); // ตรวจสอบค่าจาก select
+                    const isVat3 = $(this).find('.vat-3').is(':checked'); // ตรวจสอบการติ๊ก checkbox
+                    const expenseType = $(this).find('select[name="expense_type[]"]').val();
+                    const vatMethod = $('input[name="vat_type"]:checked').val();
 
-        // คำนวณ total เบื้องต้น
-        let total = quantity * pricePerUnit;
-        let priceExcludingVat = total;
+                    // คำนวณ total เบื้องต้น
+                    let total = quantity * pricePerUnit;
+                    let priceExcludingVat = total;
 
-        // ตรวจสอบหากเป็น discount
-        if (expenseType === 'discount') {
-            sumDiscount += total;
-            total = total * -1;  // Discount เป็นค่าลบ
-        }
+                    // ตรวจสอบหากเป็น discount
+                    if (expenseType === 'discount') {
+                        sumDiscount += total;
+                        //total = total * -1; // Discount เป็นค่าลบ
+                    }
 
-        // คำนวณ VAT 3% หากติ๊ก checkbox
-        if (isVat3) {
-            const vat3 = total * 0.03;
-            total += vat3;
-        }
+                    // คำนวณ VAT 3% หากติ๊ก checkbox
+                    if (isVat3) {
+                        const vat3 = total * 0.03;
+                        total += vat3;
+                    }
 
-        // แสดงผลยอดรวมในฟิลด์ total-amount
-        $(this).find('.total-amount').val(total.toFixed(2));
+                    // แสดงผลยอดรวมในฟิลด์ total-amount
+                    $(this).find('.total-amount').val(total.toFixed(2));
 
-        totalBeforeDiscount += (expenseType !== 'discount') ? total : 0;
+                    totalBeforeDiscount += (expenseType !== 'discount') ? total : 0;
 
-        // กรณี Non-VAT
-        if (isNonVat) {
-            $(this).find('.price-excluding-vat').val(total.toFixed(2));
-            sumPriceExcludingVatNonVat += total;
-        } else {
-            // คำนวณ VAT (Include หรือ Exclude)
-            if (vatMethod === 'include') {
-                const vatAmount = total - (total * 100 / 107);
-                priceExcludingVat = total - vatAmount;
+                    // กรณี Non-VAT
+                    if (vatStatus === 'nonvat') {
+                        $(this).find('.price-excluding-vat').val(total.toFixed(2));
+                        sumPriceExcludingVatNonVat += total;
+                    } else {
+                        listVatTotal += total;
+                        // คำนวณ VAT (Include หรือ Exclude)
+                        if (vatMethod === 'include') {
 
-                $(this).find('.price-excluding-vat').val(priceExcludingVat.toFixed(2));
+                            const vatAmount = total - (total * 100 / 107);
+                            priceExcludingVat = total - vatAmount;
 
-                sumPriceExcludingVat += priceExcludingVat;
-            } else {
-                sumPriceExcludingVat += total;
+                            sumPriceExcludingVat += priceExcludingVat;
+                        } else {
+                            sumPriceExcludingVat += total;
+                        }
+
+                    }
+                    sumTotal += total;
+
+                });
+
+
+
+                // คำนวณยอดหลังส่วนลด
+                const afterDiscount = totalBeforeDiscount - sumDiscount;
+                let vatAmount = 0;
+                let preVatAmount = 0;
+                let grandTotal = 0;
+
+                if ($('input[name="vat_type"]:checked').val() === 'include') {
+                    // VAT รวมอยู่ในยอดแล้ว
+                    grandTotal = sumTotal;
+                    preVatAmount = sumPriceExcludingVat * 0.07;
+                    vatAmount = preVatAmount;
+
+                } else {
+                    // คำนวณ VAT 7% กรณี Exclude VAT
+                    vatAmount = sumPriceExcludingVat * 0.07;
+                    grandTotal = afterDiscount + vatAmount;
+                }
+
+                // คำนวณหักภาษี ณ ที่จ่าย (Withholding Tax)
+                const withholdingTax = $('#withholding-tax').is(':checked') ? (listVatTotal - preVatAmount) * 0.03 :0;
+                //quote_withholding_tax
+                $('input[name="quote_withholding_tax"]').val(withholdingTax.toFixed(2));
+
+                // อัปเดตค่าทั้งหมดที่จะแสดงในหน้าจอ
+                $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
+                $('#quote-total').val(sumTotal.toFixed(2));
+
+               
+
+                $('#after-discount').text(formatNumber(afterDiscount.toFixed(2)));
+                $('#quote-after-discount').val(afterDiscount.toFixed(2));
+              
+
+                $('#quote-vat-7').val(vatAmount.toFixed(2));
+
+
+                $('#price-excluding-vat').text(formatNumber((sumPriceExcludingVat + sumPriceExcludingVatNonVat)
+                    .toFixed(2)));
+                $('#quote-price-excluding-vat').val((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(2));
+
+             
+                $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
+               
+                //ยอดรวมยกเว้นภาษี
+                $('#sum-total-nonvat').text(formatNumber((sumPriceExcludingVatNonVat - sumDiscount).toFixed(2)));
+                $('input[name="quote_vat_exempted_amount"]').val(sumPriceExcludingVatNonVat.toFixed(2));
+
+                //ยอดรวมยกเว้นภาษี
+                $('#sum-total-vat').text(formatNumber(listVatTotal.toFixed(2)));
+                $('input[name="quote_pre_tax_amount"]').val(listVatTotal.toFixed(2));
+                
+                //ส่วนลด / Discount 
+                $('#sum-discount').text(formatNumber((sumDiscount/2).toFixed(2)));
+                $('input[name="quote_discount"]').val(sumDiscount.toFixed(2));
+                
+                //ราคาก่อนภาษีมูลค่าเพิ่ม
+                $('#sum-pre-vat').text(formatNumber((listVatTotal - preVatAmount).toFixed(2)));
+                $('input[name="quote_pre_vat_amount"]').val(listVatTotal - preVatAmount.toFixed(2));
+
+                // VAT 7 %
+                $('#vat-amount').text(formatNumber(vatAmount.toFixed(2)));
+                $('input[name="quote_vat"]').val(vatAmount.toFixed(2));
+
+
+                //ราคารวมภาษีมูลค่าเพิ่ม / Include VAT sum-include-vat
+                $('#sum-include-vat').text(formatNumber(((listVatTotal - preVatAmount) + vatAmount).toFixed(2)));
+                $('input[name="quote_include_vat"]').val(((listVatTotal - preVatAmount) + vatAmount).toFixed(2));
+
+                //จำนวนเงินรวมทั้งสิ้น / Grand Total
+                $('#grand-total').text(formatNumber(grandTotal.toFixed(2)));
+                $('input[name="quote_grand_total"]').val(grandTotal.toFixed(2));
+
             }
-        }
 
-        sumTotal += total;
-        withholdingTaxTotal += total;
-    });
+            // Initialize Select2 สำหรับทุก select element ที่มี class .product-select
+            function initializeSelect2() {
+                $('#quotation-table .product-select').each(function() {
+                    if (!$(this).hasClass("select2-hidden-accessible")) {
+                        $(this).select2({
+                            width: 'resolve' // ตั้งค่า width ให้กับ select2
+                        });
+                    }
+                });
+            }
 
-    // คำนวณยอดหลังส่วนลด
-    const afterDiscount = totalBeforeDiscount - sumDiscount;
-    let vatAmount = 0;
-    let grandTotal = 0;
-
-    if ($('input[name="vat_type"]:checked').val() === 'include') {
-        // VAT รวมอยู่ในยอดแล้ว
-        grandTotal = sumTotal;
-    } else {
-        // คำนวณ VAT 7% กรณี Exclude VAT
-        vatAmount = sumPriceExcludingVat * 0.07;
-        grandTotal = afterDiscount + vatAmount;
-    }
-
-    // คำนวณหักภาษี ณ ที่จ่าย (Withholding Tax)
-    const withholdingTax = $('#withholding-tax').is(':checked') ? withholdingTaxTotal * 0.03 : 0;
-    $('#quote-withholding-amount').val(withholdingTax.toFixed(2));
-
-    // อัปเดตค่าทั้งหมดที่จะแสดงในหน้าจอ
-    $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
-    $('#quote-total').val(sumTotal.toFixed(2));
-
-    $('#sum-discount').text(formatNumber(sumDiscount.toFixed(2)));
-    $('#quote-discount').val(sumDiscount.toFixed(2));
-
-    $('#after-discount').text(formatNumber(afterDiscount.toFixed(2)));
-    $('#quote-after-discount').val(afterDiscount.toFixed(2));
-
-    $('#vat-amount').text(formatNumber(vatAmount.toFixed(2)));
-    $('#quote-vat-7').val(vatAmount.toFixed(2));
-
-    $('#price-excluding-vat').text(formatNumber((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(2)));
-    $('#quote-price-excluding-vat').val((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(2));
-
-    $('#grand-total').text(formatNumber(grandTotal.toFixed(2)));
-    $('#quote-grand-total').val(grandTotal.toFixed(2));
-
-    $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
-}
-
-// เรียกฟังก์ชันนี้เมื่อมีการเปลี่ยนแปลงที่ checkbox vat-3
-$('.vat-3').on('change', function() {
-    calculateTotals();  // เรียกฟังก์ชันคำนวณใหม่ทุกครั้งที่มีการเปลี่ยนแปลง checkbox
-});
-
-            // Add a new row
-
-            $('#add-row').click(function() {
-    // สร้างแถวใหม่แบบ dynamic พร้อมข้อมูลจาก products
-    const newRow = `
-        <div class="row item-row">
-            <div class="col-md-1">
-                <span class="row-number"></span> 
-                <a href="javascript:void(0)" class="remove-row-btn text-danger">
-                    <span class="fa fa-trash"></span>
-                </a>
+            // ฟังก์ชันเพิ่มแถวใหม่สำหรับค่าบริการ
+            function addNewServiceRow() {
+                const newRow = `
+            <div class="row item-row">
+                <div class="col-md-1"><span class="row-number"></span>
+                    <a href="javascript:void(0)" class="remove-row-btn text-danger"><span class=" fa fa-trash"></span></a>
+                 </div>
+                <div class="col-md-4">
+                    <select name="product_id[]" class="form-select product-select" style="width: 100%;">
+                        <option value="">--เลือกสินค้า--</option>
+                        @foreach ($products as $product)
+                            <option value="{{ $product->id }}">{{ $product->product_name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                
+                <div class="col-md-1">
+                    <input type="checkbox" name="vat3[]" class="vat-3">
+                </div>
+                 <div class="col-md-1" style="display: none">
+                                        <select name="expense_type[]" class="form-select">
+                                            <option selected value="income"> รายได้ </option>
+                                        </select>
+                                    </div>
+               <div class="col-md-1 text-center">
+    <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
+        <option value="vat">Vat</option>
+                                                <option value="nonvat">nonVat</option>
+    </select>
+</div>
+                <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" value="1" step="0.01"></div>
+                <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" value="0" step="0.01"></div>
+                <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end" value="0" readonly></div>
             </div>
-            <div class="col-md-3">
-                <select name="product_id[]" class="form-select product-select" style="width: 100%;">
-                    <option value="">กรุณาเลือกรายการ</option>
-                    @foreach($products as $product)
-                        <option value="{{ $product->id }}">{{ $product->product_name }} {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-2">
-                <select name="expense_type[]" class="form-select">
-                    <option value="income">รายได้</option>
-                    <option value="expense">รายจ่าย</option>
-                </select>
-            </div>
-            <div class="col-md-1 text-center">
-                <input type="checkbox" name="non_vat[]" class="non-vat">
-            </div>
-            <div class="col-md-1">
-                <input type="number" name="quantity[]" class="quantity form-control text-end" value="0" step="0.01">
-            </div>
-            <div class="col-md-2">
-                <input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" value="0" step="0.01">
-            </div>
-            <div class="col-md-2">
-                <input type="number" name="total_amount[]" class="total-amount form-control text-end" value="0" readonly>
-            </div>
-        </div>`;
+            
+            `;
 
-    // Append แถวใหม่ไปที่ตาราง
-    $('#quotation-table').append(newRow);
+                // Append แถวใหม่ไปที่ table-income
+                $('.table-income').append(newRow);
 
-    // Initialize Select2 สำหรับ select element ใหม่
-    $('#quotation-table .product-select').select2({
-        width: 'resolve' // ตั้งค่า width ให้กับ select2
-    });
+                // Reinitialize Select2 สำหรับทุก select element
+                initializeSelect2();
 
-    // อัปเดตลำดับแถว (ถ้ามีฟังก์ชันนี้อยู่)
-    updateRowNumbers();
-});
+                // อัปเดตลำดับแถว (ถ้ามีฟังก์ชันนี้อยู่)
+                updateRowNumbers();
+            }
 
+            // ฟังก์ชันเพิ่มแถวใหม่สำหรับส่วนลด
+            function addNewDiscountRow() {
+                const newRow = `
+            <div class="row item-row">
+                <div class="col-md-1"><span class="row-number"></span>
+                    <a href="javascript:void(0)" class="remove-row-btn text-danger"><span class=" fa fa-trash"></span></a>
+                 </div>
+                <div class="col-md-4">
+                    <select name="product_id[]" class="form-select product-select" style="width: 100%;">
+                        <option value="">--เลือกส่วนลด--</option>
+                        @foreach ($productDiscount as $product)
+                            <option value="{{ $product->id }}">{{ $product->product_name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                            
+                <div class="col-md-1">
+                    <input type="checkbox" name="vat3[]" class="vat-3" disabled>
+                </div>
+                 <div class="col-md-1" style="display: none">
+                                        <select name="expense_type[]" class="form-select" >
+                                            <option selected value="discount"> ส่วนลด </option>
+                                        </select>
+                                    </div>
+                <div class="col-md-1 text-center">
+    <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
 
+        <option value="nonvat">nonVat</option>
+    </select>
+</div>
+                <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" value="1" step="0.01"></div>
+                <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" value="0" step="0.01"></div>
+                <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end" value="0" readonly></div>
+            </div>`;
 
+                // Append แถวใหม่ไปที่ table-discount
+                $('.table-discount').append(newRow);
 
+                // Reinitialize Select2 สำหรับทุก select element
+                initializeSelect2();
 
+                // อัปเดตลำดับแถว (ถ้ามีฟังก์ชันนี้อยู่)
+                updateRowNumbers();
+            }
+
+            // Add new service row when button clicked
+            $('#add-row-service').click(function() {
+                addNewServiceRow();
+            });
+
+            // Add new discount row when button clicked
+            $('#add-row-discount').click(function() {
+                addNewDiscountRow();
+            });
+
+            // เรียกฟังก์ชันคำนวณใหม่ทุกครั้งที่มีการเปลี่ยนแปลง checkbox หรือ input
+            $('#quotation-table').on('change', '.vat-3, .vat-status, select[name="expense_type[]"]',
+                calculateTotals);
+            $('#quotation-table').on('input', '.quantity, .price-per-unit', calculateTotals);
+            $('#withholding-tax').change(calculateTotals);
+            $('input[name="vat_type"]').change(calculateTotals);
 
             // Remove row
             $('#quotation-table').on('click', '.remove-row-btn', function() {
                 $(this).closest('.item-row').remove();
-                updateRowNumbers();
                 calculateTotals();
+                updateRowNumbers();
             });
 
-            // Bind input changes and VAT method change to recalculate totals
-            $('#quotation-table').on('input', '.quantity, .price-per-unit', calculateTotals);
-            $('#quotation-table').on('change', '.non-vat, select[name="expense_type[]"]', calculateTotals);
-            $('input[name="vat_type"]').change(calculateTotals);
-            $('#withholding-tax').change(calculateTotals);
-
-            // Initial calculation
+            // เริ่มต้นการคำนวณ
             calculateTotals();
 
-
+            // Initialize Select2 for existing rows
+            initializeSelect2();
         });
     </script>
 
@@ -778,7 +936,8 @@ $('.vat-3').on('change', function() {
             });
 
             // เรียกใช้ฟังก์ชันเมื่อเริ่มต้น
-            //calculatePaxAndTotal();
+            checkedPaymentFull()
+            calculatePaxAndTotal();
         });
     </script>
 
@@ -866,48 +1025,134 @@ $('.vat-3').on('change', function() {
     {{-- API TOUR --}}
     <script>
         $(document).ready(function() {
-            $('#tourSearch').on('keypress', function(e) {
-                if (e.which === 13) { // ตรวจจับการกดปุ่ม Enter (keyCode 13)
-                    e.preventDefault(); // ป้องกันการ reload หน้าเมื่อกด Enter
-                    var searchTerm = $(this).val();
-                    if (searchTerm.length >= 2) {
-                        $.ajax({
-                            url: '{{ route('api.tours') }}', // URL สำหรับดึงข้อมูลทัวร์
-                            method: 'GET',
-                            data: {
-                                search: searchTerm
-                            },
-                            success: function(data) {
-                                $('#tourResults').empty();
-                                if (data.length > 0) {
-                                    $.each(data, function(index, item) {
-                                        $('#tourResults').append(`
-                                            <a href="#" class="list-group-item list-group-item-action" data-id="${item.id}">
-                                                ${item.code} - ${item.name}
-                                            </a>
-                                        `);
-                                    });
-                                } else {
-                                    $('#tourResults').append(
-                                        '<a href="#" class="list-group-item list-group-item-action disabled">ไม่พบข้อมูล</a>'
-                                    );
-                                }
-                            }
-                        });
-                    } else {
-                        $('#tourResults').empty(); // ล้างผลลัพธ์เมื่อไม่มีคำค้นหา
-                    }
+
+            $('#tourSearch').on('keydown', function(e) {
+                if (e.key === 'Enter') { // ตรวจสอบว่ากดปุ่ม Enter หรือไม่
+                    e.preventDefault(); // ป้องกันการ submit ฟอร์ม
                 }
             });
+            // เมื่อพิมพ์ในช่องค้นหา
+            $('#tourSearch').on('input', function(e) {
+                var searchTerm = $(this).val();
+                if (searchTerm.length >= 2) { // คำค้นหาต้องมีอย่างน้อย 2 ตัวอักษร
+                    $.ajax({
+                        url: '{{ route('api.tours') }}', // URL สำหรับดึงข้อมูลทัวร์
+                        method: 'GET',
+                        data: {
+                            search: searchTerm
+                        },
+                        success: function(data) {
+                            $('#tourResults').empty(); // ล้างข้อมูลผลลัพธ์เดิม
+                            if (data.length > 0) {
+                                // วนลูปแสดงรายการผลลัพธ์
+                                $.each(data, function(index, item) {
+                                    $('#tourResults').append(`<a href="#" id="tour-select" class="list-group-item list-group-item-action"  data-wholesale="${item.wholesale_id}" data-code="${item.code}" data-name="${item.code} - ${item.name}">${item.country_id} - ${item.name}</a>
+                            `);
+                                });
+                            } else {
+                                // ถ้าไม่มีข้อมูล
+                                $('#tourResults').append(
+                                    `<a href="#" class="list-group-item list-group-item-action" data-name="${searchTerm}">กำหนดเอง</a>`
+                                );
+                            }
+                        }
+                    });
+                } else {
+                    $('#tourResults').empty(); // ล้างผลลัพธ์เมื่อไม่มีคำค้นหา
+                }
+            });
+
             // เมื่อคลิกเลือกแพคเกจจากผลลัพธ์การค้นหา
             $(document).on('click', '#tourResults a', function(e) {
                 e.preventDefault();
-                var selectedId = $(this).data('id');
-                var selectedText = $(this).text();
+                var selectedCode = $(this).data('code') || ''; // ถ้า selectedCode ไม่มีค่า ให้ใส่ค่าว่าง
+                var selectedText = $(this).data('name');
                 $('#tourSearch').val(selectedText); // แสดงชื่อแพคเกจที่เลือกใน input
-                $('#selectedTour').val(selectedId); // เก็บค่า id ใน hidden input
+                $('#tour-code').val(selectedCode); // เก็บค่า code ใน hidden input หรือค่าว่าง
                 $('#tourResults').empty(); // ล้างผลลัพธ์การค้นหา
             });
+
+            // Select Wholesale 
+            $(document).ready(function() {
+                // Select Wholesale เมื่อคลิกเลือกทัวร์
+                $(document).on('click', '#tour-select', function(e) {
+                    e.preventDefault();
+                    var selectedCode = $(this).data('wholesale') || '';
+                    if (selectedCode) {
+                        $.ajax({
+                            url: '{{ route('api.wholesale') }}', // URL สำหรับดึงข้อมูลโฮลเซลล์
+                            method: 'GET',
+                            data: {
+                                search: selectedCode
+                            },
+                            success: function(data) {
+                                if (data) {
+                                    // ตรวจสอบว่าตัวเลือกนี้มีอยู่แล้วใน select หรือไม่
+                                    if (!$('#wholesale option[value="' + data.id + '"]')
+                                        .length) {
+                                        // เพิ่มตัวเลือกใหม่ใน select ของ Wholesale ถ้ายังไม่มีตัวเลือกนี้
+                                        $('#wholesale').append(`
+                                <option value="${data.id}">${data.wholesale_name_th}</option>
+                            `);
+                                    }
+                                    // ตั้งค่าให้ตัวเลือกนั้นถูกเลือก
+                                    $('#wholesale').val(data.id).trigger('change');
+                                } else {
+                                    console.log("ไม่พบข้อมูลโฮลเซลล์");
+                                }
+                            },
+                            error: function() {
+                                console.log("เกิดข้อผิดพลาดในการดึงข้อมูล");
+                            }
+                        });
+                    }
+                });
+
+
+            });
+
+             // Select country 
+             $(document).ready(function() {
+                // Select Wholesale เมื่อคลิกเลือกทัวร์
+                $(document).on('click', '#tour-select', function(e) {
+                    e.preventDefault();
+                    var selectedCode = $(this).data('code') || '';
+                    if (selectedCode) {
+                        $.ajax({
+                            url: '{{ route('api.country') }}', // URL สำหรับดึงข้อมูลโฮลเซลล์
+                            method: 'GET',
+                            data: {
+                                search: selectedCode
+                            },
+                            success: function(data) {
+                                //console.log(data);
+                                
+                                if (data) {
+                                    // ตรวจสอบว่าตัวเลือกนี้มีอยู่แล้วใน select หรือไม่
+                                    if (!$('#country option[value="' + data.id + '"]')
+                                        .length) {
+                                        // เพิ่มตัวเลือกใหม่ใน select ของ Wholesale ถ้ายังไม่มีตัวเลือกนี้
+                                        $('#country').append(`
+                                <option value="${data.id}">${data.country_name_th}</option>
+                            `);
+                                    }
+                                    // ตั้งค่าให้ตัวเลือกนั้นถูกเลือก
+                                    $('#country').val(data.id).trigger('change');
+                                } else {
+                                    console.log("ไม่พบข้อมูลโฮลเซลล์");
+                                }
+                            },
+                            error: function() {
+                                console.log("เกิดข้อผิดพลาดในการดึงข้อมูล");
+                            }
+                        });
+                    }
+                });
+
+
+            });
+
+
         });
     </script>
 
