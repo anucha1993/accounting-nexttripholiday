@@ -2,11 +2,7 @@
 
 @section('content')
     <style>
-        <style>.table-custom {
-            border: 1px solid #e0e0e0;
-            padding: 10px;
-            margin-bottom: 20px;
-        }
+       
 
 
         .table-custom input,
@@ -89,9 +85,10 @@
                         </div>
                         <div class="col-md-2">
                             <label>เลขที่ใบจองทัวร์</label>
-                            <input type="text" name="quote_booking" value="{{$bookingModel->code}}" class="form-control" readonly >
+                            <input type="text" name="quote_booking" value="{{ $bookingModel->code }}"
+                                class="form-control" readonly>
                         </div>
-                       
+
                     </div>
                     <hr>
                     <h5 class="text-danger">รายละเอียดแพคเกจทัวร์:</h5>
@@ -128,7 +125,8 @@
 
                         <div class="col-md-3">
                             <label>ประเทศที่เดินทาง: </label>
-                            <select name="quote_country" class="form-select country-select select" id="country" style="width: 100%">
+                            <select name="quote_country" class="form-select country-select select" id="country"
+                                style="width: 100%">
                                 <option value="">--เลือกประเทศที่เดินทาง--</option>
                                 @forelse ($country as $item)
                                     <option @if (in_array($item->id, $countryId)) selected @endif value="{{ $item->id }}">
@@ -352,8 +350,8 @@
                                 <div class="col-md-12">
                                     <div class="row summary-row">
                                         <div class="col-md-10">
-                                            <input type="checkbox" name="quote_withholding_tax_status" id="withholding-tax"> <span
-                                                class="">
+                                            <input type="checkbox" name="quote_withholding_tax_status" value="Y"
+                                                id="withholding-tax"> <span class="">
                                                 คิดภาษีหัก ณ ที่จ่าย 3% (คำนวณจากยอด ราคาก่อนภาษีมูลค่าเพิ่ม /
                                                 Pre-VAT
                                                 Amount)</span>
@@ -468,7 +466,7 @@
                                         <option value="100000">100,000</option>
                                     </select>
                                 </div>
-                                <input type="hidden" id="booking-create-date"
+                                <input type="hidden" id="booking-create-date" name="quote_booking_create"
                                     value="{{ date('Y-m-d', strtotime($bookingModel->created_at)) }}">
                                 <input type="hidden" id="booking-date"
                                     value="{{ date('Y-m-d', strtotime($bookingModel->start_date)) }}">
@@ -499,11 +497,11 @@
                         <input type="hidden" name="quote_pre_vat_amount">
                         <input type="hidden" name="quote_vat">
                         <input type="hidden" name="quote_include_vat">
-                        <input type="hidden" name="quote_grand_total">
+                        <input type="hidden" name="quote_grand_total" id="quote-grand-total">
                         <input type="hidden" name="quote_withholding_tax">
 
 
-       
+
                         <button type="submit" class="btn btn-primary btn-sm  mx-3" form="formQuote">
                             <i class="fa fa-save"></i> สร้างใบเสนอราคา</button>
                     </div>
@@ -526,6 +524,8 @@
 
 
     </div>
+
+    
     <script>
         $(document).ready(function() {
             $('.country-select').select2();
@@ -560,7 +560,10 @@
                 let withholdingTaxTotal = 0;
                 let listVatTotal = 0;
 
-                $('#quotation-table .item-row').each(function() {
+                let processedDiscountRows = [];
+
+                $('#quotation-table .item-row').each(function(index) {
+                    const rowId = $(this).attr('data-row-id');
                     const quantity = parseFloat($(this).find('.quantity').val()) || 0;
                     const pricePerUnit = parseFloat($(this).find('.price-per-unit').val()) || 0;
                     const vatStatus = $(this).find('.vat-status').val(); // ตรวจสอบค่าจาก select
@@ -572,12 +575,43 @@
                     let total = quantity * pricePerUnit;
                     let priceExcludingVat = total;
 
-                    // ตรวจสอบหากเป็น discount
-                    if (expenseType === 'discount') {
-                        sumDiscount += total;
-                        //total = total * -1; // Discount เป็นค่าลบ
-                    }
+                    console.log('data-row-id :' + rowId);
 
+
+                    // ตรวจสอบหากเป็น discount
+                    // ตรวจสอบหากเป็นส่วนลด
+                    // ตรวจสอบหากเป็นส่วนลด
+                    // ตรวจสอบว่า expenseType เป็น 'discount' หรือไม่
+                    if (expenseType === 'discount') {
+                        // ตรวจสอบว่า rowId เป็น undefined หรือไม่ ถ้าเป็น undefined ให้ข้ามไป
+                        if (!rowId || rowId === 'undefined') {
+                            console.log('Skipping row with undefined data-row-id');
+                            return; // ข้ามการคำนวณถ้า rowId เป็น undefined
+                        }
+
+                        const quantity = parseFloat($(this).find('.quantity').val()) || 0;
+                        const pricePerUnit = parseFloat($(this).find('.price-per-unit').val()) || 0;
+
+                        // ตรวจสอบว่าแถวนี้เคยถูกคำนวณส่วนลดแล้วหรือไม่ โดยใช้ rowId
+                        if (processedDiscountRows.includes(rowId)) {
+                            console.log('Skipping duplicate discount for row: ' + rowId);
+                            return; // ข้ามแถวนี้ถ้าเคยคำนวณแล้ว
+                        }
+
+                        // ถ้ายังไม่ถูกประมวลผล ให้นำไปคำนวณ
+                        let discountAmount = quantity * pricePerUnit; // คำนวณส่วนลดเฉพาะรายการ
+                        sumDiscount += discountAmount; // เพิ่มค่าลงใน sumDiscount
+
+                        // เพิ่ม rowId ของแถวนี้เข้าไปใน processedDiscountRows เพื่อป้องกันการประมวลผลซ้ำ
+                        processedDiscountRows.push(rowId);
+
+                        // ใช้ log เพื่อตรวจสอบค่าที่ได้
+                        //console.log('rowId :' + rowId);
+                        //console.log('quantity :' + quantity);
+                        //console.log('pricePerUnit :' + pricePerUnit);
+                        //console.log('Discount for this row :' + discountAmount);
+                        //console.log('Total sumDiscount :' + sumDiscount);
+                    }
                     // คำนวณ VAT 3% หากติ๊ก checkbox
                     if (isVat3) {
                         const vat3 = total * 0.03;
@@ -610,29 +644,38 @@
                     sumTotal += total;
 
                 });
-
-
-
                 // คำนวณยอดหลังส่วนลด
                 const afterDiscount = totalBeforeDiscount - sumDiscount;
                 let vatAmount = 0;
                 let preVatAmount = 0;
                 let grandTotal = 0;
+                let sumPreVat = 0;
 
                 if ($('input[name="vat_type"]:checked').val() === 'include') {
                     // VAT รวมอยู่ในยอดแล้ว
-                    grandTotal = sumTotal;
+
                     preVatAmount = sumPriceExcludingVat * 0.07;
-                    vatAmount = preVatAmount;
+
+                    sumPreVat = listVatTotal - (sumDiscount);
+                    sumPreVat = sumPreVat * 100 / 107;
+                    vatAmount = sumPreVat * 0.07;
+
+                    grandTotal = sumPriceExcludingVatNonVat + sumPreVat + vatAmount;
+                    // console.log('sumPreVat : '+sumPreVat);
+                    // console.log('listVatTotal : '+listVatTotal);
 
                 } else {
                     // คำนวณ VAT 7% กรณี Exclude VAT
-                    vatAmount = sumPriceExcludingVat * 0.07;
-                    grandTotal = afterDiscount + vatAmount;
+
+
+                    sumPreVat = listVatTotal - (sumDiscount);
+                    vatAmount = sumPreVat * 0.07;
+                    grandTotal = sumPriceExcludingVatNonVat + sumPreVat + vatAmount;
                 }
 
                 // คำนวณหักภาษี ณ ที่จ่าย (Withholding Tax)
-                const withholdingTax = $('#withholding-tax').is(':checked') ? (listVatTotal - preVatAmount) * 0.03 :0;
+                const withholdingTax = $('#withholding-tax').is(':checked') ? (sumPreVat + vatAmount) * 0.03 : 0;
+
                 //quote_withholding_tax
                 $('input[name="quote_withholding_tax"]').val(withholdingTax.toFixed(2));
 
@@ -640,37 +683,36 @@
                 $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
                 $('#quote-total').val(sumTotal.toFixed(2));
 
-               
+
 
                 $('#after-discount').text(formatNumber(afterDiscount.toFixed(2)));
                 $('#quote-after-discount').val(afterDiscount.toFixed(2));
-              
+
 
                 $('#quote-vat-7').val(vatAmount.toFixed(2));
 
 
-                $('#price-excluding-vat').text(formatNumber((sumPriceExcludingVat + sumPriceExcludingVatNonVat)
-                    .toFixed(2)));
-                $('#quote-price-excluding-vat').val((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(2));
+                $('#price-excluding-vat').text(formatNumber((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(2)));
+                $('#quote-price-excluding-vat').val(((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(2)));
 
-             
+
                 $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
-               
+
                 //ยอดรวมยกเว้นภาษี
                 $('#sum-total-nonvat').text(formatNumber((sumPriceExcludingVatNonVat - sumDiscount).toFixed(2)));
-                $('input[name="quote_vat_exempted_amount"]').val(sumPriceExcludingVatNonVat.toFixed(2));
+                $('input[name="quote_vat_exempted_amount"]').val((sumPriceExcludingVatNonVat - sumDiscount).toFixed(2));
 
                 //ยอดรวมยกเว้นภาษี
                 $('#sum-total-vat').text(formatNumber(listVatTotal.toFixed(2)));
                 $('input[name="quote_pre_tax_amount"]').val(listVatTotal.toFixed(2));
-                
+
                 //ส่วนลด / Discount 
-                $('#sum-discount').text(formatNumber((sumDiscount/2).toFixed(2)));
+                $('#sum-discount').text(formatNumber((sumDiscount).toFixed(2)));
                 $('input[name="quote_discount"]').val(sumDiscount.toFixed(2));
-                
+
                 //ราคาก่อนภาษีมูลค่าเพิ่ม
-                $('#sum-pre-vat').text(formatNumber((listVatTotal - preVatAmount).toFixed(2)));
-                $('input[name="quote_pre_vat_amount"]').val(listVatTotal - preVatAmount.toFixed(2));
+                $('#sum-pre-vat').text(formatNumber(sumPreVat.toFixed(2)));
+                $('input[name="quote_pre_vat_amount"]').val(sumPreVat.toFixed(2));
 
                 // VAT 7 %
                 $('#vat-amount').text(formatNumber(vatAmount.toFixed(2)));
@@ -678,12 +720,12 @@
 
 
                 //ราคารวมภาษีมูลค่าเพิ่ม / Include VAT sum-include-vat
-                $('#sum-include-vat').text(formatNumber(((listVatTotal - preVatAmount) + vatAmount).toFixed(2)));
-                $('input[name="quote_include_vat"]').val(((listVatTotal - preVatAmount) + vatAmount).toFixed(2));
+                $('#sum-include-vat').text(formatNumber((sumPreVat + vatAmount).toFixed(2)));
+                $('input[name="quote_include_vat"]').val((sumPreVat + vatAmount).toFixed(2));
 
                 //จำนวนเงินรวมทั้งสิ้น / Grand Total
-                $('#grand-total').text(formatNumber(grandTotal.toFixed(2)));
-                $('input[name="quote_grand_total"]').val(grandTotal.toFixed(2));
+                $('#grand-total').text(formatNumber(grandTotal - sumDiscount.toFixed(2)));
+                $('input[name="quote_grand_total"]').val(grandTotal - sumDiscount.toFixed(2));
 
             }
 
@@ -701,7 +743,7 @@
             // ฟังก์ชันเพิ่มแถวใหม่สำหรับค่าบริการ
             function addNewServiceRow() {
                 const newRow = `
-            <div class="row item-row">
+            <div class="row item-row" >
                 <div class="col-md-1"><span class="row-number"></span>
                     <a href="javascript:void(0)" class="remove-row-btn text-danger"><span class=" fa fa-trash"></span></a>
                  </div>
@@ -746,9 +788,12 @@
             }
 
             // ฟังก์ชันเพิ่มแถวใหม่สำหรับส่วนลด
+            let currentRowId = 1;
+
             function addNewDiscountRow() {
+                currentRowId++;
                 const newRow = `
-            <div class="row item-row">
+            <div class="row item-row" data-row-id="${currentRowId}">
                 <div class="col-md-1"><span class="row-number"></span>
                     <a href="javascript:void(0)" class="remove-row-btn text-danger"><span class=" fa fa-trash"></span></a>
                  </div>
@@ -1111,8 +1156,8 @@
 
             });
 
-             // Select country 
-             $(document).ready(function() {
+            // Select country 
+            $(document).ready(function() {
                 // Select Wholesale เมื่อคลิกเลือกทัวร์
                 $(document).on('click', '#tour-select', function(e) {
                     e.preventDefault();
@@ -1126,7 +1171,7 @@
                             },
                             success: function(data) {
                                 //console.log(data);
-                                
+
                                 if (data) {
                                     // ตรวจสอบว่าตัวเลือกนี้มีอยู่แล้วใน select หรือไม่
                                     if (!$('#country option[value="' + data.id + '"]')

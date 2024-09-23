@@ -54,6 +54,7 @@ class quotationModel extends Model
        'quote_grand_total',
        'quote_withholding_tax',
        'quote_withholding_tax_status',
+       'quote_booking_create',
        'created_by',
        'updated_by',
     ];

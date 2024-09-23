@@ -4,16 +4,18 @@ namespace App\Http\Controllers\quotations;
 
 use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
+use App\Models\mumday\numDayModel;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\booking\bookingModel;
-use App\Models\booking\bookingQuotationModel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\invoices\invoiceModel;
-use App\Models\customers\customerModel;
 use App\Models\products\productModel;
+use App\Models\customers\customerModel;
+use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
 use App\Models\quotations\quoteProductModel;
+use App\Models\booking\bookingQuotationModel;
 
 class quoteController extends Controller
 {
@@ -115,6 +117,7 @@ class quoteController extends Controller
             $customerModel = customerModel::where('customer_id', $request->customer_id)->first();
         }
         $request->merge([
+            'quote_withholding_tax_status'=> isset($request->quote_withholding_tax_status) ? 'Y' : 'N',
             'quote_tour_code'=> $runningCodeTour,
             'quote_number' => $runningCode,
             'quote_status' => 'wait',
@@ -153,26 +156,44 @@ class quoteController extends Controller
 
     public function edit(quotationModel $quotationModel, Request $request)
     {
-        $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
-        $sale = saleModel::where('id', $quotationModel->quote_sale)->first();
-        $tour = DB::connection('mysql2')
-            ->table('tb_tour')
-            ->select('code', 'airline_id')
-            ->where('id', $quotationModel->tour_id)
-            ->first();
-        $airline = DB::connection('mysql2')
-            ->table('tb_travel_type')
-            ->select('travel_name')
-            ->where('id', $tour->airline_id)
-            ->first();
-        $products = productModel::get();
-        $quoteProducts = quoteProductModel::select('products.product_name', 'products.id', 'quote_product.product_qty', 'quote_product.product_price', 'quote_product.product_id', 'quote_product.expense_type', 'quote_product.vat')
-            ->where('quote_id', $quotationModel->quote_id)
-            ->leftjoin('products', 'products.id', 'quote_product.product_id')
-            ->get();
+        // $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
+        // $sale = saleModel::where('id', $quotationModel->quote_sale)->first();
+        // $tour = DB::connection('mysql2')
+        //     ->table('tb_tour')
+        //     ->select('code', 'airline_id')
+        //     ->where('id', $quotationModel->tour_id)
+        //     ->first();
+        // $airline = DB::connection('mysql2')
+        //     ->table('tb_travel_type')
+        //     ->select('travel_name')
+        //     ->where('id', $tour->airline_id)
+        //     ->first();
+        // $products = productModel::get();
+        // $quoteProducts = quoteProductModel::select('products.product_name', 'products.id', 'quote_product.product_qty', 'quote_product.product_price', 'quote_product.product_id', 'quote_product.expense_type', 'quote_product.vat')
+        //     ->where('quote_id', $quotationModel->quote_id)
+        //     ->leftjoin('products', 'products.id', 'quote_product.product_id')
+        //     ->get();
+      
+        // //dd($quoteProducts);
+        // return view('quotations.edit', compact('bookingModel','quotationModel', 'customer', 'sale', 'tour', 'airline', 'products', 'quoteProducts', 'quoteProducts'));
+
         $bookingModel = bookingModel::where('code',$quotationModel->quote_booking)->first();
-        //dd($quoteProducts);
-        return view('quotations.edit', compact('bookingModel','quotationModel', 'customer', 'sale', 'tour', 'airline', 'products', 'quoteProducts', 'quoteProducts'));
+        $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
+
+        $sales = saleModel::select('name', 'id')->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])->get();
+        //$tour = DB::connection('mysql2')->table('tb_tour')->where('id', $quotationModel->quote_country)->first();
+        $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
+        $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
+        $numDays = numDayModel::orderBy('num_day_total')->get();
+        $wholesale = wholesaleModel::where('status', 'on')->get();
+        $products = productModel::where('product_type','income')->get();
+        $productDiscount = productModel::where('product_type','discount')->get();
+        $quoteProducts = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','income')->get();
+        $quoteProductsDiscount = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','discount')->get();
+
+        // dd($quoteProductsDiscount);
+        
+        return view('quotations.edit', compact('customer','quoteProducts','quotationModel','sales','country','airline','numDays','wholesale','products','productDiscount','quoteProductsDiscount'));
     }
 
     public function update(quotationModel $quotationModel, Request $request)

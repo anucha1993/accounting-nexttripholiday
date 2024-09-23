@@ -18,6 +18,6 @@ class quoteProductModel extends Model
         'product_price',
         'product_sum',
         'expense_type',
-        'vat',
+        'vat_status',
     ];
 }
