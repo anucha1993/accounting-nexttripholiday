@@ -107,14 +107,14 @@
 
                 <div class="todo-listing ">
                     <div class="container border bg-white">
-                        <h4 class="text-center my-4">สร้างใบเสนอราคา / ใบจองทัวร์
+                        <h4 class="text-center my-4">ใบเสนอราคา(แก้ไข) #{{$quotationModel->quote_number}}
                             <a target="_blank" href="{{ route('mpdf.quote', $quotationModel->quote_id) }}"
                                 class="float-end">พิมพ์ <i class="text-danger fa fa-print"></i></a>
                         </h4>
                         <hr>
-                        <form action="{{ route('quote.store') }}" id="formQuote" method="post">
+                        <form action="{{ route('quote.update',$quotationModel->quote_id) }}" id="formQuote" method="post">
                             @csrf
-
+                            @method('PUT')
                             <div class="row table-custom ">
                                 <div class="col-md-2 ms-auto">
                                     <label><b>เซลล์ผู้ขายแพคเกจ:</b> {{ $quotationModel->quote_sale }}</label>
@@ -128,10 +128,21 @@
                                         @endforelse
                                     </select>
                                 </div>
+
+                                <div class="col-md-2">
+                                    <label>วันที่เสนอราคา</label>
+                                    <input type="text" id="displayDatepickerQuoteDate"
+                                          class="form-control" >
+
+                                        <input type="hidden" id="submitDatepickerQuoteDate" name="quote_date"
+                                        value="{{ $quotationModel->quote_date }}" class="form-control" >
+                                </div>
+
+
                                 <div class="col-md-2 ms-3">
                                     <label>วันที่สั่งซื้อ,จองแพคเกจ:</label>
                                     <input type="text" id="displayDatepicker" class="form-control">
-                                    <input type="hidden" id="submitDatepicker" name="quote_date">
+                                    <input type="hidden" id="submitDatepicker" name="quote_booking_create" value="{{ date('Y-m-d', strtotime($quotationModel->quote_booking_create)) }}">
                                 </div>
                                 <div class="col-md-2">
                                     <label>เลขที่ใบจองทัวร์</label>
@@ -161,7 +172,7 @@
                                         <option value="">--เลือกระยะเวลา--</option>
                                         @forelse ($numDays as $item)
                                             <option @if ($quotationModel->quote_numday === $item->num_day_total) selected @endif
-                                                data-day="{{ $item->num_day_total }}" value="{{ $item->num_day_id }}">
+                                                data-day="{{ $item->num_day_total }}" value="{{ $item->num_day_total }}">
                                                 {{ $item->num_day_name }}</option>
                                         @empty
                                         @endforelse
@@ -233,7 +244,7 @@
                             </div>
                             <hr>
                             <h5 class="text-danger">ข้อมูลลูกค้า:</h5>
-
+                            <input type="hidden" name="customer_id" value="{{$customer->customer_id}}">
                             <div class="row table-custom">
                                 <div class="col-md-3">
                                     <label class="">ชื่อลูกค้า:</label>
@@ -246,7 +257,7 @@
                                 <div class="col-md-3">
                                     <label>อีเมล์:</label>
                                     <input type="email" class="form-control" name="customer_email"
-                                        value="{{ $customer->email }}" placeholder="email@domail.com"
+                                        value="{{ $customer->customer_email }}" placeholder="email@domail.com"
                                         aria-describedby="basic-addon1">
 
                                 </div>
@@ -254,26 +265,26 @@
                                 <div class="col-md-3">
                                     <label>เลขผู้เสียภาษี:</label>
                                     <input type="text" id="texid" class="form-control" name="customer_texid"
-                                        mix="13" value="" placeholder="เลขประจำตัวผู้เสียภาษี"
+                                        mix="13" value="{{$customer->customer_texid}}" placeholder="เลขประจำตัวผู้เสียภาษี"
                                         aria-describedby="basic-addon1">
                                 </div>
 
                                 <div class="col-md-3">
                                     <label>เบอร์โทรศัพท์ :</label>
                                     <input type="text" class="form-control" name="customer_tel"
-                                        value="{{ $customer->phone }}" placeholder="เบอร์โทรศัพท์"
+                                        value="{{ $customer->customer_tel }}" placeholder="เบอร์โทรศัพท์"
                                         aria-describedby="basic-addon1">
 
                                 </div>
                                 <div class="col-md-3">
                                     <label>เบอร์โทรสาร :</label>
                                     <input type="text" class="form-control" id="fax" name="customer_fax"
-                                        value="" placeholder="เบอร์โทรศัพท์" aria-describedby="basic-addon1">
+                                        value="{{ $customer->customer_fax }}" placeholder="เบอร์โทรศัพท์" aria-describedby="basic-addon1">
                                 </div>
                                 <div class="col-md-9">
                                     <label>ที่อยู่:</label>
                                     <textarea name="customer_address" id="address" class="form-control" cols="30" rows="2"
-                                        placeholder="ที่อยู่"></textarea>
+                                        placeholder="ที่อยู่">{{ $customer->customer_address }}</textarea>
                                 </div>
                             </div>
                             <br>
@@ -296,6 +307,7 @@
                                 {{-- ค่าบริการ --}}
                                 @php
                                     $Runnumber = 0;
+                                    $W_tax = 0;
                                 @endphp
                                 @forelse ($quoteProducts as $key => $item)
                                     <div class="row item-row ">
@@ -318,6 +330,7 @@
 
                                             </div>
                                             <div class="col-md-1">
+                        
                                                 <input type="checkbox" name="withholding_tax[]" class="vat-3"
                                                     value="Y" @if ($item->withholding_tax === 'Y') checked @endif>
                                             </div>
@@ -437,14 +450,14 @@
                                             <div class="form-group">
                                                 <label for="vat-method">การคำนวณ VAT:</label>
                                                 <div>
-                                                    <input type="radio" id="vat-include" name="vat_type"
+                                                    <input type="radio" id="vat-include" name="vat_type" @if($quotationModel->vat_type === 'include') checked @endif
                                                         value="include">
                                                     <label for="vat-include">คำนวณรวมกับราคาสินค้าและบริการ (VAT
                                                         Include)</label>
                                                 </div>
                                                 <div>
                                                     <input type="radio" id="vat-exclude" name="vat_type"
-                                                        value="exclude" checked>
+                                                        value="exclude" @if($quotationModel->vat_type === 'exclude') checked @endif >
                                                     <label for="vat-exclude">คำนวณแยกกับราคาสินค้าและบริการ (VAT
                                                         Exclude)</label>
                                                 </div>
@@ -455,8 +468,10 @@
                                         <div class="col-md-12">
                                             <div class="row summary-row">
                                                 <div class="col-md-10">
-                                                    <input type="checkbox" name="quote_withholding_tax_status"
-                                                        value="Y" id="withholding-tax"> <span class="">
+                                                    <input type="checkbox" name="quote_withholding_tax_status" 
+                                                        value="Y" id="withholding-tax" 
+                                                        @if($quotationModel->quote_withholding_tax_status === 'Y') checked @endif> 
+                                                        <span class="">
                                                         คิดภาษีหัก ณ ที่จ่าย 3% (คำนวณจากยอด ราคาก่อนภาษีมูลค่าเพิ่ม /
                                                         Pre-VAT
                                                         Amount)</span>
@@ -472,7 +487,7 @@
 
                                         <div class="col-md-12" style="padding-bottom: 10px">
                                             <label>บันทึกเพิ่มเติม</label>
-                                            <textarea name="quote_note" class="form-control" cols="30" rows="2"></textarea>
+                                            <textarea name="quote_note" class="form-control" cols="30" rows="2">{{$quotationModel->quote_note}}</textarea>
                                         </div>
                                     </div>
 
@@ -539,7 +554,7 @@
 
                                         </div>
                                         <div class="col-md-4">
-                                            <span for="">ภายในวันที่</span>
+                                            <span for="">ภายในวันที่ </span>
                                             <input type="datetime-local" class="form-control" name="quote_payment_date" value="{{$quotationModel->quote_payment_date}}"
                                                >
                                         </div>
@@ -617,7 +632,7 @@
 
 
                                 <button type="submit" class="btn btn-primary btn-sm  mx-3" form="formQuote">
-                                    <i class="fa fa-save"></i> สร้างใบเสนอราคา</button>
+                                    <i class="fa fa-save"></i> Update</button>
                             </div>
                             <br>
                     </div>
@@ -646,6 +661,22 @@
             $('.country-select').select2();
             $('.product-select').select2();
         });
+
+        $(document).ready(function() {
+    // เมื่อ form ถูก submit
+    $('form').on('submit', function() {
+        // loop ผ่าน checkbox แต่ละตัว
+        $('.vat-3').each(function(index, element) {
+            // ตรวจสอบว่าถ้า checkbox ไม่ได้ถูกติ๊ก
+            if (!$(element).is(':checked')) {
+                // สร้าง hidden input ที่มีค่าเป็น 'N' เพื่อส่งไปกับ form
+                $(element).after('<input type="hidden" name="withholding_tax[]" value="N">');
+            }
+        });
+    });
+});
+
+
     </script>
 
 
@@ -690,42 +721,23 @@
                     let total = quantity * pricePerUnit;
                     let priceExcludingVat = total;
 
-                    console.log('data-row-id :' + rowId);
+                    //console.log('data-row-id :' + rowId);
 
-
-                    // ตรวจสอบหากเป็น discount
-                    // ตรวจสอบหากเป็นส่วนลด
-                    // ตรวจสอบหากเป็นส่วนลด
-                    // ตรวจสอบว่า expenseType เป็น 'discount' หรือไม่
                     if (expenseType === 'discount') {
-                        // ตรวจสอบว่า rowId เป็น undefined หรือไม่ ถ้าเป็น undefined ให้ข้ามไป
                         if (!rowId || rowId === 'undefined') {
                             console.log('Skipping row with undefined data-row-id');
-                            return; // ข้ามการคำนวณถ้า rowId เป็น undefined
+                            return; 
                         }
-
                         const quantity = parseFloat($(this).find('.quantity').val()) || 0;
                         const pricePerUnit = parseFloat($(this).find('.price-per-unit').val()) || 0;
 
-                        // ตรวจสอบว่าแถวนี้เคยถูกคำนวณส่วนลดแล้วหรือไม่ โดยใช้ rowId
                         if (processedDiscountRows.includes(rowId)) {
                             console.log('Skipping duplicate discount for row: ' + rowId);
-                            return; // ข้ามแถวนี้ถ้าเคยคำนวณแล้ว
+                            return; 
                         }
-
-                        // ถ้ายังไม่ถูกประมวลผล ให้นำไปคำนวณ
                         let discountAmount = quantity * pricePerUnit; // คำนวณส่วนลดเฉพาะรายการ
                         sumDiscount += discountAmount; // เพิ่มค่าลงใน sumDiscount
-
-                        // เพิ่ม rowId ของแถวนี้เข้าไปใน processedDiscountRows เพื่อป้องกันการประมวลผลซ้ำ
                         processedDiscountRows.push(rowId);
-
-                        // ใช้ log เพื่อตรวจสอบค่าที่ได้
-                        //console.log('rowId :' + rowId);
-                        //console.log('quantity :' + quantity);
-                        //console.log('pricePerUnit :' + pricePerUnit);
-                        //console.log('Discount for this row :' + discountAmount);
-                        //console.log('Total sumDiscount :' + sumDiscount);
                     }
                     // คำนวณ VAT 3% หากติ๊ก checkbox
                     if (isVat3) {
@@ -1027,7 +1039,7 @@
             }
             //checkPaymentCondition();
             // ตั้งค่าฟิลด์ "ภายในวันที่" เมื่อโหลดหน้าเว็บ
-            setPaymentDueDate();
+            //setPaymentDueDate();
             // ตรวจสอบเมื่อผู้ใช้เลือกชำระเงินเต็มจำนวน
             function checkedPaymentFull() {
                 var QuoteTotalGrand = $('#quote-grand-total').val();
@@ -1372,6 +1384,25 @@
             $('#submitDatepicker').val(defaultDate);
             const thaiFormattedDate = formatDateToThai(defaultDate);
             $('#displayDatepicker').val(thaiFormattedDate);
+
+            /// วันที่เสนอราคา
+            $('#displayDatepickerQuoteDate').datepicker({
+                dateFormat: 'dd MM yy', // รูปแบบการแสดงผลใน Datepicker
+                onSelect: function(dateText, inst) {
+                    // แปลงวันที่ที่เลือกเป็นรูปแบบ Y-m-d และอัพเดต hidden input
+                    const selectedDate = new Date(inst.selectedYear, inst.selectedMonth, inst
+                        .selectedDay);
+                    const isoDate = $.datepicker.formatDate('yy-mm-dd', selectedDate);
+                    $('#submitDatepickerQuoteDate').val(isoDate);
+                }
+            });
+
+             // กำหนดค่าเริ่มต้นให้กับ Datepicker quote_date
+             let defaultDateQuoteDate = '{{ $quotationModel->quote_date }}';
+            $('#submitDatepickerQuoteDate').val(defaultDateQuoteDate);
+            const thaiFormattedDateQuoteDate = formatDateToThai(defaultDateQuoteDate);
+            $('#displayDatepickerQuoteDate').val(thaiFormattedDateQuoteDate);
+
         });
     </script>
 

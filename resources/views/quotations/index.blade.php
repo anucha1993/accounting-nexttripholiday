@@ -129,17 +129,14 @@
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $item->quote_number }}</td>
                                         <td>{{ $item->quote_booking }}</td>
-                                        <td>{{ date('d/m/Y', strtotime($item->quotebooking->start_date)) . '-' . date('d/m/Y', strtotime($item->quotebooking->end_date)) }}
+                                        <td>{{ date('d/m/Y', strtotime($item->quote_date_start)) . '-' . date('d/m/Y', strtotime($item->quote_date_end)) }}
                                         </td>
                                         <td>{{ $item->quotecustomer->customer_name }}</td>
                                         <td>
-                                            @foreach ($item->quote_countries as $country)
-                                                {{ $country->country_name_th }}
-                                            @endforeach
-
+                                            {{$item->quoteCountry->country_name_th}}
                                         </td>
-
                                         <td>{{ $item->quoteWholesale->wholesale_name_th }}</td>
+                                        
                                         <td>
                                             @if ($item->quote_status === 'wait' || $item->quote_status === 'invoice')
                                                 <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
@@ -153,11 +150,12 @@
                                             @if ($item->quote_status === 'payment')
                                                 <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
                                             @endif
-                                        </td>
+                                        </td> 
+
                                         <td>{{ number_format($item->quote_total, 2, '.', ',') }}</td>
                                         <td>
                                             @if ($item->quote_status != 'cancel')
-                                                @if ($item->wholesale_payment_status === 'wait')
+                                                @if ($item->wholesale_payment_status === 'wait' || $item->wholesale_payment_status === NULL)
                                                     <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
                                                 @endif
                                                 @if ($item->quote_status === 'success')
@@ -169,7 +167,7 @@
 
                                         </td>
 
-                                        <td> {{ $item->quoteBooking->bookingSale->name }}</td>
+                                        <td> {{ $item->Salename->name }}</td>
                                         <td><a href="{{ route('saleInfo.index', $item->quote_id) }}"
                                                 class="btn btn-info btn-sm">จัดการข้อมูล</a></td>
 

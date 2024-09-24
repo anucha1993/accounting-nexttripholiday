@@ -24,8 +24,8 @@ class quoteController extends Controller
         $sales = saleModel::select('name', 'id')
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
             ->get();
-
-        $quotations = quotationModel::with('quoteBooking.bookingSale', 'quoteCustomer', 'quoteWholesale')->orderBy('quotation.created_at', 'desc')->paginate(10);
+           
+        $quotations = quotationModel::with('Salename', 'quoteCustomer', 'quoteWholesale',)->orderBy('quotation.created_at', 'desc')->paginate(10);
 
         return view('quotations.index', compact('sales', 'quotations'));
     }
@@ -99,13 +99,15 @@ class quoteController extends Controller
        
 
         $runningCode = $this->generateRunningCodeIV();
+        
         if ($request->customer_type_new !== 'customerold') {
+            $runningCodeCus = $this->generateRunningCodeCUS();
+            $request->merge(['customer_number' => $runningCodeCus]);
             //customerNew
             $customerModel = customerModel::create($request->all());
         } else {
             //customerOld
             customerModel::where('customer_id', $request->customer_id)->update([
-                'customer_number' => $this->generateRunningCodeCUS(),
                 'customer_name' => $request->customer_name,
                 'customer_email' => $request->customer_email,
                 'customer_address' => $request->customer_address,
@@ -156,32 +158,10 @@ class quoteController extends Controller
 
     public function edit(quotationModel $quotationModel, Request $request)
     {
-        // $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
-        // $sale = saleModel::where('id', $quotationModel->quote_sale)->first();
-        // $tour = DB::connection('mysql2')
-        //     ->table('tb_tour')
-        //     ->select('code', 'airline_id')
-        //     ->where('id', $quotationModel->tour_id)
-        //     ->first();
-        // $airline = DB::connection('mysql2')
-        //     ->table('tb_travel_type')
-        //     ->select('travel_name')
-        //     ->where('id', $tour->airline_id)
-        //     ->first();
-        // $products = productModel::get();
-        // $quoteProducts = quoteProductModel::select('products.product_name', 'products.id', 'quote_product.product_qty', 'quote_product.product_price', 'quote_product.product_id', 'quote_product.expense_type', 'quote_product.vat')
-        //     ->where('quote_id', $quotationModel->quote_id)
-        //     ->leftjoin('products', 'products.id', 'quote_product.product_id')
-        //     ->get();
       
-        // //dd($quoteProducts);
-        // return view('quotations.edit', compact('bookingModel','quotationModel', 'customer', 'sale', 'tour', 'airline', 'products', 'quoteProducts', 'quoteProducts'));
-
         $bookingModel = bookingModel::where('code',$quotationModel->quote_booking)->first();
         $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
-
         $sales = saleModel::select('name', 'id')->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])->get();
-        //$tour = DB::connection('mysql2')->table('tb_tour')->where('id', $quotationModel->quote_country)->first();
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
         $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
         $numDays = numDayModel::orderBy('num_day_total')->get();
@@ -191,15 +171,24 @@ class quoteController extends Controller
         $quoteProducts = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','income')->get();
         $quoteProductsDiscount = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','discount')->get();
 
-        // dd($quoteProductsDiscount);
         
         return view('quotations.edit', compact('customer','quoteProducts','quotationModel','sales','country','airline','numDays','wholesale','products','productDiscount','quoteProductsDiscount'));
     }
 
     public function update(quotationModel $quotationModel, Request $request)
     {
-        // dd($request);
-        $request->merge(['vat_3_status' => isset($request->vat3_status) ? 'Y' : 'N']); //เลขที่ใบแจ้งหนี้
+        //dd($request);
+        $request->merge(['quote_withholding_tax_status' => isset($request->quote_withholding_tax_status	) ? 'Y' : 'N']); 
+
+        customerModel::where('customer_id', $request->customer_id)->update([
+            'customer_name' => $request->customer_name,
+            'customer_email' => $request->customer_email,
+            'customer_address' => $request->customer_address,
+            'customer_texid' => $request->customer_texid,
+            'customer_tel' => $request->customer_tel,
+            'customer_fax' => $request->customer_fax,
+            'customer_date' => $request->customer_date,
+        ]);
 
         $quotationModel->update($request->all());
 
@@ -208,17 +197,17 @@ class quoteController extends Controller
         // Create product lits
         foreach ($request->product_id as $key => $value) {
             if ($request->product_id[$key]) {
-                $product = productModel::where('id', $request->product_id[$key])->first();
-
+                $productName = productModel::where('id', $request->product_id[$key])->first();
                 quoteProductModel::create([
-                    'quote_id' => $quotationModel->quote_id,
-                    'product_id' => $product->id,
-                    'product_name' => $product->product_name,
+                     'quote_id' => $quotationModel->quote_id,
+                    'product_id' => $request->product_id[$key],
+                    'product_name' => $productName->product_name,
                     'product_qty' => $request->quantity[$key],
                     'product_price' => $request->price_per_unit[$key],
                     'product_sum' => $request->total_amount[$key],
                     'expense_type' => $request->expense_type[$key],
-                    'vat' => isset($request->non_vat[$key]) ? 'Y' : 'N',
+                    'vat_status' => $request->vat_status[$key],
+                    'withholding_tax' => $request->withholding_tax[$key],
                 ]);
             }
         }

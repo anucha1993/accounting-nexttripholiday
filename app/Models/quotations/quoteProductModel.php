@@ -19,5 +19,6 @@ class quoteProductModel extends Model
         'product_sum',
         'expense_type',
         'vat_status',
+        'withholding_tax',
     ];
 }

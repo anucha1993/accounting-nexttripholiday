@@ -2,6 +2,7 @@
 
 namespace App\Models\quotations;
 
+use App\Models\sales\saleModel;
 use App\Models\booking\bookingModel;
 use App\Models\booking\countryModel;
 use App\Models\customers\customerModel;
@@ -66,6 +67,11 @@ class quotationModel extends Model
         return $this->belongsTo(bookingModel::class, 'quote_booking', 'code');
     }
 
+    public function Salename()
+    {
+        return $this->belongsTo(saleModel::class, 'quote_sale', 'id');
+    }
+
     // ความสัมพันธ์กับ CustomerModel
     public function quoteCustomer()
     {
@@ -75,22 +81,28 @@ class quotationModel extends Model
     // ความสัมพันธ์กับ WholesaleModel
     public function quoteWholesale()
     {
-        return $this->belongsTo(wholesaleModel::class, 'wholesale_id', 'id');
+        return $this->belongsTo(wholesaleModel::class, 'quote_wholesale', 'id');
     }
 
-    // Accessor เพื่อดึงข้อมูล country
-    public function getquoteCountriesAttribute()
+    public function quoteCountry()
     {
-        // แปลงค่า country_id จาก JSON string เป็น array
-        $countryIds = json_decode($this->attributes['country_id'], true);
-
-        // ตรวจสอบว่า countryIds ไม่เป็น null หรือว่างเปล่า
-        if (is_array($countryIds) && count($countryIds) > 0) {
-            // ดึงข้อมูลจาก CountryModel ตาม country_ids ที่ได้มา
-            return countryModel::whereIn('id', $countryIds)->get();
-        }
-
-        return collect(); // คืนค่า collection ว่างเปล่าถ้าไม่มี country_ids
+        return $this->belongsTo(countryModel::class, 'quote_country', 'id');
     }
+    
+
+    // // Accessor เพื่อดึงข้อมูล country
+    // public function getquoteCountriesAttribute()
+    // {
+    //     // แปลงค่า country_id จาก JSON string เป็น array
+    //     $countryIds = json_decode($this->attributes['country_id'], true);
+
+    //     // ตรวจสอบว่า countryIds ไม่เป็น null หรือว่างเปล่า
+    //     if (is_array($countryIds) && count($countryIds) > 0) {
+    //         // ดึงข้อมูลจาก CountryModel ตาม country_ids ที่ได้มา
+    //         return countryModel::whereIn('id', $countryIds)->get();
+    //     }
+
+    //     return collect(); // คืนค่า collection ว่างเปล่าถ้าไม่มี country_ids
+    // }
     
 }

@@ -47,9 +47,9 @@ class bookingModel extends Model
 
 
     // join sales 
-    public function bookingSale()
-    {
-        return $this->belongsTo(saleModel::class, 'sale_id', 'id');
-    }
+    // public function bookingSale()
+    // {
+    //     return $this->belongsTo(saleModel::class, 'quote_sale', 'id');
+    // }
 
 }

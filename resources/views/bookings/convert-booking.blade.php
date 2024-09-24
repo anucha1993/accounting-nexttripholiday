@@ -80,7 +80,7 @@
                         <div class="col-md-2 ms-3">
                             <label>วันที่สั่งซื้อ,จองแพคเกจ:</label>
                             <input type="text" id="displayDatepicker" class="form-control">
-                            <input type="hidden" id="submitDatepicker" name="quote_date"
+                            <input type="hidden" id="submitDatepicker" name="quote_booking_create"
                                 value="{{ date('Y-m-d', strtotime($bookingModel->created_at)) }}">
                         </div>
                         <div class="col-md-2">
@@ -111,7 +111,7 @@
                                 <option value="">--เลือกระยะเวลา--</option>
                                 @forelse ($numDays as $item)
                                     <option @if ($tour->num_day === $item->num_day_name) selected @endif
-                                        data-day="{{ $item->num_day_total }}" value="{{ $item->num_day_id }}">
+                                        data-day="{{ $item->num_day_total }}" value="{{ $item->quote_numday }}">
                                         {{ $item->num_day_name }}</option>
                                 @empty
                                 @endforelse
@@ -273,6 +273,7 @@
 
                                         </div>
                                         <div class="col-md-1">
+                                            
                                             <input type="checkbox" name="vat3[]" class="vat-3" value="Y">
                                         </div>
                                         <div class="col-md-1" style="display: none">
@@ -531,6 +532,22 @@
             $('.country-select').select2();
             $('.product-select').select2();
         });
+
+        $(document).ready(function() {
+    // เมื่อ form ถูก submit
+    $('form').on('submit', function() {
+        // loop ผ่าน checkbox แต่ละตัว
+        $('.vat-3').each(function(index, element) {
+            // ตรวจสอบว่าถ้า checkbox ไม่ได้ถูกติ๊ก
+            if (!$(element).is(':checked')) {
+                // สร้าง hidden input ที่มีค่าเป็น 'N' เพื่อส่งไปกับ form
+                $(element).after('<input type="hidden" name="withholding_tax[]" value="N">');
+            }
+        });
+    });
+});
+
+
     </script>
 
 

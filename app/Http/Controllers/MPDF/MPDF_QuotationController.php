@@ -5,10 +5,13 @@ namespace App\Http\Controllers\MPDF;
 use Mpdf\Mpdf;
 use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
+use App\Models\mumday\numDayModel;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\booking\bookingModel;
+use App\Models\products\productModel;
 use App\Models\customers\customerModel;
+use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
 use App\Models\quotations\quoteProductModel;
 
@@ -23,21 +26,29 @@ class MPDF_QuotationController extends Controller
         $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
         
-        $customer = customerModel::where('customer_id',$quotationModel->customer_id)->first();
-        $sale = saleModel::where('id',$quotationModel->quote_sale)->first();
-        $tour = DB::connection('mysql2')
-        ->table('tb_tour')
-        ->where('id', $quotationModel->tour_id)
-        ->first();
-         $airline = DB::connection('mysql2')
-        ->table('tb_travel_type')
-        ->select('travel_name')
-        ->where('id', $tour->airline_id)
-        ->first();
-        $booking = bookingModel::where('code', $quotationModel->quote_booking)->first();
+        $bookingModel = bookingModel::where('code',$quotationModel->quote_booking)->first();
+       
+       
+        $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
+        $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
+        $numDays = numDayModel::orderBy('num_day_total')->get();
+        $wholesale = wholesaleModel::where('status', 'on')->get();
+        $products = productModel::where('product_type','income')->get();
+        $productDiscount = productModel::where('product_type','discount')->get();
+        $quoteProducts = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','income')->get();
+        $quoteProductsDiscount = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','discount')->get();
+
+
+
+        
+        $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
+        $sale = saleModel::select('name', 'id','email')->where('id',$quotationModel->quote_sale)->first();
+        $airline = DB::connection('mysql2')->table('tb_travel_type')->where('id',$quotationModel->quote_airline)->first();
         $productLists = quoteProductModel::where('quote_id',$quotationModel->quote_id)->get();
+
+
         // ดึง HTML จาก Blade Template
-        $html = view('MPDF.mpdf_quote',compact('quotationModel','customer','sale','airline','booking','productLists'))->render();
+        $html = view('MPDF.mpdf_quote',compact('quotationModel','customer','sale','airline','productLists'))->render();
     
         // กำหนดค่าเริ่มต้นของ mPDF และเพิ่มฟอนต์ภาษาไทย
         $mpdf = new \Mpdf\Mpdf([
