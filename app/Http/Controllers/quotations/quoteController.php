@@ -69,7 +69,7 @@ class quoteController extends Controller
     }
 
 
-    public function generateRunningCodeTour($prefix,)
+    public function generateRunningCodeTour($prefix,$dateStart)
     {
         $quote = quotationModel::select('quote_tour_code')->latest()->first();
         $prefix = $prefix;
@@ -77,26 +77,45 @@ class quoteController extends Controller
         if (!empty($quote)) {
             $quoteCode = $quote->quote_tour_code;
         } else {
-            $quoteCode = $prefix . date('y') . date('m') . '0000';
+            $quoteCode = $prefix . date('dmy',strtotime($dateStart)) . '0000';
         }
       
-        $year = date('y');
-        $month = date('m');
+        $dateStart = date('dmy',strtotime($dateStart));
         $lastFourDigits = substr($quoteCode, -4);
         $incrementedNumber = intval($lastFourDigits) + 1;
         $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
-        $runningCode = $prefix . $year . $month . $newNumber;
+        $runningCode = $prefix . $dateStart  . $newNumber;
         return $runningCode;
     }
+
+    public function generateRunningCodeTourUpdate($prefix,$tourcodeOld,$dateStart)
+    {
+        $quote = quotationModel::select('quote_tour_code')->latest()->first();
+        $prefix = $prefix;
+
+        if (!empty($quote)) {
+            $quoteCode = $tourcodeOld;
+        } else {
+            $quoteCode = $prefix . date('dmy',strtotime($dateStart)) . '0000';
+        }
+      
+      
+        $dateStart = date('dmy',strtotime($dateStart));
+        $lastFourDigits = substr($quoteCode, -4);
+        $incrementedNumber = intval($lastFourDigits);
+        $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
+        $runningCode = $prefix . $dateStart  . $newNumber;
+        return $runningCode;
+    }
+    
 
     public function store(Request $request)
     {
         //dd($request);
-        $wholesale =   $wholesale = DB::connection('mysql2')->table('tb_wholesale')->select('code')->where('id', $request->quote_wholesale)->first();
-        $runningCodeTour = $this->generateRunningCodeTour($wholesale->code);
-
-     
-       
+        $country = DB::connection('mysql2')->table('tb_country')->select('iso2')->where('id', $request->quote_country)->first();
+        $runningCodeTour = $this->generateRunningCodeTour($country->iso2,$request->quote_date_start);
+        dd($runningCodeTour);
+      
 
         $runningCode = $this->generateRunningCodeIV();
         
@@ -178,6 +197,14 @@ class quoteController extends Controller
     public function update(quotationModel $quotationModel, Request $request)
     {
         //dd($request);
+        $country = DB::connection('mysql2')->table('tb_country')->select('iso2')->where('id', $request->quote_country)->first();
+        
+        $runningCodeTourUpdate = $this->generateRunningCodeTourUpdate($country->iso2,$request->quote_tour_code_old,$request->quote_date_start);
+
+        $request->merge(['quote_tour_code' => $runningCodeTourUpdate]);
+
+        //dd($runningCodeTourUpdate);
+
         $request->merge(['quote_withholding_tax_status' => isset($request->quote_withholding_tax_status	) ? 'Y' : 'N']); 
 
         customerModel::where('customer_id', $request->customer_id)->update([

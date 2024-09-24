@@ -147,7 +147,16 @@
                                 <div class="col-md-2">
                                     <label>เลขที่ใบจองทัวร์</label>
                                     <input type="text" name="quote_booking"
-                                        value="{{ $quotationModel->quote_tour_code }}" class="form-control" readonly>
+                                        value="{{ $quotationModel->quote_booking }}" class="form-control" readonly>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>รหัสทัวร์</label>
+                                   @if ($quotationModel->quote_tour)
+                                   <input type="text" name="quote_tour" value="{{ $quotationModel->quote_tour }}" class="form-control" readonly>
+                                   
+                                    @else
+                                    <input type="text" name="quote_tour_code_old" value="{{ $quotationModel->quote_tour_code }}" class="form-control" readonly>
+                                    @endif
                                 </div>
 
                             </div>
@@ -164,7 +173,8 @@
                                     </div>
                                 </div>
 
-                                <input type="hidden" id="tour-code">
+                                <input type="hidden" id="tour-code" name="quote_tour" value="{{ $quotationModel->quote_tour}}">
+
 
                                 <div class="col-md-3">
                                     <label>ระยะเวลาทัวร์ (วัน/คืน): </label>
@@ -1223,7 +1233,7 @@
                             if (data.length > 0) {
                                 // วนลูปแสดงรายการผลลัพธ์
                                 $.each(data, function(index, item) {
-                                    $('#tourResults').append(`<a href="#" id="tour-select" class="list-group-item list-group-item-action"  data-wholesale="${item.wholesale_id}" data-code="${item.code}" data-name="${item.code} - ${item.name}">${item.code} - ${item.name}</a>
+                                    $('#tourResults').append(`<a href="#" id="tour-select" class="list-group-item list-group-item-action"  data-wholesale="${item.wholesale_id}" data-code="${item.code}" data-name="${item.code} - ${item.name}">${item.code} - ${item.code1} - ${item.name}</a>
                             `);
                                 });
                             } else {

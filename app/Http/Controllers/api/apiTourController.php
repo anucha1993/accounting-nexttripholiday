@@ -10,12 +10,22 @@ class apiTourController extends Controller
 {
     //
 
-     public function index(Request $request)
-     {
+    public function index(Request $request)
+    {
         $search = $request->input('search');
-        $tours = DB::connection('mysql2')->table('tb_tour')->where('name', 'like', "%{$search}%")->orWhere('code', 'like', "%{$search}%")->where('status','on')->get();
+        $tours = DB::connection('mysql2')
+            ->table('tb_tour')
+            //->select('tb_tour.wholesale_id', 'tb_tour.code', 'tb_tour.name','tb_wholesale.code as wholesale_code')
+            //->leftJoin('tb_wholesale', 'tb_wholesale.id', '=', 'tb_tour.wholesale_id')
+            ->where('tb_tour.name', 'like', "%{$search}%")
+            ->orWhere('tb_tour.code', 'like', "%{$search}%")
+            ->orWhere('tb_tour.code1', 'like', "%{$search}%")
+            ->where('tb_tour.status', 'on')
+            ->get();
+        
         return response()->json($tours);
-     }
+    }
+    
 
      public function wholesale(Request $request)
      {
