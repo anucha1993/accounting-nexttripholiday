@@ -172,6 +172,10 @@
 
                                                 <a class="dropdown-item" target="_blank" href="{{route('mpdf.quote',$quotationModel->quote_id)}}"><i class="fa fa-print"></i>
                                                     พิมพ์ใบเสนอราคา</a>
+
+                                                    <a class="dropdown-item mail-quote" href="{{route('mail.quote.formMail',$quotationModel->quote_id)}}"><i class="fas fa-envelope"></i>
+                                                        ส่งเมล</a>
+
                                                     <a class="dropdown-item invoice-modal"
                                                     href="{{ route('payment.quotation', $quotationModel->quote_id) }}"><i
                                                         class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
@@ -466,8 +470,28 @@
      </div>
  </div>
 
+  {{-- mail form quote --}}
+ <div class="modal fade bd-example-modal-sm modal-lg" id="modal-mail-quote" tabindex="-1" role="dialog"
+ aria-labelledby="mySmallModalLabel" aria-hidden="true">
+ <div class="modal-dialog modal-lg">
+     <div class="modal-content">
+         ...
+     </div>
+ </div>
+</div>
+
         <script>
             $(document).ready(function() {
+             // modal add payment wholesale quote
+             $(".mail-quote").click("click", function(e) {
+                    e.preventDefault();
+                    $("#modal-mail-quote")
+                        .modal("show")
+                        .addClass("modal-lg")
+                        .find(".modal-content")
+                        .load($(this).attr("href"));
+                });
+
                  // modal add payment wholesale quote
                  $(".payment-quote-wholesale").click("click", function(e) {
                     e.preventDefault();
