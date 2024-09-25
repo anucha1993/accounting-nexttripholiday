@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\customers\customerModel;
 
 class apiTourController extends Controller
 {
@@ -59,6 +60,19 @@ class apiTourController extends Controller
      
          return response()->json($country);
      }
+
+     public function customer(Request $request)
+     {
+         $search = $request->input('search');
+         // ดึงข้อมูลจาก DB ที่เชื่อมต่อ mysql2
+         $customer = customerModel::where('customer_name','like', "%{$search}%")
+         ->orWhere('customer_email','like', "%{$search}%")
+         ->orWhere('customer_texid','like', "%{$search}%")
+         ->orWhere('customer_tel','like', "%{$search}%")
+         ->get();
+         return response()->json($customer);
+     }
+
      
      
      

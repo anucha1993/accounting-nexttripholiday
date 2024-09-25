@@ -19,5 +19,6 @@ class customerModel extends Model
         'customer_fax',
         'customer_date',
         'customer_address',
+        'customer_campaign_source',
     ];
 }

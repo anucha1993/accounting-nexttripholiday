@@ -2,9 +2,6 @@
 
 @section('content')
     <style>
-       
-
-
         .table-custom input,
         .table-custom select {
             width: 100%;
@@ -103,7 +100,7 @@
                             </div>
                         </div>
 
-                        <input type="hidden" id="tour-code">
+                        <input type="hidden" id="tour-code" name="quote_tour" value="{{ $tour->code }}">
 
                         <div class="col-md-3">
                             <label>ระยะเวลาทัวร์ (วัน/คืน): </label>
@@ -222,17 +219,41 @@
                                     {{ $checkCustomer->customer_tel }}</small>
                             @endif
                         </div>
-                        <div class="col-md-3">
-                            <label>เบอร์โทรสาร :</label>
-                            <input type="text" class="form-control" id="fax" name="customer_fax"
-                                value="{{ $checkCustomer ? $checkCustomer->customer_fax : '' }}"
-                                placeholder="เบอร์โทรศัพท์" aria-describedby="basic-addon1">
+
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="col-md-12">
+                                        <label>เบอร์โทรสาร :</label>
+                                        <input type="text" class="form-control" id="fax" name="customer_fax"
+                                            value="{{ $checkCustomer ? $checkCustomer->customer_fax : '' }}"
+                                            placeholder="เบอร์โทรศัพท์" aria-describedby="basic-addon1">
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label>ลูกค้าจาก :</label>
+                                        <select name="customer_campaign_source" class="form-select">
+                                            @forelse ($campaignSource as $item)
+                                                <option value="{{ $item->campaign_source_id }}">
+                                                    {{ $item->campaign_source_name }}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-9">
+                                    <div class="col-md-12">
+                                        <label>ที่อยู่:</label>
+                                        <textarea name="customer_address" id="address" class="form-control" cols="30" rows="4"
+                                            placeholder="ที่อยู่">{{ $checkCustomer ? $checkCustomer->customer_address : '' }}</textarea>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
-                        <div class="col-md-9">
-                            <label>ที่อยู่:</label>
-                            <textarea name="customer_address" id="address" class="form-control" cols="30" rows="2"
-                                placeholder="ที่อยู่">{{ $checkCustomer ? $checkCustomer->customer_address : '' }}</textarea>
-                        </div>
+
+
+
                     </div>
                     <br>
 
@@ -273,7 +294,7 @@
 
                                         </div>
                                         <div class="col-md-1">
-                                            
+
                                             <input type="checkbox" name="vat3[]" class="vat-3" value="Y">
                                         </div>
                                         <div class="col-md-1" style="display: none">
@@ -526,7 +547,7 @@
 
     </div>
 
-    
+
     <script>
         $(document).ready(function() {
             $('.country-select').select2();
@@ -534,20 +555,19 @@
         });
 
         $(document).ready(function() {
-    // เมื่อ form ถูก submit
-    $('form').on('submit', function() {
-        // loop ผ่าน checkbox แต่ละตัว
-        $('.vat-3').each(function(index, element) {
-            // ตรวจสอบว่าถ้า checkbox ไม่ได้ถูกติ๊ก
-            if (!$(element).is(':checked')) {
-                // สร้าง hidden input ที่มีค่าเป็น 'N' เพื่อส่งไปกับ form
-                $(element).after('<input type="hidden" name="withholding_tax[]" value="N">');
-            }
+            // เมื่อ form ถูก submit
+            $('form').on('submit', function() {
+                // loop ผ่าน checkbox แต่ละตัว
+                $('.vat-3').each(function(index, element) {
+                    // ตรวจสอบว่าถ้า checkbox ไม่ได้ถูกติ๊ก
+                    if (!$(element).is(':checked')) {
+                        // สร้าง hidden input ที่มีค่าเป็น 'N' เพื่อส่งไปกับ form
+                        $(element).after(
+                        '<input type="hidden" name="withholding_tax[]" value="N">');
+                    }
+                });
+            });
         });
-    });
-});
-
-
     </script>
 
 
@@ -709,15 +729,18 @@
                 $('#quote-vat-7').val(vatAmount.toFixed(2));
 
 
-                $('#price-excluding-vat').text(formatNumber((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(2)));
-                $('#quote-price-excluding-vat').val(((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(2)));
+                $('#price-excluding-vat').text(formatNumber((sumPriceExcludingVat + sumPriceExcludingVatNonVat)
+                    .toFixed(2)));
+                $('#quote-price-excluding-vat').val(((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(
+                    2)));
 
 
                 $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
 
                 //ยอดรวมยกเว้นภาษี
                 $('#sum-total-nonvat').text(formatNumber((sumPriceExcludingVatNonVat - sumDiscount).toFixed(2)));
-                $('input[name="quote_vat_exempted_amount"]').val((sumPriceExcludingVatNonVat - sumDiscount).toFixed(2));
+                $('input[name="quote_vat_exempted_amount"]').val((sumPriceExcludingVatNonVat - sumDiscount).toFixed(
+                    2));
 
                 //ยอดรวมยกเว้นภาษี
                 $('#sum-total-vat').text(formatNumber(listVatTotal.toFixed(2)));
@@ -1006,81 +1029,181 @@
 
 
     <script>
+        // $(function() {
+        //     // ตั้งค่าภาษาไทยให้กับ Datepicker
+        //     $.datepicker.regional['th'] = {
+        //         closeText: 'ปิด',
+        //         prevText: 'ย้อน',
+        //         nextText: 'ถัดไป',
+        //         currentText: 'วันนี้',
+        //         monthNames: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+        //             'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+        //         ],
+        //         monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+        //             'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+        //         ],
+        //         dayNames: ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'],
+        //         dayNamesShort: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
+        //         dayNamesMin: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
+        //         weekHeader: 'Wk',
+        //         dateFormat: 'dd MM yy', // รูปแบบการแสดงผลเป็น วัน เดือน ปี
+        //         firstDay: 0,
+        //         isRTL: false,
+        //         showMonthAfterYear: false,
+        //         yearSuffix: ''
+        //     };
+        //     $.datepicker.setDefaults($.datepicker.regional['th']);
+
+        //     // ฟังก์ชันแปลงวันที่จาก yyyy-mm-dd เป็นรูปแบบ dd MM yy
+        //     function setThaiDate(inputSelector, date) {
+        //         if (date) {
+        //             var formattedDate = $.datepicker.formatDate('dd MM yy', new Date(date));
+        //             $(inputSelector).datepicker('setDate', formattedDate); // แสดงผลใน input
+        //         }
+        //     }
+
+        //     // ฟังก์ชันคำนวณวันกลับ
+        //     function calculateEndDate() {
+        //         var numDays = parseInt(document.querySelector('#numday option:checked').getAttribute('data-day')) ||
+        //             0;
+        //         var startDate = $('#date-start').val();
+
+        //         if (numDays > 0 && startDate) {
+        //             var start = new Date(startDate);
+        //             var endDate = new Date(start);
+        //             endDate.setDate(start.getDate() + numDays - 1); // คำนวณวันกลับตามจำนวนวันที่เลือก
+
+        //             // แปลงวันกลับเป็นภาษาไทยและแสดงใน input
+        //             $('#date-end-display').datepicker('setDate', endDate);
+        //             $('#date-end').val($.datepicker.formatDate('yy-mm-dd', endDate)); // ส่งค่าแบบ yyyy-mm-dd
+        //         }
+        //     }
+
+        //     // ตั้งค่า Datepicker สำหรับวันเริ่มต้น
+        //     $('#date-start-display').datepicker({
+        //         dateFormat: 'dd MM yy', // รูปแบบแสดงผลเป็น วัน เดือน ปี
+        //         onSelect: function(dateText) {
+        //             var isoDate = $.datepicker.formatDate('yy-mm-dd', $(this).datepicker('getDate'));
+        //             $('#date-start').val(isoDate); // เก็บค่าวันที่ในรูปแบบ yyyy-mm-dd
+        //             calculateEndDate(); // คำนวณวันกลับทันทีเมื่อเลือกวันออกเดินทาง
+        //         }
+        //     });
+
+        //     // ตั้งค่า Datepicker สำหรับวันกลับ (การแสดงผล)
+        //     $('#date-end-display').datepicker({
+        //         dateFormat: 'dd MM yy' // รูปแบบแสดงผลเป็น วัน เดือน ปี
+        //     });
+
+        //     // กำหนดให้คำนวณวันกลับเมื่อเปลี่ยนจำนวนวัน
+        //     document.getElementById('numday').addEventListener('change', calculateEndDate);
+
+        //     // ตรวจสอบและแสดงวันที่เริ่มต้นและวันกลับในรูปแบบภาษาไทยหากมีข้อมูล
+        //     var startDate = $('#date-start').val();
+        //     var endDate = $('#date-end').val();
+
+        //     setThaiDate('#date-start-display', startDate);
+        //     setThaiDate('#date-end-display', endDate);
+        // });
+
         $(function() {
-            // ตั้งค่าภาษาไทยให้กับ Datepicker
-            $.datepicker.regional['th'] = {
-                closeText: 'ปิด',
-                prevText: 'ย้อน',
-                nextText: 'ถัดไป',
-                currentText: 'วันนี้',
-                monthNames: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
-                    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
-                ],
-                monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
-                    'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
-                ],
-                dayNames: ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'],
-                dayNamesShort: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
-                dayNamesMin: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
-                weekHeader: 'Wk',
-                dateFormat: 'dd MM yy', // รูปแบบการแสดงผลเป็น วัน เดือน ปี
-                firstDay: 0,
-                isRTL: false,
-                showMonthAfterYear: false,
-                yearSuffix: ''
-            };
-            $.datepicker.setDefaults($.datepicker.regional['th']);
+    // ตั้งค่าภาษาไทยให้กับ Datepicker
+    $.datepicker.regional['th'] = {
+        closeText: 'ปิด',
+        prevText: 'ย้อน',
+        nextText: 'ถัดไป',
+        currentText: 'วันนี้',
+        monthNames: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+            'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+        ],
+        monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+            'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+        ],
+        dayNames: ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'],
+        dayNamesShort: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
+        dayNamesMin: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
+        weekHeader: 'Wk',
+        dateFormat: 'dd MM yy',
+        firstDay: 0,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ''
+    };
+    $.datepicker.setDefaults($.datepicker.regional['th']);
 
-            // ฟังก์ชันแปลงวันที่จาก yyyy-mm-dd เป็นรูปแบบ dd MM yy
-            function setThaiDate(inputSelector, date) {
-                if (date) {
-                    var formattedDate = $.datepicker.formatDate('dd MM yy', new Date(date));
-                    $(inputSelector).datepicker('setDate', formattedDate); // แสดงผลใน input
-                }
-            }
+    // ฟังก์ชันคำนวณวันสิ้นสุด
+    function calculateEndDate() {
+        var numDays = parseInt($('#numday option:selected').data('day')) || 0;
+        var startDate = $('#date-start').val();
 
-            // ฟังก์ชันคำนวณวันกลับ
-            function calculateEndDate() {
-                var numDays = parseInt(document.querySelector('#numday option:checked').getAttribute('data-day')) ||
-                    0;
-                var startDate = $('#date-start').val();
+        if (numDays > 0 && startDate) {
+            var start = new Date(startDate);
+            var endDate = new Date(start);
+            endDate.setDate(start.getDate() + numDays - 1); // คำนวณวันสิ้นสุด
 
-                if (numDays > 0 && startDate) {
-                    var start = new Date(startDate);
-                    var endDate = new Date(start);
-                    endDate.setDate(start.getDate() + numDays - 1); // คำนวณวันกลับตามจำนวนวันที่เลือก
+            // แสดงวันสิ้นสุดใน input
+            $('#date-end-display').datepicker('setDate', endDate);
+            $('#date-end').val($.datepicker.formatDate('yy-mm-dd', endDate)); // เก็บค่าแบบ yyyy-mm-dd
+        }
+    }
 
-                    // แปลงวันกลับเป็นภาษาไทยและแสดงใน input
-                    $('#date-end-display').datepicker('setDate', endDate);
-                    $('#date-end').val($.datepicker.formatDate('yy-mm-dd', endDate)); // ส่งค่าแบบ yyyy-mm-dd
-                }
-            }
+    // ฟังก์ชันคำนวณวันเริ่มต้น
+    function calculateStartDate() {
+        var numDays = parseInt($('#numday option:selected').data('day')) || 0;
+        var endDate = $('#date-end').val();
 
-            // ตั้งค่า Datepicker สำหรับวันเริ่มต้น
-            $('#date-start-display').datepicker({
-                dateFormat: 'dd MM yy', // รูปแบบแสดงผลเป็น วัน เดือน ปี
-                onSelect: function(dateText) {
-                    var isoDate = $.datepicker.formatDate('yy-mm-dd', $(this).datepicker('getDate'));
-                    $('#date-start').val(isoDate); // เก็บค่าวันที่ในรูปแบบ yyyy-mm-dd
-                    calculateEndDate(); // คำนวณวันกลับทันทีเมื่อเลือกวันออกเดินทาง
-                }
-            });
+        if (numDays > 0 && endDate) {
+            var end = new Date(endDate);
+            var startDate = new Date(end);
+            startDate.setDate(end.getDate() - numDays + 1); // คำนวณวันเริ่มต้น
 
-            // ตั้งค่า Datepicker สำหรับวันกลับ (การแสดงผล)
-            $('#date-end-display').datepicker({
-                dateFormat: 'dd MM yy' // รูปแบบแสดงผลเป็น วัน เดือน ปี
-            });
+            // แสดงวันเริ่มต้นใน input
+            $('#date-start-display').datepicker('setDate', startDate);
+            $('#date-start').val($.datepicker.formatDate('yy-mm-dd', startDate)); // เก็บค่าแบบ yyyy-mm-dd
+        }
+    }
 
-            // กำหนดให้คำนวณวันกลับเมื่อเปลี่ยนจำนวนวัน
-            document.getElementById('numday').addEventListener('change', calculateEndDate);
+    // ตั้งค่า Datepicker สำหรับวันเริ่มต้น
+    $('#date-start-display').datepicker({
+        dateFormat: 'dd MM yy',
+        onSelect: function(dateText) {
+            var isoDate = $.datepicker.formatDate('yy-mm-dd', $(this).datepicker('getDate'));
+            $('#date-start').val(isoDate);
+            calculateEndDate(); // คำนวณวันสิ้นสุดเมื่อเลือกวันเริ่มต้น
+        }
+    });
 
-            // ตรวจสอบและแสดงวันที่เริ่มต้นและวันกลับในรูปแบบภาษาไทยหากมีข้อมูล
-            var startDate = $('#date-start').val();
-            var endDate = $('#date-end').val();
+    // ตั้งค่า Datepicker สำหรับวันสิ้นสุด
+    $('#date-end-display').datepicker({
+        dateFormat: 'dd MM yy',
+        onSelect: function(dateText) {
+            var isoDate = $.datepicker.formatDate('yy-mm-dd', $(this).datepicker('getDate'));
+            $('#date-end').val(isoDate);
+            calculateStartDate(); // คำนวณวันเริ่มต้นเมื่อเลือกวันสิ้นสุด
+        }
+    });
 
-            setThaiDate('#date-start-display', startDate);
-            setThaiDate('#date-end-display', endDate);
-        });
+    // กำหนดให้คำนวณวันสิ้นสุดเมื่อเปลี่ยนจำนวนวัน
+    $('#numday').on('change', function() {
+        if ($('#date-start').val()) {
+            calculateEndDate();
+        } else if ($('#date-end').val()) {
+            calculateStartDate();
+        }
+    });
+
+    // ตรวจสอบและแสดงวันที่เริ่มต้นและวันสิ้นสุดในรูปแบบภาษาไทยหากมีข้อมูล
+    var startDate = $('#date-start').val();
+    var endDate = $('#date-end').val();
+
+    if (startDate) {
+        $('#date-start-display').datepicker('setDate', new Date(startDate));
+    }
+    if (endDate) {
+        $('#date-end-display').datepicker('setDate', new Date(endDate));
+    }
+});
+
+
     </script>
 
 
@@ -1108,7 +1231,7 @@
                             if (data.length > 0) {
                                 // วนลูปแสดงรายการผลลัพธ์
                                 $.each(data, function(index, item) {
-                                    $('#tourResults').append(`<a href="#" id="tour-select" class="list-group-item list-group-item-action"  data-wholesale="${item.wholesale_id}" data-code="${item.code}" data-name="${item.code} - ${item.name}">${item.country_id} - ${item.name}</a>
+                                    $('#tourResults').append(`<a href="#" id="tour-select" class="list-group-item list-group-item-action"  data-wholesale="${item.wholesale_id}" data-code="${item.code}" data-name="${item.code} - ${item.name}">${item.code} - ${item.code1} - ${item.name}</a>
                             `);
                                 });
                             } else {

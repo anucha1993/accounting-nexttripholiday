@@ -30,6 +30,25 @@ class quoteController extends Controller
         return view('quotations.index', compact('sales', 'quotations'));
     }
 
+    public static function generateRunningBooking()
+    {
+        $prefix = 'BK';
+        $year = date('y'); // ปีสองหลัก เช่น 24
+        $month = date('m'); // เดือนสองหลัก เช่น 07
+
+        $latestCode = quotationModel::select('quote_booking')->latest()->first();
+
+        if ($latestCode) {
+            $lastNumber = (int)substr($latestCode, 5); // ตัด prefix, ปี และเดือนออก
+            $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        } else {
+            $newNumber = '001';
+        }
+
+        return $prefix . $year . $month . $newNumber;
+    }
+
+
     // function Runnumber ใบเสนอราคา
     public function generateRunningCodeIV()
     {
@@ -112,14 +131,22 @@ class quoteController extends Controller
     public function store(Request $request)
     {
         //dd($request);
-        $country = DB::connection('mysql2')->table('tb_country')->select('iso2')->where('id', $request->quote_country)->first();
-        $runningCodeTour = $this->generateRunningCodeTour($country->iso2,$request->quote_date_start);
-        dd($runningCodeTour);
+        $runningBooking = $this->generateRunningBooking();
       
 
+        if(empty($request->quote_bookin)) {
+            $request->merge(['quote_booking' => $runningBooking]);
+        }
+        //dd($request->quote_booking);
+
+        $country = DB::connection('mysql2')->table('tb_country')->select('iso2')->where('id', $request->quote_country)->first();
+        $runningCodeTour = $this->generateRunningCodeTour($country->iso2,$request->quote_date_start);
+        //dd($runningCodeTour);
+      
         $runningCode = $this->generateRunningCodeIV();
         
         if ($request->customer_type_new !== 'customerold') {
+
             $runningCodeCus = $this->generateRunningCodeCUS();
             $request->merge(['customer_number' => $runningCodeCus]);
             //customerNew
@@ -134,6 +161,7 @@ class quoteController extends Controller
                 'customer_tel' => $request->customer_tel,
                 'customer_fax' => $request->customer_fax,
                 'customer_date' => $request->customer_date,
+                'customer_campaign_source' => $request->customer_campaign_source,
             ]);
             $customerModel = customerModel::where('customer_id', $request->customer_id)->first();
         }
@@ -189,9 +217,9 @@ class quoteController extends Controller
         $productDiscount = productModel::where('product_type','discount')->get();
         $quoteProducts = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','income')->get();
         $quoteProductsDiscount = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','discount')->get();
-
+        $campaignSource = DB::table('campaign_source')->get();
         
-        return view('quotations.edit', compact('customer','quoteProducts','quotationModel','sales','country','airline','numDays','wholesale','products','productDiscount','quoteProductsDiscount'));
+        return view('quotations.edit', compact('campaignSource','customer','quoteProducts','quotationModel','sales','country','airline','numDays','wholesale','products','productDiscount','quoteProductsDiscount'));
     }
 
     public function update(quotationModel $quotationModel, Request $request)
@@ -215,6 +243,7 @@ class quoteController extends Controller
             'customer_tel' => $request->customer_tel,
             'customer_fax' => $request->customer_fax,
             'customer_date' => $request->customer_date,
+            'customer_campaign_source' => $request->customer_campaign_source,
         ]);
 
         $quotationModel->update($request->all());
@@ -257,65 +286,40 @@ class quoteController extends Controller
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
             ->get();
         $tours = DB::connection('mysql2')->table('tb_tour')->where('status', 'on')->get();
-        return view('quotations.create', compact('products', 'customers', 'sales', 'tours'));
+        $numDays = numDayModel::orderBy('num_day_total')->get();
+        $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
+        $wholesale = wholesaleModel::where('status', 'on')->get();
+        $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
+        $campaignSource = DB::table('campaign_source')->get();
+        $productDiscount = productModel::where('product_type','discount')->get();
+        return view('quotations.create', compact('productDiscount','campaignSource','airline','wholesale','country','numDays','products', 'customers', 'sales', 'tours'));
     }
 
-    // public function storeNew(Request $request)
+   
+
+   
+
+
+    // public function storeBooking(Request $request)
     // {
-    //     $tour = DB::connection('mysql2')->table('tb_tour')->where('id',$request->tour_id)->first();
-    //     $request->merge([
-    //         'booking_quote_number' => $this->generateRunningCodeBK(),
-    //         'quote_booking' => $this->generateRunningCodeBK(),
-    //         'quote_number' => $this->generateRunningCodeIV(),
-    //         'quote_number' => $tour->wholesale_id,
-    //         'country_id' => $tour->country_id,
-    //         'tour_code' => $tour->code,
-    //         'tour_code' => $tour->airline_id,
-    //     ]);
+    //     $code = $this->generateRunningCode();
+    //     $request->merge(['code'=> $code]);
+
+    //     $periods = DB::connection('mysql2')->table('tb_tour_period')->where('id',$request->period_id)->first();
+    //     $request->merge(['start_date'=> $periods->start_date]);
+    //     $request->merge(['end_date'=> $periods->end_date]);
+
+    //     $request->merge(['total_price'=> $request->sum_price1]);
+    //     $request->merge(['total_qty'=> $request->num_twin]);
+
+
+    //     $check = bookingQuotationModel::create($request->all());
+
+    //     if($check){
+    //         return redirect()->route('booking.edit',$check->id)->with('success','Created booking Successfully');
+    //     }else{
+    //         return redirect()->back()->with('error','Create booking Error');
+    //     }
     // }
-
-    public static function generateRunningCode()
-    {
-        $prefix = 'BK';
-        $year = date('y'); // ปีสองหลัก เช่น 24
-        $month = date('m'); // เดือนสองหลัก เช่น 07
-
-        $latestCode = DB::connection('mysql2')->table('tb_booking_form')
-            ->where('code', 'like', $prefix . $year . $month . '%')
-            ->orderBy('code', 'desc')
-            ->value('code');
-
-        if ($latestCode) {
-            $lastNumber = (int)substr($latestCode, 5); // ตัด prefix, ปี และเดือนออก
-            $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
-        } else {
-            $newNumber = '001';
-        }
-
-        return $prefix . $year . $month . $newNumber;
-    }
-
-
-    public function storeBooking(Request $request)
-    {
-        $code = $this->generateRunningCode();
-        $request->merge(['code'=> $code]);
-
-        $periods = DB::connection('mysql2')->table('tb_tour_period')->where('id',$request->period_id)->first();
-        $request->merge(['start_date'=> $periods->start_date]);
-        $request->merge(['end_date'=> $periods->end_date]);
-
-        $request->merge(['total_price'=> $request->sum_price1]);
-        $request->merge(['total_qty'=> $request->num_twin]);
-
-
-        $check = bookingQuotationModel::create($request->all());
-
-        if($check){
-            return redirect()->route('booking.edit',$check->id)->with('success','Created booking Successfully');
-        }else{
-            return redirect()->back()->with('error','Create booking Error');
-        }
-    }
 
 }

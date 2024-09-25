@@ -215,8 +215,8 @@ class BookingController extends Controller
         
 
         $quoteProducts = array_merge($quoteProducts, $productBooking);
-
-        return view('bookings.convert-booking', compact('productDiscount','products', 'checkCustomer', 'quotationModel', 'quoteProducts', 'sales', 'bookingModel', 'tour', 'numDays', 'country', 'wholesale', 'airline'));
+        $campaignSource = DB::table('campaign_source')->get();
+        return view('bookings.convert-booking', compact('campaignSource','productDiscount','products', 'checkCustomer', 'quotationModel', 'quoteProducts', 'sales', 'bookingModel', 'tour', 'numDays', 'country', 'wholesale', 'airline'));
     }
 
 
