@@ -22,8 +22,11 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">ใบเสนอราคา/ใบแจ้งหนี้ <a href="{{ route('quote.createNew') }}"
+                    <h4 class="card-title">ใบเสนอราคา/ใบแจ้งหนี้
+                        @can('edit-quote')
+                         <a href="{{ route('quote.createNew') }}"
                             class="btn btn-primary float-end">สร้างใบเสนอราคา</a></h4>
+                            @endcan
                     <hr>
                     <form action="" method="GET">
                         <div class="row">

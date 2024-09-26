@@ -27,7 +27,7 @@ class MPDF_invoiceController extends Controller
         $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
 
-        $quotationModel = quotationModel::where('quote_number',$invoiceModel->quote_number)->first();
+        $quotationModel = quotationModel::where('quote_number',$invoiceModel->invoice_quote)->first();
         
         $customer = customerModel::where('customer_id',$invoiceModel->customer_id)->first();
         $sale = saleModel::where('id',$invoiceModel->invoice_sale)->first();
@@ -38,18 +38,22 @@ class MPDF_invoiceController extends Controller
          $airline = DB::connection('mysql2')
         ->table('tb_travel_type')
         ->select('travel_name')
-        ->where('id', $tour->airline_id)
+        ->where('id', $quotationModel->quote_airline)
         ->first();
+        
         $booking = bookingModel::where('code', $invoiceModel->invoice_booking)->first();
         $productLists = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->get();
+
         $NonVat = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)
         ->where('expense_type', 'income')
-        ->where('vat', 'Y')
+        ->where('vat_status', 'vat')
         ->sum('product_sum');
+
         $VatTotal = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)
         ->where('expense_type', 'income')
-        ->where('vat', 'N')
+        ->where('vat_status', 'nonvat')
         ->sum('product_sum');
+
         $paymentDeposit = paymentModel::where('payment_doc_number',$invoiceModel->quote_number)->sum('payment_total');
         // ดึง HTML จาก Blade Template
         $html = view('MPDF.mpdf_invoice',compact('paymentDeposit','VatTotal','NonVat','quotationModel','invoiceModel','customer','sale','airline','booking','productLists'))->render();

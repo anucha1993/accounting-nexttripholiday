@@ -15,37 +15,27 @@ class invoiceModel extends Model
     protected $table = 'invoices';
     protected $primaryKey = 'invoice_id';
     protected $fillable = [
-        'customer_id',
-        'invoice_number',
-        'invoice_date',
-        'tour_id',
-        'wholesale_id',
-        'travel_type',
-        'country_id',
-        'invoice_booking',
-        'invoice_sale',
-        'invoice_tour_code',
-        'invoice_status',
-        'invoice_discount',
-        'invoice_total',
-        'invoice_after_discount', //new
-        'invoice_price_excluding_vat', //new
-        'created_by',
-        'updated_by',
-        'invoice_vat_7',
-        'invoice_vat_3',
-        'invoice_grand_total',
-        'invoice_note',
-        'vat_3_status',
-        'vat_type',
-        'payment_date',
-        'payment_before_date',
-        'payment_type',
-        'deposit',
-        'total_qty',
-        'quote_number',
-        'total_all',
-        'texinvoice_number'
+          'invoice_id',
+          'invoice_number',
+          'invoice_date',
+          'invoice_quote',
+          'invoice_booking',
+          'invoice_sale',
+          'customer_id',
+          'invoice_vat_exempted_amount',
+          'invoice_pre_tax_amount',
+          'invoice_discount',
+          'invoice_pre_vat_amount',
+          'invoice_vat',
+          'invoice_include_vat',
+          'invoice_grand_total',
+          'invoice_withholding_tax',
+          'invoice_withholding_tax_status',
+          'invoice_status',
+          'invoice_note',
+          'vat_type',
+          'created_by',
+          'updated_by',
     ];
     
 
@@ -72,13 +62,11 @@ class invoiceModel extends Model
     {
         // แปลงค่า country_id จาก JSON string เป็น array
         $countryIds = json_decode($this->attributes['country_id'], true);
-
         // ตรวจสอบว่า countryIds ไม่เป็น null หรือว่างเปล่า
         if (is_array($countryIds) && count($countryIds) > 0) {
             // ดึงข้อมูลจาก CountryModel ตาม country_ids ที่ได้มา
             return countryModel::whereIn('id', $countryIds)->get();
         }
-
         return collect(); // คืนค่า collection ว่างเปล่าถ้าไม่มี country_ids
     }
 }

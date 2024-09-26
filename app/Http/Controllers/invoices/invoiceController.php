@@ -4,15 +4,19 @@ namespace App\Http\Controllers\invoices;
 
 use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
+use App\Models\mumday\numDayModel;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\quotations\quoteController;
+use App\Models\booking\bookingModel;
+use Illuminate\Support\Facades\Auth;
+use App\Models\invoices\invoiceModel;
 use App\Models\products\productModel;
 use App\Models\customers\customerModel;
-use App\Models\invoices\invoiceModel;
-use App\Models\invoices\invoicePorductsModel;
+use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
 use App\Models\quotations\quoteProductModel;
-use Illuminate\Support\Facades\Auth;
+use App\Models\invoices\invoicePorductsModel;
 
 class invoiceController extends Controller
 {
@@ -48,71 +52,87 @@ class invoiceController extends Controller
     public function create(quotationModel $quotationModel, Request $request)
     {
       
-        $customer = customerModel::where('customer_id',$quotationModel->customer_id)->first();
-        $sale = saleModel::where('id',$quotationModel->quote_sale)->first();
-        $tour = DB::connection('mysql2')->table('tb_tour')->select('code','airline_id')->where('id',$quotationModel->tour_id)->first();
-        $airline = DB::connection('mysql2')->table('tb_travel_type')->select('travel_name')->where('id',$tour->airline_id)->first();
-        $products = productModel::get();
-        $quoteProducts = quoteProductModel::select('products.product_name','products.id','quote_product.product_qty',
-        'quote_product.product_price','quote_product.product_id','quote_product.expense_type','quote_product.vat')
-        ->where('quote_id',$quotationModel->quote_id)->leftjoin('products','products.id','quote_product.product_id')->get();
-        //dd($quoteProducts);
-        return view('invoices.form-create',compact('quotationModel','customer','sale','tour','airline','products','quoteProducts','quoteProducts'));
+        $bookingModel = bookingModel::where('code',$quotationModel->quote_booking)->first();
+        $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
+        $sales = saleModel::select('name', 'id')->where('id',$quotationModel->quote_sale)->first();
+        $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
+        $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
+        $numDays = numDayModel::orderBy('num_day_total')->get();
+        $wholesale = wholesaleModel::where('status', 'on')->get();
+        $products = productModel::where('product_type','income')->get();
+        $productDiscount = productModel::where('product_type','discount')->get();
+        $quoteProducts = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','income')->get();
+        $quoteProductsDiscount = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','discount')->get();
+        $campaignSource = DB::table('campaign_source')->get();
+        return view('invoices.form-create', compact('campaignSource','customer','quoteProducts','quotationModel','sales','country','airline','numDays','wholesale','products','productDiscount','quoteProductsDiscount'));
+        
     }
 
     public function store(Request $request)
     {
+        //dd($request);
         $runningCode = $this->generateRunningCodeIVS();
-        $request->merge(['invoice_number' => $runningCode]); 
+        $request->merge([
+            'invoice_number' => $runningCode,
+            'invoice_status' => 'wait',
+            'invoice_withholding_tax_status'=> isset($request->invoice_withholding_tax_status) ? 'Y' : 'N',
+         ]); 
         $request->merge(['created_by' => Auth::user()->name]); 
-        $invoice = invoiceModel::create($request->all());
+       $invoice = invoiceModel::create($request->all());
         quotationModel::where('quote_number',$request->quote_number)->update(['quote_status'=> 'invoice']);
 
          // Create product lits
-         foreach($request->product_id as $key => $value)
-         {
-           if($request->product_id[$key]){
-             $product = productModel::where('id',$request->product_id[$key])->first();
-             
-             invoicePorductsModel::create([
-                 'invoice_id' => $invoice->invoice_id,
-                 'product_id' => $product->id,
-                 'product_name' => $product->product_name,
-                 'product_qty' => $request->quantity[$key],
-                 'product_price' => $request->price_per_unit[$key],
-                 'product_sum' => $request->total_amount[$key],
-                 'expense_type' => $request->expense_type[$key],
-                 'vat' => isset($request->non_vat[$key]) ? 'Y' : 'N',
-             ]);
-           }
- 
-         }
-
-
-        return redirect('quote/sales/info/'.$request->quote_id);
+         foreach ($request->product_id as $key => $product) {
+            
+            if ($request->product_id[$key]) {
+                $productName = productModel::where('id',$request->product_id[$key])->first();
+                invoicePorductsModel::create([
+                    'invoice_id' => $invoice->invoice_id,
+                    'product_id' => $request->product_id[$key],
+                    'product_name' => $productName->product_name,
+                    'product_qty' => $request->quantity[$key],
+                    'product_price' => $request->price_per_unit[$key],
+                    'product_sum' => $request->total_amount[$key],
+                    'expense_type' => $request->expense_type[$key],
+                    'vat_status' => $request->vat_status[$key],
+                    'withholding_tax' => isset($request->withholding_tax[$key]) ? 'Y' : 'N',
+                ]);
+            }
+           
+        }
+        return redirect('quote/sales/'.$request->quote_id);
 
     }
 
     public function edit(invoiceModel $invoiceModel, Request $request)
     {
-        $quotationModel = quotationModel::where('quote_number',$invoiceModel->quote_number)->first();
-        $customer = customerModel::where('customer_id',$invoiceModel->customer_id)->first();
-        $sale = saleModel::where('id',$invoiceModel->invoice_sale)->first();
-        $tour = DB::connection('mysql2')->table('tb_tour')->select('code','airline_id')->where('id',$invoiceModel->tour_id)->first();
-        $airline = DB::connection('mysql2')->table('tb_travel_type')->select('travel_name')->where('id',$tour->airline_id)->first();
-        $products = productModel::get();
-        $invoiceProducts = invoicePorductsModel::select('products.product_name','products.id','invoice_product.product_qty',
-        'invoice_product.product_price','invoice_product.product_id','invoice_product.expense_type','invoice_product.vat')
-        ->where('invoice_id',$invoiceModel->invoice_id)->leftjoin('products','products.id','invoice_product.product_id')->get();
-        //dd($quoteProducts);
-        return view('invoices.form-edit',compact('quotationModel','invoiceModel','customer','sale','tour','airline','products','invoiceProducts'));
+        $quotationModel = quotationModel::where('quote_number',$invoiceModel->invoice_quote)->first();
+        // $bookingModel = bookingModel::where('code',$quotationModel->quote_booking)->first();
+        $customer = customerModel::where('customer_id', $invoiceModel->customer_id)->first();
+        $sales = saleModel::select('name', 'id')->where('id',$invoiceModel->invoice_sale)->first();
+        $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
+        $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
+        $numDays = numDayModel::orderBy('num_day_total')->get();
+        $wholesale = wholesaleModel::where('status', 'on')->get();
+        $products = productModel::where('product_type','income')->get();
+        $productDiscount = productModel::where('product_type','discount')->get();
+        $quoteProducts = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->where('expense_type','income')->get();
+        $quoteProductsDiscount = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->where('expense_type','discount')->get();
+        $campaignSource = DB::table('campaign_source')->get();
+        
+        return view('invoices.form-edit', compact('invoiceModel','quotationModel','campaignSource','customer','quoteProducts','sales','country','airline','numDays','wholesale','products','productDiscount','quoteProductsDiscount'));
+        
     }
 
     public function update(invoiceModel $invoiceModel, Request $request)
     {
         //dd($request);
-       
-        $request->merge(['invoice_vat_3' => $request->vat_3_total]); 
+      
+
+        $request->merge([
+            'invoice_withholding_tax_status'=> isset($request->invoice_withholding_tax_status) ? 'Y' : 'N',
+            'updated_by' => Auth::user()->name
+    ]); 
         $invoiceModel->update($request->all());
         
          // delete product lits Old
@@ -121,19 +141,18 @@ class invoiceController extends Controller
          {
            if($request->product_id[$key]){
              $product = productModel::where('id',$request->product_id[$key])->first();
-
              $request->merge(['vat' => isset($request->non_vat[$key]) ? 'Y' : 'N']); 
-             
              invoicePorductsModel::create([
-                 'invoice_id' => $invoiceModel->invoice_id,
-                 'product_id' => $product->id,
-                 'product_name' => $product->product_name,
-                 'product_qty' => $request->quantity[$key],
-                 'product_price' => $request->price_per_unit[$key],
-                 'product_sum' => $request->total_amount[$key],
-                 'expense_type' => $request->expense_type[$key],
-                 'vat' => $request->vat,
-             ]);
+                'invoice_id' => $invoiceModel->invoice_id,
+                'product_id' => $request->product_id[$key],
+                'product_name' => $product->product_name,
+                'product_qty' => $request->quantity[$key],
+                'product_price' => $request->price_per_unit[$key],
+                'product_sum' => $request->total_amount[$key],
+                'expense_type' => $request->expense_type[$key],
+                'vat_status' => $request->vat_status[$key],
+                'withholding_tax' => isset($request->withholding_tax[$key]) ? 'Y' : 'N',
+            ]);
            }
  
          }

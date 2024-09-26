@@ -19,6 +19,17 @@ use App\Models\booking\bookingQuotationModel;
 
 class quoteController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:create-quote|edit-booking|delete-quote|view-quote', ['only' => ['index', 'show']]);
+        $this->middleware('permission:create-quote', ['only' => ['create', 'store','createNew']]);
+        $this->middleware('permission:edit-quote', ['only' => ['edit', 'update','cancel']]);
+        $this->middleware('permission:delete-quote', ['only' => ['destroy']]);
+    }
+
+
     public function index()
     {
         $sales = saleModel::select('name', 'id')
@@ -44,7 +55,6 @@ class quoteController extends Controller
         } else {
             $newNumber = '001';
         }
-
         return $prefix . $year . $month . $newNumber;
     }
 
@@ -294,32 +304,5 @@ class quoteController extends Controller
         $productDiscount = productModel::where('product_type','discount')->get();
         return view('quotations.create', compact('productDiscount','campaignSource','airline','wholesale','country','numDays','products', 'customers', 'sales', 'tours'));
     }
-
-   
-
-   
-
-
-    // public function storeBooking(Request $request)
-    // {
-    //     $code = $this->generateRunningCode();
-    //     $request->merge(['code'=> $code]);
-
-    //     $periods = DB::connection('mysql2')->table('tb_tour_period')->where('id',$request->period_id)->first();
-    //     $request->merge(['start_date'=> $periods->start_date]);
-    //     $request->merge(['end_date'=> $periods->end_date]);
-
-    //     $request->merge(['total_price'=> $request->sum_price1]);
-    //     $request->merge(['total_qty'=> $request->num_twin]);
-
-
-    //     $check = bookingQuotationModel::create($request->all());
-
-    //     if($check){
-    //         return redirect()->route('booking.edit',$check->id)->with('success','Created booking Successfully');
-    //     }else{
-    //         return redirect()->back()->with('error','Create booking Error');
-    //     }
-    // }
 
 }

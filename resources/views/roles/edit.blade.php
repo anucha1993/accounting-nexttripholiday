@@ -137,19 +137,35 @@
                     </div>
                     <hr>
                     <div class="mb-3 row">
-                        <h6>Invoice</h6>
+                        <h6>Quotations</h6>
+
                         <label for="permissions"
-                        class="col-md-4 col-form-label text-md-end text-start">ใบแจ้งหนี้</label>
+                        class="col-md-4 col-form-label text-md-end text-start">ใบเสนอราคา</label>
                     <div class="col-md-6">
-                        @forelse ($permissionsInvoice as $invoice)
+                        @forelse ($permissionsQuote as $quote)
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input success" name="permissions[]" type="checkbox"  {{ in_array($invoice->id, $rolePermissions ?? []) ? 'checked' : '' }}
-                                    id="success-check" value="{{ $invoice->id }}">
-                                <label class="form-check-label" for="success-check">{{ $invoice->label }}</label>
+                                <input class="form-check-input success" name="permissions[]" type="checkbox"  {{ in_array($quote->id, $rolePermissions ?? []) ? 'checked' : '' }}
+                                    id="success-check" value="{{ $quote->id }}">
+                                <label class="form-check-label" for="success-check">{{ $quote->label }}</label>
                             </div>
                         @empty
                         @endforelse
                     </div>
+
+                    <label for="permissions"
+                    class="col-md-4 col-form-label text-md-end text-start">ใบแจ้งหนี้</label>
+                <div class="col-md-6">
+                    @forelse ($permissionsInvoice as $invoice)
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input success" name="permissions[]" type="checkbox"  {{ in_array($invoice->id, $rolePermissions ?? []) ? 'checked' : '' }}
+                                id="success-check" value="{{ $invoice->id }}">
+                            <label class="form-check-label" for="success-check">{{ $invoice->label }}</label>
+                        </div>
+                    @empty
+                    @endforelse
+                </div>
+
+
                     <label for="permissions"
                     class="col-md-4 col-form-label text-md-end text-start">รายการค่าบริการ</label>
                     <div class="col-md-6">

@@ -124,20 +124,29 @@ class MPDF_QuotationController extends Controller
     // ส่งอีเมลพร้อมแนบไฟล์ PDF
     try {
         // ส่งอีเมล
-        Mail::send([],[] , function($message) use ($pdfOutput, $sale, $request, $quotationModel) {
+        Mail::send([], [], function($message) use ($pdfOutput, $sale, $request, $quotationModel, $customer) {
             $message->to($request->email) // ส่งอีเมลถึงที่อยู่ปลายทาง
                     ->subject($request->subject)
-                    ->attachData($pdfOutput, $quotationModel->quote_number.'.pdf', [
+                    ->html("
+                        <h2>เรียน คุณ {$customer->customer_name}</h2>
+                        <p>ใบเสนอราคาเลขที่ #{$quotationModel->quote_number}</p>
+                        <p>กรุณาตรวจสอบไฟล์แนบใบเสนอราคาที่ส่งมาพร้อมกับอีเมลนี้</p>
+                        <br>
+                        {$request->text_detail}
+                    ", 'text/html') // ใช้เครื่องหมายอัญประกาศคู่สำหรับ PHP แทนการเชื่อมต่อข้อความ
+    
+                    ->attachData($pdfOutput, $quotationModel->quote_number . '.pdf', [
                         'mime' => 'application/pdf',
                     ]);
         });
-
+    
         // ส่งการตอบกลับในรูปแบบ JSON ถ้าสำเร็จ
         return response()->json(['success' => true, 'message' => 'ส่งอีเมลพร้อมไฟล์ PDF สำเร็จ']);
     } catch (\Exception $e) {
         // จับข้อผิดพลาดและส่งการตอบกลับในรูปแบบ JSON
         return response()->json(['success' => false, 'message' => 'เกิดข้อผิดพลาดในการส่งอีเมล: ' . $e->getMessage()]);
     }
+    
 
     }
     

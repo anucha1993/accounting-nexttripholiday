@@ -23,11 +23,11 @@ class salesInformationController extends Controller
     public function index(quotationModel $quotationModel)
     {
         $quotationModel = $quotationModel->where('quote_id',$quotationModel->quote_id)->leftjoin('customer', 'customer.customer_id', 'quotation.customer_id')->first();
-        $invoices = invoiceModel::where('quote_number', $quotationModel->quote_number)
+        $invoices = invoiceModel::where('invoice_quote', $quotationModel->quote_number)
             ->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')
             ->get();
 
-        $invoice = invoiceModel::where('quote_number', $quotationModel->quote_number)->first();
+        $invoice = invoiceModel::where('invoice_quote', $quotationModel->quote_number)->first();
 
         if ($invoice) {
             $taxinvoices = taxinvoiceModel::where('taxinvoices.invoice_number', $invoice->invoice_number)

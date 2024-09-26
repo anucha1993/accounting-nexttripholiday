@@ -22,7 +22,7 @@ class BookingController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('permission:create-booking|edit-booking|delete-booking|view-booking', ['only' => ['index', 'show']]);
-        $this->middleware('permission:create-booking', ['only' => ['create', 'store']]);
+        $this->middleware('permission:create-booking', ['only' => ['create', 'store','convert']]);
         $this->middleware('permission:edit-booking', ['only' => ['edit', 'update']]);
         $this->middleware('permission:delete-booking', ['only' => ['destroy']]);
     }
