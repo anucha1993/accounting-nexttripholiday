@@ -323,7 +323,8 @@
                             @if ($item->withholding_tax === 'N')
                             {{  number_format( $item->product_price  , 2, '.', ',')}}
                             @else
-                            {{  number_format( ($item->product_price * 0.03)+$item->product_price  , 2, '.', ',')}}
+                            {{  number_format( $item->product_price  , 2, '.', ',')}}
+                            {{-- {{  number_format( ($item->product_price * 0.03)+$item->product_price  , 2, '.', ',')}} --}}
                             @endif
                         </p>
                         @empty

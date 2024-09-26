@@ -481,7 +481,7 @@
                                     </div>
 
                                     <div class="col-md-1">
-                                        <input type="checkbox" name="withholding_tax[]" class="vat-3" disabled>
+                                        <input type="checkbox" name="withholding_tax[]" class="vat-3" value="N" disabled>
                                     </div>
                                     <div class="col-md-1" style="display: none">
                                         <select name="expense_type[]" class="form-select">
@@ -984,7 +984,7 @@
                 </div>
                 
                 <div class="col-md-1">
-                    <input type="checkbox" name="withholding_tax[]" class="vat-3">
+                    <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y">
                 </div>
                  <div class="col-md-1" style="display: none">
                                         <select name="expense_type[]" class="form-select">
@@ -1034,7 +1034,7 @@
                 </div>
                             
                 <div class="col-md-1">
-                    <input type="checkbox" name="withholding_tax[]" class="vat-3" disabled>
+                    <input type="checkbox" name="withholding_tax[]" class="vat-3" value="N" disabled>
                 </div>
                  <div class="col-md-1" style="display: none">
                                         <select name="expense_type[]" class="form-select" >
