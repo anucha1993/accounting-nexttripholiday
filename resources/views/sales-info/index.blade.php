@@ -40,7 +40,8 @@
 
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="{{route('payments',$quotationModel->quote_id)}}" class="todo-link list-group-item-action p-3 d-flex align-items-center"
+                        <a href="{{ route('payments', $quotationModel->quote_id) }}"
+                            class="todo-link list-group-item-action p-3 d-flex align-items-center"
                             id="current-task-important">
                             <i data-feather="star" class="feather-sm me-2"></i>
                             แจ้งชำระเงิน
@@ -49,8 +50,8 @@
                         </a>
                     </li>
                     <li class="list-group-item p-0 border-0">
-                        <a href="{{route('quotefile.index',$quotationModel->quote_id)}}" class="todo-link list-group-item-action p-3 d-flex align-items-center"
-                            id="current-task-done">
+                        <a href="{{ route('quotefile.index', $quotationModel->quote_id) }}"
+                            class="todo-link list-group-item-action p-3 d-flex align-items-center" id="current-task-done">
                             <i data-feather="send" class="feather-sm me-2"></i>
                             ไฟล์เอกสาร
                             <span
@@ -66,7 +67,7 @@
                                 class="todo-badge badge rounded-pill px-3 text-success font-weight-medium bg-light-success ms-auto"></span>
                         </a>
                     </li>
-                    
+
                     <li class="list-group-item p-0 border-0">
                         <hr />
                     </li>
@@ -131,8 +132,10 @@
                                     <td>คุณ{{ $quotationModel->customer_name }}</td>
                                     <td>{{ number_format($quotationModel->quote_grand_total ? $quotationModel->quote_grand_total : $quotationModel->quote_total, 2, '.', ',') }}
                                     </td>
-                                    <td>{{number_format($quotationModel->payment ? $quotationModel->payment: 0, 2, '.', ',')}}</td>
-                                    <td>{{number_format(($quotationModel->quote_grand_total ? $quotationModel->quote_grand_total : $quotationModel->quote_total) - $quotationModel->payment, 2, '.', ',')}}</td>
+                                    <td>{{ number_format($quotationModel->payment ? $quotationModel->payment : 0, 2, '.', ',') }}
+                                    </td>
+                                    <td>{{ number_format(($quotationModel->quote_grand_total ? $quotationModel->quote_grand_total : $quotationModel->quote_total) - $quotationModel->payment, 2, '.', ',') }}
+                                    </td>
                                     <td>
                                         @if ($quotationModel->quote_status === 'wait')
                                             <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
@@ -147,17 +150,15 @@
                                             <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
                                         @endif
                                         @if ($quotationModel->quote_status === 'invoice')
-                                        <span class="badge rounded-pill bg-info">ออกใบแจ้งหนี้แล้ว</span>
+                                            <span class="badge rounded-pill bg-info">ออกใบแจ้งหนี้แล้ว</span>
 
-                                        @if ($quotationModel->payment >=  $quotationModel->quote_grand_total)
-                                          <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
-                                        @else
-
-                                        @if ($quotationModel->payment > 0 )
-                                        <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
-                                        @endif
-                                            
-                                        @endif
+                                            @if ($quotationModel->payment >= $quotationModel->quote_grand_total)
+                                                <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
+                                            @else
+                                                @if ($quotationModel->payment > 0)
+                                                    <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
+                                                @endif
+                                            @endif
 
                                         @endif
                                     </td>
@@ -170,35 +171,43 @@
                                             </button>
                                             <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
 
-                                                <a class="dropdown-item" target="_blank" href="{{route('mpdf.quote',$quotationModel->quote_id)}}"><i class="fa fa-print"></i>
+                                                <a class="dropdown-item" target="_blank"
+                                                    href="{{ route('mpdf.quote', $quotationModel->quote_id) }}"><i
+                                                        class="fa fa-print"></i>
                                                     พิมพ์ใบเสนอราคา</a>
 
-                                                    <a class="dropdown-item mail-quote" href="{{route('mail.quote.formMail',$quotationModel->quote_id)}}"><i class="fas fa-envelope"></i>
-                                                        ส่งเมล</a>
+                                                <a class="dropdown-item mail-quote"
+                                                    href="{{ route('mail.quote.formMail', $quotationModel->quote_id) }}"><i
+                                                        class="fas fa-envelope"></i>
+                                                    ส่งเมล</a>
 
-                                                    <a class="dropdown-item invoice-modal"
+                                                <a class="dropdown-item invoice-modal"
                                                     href="{{ route('payment.quotation', $quotationModel->quote_id) }}"><i
                                                         class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
 
-                                                        <a class="dropdown-item payment-quote-wholesale"
-                                                        href="{{ route('paymentWholesale.quote', $quotationModel->quote_id) }}"><i
+                                                <a class="dropdown-item payment-quote-wholesale"
+                                                    href="{{ route('paymentWholesale.quote', $quotationModel->quote_id) }}"><i
                                                         class="fas fa-credit-card"></i> แจ้งชำระเงินโฮลเซลล์</a>
 
-                                                      
-                                                        
-                                                @if ($quotationModel->quote_status === 'wait' && $quotationModel->quote_status != 'cancel' )
-                                                @can('edit-quote') 
-                                                    <a class="dropdown-item"
-                                                        href="{{ route('quote.edit', $quotationModel->quote_id) }}"><i
-                                                            class="fa fa-edit"></i> แก้ไข</a>
-                                                 @endcan
-                                                    <a class="dropdown-item" href="{{ route('invoice.create', $quotationModel->quote_id) }}"><i class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
 
 
-                                                    @can('edit-quote') 
-                                                    <a class="dropdown-item" href="{{route('quote.cancel',$quotationModel->quote_id)}}" onclick="return confirm('ยืนยันการยกเลิกใบเสนอราคา')"><i
-                                                            class="fas fa-minus-circle" ></i> ยกเลิกใบงาน</a>
-                                                     @endcan
+                                                @if ($quotationModel->quote_status === 'wait' && $quotationModel->quote_status != 'cancel')
+                                                    @can('edit-quote')
+                                                        <a class="dropdown-item"
+                                                            href="{{ route('quote.edit', $quotationModel->quote_id) }}"><i
+                                                                class="fa fa-edit"></i> แก้ไข</a>
+                                                    @endcan
+                                                    @can('create-invoice')
+                                                        <a class="dropdown-item"
+                                                            href="{{ route('invoice.create', $quotationModel->quote_id) }}"><i
+                                                                class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
+                                                    @endcan
+                                                    @can('edit-quote')
+                                                        <a class="dropdown-item"
+                                                            href="{{ route('quote.cancel', $quotationModel->quote_id) }}"
+                                                            onclick="return confirm('ยืนยันการยกเลิกใบเสนอราคา')"><i
+                                                                class="fas fa-minus-circle"></i> ยกเลิกใบงาน</a>
+                                                    @endcan
                                                 @endif
 
 
@@ -228,9 +237,9 @@
                                             @if ($item->invoice_status === 'cancel')
                                                 <span class="badge rounded-pill bg-danger">ยกเลิก</span>
                                             @endif
-                                           
+
                                         </td>
-                                       
+
 
                                         <td>
                                             <div class="btn-group" role="group">
@@ -241,20 +250,32 @@
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
 
-                                                    <a class="dropdown-item" target="_blank" href="{{route('mpdf.invoice',$item->invoice_id)}}"><i class="fa fa-print"></i>
+                                                    <a class="dropdown-item" target="_blank"
+                                                        href="{{ route('mpdf.invoice', $item->invoice_id) }}"><i
+                                                            class="fa fa-print"></i>
                                                         พิมพ์ใบแจ้งหนี้</a>
 
-
+                                                    <a class="dropdown-item mail-quote"
+                                                        href="{{ route('mail.invoice.formMail', $item->invoice_id) }}"><i
+                                                            class="fas fa-envelope"></i>
+                                                        ส่งเมล</a>
                                                     @if ($item->invoice_status === 'wait')
-                                                        <a class="dropdown-item"
-                                                            href="{{ route('invoice.edit', $item->invoice_id) }}"><i
-                                                                class="fa fa-edit"></i> แก้ไข</a>
+                                                        @can('edit-invoice')
+                                                            <a class="dropdown-item"
+                                                                href="{{ route('invoice.edit', $item->invoice_id) }}"><i
+                                                                    class="fa fa-edit"></i> แก้ไข</a>
+                                                        @endcan
+
                                                         <a class="dropdown-item"
                                                             href="{{ route('invoice.taxinvoice', $item->invoice_id) }}"
                                                             onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
                                                                 class="fas fa-plus"></i> สร้างใบกำกับภาษี</a>
-                                                        <a class="dropdown-item"  href="{{route('invoice.cancel',$invoice->invoice_id)}}"  onclick="return confirm('ยืนยันการยกเลิกใบแจ้งหนี้')"><i
-                                                                class="fas fa-minus-circle"></i> ยกเลิกใบงาน</a>
+                                                        @can('cancel-invoice')
+                                                            <a class="dropdown-item"
+                                                                href="{{ route('invoice.cancel', $invoice->invoice_id) }}"
+                                                                onclick="return confirm('ยืนยันการยกเลิกใบแจ้งหนี้')"><i
+                                                                    class="fas fa-minus-circle"></i> ยกเลิกใบงาน</a>
+                                                        @endcan
                                                     @endif
 
                                                 </div>
@@ -277,7 +298,7 @@
                                         <td>
                                             <span class="badge rounded-pill bg-success">ออกใบกำกับภาษีแล้ว</span>
                                         </td>
-                                        
+
                                         <td>
                                             <div class="btn-group" role="group">
                                                 <button id="btnGroupVerticalDrop2" type="button"
@@ -289,8 +310,17 @@
                                                     <a class="dropdown-item"
                                                         href="{{ route('taxinvoice.edit', $item->invoice_id) }}"><i
                                                             class="fa fa-edit"></i> แก้ไข</a>
-                                                            <a class="dropdown-item" target="_blank" href="{{route('mpdf.texreceipt',$item->invoice_id)}}"><i class="fa fa-print"></i>
-                                                                พิมพ์ใบกำกับภาษี</a>
+                                                    <a class="dropdown-item" target="_blank"
+                                                        href="{{ route('mpdf.texreceipt', $item->invoice_id) }}"><i
+                                                            class="fa fa-print"></i>
+                                                        พิมพ์ใบกำกับภาษี</a>
+
+                                                        <a class="dropdown-item mail-quote"
+                                                        href="{{ route('mail.taxreceipt.formMail', $item->invoice_id) }}"><i
+                                                            class="fas fa-envelope"></i>
+                                                        ส่งเมล</a>
+
+                                                        
                                                     <a class="dropdown-item"
                                                         href="{{ route('debit.create', $item->invoice_id) }}"><i
                                                             class="fa fa-file"></i> ออกใบเพิ่มหนี้</a>
@@ -316,8 +346,8 @@
                                         <td>คุณ{{ $item->customer_name }}</td>
 
                                         <td>{{ number_format($item->grand_total, 2, '.', ',') }}</td>
-                                        <td>{{number_format($item->payment ? $item->payment : 0, 2, '.', ',')}}</td>
-                                        <td>{{number_format($item->grand_total - $item->payment, 2, '.', ',')}}</td>
+                                        <td>{{ number_format($item->payment ? $item->payment : 0, 2, '.', ',') }}</td>
+                                        <td>{{ number_format($item->grand_total - $item->payment, 2, '.', ',') }}</td>
 
                                         <td>
                                             @if ($item->debit_note_status === 'wait')
@@ -341,18 +371,21 @@
                                                     จัดการข้อมูล
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
-                                                    <a class="dropdown-item debit-modal" href="{{ route('payment.debit', $item->debit_note_id) }}"><i
-                                                        class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
+                                                    <a class="dropdown-item debit-modal"
+                                                        href="{{ route('payment.debit', $item->debit_note_id) }}"><i
+                                                            class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
 
-                                                      
-    
+
+
 
                                                     <a class="dropdown-item"
                                                         href="{{ route('debit.edit', $item->debit_note_id) }}"><i
                                                             class="fa fa-edit"></i> แก้ไข</a>
-                                                  
-                                                            <a class="dropdown-item" target="_blank" href="{{route('mpdf.debitreceipt',$item->debit_note_id)}}"><i class="fa fa-print"></i>
-                                                                พิมพ์ใบเพิ่มหนี้</a>
+
+                                                    <a class="dropdown-item" target="_blank"
+                                                        href="{{ route('mpdf.debitreceipt', $item->debit_note_id) }}"><i
+                                                            class="fa fa-print"></i>
+                                                        พิมพ์ใบเพิ่มหนี้</a>
 
                                                 </div>
                                             </div>
@@ -370,8 +403,8 @@
                                         <td><span class="badge bg-danger">{{ $item->credit_note_number }}</span></td>
                                         <td>คุณ{{ $item->customer_name }}</td>
                                         <td>{{ number_format($item->grand_total, 2, '.', ',') }}</td>
-                                        <td>{{number_format($item->payment ? $item->payment : 0, 2, '.', ',')}}</td>
-                                        <td>{{number_format($item->grand_total - $item->payment, 2, '.', ',')}}</td>
+                                        <td>{{ number_format($item->payment ? $item->payment : 0, 2, '.', ',') }}</td>
+                                        <td>{{ number_format($item->grand_total - $item->payment, 2, '.', ',') }}</td>
 
                                         <td>
                                             @if ($item->credit_note_status === 'wait')
@@ -394,14 +427,15 @@
                                                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     จัดการข้อมูล
                                                 </button>
-                                           
+
 
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
 
-                                                    <a class="dropdown-item credit-modal" href="{{ route('payment.credit', $item->credit_note_id) }}"><i
-                                                        class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
+                                                    <a class="dropdown-item credit-modal"
+                                                        href="{{ route('payment.credit', $item->credit_note_id) }}"><i
+                                                            class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
 
-                                                    <a class="dropdown-item"    
+                                                    <a class="dropdown-item"
                                                         href="{{ route('credit.edit', $item->credit_note_id) }}"><i
                                                             class="fa fa-edit"></i> แก้ไข</a>
                                                     <a class="dropdown-item" href="#"><i class="fa fa-print"></i>
@@ -443,50 +477,50 @@
             </div>
         </div>
 
-          {{-- debit payment Modal --}}
-          <div class="modal fade bd-example-modal-sm modal-lg" id="debit-payment" tabindex="-1" role="dialog"
-          aria-labelledby="mySmallModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-xl">
-              <div class="modal-content">
-                  ...
-              </div>
-          </div>
-      </div>
+        {{-- debit payment Modal --}}
+        <div class="modal fade bd-example-modal-sm modal-lg" id="debit-payment" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
+            </div>
+        </div>
 
         {{-- credit payment Modal --}}
         <div class="modal fade bd-example-modal-sm modal-lg" id="credit-payment" tabindex="-1" role="dialog"
-        aria-labelledby="mySmallModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                ...
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
             </div>
         </div>
-    </div>
 
-     {{-- credit payment WholeSale  Quote --}}
-     <div class="modal fade bd-example-modal-sm modal-lg" id="quote-payment-wholesale" tabindex="-1" role="dialog"
-     aria-labelledby="mySmallModalLabel" aria-hidden="true">
-     <div class="modal-dialog modal-xl">
-         <div class="modal-content">
-             ...
-         </div>
-     </div>
- </div>
+        {{-- credit payment WholeSale  Quote --}}
+        <div class="modal fade bd-example-modal-sm modal-lg" id="quote-payment-wholesale" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
+            </div>
+        </div>
 
-  {{-- mail form quote --}}
- <div class="modal fade bd-example-modal-sm modal-lg" id="modal-mail-quote" tabindex="-1" role="dialog"
- aria-labelledby="mySmallModalLabel" aria-hidden="true">
- <div class="modal-dialog modal-lg">
-     <div class="modal-content">
-         ...
-     </div>
- </div>
-</div>
+        {{-- mail form quote --}}
+        <div class="modal fade bd-example-modal-sm modal-lg" id="modal-mail-quote" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    ...
+                </div>
+            </div>
+        </div>
 
         <script>
             $(document).ready(function() {
-             // modal add payment wholesale quote
-             $(".mail-quote").click("click", function(e) {
+                // modal add payment wholesale quote
+                $(".mail-quote").click("click", function(e) {
                     e.preventDefault();
                     $("#modal-mail-quote")
                         .modal("show")
@@ -495,8 +529,8 @@
                         .load($(this).attr("href"));
                 });
 
-                 // modal add payment wholesale quote
-                 $(".payment-quote-wholesale").click("click", function(e) {
+                // modal add payment wholesale quote
+                $(".payment-quote-wholesale").click("click", function(e) {
                     e.preventDefault();
                     $("#quote-payment-wholesale")
                         .modal("show")
@@ -505,7 +539,7 @@
                         .load($(this).attr("href"));
                 });
 
-                
+
 
                 // modal add payment invoice
                 $(".invoice-modal").click("click", function(e) {
@@ -516,8 +550,8 @@
                         .find(".modal-content")
                         .load($(this).attr("href"));
                 });
-                 // modal add payment debit
-                 $(".debit-modal").click("click", function(e) {
+                // modal add payment debit
+                $(".debit-modal").click("click", function(e) {
                     e.preventDefault();
                     $("#debit-payment")
                         .modal("show")
@@ -525,8 +559,8 @@
                         .find(".modal-content")
                         .load($(this).attr("href"));
                 });
-                 // modal add payment credit
-                 $(".credit-modal").click("click", function(e) {
+                // modal add payment credit
+                $(".credit-modal").click("click", function(e) {
                     e.preventDefault();
                     $("#credit-payment")
                         .modal("show")
@@ -535,6 +569,5 @@
                         .load($(this).attr("href"));
                 });
             });
-
         </script>
     @endsection

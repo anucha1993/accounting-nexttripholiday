@@ -5,34 +5,35 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MPDF\MailController;
 use App\Http\Controllers\selects\periodSelect;
+use App\Http\Controllers\api\apiTourController;
 use App\Http\Controllers\debits\debitController;
 use App\Http\Controllers\credits\creditController;
+use App\Http\Controllers\MPDF\MailQuoteController;
 use App\Http\Controllers\airline\airlineController;
-use App\Http\Controllers\api\apiTourController;
 use App\Http\Controllers\booking\BookingController;
 use App\Http\Controllers\invoices\invoiceController;
 use App\Http\Controllers\payments\paymentController;
 use App\Http\Controllers\products\productController;
 use App\Http\Controllers\quotations\quoteController;
+use App\Http\Controllers\MPDF\MPDF_invoiceController;
+use App\Http\Controllers\MPDF\MPDF_PaymentController;
 use App\Http\Controllers\customers\customerController;
 use App\Http\Controllers\FPDF\FPDF_QuotatioController;
 use App\Http\Controllers\invoices\taxInvoiceController;
+use App\Http\Controllers\MPDF\MPDF_QuotationController;
+use App\Http\Controllers\MPDF\MPDF_taxReceiptController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
 use App\Http\Controllers\payments\paymentDebitController;
 use App\Http\Controllers\quotefiles\QuoteFilesController;
+use App\Http\Controllers\MPDF\MPDF_DebitReceiptController;
+use App\Http\Controllers\MPDF\MPDF_PaymentDebitController;
 use App\Http\Controllers\payments\paymentCreditController;
 use App\Http\Controllers\Invoices\InvoiceBookingController;
 use App\Http\Controllers\invoices\invoiceDashboardController;
-use App\Http\Controllers\MPDF\MailQuoteController;
-use App\Http\Controllers\MPDF\MPDF_invoiceController;
-use App\Http\Controllers\MPDF\MPDF_PaymentDebitController;
-use App\Http\Controllers\MPDF\MPDF_PaymentController;
 use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
-use App\Http\Controllers\MPDF\MPDF_QuotationController;
-use App\Http\Controllers\MPDF\MPDF_taxReceiptController;
-use App\Http\Controllers\MPDF\MPDF_DebitReceiptController;
 
 /*
 |--------------------------------------------------------------------------
@@ -195,6 +196,12 @@ Route::get('mpdf/invoice/{invoiceModel}',[MPDF_invoiceController::class,'generat
 Route::get('mpdf/texreceipt/{invoiceModel}',[MPDF_taxReceiptController::class,'generatePDF'])->name('mpdf.texreceipt');
 Route::get('mpdf/debitreceipt/{debitModel}',[MPDF_DebitReceiptController::class,'generatePDF'])->name('mpdf.debitreceipt');
 
-//Send Mail 
+//Send Mail  Quote 
 Route::post('mpdf/mail/quote/{quotationModel}',[MPDF_QuotationController::class,'sendPdf'])->name('mpdf.quote.sendPdf');
-Route::get('modal/mail/quote/{quotationModel}',[MailQuoteController::class,'formMail'])->name('mail.quote.formMail');
+Route::get('modal/mail/quote/{quotationModel}',[MailController::class,'formMailQuote'])->name('mail.quote.formMail');
+//Send Mail  invoice
+Route::post('mpdf/mail/invoice/{invoiceModel}',[MPDF_invoiceController::class,'sendPdf'])->name('mpdf.invoice.sendPdf');
+Route::get('modal/mail/invoice/{invoiceModel}',[MailController::class,'formMailInvoice'])->name('mail.invoice.formMail');
+//Send Mail  TaxReceipt
+Route::post('mpdf/mail/taxreceipt/{invoiceModel}',[MPDF_taxReceiptController::class,'sendPdf'])->name('mpdf.taxreceipt.sendPdf');
+Route::get('modal/mail/taxreceipt/{invoiceModel}',[MailController::class,'formMailtaxReceipt'])->name('mail.taxreceipt.formMail');

@@ -3,11 +3,11 @@
         <form id="sendEmailForm" method="post">
             @csrf
             <div class="row">
-                <h4>ส่งเมล์ ใบเสนอราคา # {{ $quotationModel->quote_number }}</h4>
+                <h4>ส่งเมล์ ใบแจ้งหนี้ # {{ $invoiceModel->invoice_number }}</h4>
                 <hr>
                 <div class="col-md-12 mb-3">
                     <label for="">Subject</label>
-                    <input type="text" name="subject" class="form-control" value="ใบเสนอราคา Next Trip Holiday">
+                    <input type="text" name="subject" class="form-control" value="ใบแจ้งหนี้ Next Trip Holiday">
                 </div>
                 <div class="col-md-12 mb-3">
                     <label for="">Mail</label>
@@ -70,7 +70,7 @@
         });
 
         // เรียก Ajax เพื่อส่งอีเมล
-        fetch("{{ route('mpdf.quote.sendPdf', $quotationModel->quote_id) }}", {
+        fetch("{{ route('mpdf.invoice.sendPdf', $invoiceModel->invoice_id) }}", {
                 method: "POST",
                 headers: {
                     "X-CSRF-TOKEN": "{{ csrf_token() }}"

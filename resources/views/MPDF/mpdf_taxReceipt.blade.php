@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>{{ $invoiceModel->invoice_number }}</title>
+    <title>{{ $texreceipt->taxinvoice_number }}</title>
     <meta http-equiv="Content-Language" content="th" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <style>
@@ -100,18 +100,18 @@
                 <tr>
 
                     <td 
-                        style="width: 155px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
+                        style="width: 150px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
                         <p><b>ชื่อลูกค้า/Customer Name:</span></p>
                     </td>
-                    <td style=" padding-left: 5px; border-left: none;  border-bottom: none; vertical-align: top;">
+                    <td style="width: 290px; padding-left: 5px; border-left: none;  border-bottom: none; vertical-align: top;">
                         <p><span>{{$customer->customer_name}}</span></p>
                     </td>
                     <td style="border: none;"></td>
-                    <td style="padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
+                    <td style="width: 185px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
                         <h4><b>เลขที่/No:</b></h4>
                     </td>
                     <td style="padding-left: 5px; border-left: none; border-bottom: none; vertical-align: top;">
-                        <p><span>{{$invoiceModel->invoice_number }}</span></p>
+                        <p><span>{{ $texreceipt->taxinvoice_number }}</span></p>
                     </td>
                 
                 </tr>
@@ -155,7 +155,7 @@
 
                     <td
                         style="padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{ $invoiceModel->quote_number }}</span></p>
+                        <p><span>{{ $invoiceModel->invoice_number }}</span></p>
                     </td>
                 </tr>
                 <tr>
@@ -198,7 +198,7 @@
 
                     <td
                         style="padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        {{ $invoiceModel->invoice_tour_code }}</span></p>
+                        {{ $quotationModel->quote_tour ? $quotationModel->quote_tour : $quotationModel->quote_tour_code  }}</span></p>
                     </td>
                 </tr>
                 <tr style="padding: 3px">
@@ -319,7 +319,14 @@
                     <td style="width: 120px; text-align: right; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
                         @if ($item->expense_type === 'income')
-                            <p style="margin: 0;">{{ number_format($item->product_price, 2, '.', ',') }}</p>
+                        <p style="margin: 0;">
+                            @if ($item->withholding_tax === 'N')
+                            {{  number_format( $item->product_price  , 2, '.', ',')}}
+                            @else
+     
+                            {{  number_format( ($item->product_price * 0.03)+$item->product_price  , 2, '.', ',')}}
+                            @endif
+                        </p>
                             @endif
                         @empty
                         @endforelse
@@ -344,12 +351,12 @@
                     </td>
                     <td colspan="2" style="text-align: right; padding: 3px;">ยอดรวมยกเว้นภาษี / Vat-Exempted Amount
                     </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($NonVat, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_vat_exempted_amount, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ราคาสุทธิสินค้าที่เสียภาษี / Pre-Tax
                         Amount</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($VatTotal, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_pre_tax_amount, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ส่วนลด / Discount</td>
@@ -358,33 +365,33 @@
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ราคาก่อนภาษีมูลค่าเพิ่ม / Pre-VAT
                         Amount</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($totalVat = $VatTotal-$invoiceModel->invoice_discount, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_pre_vat_amount, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ภาษีมูลค่าเพิ่ม VAT 7%</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_vat_7, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_vat, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ราคาพร้อมภาษีมูลค่าเพิ่ม / Include VAT
                     </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($totalVat+$invoiceModel->invoice_vat_7, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_include_vat, 2, '.', ',') }}</td>
                 </tr>
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">หักเงินมัดจำ / Deposit</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($paymentDeposit, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_withholding_tax, 2, '.', ',') }}</td>
                 </tr>
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ยอดชำระทั้งสิ้น / Grand Total</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_grand_total-$paymentDeposit, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_grand_total-$invoiceModel->invoice_withholding_tax, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; background-color: #fff;">
                         <h3>จำนวนเงินตัวอักษร:</h3>
                     </td>
                     <td colspan="3" style="text-align: right; background-color: #bbdefb;">
-                        <h3>(@bathText($invoiceModel->invoice_grand_total-$paymentDeposit))</h3>
+                        <h3>(@bathText($invoiceModel->invoice_grand_total-$invoiceModel->invoice_withholding_tax))</h3>
                     </td>
 
                 </tr>
@@ -398,22 +405,22 @@
 
             <div style="margin-top: -17px">
                 <b>ชำระเงินโดย / Form of payment: </b><br>
-                <span style="font-family: @if($payment->payment_method === 'cash') DejaVuSans; @endif">&#9745;</span> <b>เงินสด</b><br>
+                <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'cash') DejaVuSans; @endif">&#9745;</span> <b>เงินสด</b><br>
                
-                <span style="font-family: @if($payment->payment_method === 'check') DejaVuSans; @endif">&#9745;</span> <b>เช็คธนาคาร</b><br>
+                <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'check') DejaVuSans; @endif">&#9745;</span> <b>เช็คธนาคาร</b><br>
 
-                @if($payment->payment_method === 'check') 
+                @if(!empty($payment->payment_method) && $payment->payment_method === 'check') 
                 {{$payment->bank_name}} เลขที่เช็ค : {{$payment->payment_check_number}}  โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_date_time) }} เวลา: {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.
                 @endif
 
-                <span style="font-family: @if($payment->payment_method === 'credit') DejaVuSans; @endif">&#9745;</span> <b>บัตรเครดิต</b><br>
+                <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'credit') DejaVuSans; @endif">&#9745;</span> <b>บัตรเครดิต</b><br>
                 
-                @if($payment->payment_method === 'credit') 
+                @if(!empty($payment->payment_method) && $payment->payment_method === 'credit') 
                 {{$payment->bank_name}}  เลขที่สลิป : {{$payment->payment_credit_slip_number}}
                 @endif
 
-                <span style="font-family: @if($payment->payment_method === 'transfer-money') DejaVuSans; @endif">&#9745;</span> <b>โอนเงินเข้าบัญชี</b>
-                @if($payment->payment_method === 'transfer-money') 
+                <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'transfer-money') DejaVuSans; @endif">&#9745;</span> <b>โอนเงินเข้าบัญชี</b>
+                @if(!empty($payment->payment_method) && $payment->payment_method === 'transfer-money') 
                 {{$payment->bank_name}}   โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_date_time) }} เวลา: {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.
                 @endif
                 <br>

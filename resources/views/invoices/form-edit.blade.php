@@ -300,7 +300,7 @@
                             <div class="row table-custom">
 
                                 <div class="col-md-2 ms-auto">
-                                    <label for="">ยอดรวมทั้งสิ้น ยกมา จากใบเสนอราคา</label>
+                                    <label for="">ยอด ใบเสนอราคา</label>
                                     <input type="text"  style="background-color: #2efc6c2d"
                                         class="form-control text-end"
                                         value="{{ number_format($quotationModel->quote_grand_total, 2, '.', ',') }}">

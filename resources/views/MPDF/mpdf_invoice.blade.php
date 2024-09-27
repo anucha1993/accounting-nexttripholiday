@@ -98,22 +98,22 @@
         <div style="margin-top: -25px">
             <table style="margin-right: -41px; margin-left: -37px;">
                 <tr>
-
                     <td 
-                        style="width: 155px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
+                        style="width: 150px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
                         <p><b>ชื่อลูกค้า/Customer Name:</span></p>
                     </td>
-                    <td style=" padding-left: 5px; border-left: none;  border-bottom: none; vertical-align: top;">
+
+                    <td style="width: 290px; padding-left: 5px; border-left: none;  border-bottom: none; vertical-align: top;">
                         <p><span>{{$customer->customer_name}}</span></p>
                     </td>
+
                     <td style="border: none;"></td>
-                    <td style="padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
+                    <td style="width: 185px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
                         <h4><b>เลขที่/No:</b></h4>
                     </td>
                     <td style="padding-left: 5px; border-left: none; border-bottom: none; vertical-align: top;">
                         <p><span>{{$invoiceModel->invoice_number }}</span></p>
                     </td>
-                
                 </tr>
 
                 <tr>
@@ -323,8 +323,8 @@
                             @if ($item->withholding_tax === 'N')
                             {{  number_format( $item->product_price  , 2, '.', ',')}}
                             @else
-                            {{  number_format( $item->product_price  , 2, '.', ',')}}
-                            {{-- {{  number_format( ($item->product_price * 0.03)+$item->product_price  , 2, '.', ',')}} --}}
+     
+                            {{  number_format( ($item->product_price * 0.03)+$item->product_price  , 2, '.', ',')}}
                             @endif
                         </p>
                         @empty
