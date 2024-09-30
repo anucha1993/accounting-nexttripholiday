@@ -218,6 +218,7 @@
 
                                 </tr>
                                 @forelse ($invoices as $item)
+
                                     <tr>
                                         <td class="text-success">ใบแจ้งหนี้</td>
                                         <td>{{ date('d/m/Y', strtotime($item->created_at)) }}</td>
@@ -307,9 +308,13 @@
                                                     จัดการข้อมูล
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
+
                                                     <a class="dropdown-item"
-                                                        href="{{ route('taxinvoice.edit', $item->invoice_id) }}"><i
-                                                            class="fa fa-edit"></i> แก้ไข</a>
+                                                                href="{{ route('invoice.edit', $item->invoice_id) }}"><i
+                                                                    class="fa fa-edit"></i> แก้ไข</a>
+
+
+                                                   
                                                     <a class="dropdown-item" target="_blank"
                                                         href="{{ route('mpdf.texreceipt', $item->invoice_id) }}"><i
                                                             class="fa fa-print"></i>
