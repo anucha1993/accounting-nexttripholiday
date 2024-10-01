@@ -29,8 +29,8 @@ class MPDF_DebitReceiptController extends Controller
         $fontDirs = $defaultConfig['fontDir'];
         $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
-        $invoiceModel = invoiceModel::where('invoice_number',$debitModel->invoice_number)->first();
-        $quotationModel = quotationModel::where('quote_number',$invoiceModel->quote_number)->first();
+        $invoiceModel = invoiceModel::where('invoice_number',$debitModel->debit_invoice)->first();
+        $quotationModel = quotationModel::where('quote_number',$invoiceModel->invoice_quote)->first();
         
         $customer = customerModel::where('customer_id',$invoiceModel->customer_id)->first();
         $sale = saleModel::where('id',$invoiceModel->invoice_sale)->first();
@@ -41,26 +41,20 @@ class MPDF_DebitReceiptController extends Controller
          $airline = DB::connection('mysql2')
         ->table('tb_travel_type')
         ->select('travel_name')
-        ->where('id', $tour->airline_id)
+        ->where('id', $quotationModel->quote_airline)
         ->first();
+
         $booking = bookingModel::where('code', $invoiceModel->invoice_booking)->first();
-        $productLists = debitNoteProductModel::where('debit_note_id',$debitModel->debit_note_id)->get();
+        $productLists = debitNoteProductModel::where('debit_id',$debitModel->debit_id)->get();
 
-        $NonVat = debitNoteProductModel::where('debit_note_id',$debitModel->debit_note_id)
-        ->where('expense_type', 'income')
-        ->where('vat', 'Y')
-        ->sum('product_sum');
 
-        $VatTotal = debitNoteProductModel::where('debit_note_id',$debitModel->debit_note_id)
-        ->where('expense_type', 'income')
-        ->where('vat', 'N')
-        ->sum('product_sum');
+       
         $paymentDeposit = paymentModel::where('payment_doc_number',$debitModel->debit_note_number)->sum('payment_total');
         $payment = paymentModel::where('payment_doc_number',$debitModel->debit_note_number)
         ->leftjoin('bank','bank.bank_id','payments.payment_bank_number')
         ->latest('payments.payment_date_time')->first();
         // ดึง HTML จาก Blade Template
-        $html = view('MPDF.mpdf_DebitReceipt',compact('debitModel','payment','paymentDeposit','VatTotal','NonVat','quotationModel','invoiceModel','customer','sale','airline','booking','productLists'))->render();
+        $html = view('MPDF.mpdf_DebitReceipt',compact('debitModel','payment','paymentDeposit','quotationModel','invoiceModel','customer','sale','airline','booking','productLists'))->render();
     
         // กำหนดค่าเริ่มต้นของ mPDF และเพิ่มฟอนต์ภาษาไทย
         $mpdf = new \Mpdf\Mpdf([

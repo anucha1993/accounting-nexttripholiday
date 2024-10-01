@@ -39,22 +39,23 @@ class salesInformationController extends Controller
         }
 
         if ($invoice) {
-            $debitnote = debitModel::where('debit_note.invoice_number', $invoice->invoice_number)
-                ->leftjoin('invoices', 'invoices.invoice_number', 'debit_note.invoice_number')
+            $debitnote = debitModel::where('debit_note.debit_invoice', $invoice->invoice_number)
+                ->leftjoin('invoices', 'invoices.invoice_number', 'debit_note.debit_invoice')
                 ->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')
                 ->get();
         }else{
             $debitnote = [];
         }
 
-        if ($invoice) {
-            $creditnote = creditModel::where('credit_note.invoice_number', $invoice->invoice_number)
-                ->leftjoin('invoices', 'invoices.invoice_number', 'credit_note.invoice_number')
-                ->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')
-                ->get();
-        }else{
-            $creditnote = [];
-        }
+        // if ($invoice) {
+        //     $creditnote = creditModel::where('credit_note.invoice_number', $invoice->invoice_number)
+        //         ->leftjoin('invoices', 'invoices.invoice_number', 'credit_note.invoice_number')
+        //         ->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')
+        //         ->get();
+        // }else{
+        //     $creditnote = [];
+        // }
+        $creditnote = [];
 
         return view('sales-info.index', compact('creditnote', 'quotationModel', 'invoices', 'taxinvoices', 'taxinvoices', 'debitnote', 'invoice'));
     }

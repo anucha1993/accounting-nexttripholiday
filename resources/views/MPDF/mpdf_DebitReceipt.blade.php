@@ -102,17 +102,17 @@
                 <tr>
 
                     <td 
-                        style="width: 155px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
+                        style="width: 190px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
                         <p><b>ชื่อลูกค้า/Customer Name:</span></p>
                     </td>
-                    <td style=" padding-left: 5px; border-left: none;  border-bottom: none; vertical-align: top;">
+                    <td style="width: 300px; padding-left: 5px; border-left: none;  border-bottom: none; vertical-align: top;">
                         <p><span>{{$customer->customer_name}}</span></p>
                     </td>
                     <td style="border: none;"></td>
-                    <td style="padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
+                    <td style="width: 120px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
                         <h4><b>เลขที่/No:</b></h4>
                     </td>
-                    <td style="padding-left: 5px; border-left: none; border-bottom: none; vertical-align: top;">
+                    <td style="width: 160px; padding-left: 5px; border-left: none; border-bottom: none; vertical-align: top;">
                         <p><span>{{$debitModel->debit_note_number}}</span></p>
                     </td>
                 
@@ -136,7 +136,7 @@
 
                     <td
                         style="padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top; ">
-                        <p><span>{{ thaidate('j M Y', $debitModel->debit_note_date) }}</span></p>
+                        <p><span>{{ thaidate('j M Y', $debitModel->debit_date) }}</span></p>
                     </td>
                 </tr>
                 <tr>
@@ -340,49 +340,49 @@
                     </td>
                     <td colspan="2" style="text-align: right; padding: 0px;">มูลค่าตามใบกำกับภาษีเดิม/Original Tax Invoice Value
                     </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_grand_total, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_original_invoice_value, 2, '.', ',') }}</td>
                     
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">มูลค่าที่ถูกต้อง / Correct Value
                     </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_grand_total+$debitModel->grand_total, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_correct_value, 2, '.', ',') }}</td>
                     
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ผลต่าง / Defference
                     </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->difference, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_difference, 2, '.', ',') }}</td>
                     
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ยอดรวมยกเว้นภาษี / Vat-Exempted Amount
                     </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($NonVat, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_vat_exempted_amount, 2, '.', ',') }}</td>
                     
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ราคาสุทธิสินค้าที่เสียภาษี / Pre-Tax
                         Amount</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($VatTotal, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_pre_tax_amount, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ส่วนลด / Discount</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_note_discount, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_discount, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ราคาก่อนภาษีมูลค่าเพิ่ม / Pre-VAT
                         Amount</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($totalVat = $VatTotal-$debitModel->debit_note_discount, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_pre_vat_amount, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ภาษีมูลค่าเพิ่ม VAT 7%</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->vat_7_total, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_vat, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ราคาพร้อมภาษีมูลค่าเพิ่ม / Include VAT
                     </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($totalVat+$debitModel->vat_7_total, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_include_vat, 2, '.', ',') }}</td>
                 </tr>
 
                 <tr>
@@ -392,14 +392,14 @@
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ยอดชำระทั้งสิ้น / Grand Total</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->grand_total, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_grand_total - $paymentDeposit, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; background-color: #fff;">
                         <h3>จำนวนเงินตัวอักษร:</h3>
                     </td>
                     <td colspan="3" style="text-align: right; background-color: #bbdefb;">
-                        <h3>(@bathText($debitModel->grand_total))</h3>
+                        <h3>(@bathText($debitModel->debit_grand_total - $paymentDeposit))</h3>
                     </td>
 
                 </tr>
@@ -413,22 +413,22 @@
 
             <div style="margin-top: -17px">
                 <b>ชำระเงินโดย / Form of payment: </b><br>
-                <span style="font-family: @if($payment->payment_method === 'cash') DejaVuSans; @endif">&#9745;</span> <b>เงินสด</b><br>
+                <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'cash') DejaVuSans; @endif">&#9745;</span> <b>เงินสด</b><br>
                
-                <span style="font-family: @if($payment->payment_method === 'check') DejaVuSans; @endif">&#9745;</span> <b>เช็คธนาคาร</b><br>
+                <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'check') DejaVuSans; @endif">&#9745;</span> <b>เช็คธนาคาร</b><br>
 
-                @if($payment->payment_method === 'check') 
+                @if(!empty($payment->payment_method) && $payment->payment_method === 'check') 
                 {{$payment->bank_name}} เลขที่เช็ค : {{$payment->payment_check_number}}  โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_date_time) }} เวลา: {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.
                 @endif
 
-                <span style="font-family: @if($payment->payment_method === 'credit') DejaVuSans; @endif">&#9745;</span> <b>บัตรเครดิต</b><br>
+                <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'credit') DejaVuSans; @endif">&#9745;</span> <b>บัตรเครดิต</b><br>
                 
-                @if($payment->payment_method === 'credit') 
+                @if(!empty($payment->payment_method) && $payment->payment_method === 'credit') 
                 {{$payment->bank_name}}  เลขที่สลิป : {{$payment->payment_credit_slip_number}}
                 @endif
 
-                <span style="font-family: @if($payment->payment_method === 'transfer-money') DejaVuSans; @endif">&#9745;</span> <b>โอนเงินเข้าบัญชี</b>
-                @if($payment->payment_method === 'transfer-money') 
+                <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'transfer-money') DejaVuSans; @endif">&#9745;</span> <b>โอนเงินเข้าบัญชี</b>
+                @if(!empty($payment->payment_method) && $payment->payment_method === 'transfer-money') 
                 {{$payment->bank_name}}   โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_date_time) }} เวลา: {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.
                 @endif
                 <br>

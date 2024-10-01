@@ -112,9 +112,9 @@
                                 class="float-end">พิมพ์ <i class="text-danger fa fa-print"></i></a>
                         </h4>
                         <hr>
-                        <form action="{{ route('invoice.update',$invoiceModel->invoice_id) }}" id="form-create" method="post">
+                        <form action="{{ route('debit.store') }}" id="form-create" method="post">
                             @csrf
-                            @method('PUT')
+                            @method('POST')
                             <input type="hidden" name="quote_id" value="{{$quotationModel->quote_id}}">
                             {{-- <div class="row table-custom ">
                                 <div class="col-md-2 ms-auto">
@@ -258,12 +258,30 @@
 
                                 <div class="col-md-2 ms-auto">
                                     <label for="">วันที่ออกใบเพิ่มหนี้ : </label>
-                                    <input type="date" class="form-control text-end" name="debit_date">
+                                    <input type="date" class="form-control text-end" name="debit_date" value="{{date('Y-m-d')}}">
                                 </div>
+                                <div class="col-md-2 ">
+                                    <label for="">ยอด ใบกำกับภาษี</label>
+                                    <input type="text"  style="background-color: #2efc6c2d"
+                                        class="form-control text-end"
+                                        value="{{ number_format($invoiceModel->invoice_pre_vat_amount, 2, '.', ',') }}">
 
-                                <div class="col-md-2">
-                                    <label for="">เลขที่อ้างอิง : </label>
+                                        <input type="hidden" name="debit_original_invoice_value" id="total-invoice" style="background-color: #2efc6c2d"
+                                        class="form-control text-end"
+                                        value="{{ $invoiceModel->invoice_pre_vat_amount}}">
+                                </div>
+                            </div>
+                            <div class="row table-custom ">
+
+                              
+                                <div class="col-md-2 ms-auto">
+                                    <label for="">เลขที่อ้างอิง Invoice: </label>
                                     <input style="background-color: #a3a3a32d" type="text" class="form-control text-end" name="debit_invoice" value="{{ $invoiceModel->invoice_number }}" readonly>
+                                </div>
+                                
+                                <div class="col-md-2">
+                                    <label for="">เลขที่อ้างอิง Tax Invoice: </label>
+                                    <input style="background-color: #a3a3a32d" type="text" class="form-control text-end" name="debit_taxinvoice" value="{{ $taxinvoiceModel->taxinvoice_number }}" readonly>
                                 </div>
 
                                 <div class="col-md-2">
@@ -295,19 +313,7 @@
                                 </div>
                             </div>
 
-                            <div class="row table-custom">
-
-                                <div class="col-md-2 ms-auto">
-                                    <label for="">ยอด ใบเสนอราคา</label>
-                                    <input type="text"  style="background-color: #2efc6c2d"
-                                        class="form-control text-end"
-                                        value="{{ number_format($quotationModel->quote_grand_total, 2, '.', ',') }}">
-
-                                        <input type="hidden" id="total-quote" style="background-color: #2efc6c2d"
-                                        class="form-control text-end"
-                                        value="{{ $quotationModel->quote_grand_total}}">
-                                </div>
-                            </div>
+                           
                             <hr>
                             <h5 class="text-danger">ข้อมูลลูกค้า:</h5>
                             <input type="hidden" name="customer_id" value="{{ $customer->customer_id }}">
@@ -572,7 +578,7 @@
                                             <div class="row summary-row ">
                                                 <div class="col-md-10 text-end">มูลค่าตามใบกำกับภาษีเดิม / Original Invoice Value
                                                 </div>
-                                                <div class="col-md-2 text-end"><span id="total-invoice">{{ number_format($quotationModel->quote_grand_total, 2, '.', ',') }}</span>
+                                                <div class="col-md-2 text-end"><span id="total-invoice">{{ number_format($invoiceModel->invoice_pre_vat_amount, 2, '.', ',') }}</span>
                                                 </div>
                                             </div>
                                             <div class="row summary-row ">
@@ -585,7 +591,7 @@
                                             <div class="row summary-row ">
                                                 <div class="col-md-10 text-end">ผลต่าง / Difference
                                                 </div>
-                                                <div class="col-md-2 text-end"><span id="total-invoice-new">0.00</span>
+                                                <div class="col-md-2 text-end"><span id="difference">0.00</span>
                                                 </div>
                                             </div>
 
@@ -722,8 +728,11 @@
                                         <input type="hidden" name="debit_include_vat">
                                         <input type="hidden"   name="debit_grand_total" id="debit-grand-total">
                                         <input type="hidden" name="debit_withholding_tax">
+
+                                        <input type="hidden" name="debit_correct_value">
+                                        <input type="hidden" name="debit_difference">
                                         <button type="submit" class="btn btn-primary btn-sm mx-3" form="form-create">
-                                            <i class="fa fa-save"></i> อัพเดทใบแจ้งหนี้</button>
+                                            <i class="fa fa-save"></i> สร้างใบเพิ่มหนี้</button>
                                     </div>
                                     <br>
                                 </div>
@@ -739,44 +748,12 @@
 
 
             </div>
-
         </div>
-
-      
-
-        <script>
-            $(document).ready(function() {
-                // ใช้ฟังก์ชันนี้ถ้าคุณต้องการทำบางอย่างก่อน submit ฟอร์ม
-                $('#form-create').on('submit', function(event) {
-                    // ตรวจสอบหรือทำงานเพิ่มเติมก่อน submit
-                    var isValid = false; // สมมติว่าคุณมีการตรวจสอบอะไรบางอย่าง
-                    var quoteGrandTotal = $('#total-quote').val();
-                    var quoteGrandTotalNew = $('#debit-grand-total').val();
-
-                    if (quoteGrandTotal === quoteGrandTotalNew) {
-                        isValid = true;
-                    }
-
-                    if (!isValid) {
-                        event.preventDefault(); // หยุดการ submit ฟอร์ม
-                        Swal.fire({
-                            title: "Oops...",
-                            text: "ราคาใบแจ้งหนี้ ไม่ตรงกับ ใบเสนอราคา",
-                            icon: "error"
-                        });
-                    }
-                });
-            });
-        </script>
-
-
-
         <script>
             $(document).ready(function() {
                 $('.country-select').select2();
                 $('.product-select').select2();
             });
-
             $(document).ready(function() {
                 // เมื่อ form ถูก submit
                 $('form').on('submit', function() {
@@ -916,7 +893,10 @@
 
                     // คำนวณหักภาษี ณ ที่จ่าย (Withholding Tax)
                     const withholdingTax = $('#withholding-tax').is(':checked') ? (sumPreVat + vatAmount) * 0.03 : 0;
-
+                    const TotalInvoice = $('#total-invoice').val();
+                    let difference = 0;
+                    let correct = parseFloat(sumPreVat) + parseFloat(TotalInvoice) ;
+                   
                     //quote_withholding_tax
                     $('input[name="quote_withholding_tax"]').val(withholdingTax.toFixed(2));
 
@@ -933,8 +913,7 @@
                     $('#quote-vat-7').val(vatAmount.toFixed(2));
 
 
-                    $('#price-excluding-vat').text(formatNumber((sumPriceExcludingVat + sumPriceExcludingVatNonVat)
-                        .toFixed(2)));
+                    $('#price-excluding-vat').text(formatNumber((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(2)));
                     $('#quote-price-excluding-vat').val(((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(
                         2)));
 
@@ -971,6 +950,13 @@
                     $('#grand-total').text(formatNumber(grandTotal - sumDiscount.toFixed(2)));
                     $('input[name="debit_grand_total"]').val((grandTotal - sumDiscount).toFixed(2));
 
+                     //มูลค่าที่ถูกต้อง / Correct Value total-invoice-new
+                     $('#total-invoice-new').text(formatNumber(correct.toFixed(2)));
+                     $('input[name="debit_correct_value"]').val(correct.toFixed(2));
+
+                     //ผลต่าง / Difference
+                     $('#difference').text(formatNumber((parseFloat(correct) - parseFloat(TotalInvoice)).toFixed(2)));
+                     $('input[name="debit_difference"]').val((parseFloat(correct) - parseFloat(TotalInvoice)).toFixed(2));
                 }
 
                 // Initialize Select2 สำหรับทุก select element ที่มี class .product-select

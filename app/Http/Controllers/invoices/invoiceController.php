@@ -68,6 +68,7 @@ class invoiceController extends Controller
         $quoteProducts = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','income')->get();
         $quoteProductsDiscount = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','discount')->get();
         $campaignSource = DB::table('campaign_source')->get();
+        
         return view('invoices.form-create', compact('campaignSource','customer','quoteProducts','quotationModel','sales','country','airline','numDays','wholesale','products','productDiscount','quoteProductsDiscount'));
         
     }
@@ -81,6 +82,20 @@ class invoiceController extends Controller
             'invoice_status' => 'wait',
             'invoice_withholding_tax_status'=> isset($request->invoice_withholding_tax_status) ? 'Y' : 'N',
          ]); 
+
+         if($request->customer_id) {
+            customerModel::where('customer_id', $request->customer_id)->update([
+                'customer_name' => $request->customer_name,
+                'customer_email' => $request->customer_email,
+                'customer_address' => $request->customer_address,
+                'customer_texid' => $request->customer_texid,
+                'customer_tel' => $request->customer_tel,
+                'customer_fax' => $request->customer_fax,
+                'customer_date' => $request->customer_date,
+                'customer_campaign_source' => $request->customer_campaign_source,
+            ]);
+         }
+
         $request->merge(['created_by' => Auth::user()->name]); 
        $invoice = invoiceModel::create($request->all());
        quotationModel::where('quote_number',$invoice->invoice_quote)->update(['quote_status'=> 'invoice']);
@@ -131,7 +146,20 @@ class invoiceController extends Controller
     public function update(invoiceModel $invoiceModel, Request $request)
     {
         //dd($request);
-      
+        
+         if($request->customer_id) {
+            customerModel::where('customer_id', $request->customer_id)->update([
+                'customer_name' => $request->customer_name,
+                'customer_email' => $request->customer_email,
+                'customer_address' => $request->customer_address,
+                'customer_texid' => $request->customer_texid,
+                'customer_tel' => $request->customer_tel,
+                'customer_fax' => $request->customer_fax,
+                'customer_date' => $request->customer_date,
+                'customer_campaign_source' => $request->customer_campaign_source,
+            ]);
+         }
+
 
         $request->merge([
             'invoice_withholding_tax_status'=> isset($request->invoice_withholding_tax_status) ? 'Y' : 'N',

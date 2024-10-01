@@ -11,7 +11,7 @@ class debitNoteProductModel extends Model
     protected $table = 'debit_note_product';
     protected $primaryKey = 'debit_note_product_id';
     protected $fillable = [
-        'debit_note_id',
+        'debit_id',
         'product_id',
         'product_name',
         'product_qty',

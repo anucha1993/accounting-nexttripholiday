@@ -347,24 +347,24 @@
                                     <tr>
                                         <td class="text-info">ใบเพิ่มหนี้</td>
                                         <td>{{ date('d/m/Y', strtotime($item->created_at)) }}</td>
-                                        <td><span class="badge bg-info">{{ $item->debit_note_number }}</span></td>
+                                        <td><span class="badge bg-info">{{ $item->debit_number }}</span></td>
                                         <td>คุณ{{ $item->customer_name }}</td>
 
-                                        <td>{{ number_format($item->grand_total, 2, '.', ',') }}</td>
+                                        <td>{{ number_format($item->debit_grand_total, 2, '.', ',') }}</td>
                                         <td>{{ number_format($item->payment ? $item->payment : 0, 2, '.', ',') }}</td>
-                                        <td>{{ number_format($item->grand_total - $item->payment, 2, '.', ',') }}</td>
+                                        <td>{{ number_format($item->debit_grand_total - $item->payment, 2, '.', ',') }}</td>
 
                                         <td>
-                                            @if ($item->debit_note_status === 'wait')
+                                            @if ($item->debit_status === 'wait')
                                                 <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
                                             @endif
-                                            @if ($item->debit_note_status === 'success')
+                                            @if ($item->debit_status === 'success')
                                                 <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
                                             @endif
-                                            @if ($item->debit_note_status === 'cancel')
+                                            @if ($item->debit_status === 'cancel')
                                                 <span class="badge rounded-pill bg-danger">ยกเลิก</span>
                                             @endif
-                                            @if ($item->debit_note_status === 'payment')
+                                            @if ($item->debit_status === 'payment')
                                                 <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
                                             @endif
                                         </td>
@@ -377,18 +377,18 @@
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
                                                     <a class="dropdown-item debit-modal"
-                                                        href="{{ route('payment.debit', $item->debit_note_id) }}"><i
+                                                        href="{{ route('payment.debit', $item->debit_id) }}"><i
                                                             class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
 
 
 
 
                                                     <a class="dropdown-item"
-                                                        href="{{ route('debit.edit', $item->debit_note_id) }}"><i
+                                                        href="{{ route('debit.edit', $item->debit_id) }}"><i
                                                             class="fa fa-edit"></i> แก้ไข</a>
 
                                                     <a class="dropdown-item" target="_blank"
-                                                        href="{{ route('mpdf.debitreceipt', $item->debit_note_id) }}"><i
+                                                        href="{{ route('mpdf.debitreceipt', $item->debit_id) }}"><i
                                                             class="fa fa-print"></i>
                                                         พิมพ์ใบเพิ่มหนี้</a>
 

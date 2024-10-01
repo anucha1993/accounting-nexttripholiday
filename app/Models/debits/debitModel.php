@@ -16,11 +16,13 @@ class debitModel extends Model
     protected $table = 'debit_note';
     protected $primaryKey = 'debit_id';
     protected $fillable = [
+        'debit_date',
        'debit_number',
        'debit_invoice',
+       'debit_taxinvoice',
        'customer_id',
        'vat_type',
-       'debit_withholding_tax_status	',
+       'debit_withholding_tax_status',
        'debit_original_invoice_value',
        'debit_correct_value',
        'debit_difference',
