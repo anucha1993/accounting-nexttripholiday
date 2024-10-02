@@ -113,7 +113,7 @@
                         <h4><b>เลขที่/No:</b></h4>
                     </td>
                     <td style="width: 160px; padding-left: 5px; border-left: none; border-bottom: none; vertical-align: top;">
-                        <p><span>{{$debitModel->debit_note_number}}</span></p>
+                        <p><span>{{$debitModel->debit_number}}</span></p>
                     </td>
                 
                 </tr>
@@ -221,7 +221,7 @@
 
                     <td
                         style="padding-left: 5px; border-left: none; border-top: none; vertical-align: top;">
-                        {{ $invoiceModel->invoice_tour_code }}</span></p>
+                        {{ $quotationModel->quote_tour ? $quotationModel->quote_tour : $quotationModel->quote_tour_code  }}</span></p>
                     </td>
                 </tr>
                 {{-- <tr style="padding: 3px">
