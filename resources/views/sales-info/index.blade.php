@@ -380,7 +380,10 @@
                                                         href="{{ route('payment.debit', $item->debit_id) }}"><i
                                                             class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
 
-
+                                                    <a class="dropdown-item mail-quote"
+                                                       href="{{ route('mail.debitReceipt.formMail', $item->debit_id) }}">
+                                                       <i class="fas fa-envelope"></i> ส่งเมล</a>
+    
 
 
                                                     <a class="dropdown-item"

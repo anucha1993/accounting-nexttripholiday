@@ -205,3 +205,6 @@ Route::get('modal/mail/invoice/{invoiceModel}',[MailController::class,'formMailI
 //Send Mail  TaxReceipt
 Route::post('mpdf/mail/taxreceipt/{invoiceModel}',[MPDF_taxReceiptController::class,'sendPdf'])->name('mpdf.taxreceipt.sendPdf');
 Route::get('modal/mail/taxreceipt/{invoiceModel}',[MailController::class,'formMailtaxReceipt'])->name('mail.taxreceipt.formMail');
+//Send Mail  Debit
+Route::post('mpdf/mail/debit/{debitModel}',[MPDF_DebitReceiptController::class,'sendPdf'])->name('mpdf.debitReceipt.sendPdf');
+Route::get('modal/mail/debit/{debitModel}',[MailController::class,'formMailDebitReceipt'])->name('mail.debitReceipt.formMail');
