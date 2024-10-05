@@ -115,7 +115,7 @@
                         <form action="{{ route('invoice.store') }}" id="form-create" method="post">
                             @csrf
                             @method('POST')
-                            <input type="hidden" name="quote_id" value="{{$quotationModel->quote_id}}">
+                            <input type="hidden" name="quote_id" value="{{ $quotationModel->quote_id }}">
 
                             <div class="row table-custom ">
 
@@ -151,22 +151,16 @@
                                         readonly>
                                 </div>
 
-                                {{-- <div class="col-md-2">
-                                    <label><b>เซลล์ผู้ขายแพคเกจ:</b> {{ $quotationModel->quote_sale }}</label>
-                                    <select style="background-color: #a3a3a32d" name="invoice_sale" class="form-select"
-                                        @readonly(true)>
-                                        <option value="{{ $sales->id }}" selected> {{ $sales->name }}</option>
-                                    </select>
-                                </div> --}}
-                            </div>
                             
+                            </div>
 
-                           <div class="row table-custom ">
+
+                            <div class="row table-custom ">
                                 <div class="col-md-2 ms-auto">
                                     <label><b>เซลล์ผู้ขายแพคเกจ:</b> {{ $quotationModel->quote_sale }}</label>
                                     <select name="quote_sale" class="form-select">
                                         @forelse ($sales as $item)
-                                            <option value="{{$item->id }}">{{ $item->name }}</option>
+                                            <option @if($item->id === $quotationModel->quote_sale) selected @endif value="{{ $item->id }}">{{ $item->name }}</option>
                                         @empty
                                             <option value="">--Select Sale--</option>
                                         @endforelse
@@ -175,18 +169,18 @@
 
                                 <div class="col-md-2">
                                     <label>วันที่เสนอราคา</label>
-                                    <input type="text" id="displayDatepickerQuoteDate"
-                                          class="form-control" >
+                                    <input type="text" id="displayDatepickerQuoteDate" class="form-control">
 
-                                        <input type="hidden" id="submitDatepickerQuoteDate" name="quote_date"
-                                        value="{{$quotationModel->quote_date }}" class="form-control" >
+                                    <input type="hidden" id="submitDatepickerQuoteDate" name="quote_date"
+                                        value="{{ $quotationModel->quote_date }}" class="form-control">
                                 </div>
 
 
                                 <div class="col-md-2 ms-3">
                                     <label>วันที่สั่งซื้อ,จองแพคเกจ:</label>
                                     <input type="text" id="displayDatepicker" class="form-control">
-                                    <input type="hidden" id="submitDatepicker" name="quote_booking_create" value="{{ date('Y-m-d', strtotime($quotationModel->quote_booking_create)) }}">
+                                    <input type="hidden" id="submitDatepicker" name="quote_booking_create"
+                                        value="{{ date('Y-m-d', strtotime($quotationModel->quote_booking_create)) }}">
                                 </div>
                                 <div class="col-md-2">
                                     <label>เลขที่ใบจองทัวร์</label>
@@ -195,31 +189,31 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label>รหัสทัวร์</label>
-                                   @if ($quotationModel->quote_tour)
-                                   <input type="text" name="quote_tour" value="{{ $quotationModel->quote_tour }}" class="form-control" readonly>
-                                   
+                                    @if ($quotationModel->quote_tour)
+                                        <input type="text" name="quote_tour"
+                                            value="{{ $quotationModel->quote_tour }}" class="form-control" readonly>
                                     @else
-                                    <input type="text" name="quote_tour_code_old" value="{{ $quotationModel->quote_tour_code }}" class="form-control" readonly>
+                                        <input type="text" name="quote_tour_code_old"
+                                            value="{{ $quotationModel->quote_tour_code }}" class="form-control" readonly>
                                     @endif
                                 </div>
 
                             </div>
-                       
+
                             <div class="row table-custom">
 
                                 <div class="col-md-2 ms-auto">
                                     <label for="">ยอด ใบเสนอราคา</label>
-                                    <input type="text"  style="background-color: #2efc6c2d"
+                                    <input type="text" style="background-color: #2efc6c2d"
                                         class="form-control text-end"
                                         value="{{ number_format($quotationModel->quote_grand_total, 2, '.', ',') }}">
 
-                                        <input type="hidden" id="total-quote" style="background-color: #2efc6c2d"
-                                        class="form-control text-end"
-                                        value="{{ $quotationModel->quote_grand_total}}">
+                                    <input type="hidden" id="total-quote" style="background-color: #2efc6c2d"
+                                        class="form-control text-end" value="{{ $quotationModel->quote_grand_total }}">
                                 </div>
                             </div>
-                            <hr> 
-                          <h5 class="text-danger">รายละเอียดแพคเกจทัวร์:</h5>
+                            <hr>
+                            <h5 class="text-danger">รายละเอียดแพคเกจทัวร์:</h5>
 
                             <div class="row table-custom">
                                 <div class="col-md-6">
@@ -231,7 +225,8 @@
                                     </div>
                                 </div>
 
-                                <input type="hidden" id="tour-code" name="quote_tour" value="{{ $quotationModel->quote_tour}}">
+                                <input type="hidden" id="tour-code" name="quote_tour"
+                                    value="{{ $quotationModel->quote_tour }}">
 
 
                                 <div class="col-md-3">
@@ -240,7 +235,8 @@
                                         <option value="">--เลือกระยะเวลา--</option>
                                         @forelse ($numDays as $item)
                                             <option @if ($quotationModel->quote_numday === $item->num_day_total) selected @endif
-                                                data-day="{{ $item->num_day_total }}" value="{{ $item->num_day_total }}">
+                                                data-day="{{ $item->num_day_total }}"
+                                                value="{{ $item->num_day_total }}">
                                                 {{ $item->num_day_name }}</option>
                                         @empty
                                         @endforelse
@@ -310,10 +306,10 @@
                                         value="{{ date('Y-m-d', strtotime($quotationModel->quote_date_end)) }}">
                                 </div>
                             </div>
-                            <hr> 
-                           
+                            <hr>
 
-                           
+
+
                             <hr>
                             <h5 class="text-danger">ข้อมูลลูกค้า:</h5>
                             <input type="hidden" name="customer_id" value="{{ $customer->customer_id }}">
@@ -402,7 +398,6 @@
                                 {{-- ค่าบริการ --}}
 
                                 <div class="row item-row ">
-                                    <div class="row ">
                                         <div class="col-md-1"><span class="row-number"> 1</span> <a
                                                 href="javascript:void(0)" class="remove-row-btn text-danger"><span
                                                     class=" fa fa-trash"></span></a></div>
@@ -447,7 +442,7 @@
                                                 class="total-amount form-control text-end" value="0" readonly>
                                         </div>
                                     </div>
-                                </div>
+                         
 
                                 {{-- เพิ่มรายการใหม่ --}}
                                 <div class=" table-income">
@@ -485,7 +480,8 @@
                                     </div>
 
                                     <div class="col-md-1">
-                                        <input type="checkbox" name="withholding_tax[]" class="vat-3" value="N" disabled>
+                                        <input type="checkbox" name="withholding_tax[]" class="vat-3" value="N"
+                                            disabled>
                                     </div>
                                     <div class="col-md-1" style="display: none">
                                         <select name="expense_type[]" class="form-select">
@@ -707,7 +703,7 @@
                                         <input type="hidden" name="invoice_pre_vat_amount">
                                         <input type="hidden" name="invoice_vat">
                                         <input type="hidden" name="invoice_include_vat">
-                                        <input type="hidden"   name="invoice_grand_total" id="invoice-grand-total">
+                                        <input type="hidden" name="invoice_grand_total" id="invoice-grand-total">
                                         <input type="hidden" name="invoice_withholding_tax">
                                         <button type="submit" class="btn btn-primary btn-sm mx-3" form="form-create">
                                             <i class="fa fa-save"></i> สร้างใบแจ้งหนี้</button>
@@ -729,9 +725,9 @@
 
         </div>
 
-      
 
-      
+
+
 
         <script>
             $(document).ready(function() {
@@ -742,8 +738,26 @@
                     var quoteGrandTotal = $('#total-quote').val();
                     var quoteGrandTotalNew = $('#invoice-grand-total').val();
 
+
                     if (quoteGrandTotal === quoteGrandTotalNew) {
                         isValid = true;
+
+                        let form = this;
+                        let formData = $(form).serialize(); // เก็บข้อมูลจากฟอร์มทั้งหมด
+                        form.submit();
+
+                        $.ajax({
+                        url: "{{ route('quote.AjaxUpdate', $quotationModel->quote_id) }}", // เส้นทาง Controller ที่ 2
+                        method: 'PUT',
+                        data: formData, // ข้อมูลที่ต้องการส่ง
+                        success: function(response) {
+                            console.log('Updated Controller 2:', response);
+                        },
+                        error: function(error) {
+                            console.log('Error in Controller 2:', error);
+                        }
+                    });
+
                     }
 
                     if (!isValid) {
@@ -756,35 +770,10 @@
                     }
                 });
 
-
-                $('#form-create').on('submit', function(event) {
-        event.preventDefault(); // หยุดการทำงานปกติของฟอร์มชั่วคราว
-
-        let form = this;
-        let formData = $(form).serialize(); // เก็บข้อมูลจากฟอร์มทั้งหมด
-
-        // 1. ส่งข้อมูลไปยัง Controller แรก (ปกติ)
-        form.submit();
-
-        // 2. ส่งข้อมูลไปยัง Controller ที่สองด้วย AJAX
-        $.ajax({
-            url: "{{ route('quote.update',$quotationModel->quote_id) }}", // เส้นทาง Controller ที่ 2
-            method: 'PUT',
-            data: formData, // ข้อมูลที่ต้องการส่ง
-            success: function(response) {
-                console.log('Updated Controller 2:', response);
-            },
-            error: function(error) {
-                console.log('Error in Controller 2:', error);
-            }
-        });
-    });
-
-
             });
         </script>
 
-        
+
 
 
 
@@ -803,7 +792,7 @@
                         if (!$(element).is(':checked')) {
                             // สร้าง hidden input ที่มีค่าเป็น 'N' เพื่อส่งไปกับ form
                             $(element).after(
-                            '<input type="hidden" name="withholding_tax[]" value="N">');
+                                '<input type="hidden" name="withholding_tax[]" value="N">');
                         }
                     });
                 });
@@ -960,8 +949,9 @@
 
                     //ยอดรวมยกเว้นภาษี
                     $('#sum-total-nonvat').text(formatNumber((sumPriceExcludingVatNonVat - sumDiscount).toFixed(2)));
-                    $('input[name="invoice_vat_exempted_amount"]').val((sumPriceExcludingVatNonVat - sumDiscount).toFixed(
-                        2));
+                    $('input[name="invoice_vat_exempted_amount"]').val((sumPriceExcludingVatNonVat - sumDiscount)
+                        .toFixed(
+                            2));
 
                     //ยอดรวมยกเว้นภาษี
                     $('#sum-total-vat').text(formatNumber(listVatTotal.toFixed(2)));

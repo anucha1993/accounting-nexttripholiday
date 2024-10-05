@@ -19,24 +19,22 @@ use App\Models\booking\bookingQuotationModel;
 
 class quoteController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth');
         $this->middleware('permission:create-quote|edit-booking|delete-quote|view-quote', ['only' => ['index', 'show']]);
-        $this->middleware('permission:create-quote', ['only' => ['create', 'store','createNew']]);
-        $this->middleware('permission:edit-quote', ['only' => ['edit', 'update','cancel']]);
+        $this->middleware('permission:create-quote', ['only' => ['create', 'store', 'createNew']]);
+        $this->middleware('permission:edit-quote', ['only' => ['edit', 'update', 'cancel']]);
         $this->middleware('permission:delete-quote', ['only' => ['destroy']]);
     }
-
 
     public function index()
     {
         $sales = saleModel::select('name', 'id')
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
             ->get();
-           
-        $quotations = quotationModel::with('Salename', 'quoteCustomer', 'quoteWholesale',)->orderBy('quotation.created_at', 'desc')->paginate(10);
+
+        $quotations = quotationModel::with('Salename', 'quoteCustomer', 'quoteWholesale')->orderBy('quotation.created_at', 'desc')->paginate(10);
 
         return view('quotations.index', compact('sales', 'quotations'));
     }
@@ -50,14 +48,13 @@ class quoteController extends Controller
         $latestCode = quotationModel::select('quote_booking')->latest()->first();
 
         if ($latestCode) {
-            $lastNumber = (int)substr($latestCode, 5); // ตัด prefix, ปี และเดือนออก
+            $lastNumber = (int) substr($latestCode, 5); // ตัด prefix, ปี และเดือนออก
             $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
         } else {
             $newNumber = '001';
         }
         return $prefix . $year . $month . $newNumber;
     }
-
 
     // function Runnumber ใบเสนอราคา
     public function generateRunningCodeIV()
@@ -97,8 +94,7 @@ class quoteController extends Controller
         return $runningCode;
     }
 
-
-    public function generateRunningCodeTour($prefix,$dateStart)
+    public function generateRunningCodeTour($prefix, $dateStart)
     {
         $quote = quotationModel::select('quote_tour_code')->latest()->first();
         $prefix = $prefix;
@@ -106,18 +102,18 @@ class quoteController extends Controller
         if (!empty($quote)) {
             $quoteCode = $quote->quote_tour_code;
         } else {
-            $quoteCode = $prefix . date('dmy',strtotime($dateStart)) . '0000';
+            $quoteCode = $prefix . date('dmy', strtotime($dateStart)) . '0000';
         }
-      
-        $dateStart = date('dmy',strtotime($dateStart));
+
+        $dateStart = date('dmy', strtotime($dateStart));
         $lastFourDigits = substr($quoteCode, -4);
         $incrementedNumber = intval($lastFourDigits) + 1;
         $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
-        $runningCode = $prefix . $dateStart  . $newNumber;
+        $runningCode = $prefix . $dateStart . $newNumber;
         return $runningCode;
     }
 
-    public function generateRunningCodeTourUpdate($prefix,$tourcodeOld,$dateStart)
+    public function generateRunningCodeTourUpdate($prefix, $tourcodeOld, $dateStart)
     {
         $quote = quotationModel::select('quote_tour_code')->latest()->first();
         $prefix = $prefix;
@@ -125,38 +121,38 @@ class quoteController extends Controller
         if (!empty($quote)) {
             $quoteCode = $tourcodeOld;
         } else {
-            $quoteCode = $prefix . date('dmy',strtotime($dateStart)) . '0000';
+            $quoteCode = $prefix . date('dmy', strtotime($dateStart)) . '0000';
         }
-      
-      
-        $dateStart = date('dmy',strtotime($dateStart));
+
+        $dateStart = date('dmy', strtotime($dateStart));
         $lastFourDigits = substr($quoteCode, -4);
         $incrementedNumber = intval($lastFourDigits);
         $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
-        $runningCode = $prefix . $dateStart  . $newNumber;
+        $runningCode = $prefix . $dateStart . $newNumber;
         return $runningCode;
     }
-    
 
     public function store(Request $request)
     {
         //dd($request);
         $runningBooking = $this->generateRunningBooking();
-      
 
-        if(empty($request->quote_bookin)) {
+        if (empty($request->quote_bookin)) {
             $request->merge(['quote_booking' => $runningBooking]);
         }
         //dd($request->quote_booking);
 
-        $country = DB::connection('mysql2')->table('tb_country')->select('iso2')->where('id', $request->quote_country)->first();
-        $runningCodeTour = $this->generateRunningCodeTour($country->iso2,$request->quote_date_start);
+        $country = DB::connection('mysql2')
+            ->table('tb_country')
+            ->select('iso2')
+            ->where('id', $request->quote_country)
+            ->first();
+        $runningCodeTour = $this->generateRunningCodeTour($country->iso2, $request->quote_date_start);
         //dd($runningCodeTour);
-      
-        $runningCode = $this->generateRunningCodeIV();
-        
-        if ($request->customer_type_new !== 'customerold') {
 
+        $runningCode = $this->generateRunningCodeIV();
+
+        if ($request->customer_type_new !== 'customerold') {
             $runningCodeCus = $this->generateRunningCodeCUS();
             $request->merge(['customer_number' => $runningCodeCus]);
             //customerNew
@@ -176,11 +172,11 @@ class quoteController extends Controller
             $customerModel = customerModel::where('customer_id', $request->customer_id)->first();
         }
         $request->merge([
-            'quote_withholding_tax_status'=> isset($request->quote_withholding_tax_status) ? 'Y' : 'N',
-            'quote_tour_code'=> $runningCodeTour,
+            'quote_withholding_tax_status' => isset($request->quote_withholding_tax_status) ? 'Y' : 'N',
+            'quote_tour_code' => $runningCodeTour,
             'quote_number' => $runningCode,
             'quote_status' => 'wait',
-            'customer_id'=> $customerModel->customer_id,
+            'customer_id' => $customerModel->customer_id,
             'created_by' => Auth::user()->name,
         ]);
 
@@ -189,7 +185,7 @@ class quoteController extends Controller
         //ลงข้อมูลรายการสินค้า
         $sum = 0;
         foreach ($request->product_id as $key => $product) {
-            $productName = productModel::where('id',$request->product_id[$key])->first();
+            $productName = productModel::where('id', $request->product_id[$key])->first();
             if ($request->product_id) {
                 quoteProductModel::create([
                     'quote_id' => $quote->quote_id,
@@ -203,9 +199,7 @@ class quoteController extends Controller
                     'withholding_tax' => isset($request->withholding_tax[$key]) ? 'Y' : 'N',
                 ]);
             }
-           
         }
-
 
         //Update status ใบจองทัวเป็น status = 'invoice'
         bookingModel::where('code', $quote->quote_booking)->update(['status' => 'quote']);
@@ -215,35 +209,44 @@ class quoteController extends Controller
 
     public function edit(quotationModel $quotationModel, Request $request)
     {
-      
-        $bookingModel = bookingModel::where('code',$quotationModel->quote_booking)->first();
+        $bookingModel = bookingModel::where('code', $quotationModel->quote_booking)->first();
         $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
-        $sales = saleModel::select('name', 'id')->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])->get();
+        $sales = saleModel::select('name', 'id')
+            ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+            ->get();
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
         $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
         $numDays = numDayModel::orderBy('num_day_total')->get();
         $wholesale = wholesaleModel::where('status', 'on')->get();
-        $products = productModel::where('product_type','income')->get();
-        $productDiscount = productModel::where('product_type','discount')->get();
-        $quoteProducts = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','income')->get();
-        $quoteProductsDiscount = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','discount')->get();
+        $products = productModel::where('product_type', 'income')->get();
+        $productDiscount = productModel::where('product_type', 'discount')->get();
+        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)
+            ->where('expense_type', 'income')
+            ->get();
+        $quoteProductsDiscount = quoteProductModel::where('quote_id', $quotationModel->quote_id)
+            ->where('expense_type', 'discount')
+            ->get();
         $campaignSource = DB::table('campaign_source')->get();
-        
-        return view('quotations.edit', compact('campaignSource','customer','quoteProducts','quotationModel','sales','country','airline','numDays','wholesale','products','productDiscount','quoteProductsDiscount'));
+
+        return view('quotations.edit', compact('campaignSource', 'customer', 'quoteProducts', 'quotationModel', 'sales', 'country', 'airline', 'numDays', 'wholesale', 'products', 'productDiscount', 'quoteProductsDiscount'));
     }
 
     public function update(quotationModel $quotationModel, Request $request)
     {
         //dd($request);
-        $country = DB::connection('mysql2')->table('tb_country')->select('iso2')->where('id', $request->quote_country)->first();
-        
-        $runningCodeTourUpdate = $this->generateRunningCodeTourUpdate($country->iso2,$request->quote_tour_code_old,$request->quote_date_start);
+        $country = DB::connection('mysql2')
+            ->table('tb_country')
+            ->select('iso2')
+            ->where('id', $request->quote_country)
+            ->first();
+
+        $runningCodeTourUpdate = $this->generateRunningCodeTourUpdate($country->iso2, $request->quote_tour_code_old, $request->quote_date_start);
 
         $request->merge(['quote_tour_code' => $runningCodeTourUpdate]);
 
         //dd($runningCodeTourUpdate);
 
-        $request->merge(['quote_withholding_tax_status' => isset($request->quote_withholding_tax_status	) ? 'Y' : 'N']); 
+        $request->merge(['quote_withholding_tax_status' => isset($request->quote_withholding_tax_status) ? 'Y' : 'N']);
 
         customerModel::where('customer_id', $request->customer_id)->update([
             'customer_name' => $request->customer_name,
@@ -265,7 +268,7 @@ class quoteController extends Controller
             if ($request->product_id[$key]) {
                 $productName = productModel::where('id', $request->product_id[$key])->first();
                 quoteProductModel::create([
-                     'quote_id' => $quotationModel->quote_id,
+                    'quote_id' => $quotationModel->quote_id,
                     'product_id' => $request->product_id[$key],
                     'product_name' => $productName->product_name,
                     'product_qty' => $request->quantity[$key],
@@ -287,7 +290,6 @@ class quoteController extends Controller
         return redirect()->back();
     }
 
-  
     public function createNew()
     {
         $products = productModel::get();
@@ -301,8 +303,34 @@ class quoteController extends Controller
         $wholesale = wholesaleModel::where('status', 'on')->get();
         $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
         $campaignSource = DB::table('campaign_source')->get();
-        $productDiscount = productModel::where('product_type','discount')->get();
-        return view('quotations.create', compact('productDiscount','campaignSource','airline','wholesale','country','numDays','products', 'customers', 'sales', 'tours'));
+        $productDiscount = productModel::where('product_type', 'discount')->get();
+        return view('quotations.create', compact('productDiscount', 'campaignSource', 'airline', 'wholesale', 'country', 'numDays', 'products', 'customers', 'sales', 'tours'));
     }
 
+    public function AjaxUpdate(quotationModel $quotationModel, Request $request)
+    {
+        $country = DB::connection('mysql2')
+            ->table('tb_country')
+            ->select('iso2')
+            ->where('id', $request->quote_country)
+            ->first();
+        $runningCodeTourUpdate = $this->generateRunningCodeTourUpdate($country->iso2, $request->quote_tour_code_old, $request->quote_date_start);
+        $request->merge(['quote_tour_code' => $runningCodeTourUpdate]);
+        $request->merge(['quote_withholding_tax_status' => isset($request->quote_withholding_tax_status) ? 'Y' : 'N']);
+
+        customerModel::where('customer_id', $request->customer_id)->update([
+            'customer_name' => $request->customer_name,
+            'customer_email' => $request->customer_email,
+            'customer_address' => $request->customer_address,
+            'customer_texid' => $request->customer_texid,
+            'customer_tel' => $request->customer_tel,
+            'customer_fax' => $request->customer_fax,
+            'customer_date' => $request->customer_date,
+            'customer_campaign_source' => $request->customer_campaign_source,
+        ]);
+
+        $quotationModel->update($request->all());
+
+        return redirect()->back();
+    }
 }

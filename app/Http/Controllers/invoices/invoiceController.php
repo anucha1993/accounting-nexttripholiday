@@ -81,6 +81,7 @@ class invoiceController extends Controller
         //dd($request);
         $runningCode = $this->generateRunningCodeIVS();
         $request->merge([
+            'invoice_sale' => $request->quote_sale,
             'invoice_number' => $runningCode,
             'invoice_status' => 'wait',
             'invoice_withholding_tax_status'=> isset($request->invoice_withholding_tax_status) ? 'Y' : 'N',
@@ -117,7 +118,7 @@ class invoiceController extends Controller
                     'product_sum' => $request->total_amount[$key],
                     'expense_type' => $request->expense_type[$key],
                     'vat_status' => $request->vat_status[$key],
-                    'withholding_tax' => isset($request->withholding_tax[$key]) ? 'Y' : 'N',
+                    'withholding_tax' =>$request->withholding_tax[$key],
                 ]);
             }
            
