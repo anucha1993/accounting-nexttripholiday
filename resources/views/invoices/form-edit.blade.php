@@ -394,13 +394,14 @@
                                     <div class="col-md-2">ยอดรวม</div>
                                 </div>
                                 <hr>
-
+                                @php
+                                $Runnumber = 0;
+                                $W_tax = 0;
+                               @endphp
                                 {{-- ค่าบริการ --}}
                                 @forelse ($quoteProducts as $item)
                                 <div class="row item-row ">
-                                    
-                                    <div class="row ">
-                                        <div class="col-md-1"><span class="row-number"> 1</span> <a
+                                        <div class="col-md-1"><span class="row-number"> {{++$Runnumber}}</span> <a
                                                 href="javascript:void(0)" class="remove-row-btn text-danger"><span
                                                     class=" fa fa-trash"></span></a></div>
                                         <div class="col-md-4">
@@ -430,8 +431,8 @@
                                         <div class="col-md-1 text-center">
                                             <select name="vat_status[]" class="vat-status form-select"
                                                 style="width: 110%;">
-                                                <option  @if($item->vat_status === "vat") checked @endif  value="vat">Vat</option>
-                                                <option  @if($item->vat_status === "nonvat") checked @endif value="nonvat">nonVat</option>
+                                                <option  @if($item->vat_status === "vat") selected @endif  value="vat">Vat</option>
+                                                <option  @if($item->vat_status === "nonvat") selected @endif value="nonvat">nonVat</option>
                                             </select>
                                         </div>
                                         <div class="col-md-1"><input type="number" name="quantity[]" value="{{$item->product_qty}}"
@@ -444,14 +445,13 @@
                                                 class="total-amount form-control text-end" value="0" readonly>
                                         </div>
                                     </div>
-                                </div>
                                 @empty
                                     
                                 @endforelse
                              
 
                                 {{-- เพิ่มรายการใหม่ --}}
-                                <div class="row table-income">
+                                <div class="table-income">
                                     <div class="col-md-12 " style="text-align: left">
 
                                     </div>
@@ -907,7 +907,7 @@
                     }
 
                     // คำนวณหักภาษี ณ ที่จ่าย (Withholding Tax)
-                    const withholdingTax = $('#withholding-tax').is(':checked') ? (sumPreVat + vatAmount) * 0.03 : 0;
+                    const withholdingTax = $('#withholding-tax').is(':checked') ? sumPreVat * 0.03 : 0;
 
                     //quote_withholding_tax
                     $('input[name="quote_withholding_tax"]').val(withholdingTax.toFixed(2));

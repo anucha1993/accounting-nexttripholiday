@@ -306,7 +306,7 @@
                                             <select name="vat_status[]" class="vat-status form-select"
                                                 style="width: 110%;">
                                                 <option value="vat">Vat</option>
-                                                <option value="nonvat">nonVat</option>
+                                                <option selected value="nonvat">nonVat</option>
                                             </select>
                                         </div>
                                         <div class="col-md-1"><input type="number" name="quantity[]"
@@ -355,7 +355,7 @@
                                     <div class="form-group">
                                         <label for="vat-method">การคำนวณ VAT:</label>
                                         <div>
-                                            <input type="radio" id="vat-include" name="vat_type" value="include">
+                                            <input type="radio" id="vat-include" name="vat_type" value="include" checked> 
                                             <label for="vat-include">คำนวณรวมกับราคาสินค้าและบริการ (VAT
                                                 Include)</label>
                                         </div>
@@ -711,7 +711,7 @@
                 }
 
                 // คำนวณหักภาษี ณ ที่จ่าย (Withholding Tax)
-                const withholdingTax = $('#withholding-tax').is(':checked') ? (sumPreVat + vatAmount) * 0.03 : 0;
+                const withholdingTax = $('#withholding-tax').is(':checked') ? sumPreVat * 0.03 : 0;
 
                 //quote_withholding_tax
                 $('input[name="quote_withholding_tax"]').val(withholdingTax.toFixed(2));

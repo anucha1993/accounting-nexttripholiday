@@ -155,7 +155,7 @@
                                             @endif
                                         </td> 
 
-                                        <td>{{ number_format($item->quote_total, 2, '.', ',') }}</td>
+                                        <td>{{ number_format($item->quote_grand_total, 2, '.', ',') }}</td>
                                         <td>
                                             @if ($item->quote_status != 'cancel')
                                                 @if ($item->wholesale_payment_status === 'wait' || $item->wholesale_payment_status === NULL)

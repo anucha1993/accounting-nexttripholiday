@@ -35,6 +35,7 @@ class debitModel extends Model
        'debit_grand_total',
        'debit_status',
        'debit_note',
+       'debit_cause',
        'payment',
        'created_by',
        'updated_by',

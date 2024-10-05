@@ -191,7 +191,7 @@
 
 
 
-                                                @if ($quotationModel->quote_status === 'wait' && $quotationModel->quote_status != 'cancel')
+                                                @if ($quotationModel->quote_status != 'cancel')
                                                     @can('edit-quote')
                                                         <a class="dropdown-item"
                                                             href="{{ route('quote.edit', $quotationModel->quote_id) }}"><i

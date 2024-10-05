@@ -559,6 +559,21 @@
 
                                             </div>
                                         </div>
+
+                                        <div class="col-md012">
+                                            <label>สาเหตุที่ออกใบเพิ่มหนี้: &nbsp;</label>
+                                            <select name="debit_cause" id="" class="form-select" required>
+                                                <option value="">--กรุณาเลือก--</option>
+                                                @forelse ($causes as $item)
+                                                    <option  value="{{$item->list_debit_name}}">{{$item->list_debit_name}}</option>
+                                                @empty
+                                                    
+                                                @endforelse
+                                            </select>
+                                            <hr>
+                                        </div>
+
+
                                         <div class="col-md012">
                                             <label>จำนวนเงินภาษีหัก ณ ที่จ่าย 3% : &nbsp;</label><span class="text-danger"
                                                 id="withholding-amount"> 0.00</span> บาท
@@ -892,7 +907,7 @@
                     }
 
                     // คำนวณหักภาษี ณ ที่จ่าย (Withholding Tax)
-                    const withholdingTax = $('#withholding-tax').is(':checked') ? (sumPreVat + vatAmount) * 0.03 : 0;
+                    const withholdingTax = $('#withholding-tax').is(':checked') ? sumPreVat * 0.03 : 0;
                     const TotalInvoice = $('#total-invoice').val();
                     let difference = 0;
                     let correct = parseFloat(sumPreVat) + parseFloat(TotalInvoice) ;

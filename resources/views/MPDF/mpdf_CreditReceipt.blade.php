@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>{{ $debitModel->debit_note_number }}</title>
+    <title>{{ $creditModel->credit_note_number }}</title>
     <meta http-equiv="Content-Language" content="th" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <style>
@@ -87,11 +87,11 @@
 
 
             <div class="text-center" style="padding-left: 80px">
-                <h4>ต้นฉบับ/ใบเพิ่มหนี้</h4>
+                <h4>ต้นฉบับ/ใบลดหนี้</h4>
             </div>
 
-            <div class="text-center " style="padding-left: 70px; padding-top: -55px;">
-                <h4><b>Original / Debit Note</b></h4>
+            <div class="text-center " style="padding-left: 60px; padding-top: -55px;">
+                <h4><b>Original / credit Note</b></h4>
             </div>
             <div class="" style="padding-left: 100px; padding-top: -35px;">
                 <h5><b>(สำหรับลูกค้า) </b> </h5>
@@ -113,7 +113,7 @@
                         <h4><b>เลขที่/No:</b></h4>
                     </td>
                     <td style="width: 160px; padding-left: 5px; border-left: none; border-bottom: none; vertical-align: top;">
-                        <p><span>{{$debitModel->debit_number}}</span></p>
+                        <p><span>{{$creditModel->credit_number}}</span></p>
                     </td>
                 
                 </tr>
@@ -136,7 +136,7 @@
 
                     <td
                         style="padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top; ">
-                        <p><span>{{ thaidate('j M Y', $debitModel->debit_date) }}</span></p>
+                        <p><span>{{ thaidate('j M Y', $creditModel->credit_date) }}</span></p>
                     </td>
                 </tr>
                 <tr>
@@ -331,61 +331,61 @@
                 <tr>
                     <td colspan="2" rowspan="11" style="text-align: left; vertical-align: top; padding: 10px;">
                         **(Non VAT) = ค่าบริการไม่คิดภาษีมูลค่าเพิ่ม<br><br>
-                        <b>หมายเหตุที่ออกใบเพิ่มหนี้ :</b><br>
-                        {{$debitModel->debit_cause ? $debitModel->debit_cause :'-' }}
+                        <b>หมายเหตุที่ออกใบลดหนี้ :</b><br>
+                        {{$creditModel->credit_cause ? $creditModel->credit_cause :'-' }}
                         <br>
                         <b>หมายเหตุ / Remark:</b><br>
-                        {{$debitModel->debit_note ? $debitModel->debit_note :'-' }}
+                        {{$creditModel->credit_note ? $creditModel->credit_note :'-' }}
                         <br><br>
-                        ภาษีหัก ณ ที่จ่าย 3%: {{ number_format($debitModel->vat_3_total, 2, '.', ',') }} บาท<br>
+                        ภาษีหัก ณ ที่จ่าย 3%: {{ number_format($creditModel->vat_3_total, 2, '.', ',') }} บาท<br>
                         (คำนวณจากยอดรวมก่อนภาษีมูลค่าเพิ่ม / Pre-VAT Amount)<br>
                         ข้อสังเกต: กรุณาตรวจสอบกับบริษัทเกี่ยวกับการหักภาษี ณ ที่จ่าย 3% ภายใต้เงื่อนไขที่กำหนด
                     </td>
                     <td colspan="2" style="text-align: right; padding: 0px;">มูลค่าตามใบกำกับภาษีเดิม/Original Tax Invoice Value
                     </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_original_invoice_value, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_original_invoice_value, 2, '.', ',') }}</td>
                     
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">มูลค่าที่ถูกต้อง / Correct Value
                     </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_correct_value, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_correct_value, 2, '.', ',') }}</td>
                     
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ผลต่าง / Defference
                     </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_difference, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_difference, 2, '.', ',') }}</td>
                     
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ยอดรวมยกเว้นภาษี / Vat-Exempted Amount
                     </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_vat_exempted_amount, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_vat_exempted_amount, 2, '.', ',') }}</td>
                     
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ราคาสุทธิสินค้าที่เสียภาษี / Pre-Tax
                         Amount</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_pre_tax_amount, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_pre_tax_amount, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ส่วนลด / Discount</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_discount, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_discount, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ราคาก่อนภาษีมูลค่าเพิ่ม / Pre-VAT
                         Amount</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_pre_vat_amount, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_pre_vat_amount, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ภาษีมูลค่าเพิ่ม VAT 7%</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_vat, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_vat, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ราคาพร้อมภาษีมูลค่าเพิ่ม / Include VAT
                     </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_include_vat, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_include_vat, 2, '.', ',') }}</td>
                 </tr>
 
                 <tr>
@@ -395,14 +395,14 @@
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ยอดชำระทั้งสิ้น / Grand Total</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($debitModel->debit_grand_total - $paymentDeposit, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_grand_total - $paymentDeposit, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; background-color: #fff;">
                         <h3>จำนวนเงินตัวอักษร:</h3>
                     </td>
                     <td colspan="3" style="text-align: right; background-color: #bbdefb;">
-                        <h3>(@bathText($debitModel->debit_grand_total - $paymentDeposit))</h3>
+                        <h3>(@bathText($creditModel->credit_grand_total - $paymentDeposit))</h3>
                     </td>
 
                 </tr>

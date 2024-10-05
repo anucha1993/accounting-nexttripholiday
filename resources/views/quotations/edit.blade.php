@@ -344,7 +344,7 @@
                                 @endphp
                                 @forelse ($quoteProducts as $key => $item)
                                     <div class="row item-row ">
-                                        <div class="row ">
+                     
                                             <div class="col-md-1"><span class="row-number"> {{ ++$Runnumber }}</span> <a
                                                     href="javascript:void(0)" class="remove-row-btn text-danger"><span
                                                         class=" fa fa-trash"></span></a></div>
@@ -392,14 +392,12 @@
                                                     class="total-amount form-control text-end" value="0" readonly>
                                             </div>
                                         </div>
-                                    </div>
+                                   
                                 @empty
                                 @endforelse
                                 {{-- เพิ่มรายการใหม่ --}}
-                                <div class="row item-row table-income">
-                                    <div class="col-md-12 " style="text-align: left">
-
-                                    </div>
+                                <div class="table-income">
+                                    
                                 </div>
                                 <div class="add-row">
                                     <i class="fa fa-plus"></i><a id="add-row-service" href="javascript:void(0)"
@@ -461,9 +459,7 @@
                                 @endforelse
                                
                                 <div class="table-discount">
-                                    <div class="row item-row">
                                    
-                                </div>
                                 </div>
 
                                 <div class="add-row">

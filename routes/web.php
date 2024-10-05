@@ -28,6 +28,7 @@ use App\Http\Controllers\wholeSales\wholeSaleController;
 use App\Http\Controllers\payments\paymentDebitController;
 use App\Http\Controllers\quotefiles\QuoteFilesController;
 use App\Http\Controllers\MPDF\MPDF_DebitReceiptController;
+use App\Http\Controllers\MPDF\MPDF_CreditReceiptController;
 use App\Http\Controllers\MPDF\MPDF_PaymentDebitController;
 use App\Http\Controllers\payments\paymentCreditController;
 use App\Http\Controllers\Invoices\InvoiceBookingController;
@@ -195,6 +196,7 @@ Route::get('mpdf/payment/debit/{paymentModel}',[MPDF_PaymentDebitController::cla
 Route::get('mpdf/invoice/{invoiceModel}',[MPDF_invoiceController::class,'generatePDF'])->name('mpdf.invoice');
 Route::get('mpdf/texreceipt/{invoiceModel}',[MPDF_taxReceiptController::class,'generatePDF'])->name('mpdf.texreceipt');
 Route::get('mpdf/debitreceipt/{debitModel}',[MPDF_DebitReceiptController::class,'generatePDF'])->name('mpdf.debitreceipt');
+Route::get('mpdf/creditreceipt/{creditModel}',[MPDF_CreditReceiptController::class,'generatePDF'])->name('mpdf.creditreceipt');
 
 //Send Mail  Quote 
 Route::post('mpdf/mail/quote/{quotationModel}',[MPDF_QuotationController::class,'sendPdf'])->name('mpdf.quote.sendPdf');
@@ -208,3 +210,6 @@ Route::get('modal/mail/taxreceipt/{invoiceModel}',[MailController::class,'formMa
 //Send Mail  Debit
 Route::post('mpdf/mail/debit/{debitModel}',[MPDF_DebitReceiptController::class,'sendPdf'])->name('mpdf.debitReceipt.sendPdf');
 Route::get('modal/mail/debit/{debitModel}',[MailController::class,'formMailDebitReceipt'])->name('mail.debitReceipt.formMail');
+//Send Mail  Creadit
+Route::post('mpdf/mail/credit/{creditModel}',[MPDF_CreditReceiptController::class,'sendPdf'])->name('mpdf.creditReceipt.sendPdf');
+Route::get('modal/mail/credit/{creditModel}',[MailController::class,'formMailCreditReceipt'])->name('mail.creditReceipt.formMail');

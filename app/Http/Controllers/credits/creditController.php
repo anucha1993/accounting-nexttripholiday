@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\invoices\invoiceModel;
 use App\Models\products\productModel;
 use App\Models\customers\customerModel;
+use App\Models\invoices\taxinvoiceModel;
 use App\Models\quotations\quotationModel;
 use App\Models\credits\creditNoteProductModel;
 
@@ -19,10 +20,10 @@ class creditController extends Controller
     //
      //
 
-    // function Runnumber Debit
-    public function generateRunningCodeDBN()
+    // function Runnumber Creadit
+    public function generateRunningCodeCBN()
     {
-        $creditModel = creditModel::select('credit_note_number')->latest()->first();
+        $creditModel = creditModel::select('credit_number')->latest()->first();
         if (!empty($creditModel)) {
             $Number = $creditModel->invoice_number;
         } else {
@@ -41,65 +42,85 @@ class creditController extends Controller
 
     public function create(invoiceModel $invoiceModel, Request $request)
     {
-      
+        $taxinvoiceModel = taxinvoiceModel::where('invoice_number',$invoiceModel->invoice_number)->first();
         $customer = customerModel::where('customer_id',$invoiceModel->customer_id)->first();
-        $sale = saleModel::where('id',$invoiceModel->invoice_sale)->first();
+        $sales = saleModel::where('id',$invoiceModel->invoice_sale)->first();
         $tour = DB::connection('mysql2')->table('tb_tour')->select('code','airline_id')->where('id',$invoiceModel->tour_id)->first();
-        $airline = DB::connection('mysql2')->table('tb_travel_type')->select('travel_name')->where('id',$tour->airline_id)->first();
-        $products = productModel::get();
-        $quotationModel = quotationModel::where('quote_number',$invoiceModel->quote_number)->first();
-      
+        $airline = DB::connection('mysql2')->table('tb_travel_type')->select('travel_name')->where('id',$invoiceModel->invoice_airline)->first();
+        $products = productModel::where('product_type','income')->get();
+        $productDiscount = productModel::where('product_type','discount')->get();
+        $quotationModel = quotationModel::where('quote_number',$invoiceModel->invoice_quote)->first();
+        $campaignSource = DB::table('campaign_source')->get();
+        $causes = DB::table('list_credit')->get();
         //dd($quoteProducts);
-        return view('credits.form-create',compact('invoiceModel','customer','sale','tour','airline','products','quotationModel'));
+        return view('credits.form-create',compact('causes','taxinvoiceModel','invoiceModel','customer','sales','tour','airline','products','quotationModel','campaignSource','productDiscount'));
     }
 
     public function store(Request $request) 
     {
-        $runningCode = $this->generateRunningCodeDBN();
-        $request->merge(['created_by' => Auth::user()->name]); 
-        $request->merge(['credit_note_number' => $runningCode]); 
+        //dd($request);
+        if($request->customer_id) {
+          customerModel::where('customer_id', $request->customer_id)->update([
+              'customer_name' => $request->customer_name,
+              'customer_email' => $request->customer_email,
+              'customer_address' => $request->customer_address,
+              'customer_texid' => $request->customer_texid,
+              'customer_tel' => $request->customer_tel,
+              'customer_fax' => $request->customer_fax,
+              'customer_date' => $request->customer_date,
+              'customer_campaign_source' => $request->customer_campaign_source,
+          ]);
+       }
+
+        $runningCode = $this->generateRunningCodeCBN();
+        $request->merge(['created_by' => Auth::user()->name,
+        'credit_withholding_tax_status'=> isset($request->credit_withholding_tax_status) ? 'Y' : 'N',
+        'credit_status' => 'wait',
+      ]); 
+        $request->merge(['credit_number' => $runningCode]); 
         $creditModel = creditModel::create($request->all());
 
-        foreach($request->product_id as $key => $value)
-        {
-          if($request->product_id[$key]){
-            $product = productModel::where('id',$request->product_id[$key])->first();
-            creditNoteProductModel::create([
-                'credit_note_id' => $creditModel->credit_note_id,
-                'product_id' => $product->id,
-                'product_name' => $product->product_name,
-                'product_qty' => $request->quantity[$key],
-                'product_price' => $request->price_per_unit[$key],
-                'product_sum' => $request->total_amount[$key],
-                'expense_type' => $request->expense_type[$key],
-                'vat' => isset($request->non_vat[$key]) ? 'Y' : 'N',
-            ]);
+        foreach ($request->product_id as $key => $product) {
+            
+          if ($request->product_id[$key]) {
+              $productName = productModel::where('id',$request->product_id[$key])->first();
+              creditNoteProductModel::create([
+                  'credit_id' => $creditModel->credit_id,
+                  'product_id' => $request->product_id[$key],
+                  'product_name' => $productName->product_name,
+                  'product_qty' => $request->quantity[$key],
+                  'product_price' => $request->price_per_unit[$key],
+                  'product_sum' => $request->total_amount[$key],
+                  'expense_type' => $request->expense_type[$key],
+                  'vat_status' => $request->vat_status[$key],
+                  'withholding_tax' => isset($request->withholding_tax[$key]) ? 'Y' : 'N',
+              ]);
           }
-          
+         
+      }
 
-        }
-        return redirect()->route('credit.edit',$creditModel->credit_note_id);
+        return redirect()->route('credit.edit',$creditModel->credit_id);
     }
+
 
     public function edit(creditModel $creditModel) 
     {
-     // dd($creditModel->invoice_number);
 
-      $invoiceModel = invoiceModel::where('invoice_number',$creditModel->invoice_number)->first();
-    
+      $invoiceModel = invoiceModel::where('invoice_number',$creditModel->credit_invoice)->first();
       $customer = customerModel::where('customer_id',$invoiceModel->customer_id)->first();
-      $sale = saleModel::where('id',$invoiceModel->invoice_sale)->first();
+      $sales = saleModel::where('id',$invoiceModel->invoice_sale)->first();
       $tour = DB::connection('mysql2')->table('tb_tour')->select('code','airline_id')->where('id',$invoiceModel->tour_id)->first();
-      $airline = DB::connection('mysql2')->table('tb_travel_type')->select('travel_name')->where('id',$tour->airline_id)->first();
-      $products = productModel::get();
-      $quotationModel = quotationModel::where('quote_number',$invoiceModel->quote_number)->first();
+      $airline = DB::connection('mysql2')->table('tb_travel_type')->select('travel_name')->where('id',$invoiceModel->invoice_airline)->first();
+      $products = productModel::where('product_type','income')->get();
+      $productDiscount = productModel::where('product_type','discount')->get();
 
-      $creditnoteProduct  = creditNoteProductModel::select('products.product_name','products.id','credit_note_product.product_qty',
-      'credit_note_product.product_price','credit_note_product.product_id','credit_note_product.expense_type','credit_note_product.vat')
-      ->where('credit_note_id',$creditModel->credit_note_id)
-      ->leftjoin('products','products.id','credit_note_product.product_id')->get();
+      $quotationModel = quotationModel::where('quote_number',$invoiceModel->invoice_quote)->first();
+      $campaignSource = DB::table('campaign_source')->get();
+      $creditProducts = creditNoteProductModel::where('credit_id',$creditModel->credit_id)->where('expense_type','income')->get();
+      $creditProductDiscount = creditNoteProductModel::where('credit_id',$creditModel->credit_id)->where('expense_type','discount')->get();
+      $causes = DB::table('list_credit')->get();
       //dd($quoteProducts);
-      return view('credits.form-edit',compact('invoiceModel','customer','sale','tour','airline','products','quotationModel','creditnoteProduct','creditModel'));
+      return view('credits.form-edit',compact('causes','creditProductDiscount','creditProducts','creditModel','invoiceModel','customer','sales','tour','airline','products','quotationModel','campaignSource','productDiscount'));
     }
     
 

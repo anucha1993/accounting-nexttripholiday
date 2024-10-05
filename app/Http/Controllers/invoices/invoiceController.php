@@ -31,6 +31,8 @@ class invoiceController extends Controller
         $this->middleware('permission:delete-invoice', ['only' => ['destroy','delete']]);
     }
 
+    
+
 
     // function Runnumber invoice
     public function generateRunningCodeIVS()
@@ -58,7 +60,7 @@ class invoiceController extends Controller
       
         $bookingModel = bookingModel::where('code',$quotationModel->quote_booking)->first();
         $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
-        $sales = saleModel::select('name', 'id')->where('id',$quotationModel->quote_sale)->first();
+        $sales = saleModel::select('name', 'id')->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])->get();
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
         $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
         $numDays = numDayModel::orderBy('num_day_total')->get();
@@ -68,6 +70,7 @@ class invoiceController extends Controller
         $quoteProducts = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','income')->get();
         $quoteProductsDiscount = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','discount')->get();
         $campaignSource = DB::table('campaign_source')->get();
+
         
         return view('invoices.form-create', compact('campaignSource','customer','quoteProducts','quotationModel','sales','country','airline','numDays','wholesale','products','productDiscount','quoteProductsDiscount'));
         
@@ -128,7 +131,7 @@ class invoiceController extends Controller
         $quotationModel = quotationModel::where('quote_number',$invoiceModel->invoice_quote)->first();
         // $bookingModel = bookingModel::where('code',$quotationModel->quote_booking)->first();
         $customer = customerModel::where('customer_id', $invoiceModel->customer_id)->first();
-        $sales = saleModel::select('name', 'id')->where('id',$invoiceModel->invoice_sale)->first();
+        $sales = saleModel::select('name', 'id')->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])->get();
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
         $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
         $numDays = numDayModel::orderBy('num_day_total')->get();
@@ -138,7 +141,7 @@ class invoiceController extends Controller
         $quoteProducts = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->where('expense_type','income')->get();
         $quoteProductsDiscount = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->where('expense_type','discount')->get();
         $campaignSource = DB::table('campaign_source')->get();
-        
+       
         return view('invoices.form-edit', compact('invoiceModel','quotationModel','campaignSource','customer','quoteProducts','sales','country','airline','numDays','wholesale','products','productDiscount','quoteProductsDiscount'));
         
     }

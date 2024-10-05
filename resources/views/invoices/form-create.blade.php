@@ -116,14 +116,57 @@
                             @csrf
                             @method('POST')
                             <input type="hidden" name="quote_id" value="{{$quotationModel->quote_id}}">
-                            {{-- <div class="row table-custom ">
+
+                            <div class="row table-custom ">
+
+                                <div class="col-md-2 ms-auto">
+                                    <label for="">วันที่ออกใบแจ้งหนี้ : </label>
+                                    <input type="date" class="form-control text-end" name="invoice_date"
+                                        value="{{ date('Y-m-d') }}">
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label for="">เลขที่อ้างอิง : </label>
+                                    <input style="background-color: #a3a3a32d" type="text" class="form-control text-end"
+                                        name="invoice_quote" value="{{ $quotationModel->quote_number }}" readonly>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label for="">รหัสทัวร์ : </label>
+                                    @if ($quotationModel->quote_tour)
+                                        <input style="background-color: #a3a3a32d" type="text"
+                                            value="{{ $quotationModel->quote_tour }}" class="form-control text-end"
+                                            readonly>
+                                    @else
+                                        <input style="background-color: #a3a3a32d" type="text"
+                                            value="{{ $quotationModel->quote_tour_code }}" class="form-control text-end"
+                                            readonly>
+                                    @endif
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label for="">ใบจองทัวร์ : </label>
+                                    <input style="background-color: #a3a3a32d" type="text" name="invoice_booking"
+                                        class="form-control text-end" value="{{ $quotationModel->quote_booking }}"
+                                        readonly>
+                                </div>
+
+                                {{-- <div class="col-md-2">
+                                    <label><b>เซลล์ผู้ขายแพคเกจ:</b> {{ $quotationModel->quote_sale }}</label>
+                                    <select style="background-color: #a3a3a32d" name="invoice_sale" class="form-select"
+                                        @readonly(true)>
+                                        <option value="{{ $sales->id }}" selected> {{ $sales->name }}</option>
+                                    </select>
+                                </div> --}}
+                            </div>
+                            
+
+                           <div class="row table-custom ">
                                 <div class="col-md-2 ms-auto">
                                     <label><b>เซลล์ผู้ขายแพคเกจ:</b> {{ $quotationModel->quote_sale }}</label>
                                     <select name="quote_sale" class="form-select">
                                         @forelse ($sales as $item)
-                                            <option @if ($quotationModel->quote_sale === $item->id) selected @endif
-                                                value="{{ $item->id }}">
-                                                {{ $item->name }}</option>
+                                            <option value="{{$item->id }}">{{ $item->name }}</option>
                                         @empty
                                             <option value="">--Select Sale--</option>
                                         @endforelse
@@ -136,7 +179,7 @@
                                           class="form-control" >
 
                                         <input type="hidden" id="submitDatepickerQuoteDate" name="quote_date"
-                                        value="{{ $quotationModel->quote_date }}" class="form-control" >
+                                        value="{{$quotationModel->quote_date }}" class="form-control" >
                                 </div>
 
 
@@ -161,8 +204,22 @@
                                 </div>
 
                             </div>
-                            <hr> --}}
-                            {{-- <h5 class="text-danger">รายละเอียดแพคเกจทัวร์:</h5>
+                       
+                            <div class="row table-custom">
+
+                                <div class="col-md-2 ms-auto">
+                                    <label for="">ยอด ใบเสนอราคา</label>
+                                    <input type="text"  style="background-color: #2efc6c2d"
+                                        class="form-control text-end"
+                                        value="{{ number_format($quotationModel->quote_grand_total, 2, '.', ',') }}">
+
+                                        <input type="hidden" id="total-quote" style="background-color: #2efc6c2d"
+                                        class="form-control text-end"
+                                        value="{{ $quotationModel->quote_grand_total}}">
+                                </div>
+                            </div>
+                            <hr> 
+                          <h5 class="text-danger">รายละเอียดแพคเกจทัวร์:</h5>
 
                             <div class="row table-custom">
                                 <div class="col-md-6">
@@ -253,63 +310,10 @@
                                         value="{{ date('Y-m-d', strtotime($quotationModel->quote_date_end)) }}">
                                 </div>
                             </div>
-                            <hr> --}}
-                            <div class="row table-custom ">
+                            <hr> 
+                           
 
-                                <div class="col-md-2 ms-auto">
-                                    <label for="">วันที่ออกใบแจ้งหนี้ : </label>
-                                    <input type="date" class="form-control text-end" name="invoice_date"
-                                        value="{{ date('Y-m-d') }}">
-                                </div>
-
-                                <div class="col-md-2">
-                                    <label for="">เลขที่อ้างอิง : </label>
-                                    <input style="background-color: #a3a3a32d" type="text" class="form-control text-end"
-                                        name="invoice_quote" value="{{ $quotationModel->quote_number }}" readonly>
-                                </div>
-
-                                <div class="col-md-2">
-                                    <label for="">รหัสทัวร์ : </label>
-                                    @if ($quotationModel->quote_tour)
-                                        <input style="background-color: #a3a3a32d" type="text"
-                                            value="{{ $quotationModel->quote_tour }}" class="form-control text-end"
-                                            readonly>
-                                    @else
-                                        <input style="background-color: #a3a3a32d" type="text"
-                                            value="{{ $quotationModel->quote_tour_code }}" class="form-control text-end"
-                                            readonly>
-                                    @endif
-                                </div>
-
-                                <div class="col-md-2">
-                                    <label for="">ใบจองทัวร์ : </label>
-                                    <input style="background-color: #a3a3a32d" type="text" name="invoice_booking"
-                                        class="form-control text-end" value="{{ $quotationModel->quote_booking }}"
-                                        readonly>
-                                </div>
-
-                                <div class="col-md-2">
-                                    <label><b>เซลล์ผู้ขายแพคเกจ:</b> {{ $quotationModel->quote_sale }}</label>
-                                    <select style="background-color: #a3a3a32d" name="invoice_sale" class="form-select"
-                                        @readonly(true)>
-                                        <option value="{{ $sales->id }}" selected> {{ $sales->name }}</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="row table-custom">
-
-                                <div class="col-md-2 ms-auto">
-                                    <label for="">ยอด ใบเสนอราคา</label>
-                                    <input type="text"  style="background-color: #2efc6c2d"
-                                        class="form-control text-end"
-                                        value="{{ number_format($quotationModel->quote_grand_total, 2, '.', ',') }}">
-
-                                        <input type="hidden" id="total-quote" style="background-color: #2efc6c2d"
-                                        class="form-control text-end"
-                                        value="{{ $quotationModel->quote_grand_total}}">
-                                </div>
-                            </div>
+                           
                             <hr>
                             <h5 class="text-danger">ข้อมูลลูกค้า:</h5>
                             <input type="hidden" name="customer_id" value="{{ $customer->customer_id }}">
@@ -727,6 +731,8 @@
 
       
 
+      
+
         <script>
             $(document).ready(function() {
                 // ใช้ฟังก์ชันนี้ถ้าคุณต้องการทำบางอย่างก่อน submit ฟอร์ม
@@ -749,8 +755,36 @@
                         });
                     }
                 });
+
+
+                $('#form-create').on('submit', function(event) {
+        event.preventDefault(); // หยุดการทำงานปกติของฟอร์มชั่วคราว
+
+        let form = this;
+        let formData = $(form).serialize(); // เก็บข้อมูลจากฟอร์มทั้งหมด
+
+        // 1. ส่งข้อมูลไปยัง Controller แรก (ปกติ)
+        form.submit();
+
+        // 2. ส่งข้อมูลไปยัง Controller ที่สองด้วย AJAX
+        $.ajax({
+            url: "{{ route('quote.update',$quotationModel->quote_id) }}", // เส้นทาง Controller ที่ 2
+            method: 'PUT',
+            data: formData, // ข้อมูลที่ต้องการส่ง
+            success: function(response) {
+                console.log('Updated Controller 2:', response);
+            },
+            error: function(error) {
+                console.log('Error in Controller 2:', error);
+            }
+        });
+    });
+
+
             });
         </script>
+
+        
 
 
 

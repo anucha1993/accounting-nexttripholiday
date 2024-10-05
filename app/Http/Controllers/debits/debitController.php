@@ -19,6 +19,11 @@ use App\Models\quotations\quotationModel;
 class debitController extends Controller
 {
     //
+    public function __construct()
+    {
+        $this->middleware('auth');
+
+    }
 
     // function Runnumber Debit
     public function generateRunningCodeDBN()
@@ -51,8 +56,9 @@ class debitController extends Controller
         $productDiscount = productModel::where('product_type','discount')->get();
         $quotationModel = quotationModel::where('quote_number',$invoiceModel->invoice_quote)->first();
         $campaignSource = DB::table('campaign_source')->get();
+        $causes = DB::table('list_debit')->get();
         //dd($quoteProducts);
-        return view('debits.form-create',compact('taxinvoiceModel','invoiceModel','customer','sales','tour','airline','products','quotationModel','campaignSource','productDiscount'));
+        return view('debits.form-create',compact('causes','taxinvoiceModel','invoiceModel','customer','sales','tour','airline','products','quotationModel','campaignSource','productDiscount'));
     }
 
     public function store(Request $request) 
@@ -116,8 +122,9 @@ class debitController extends Controller
       $campaignSource = DB::table('campaign_source')->get();
       $debitProducts = debitNoteProductModel::where('debit_id',$debitModel->debit_id)->where('expense_type','income')->get();
       $debitProductDiscount = debitNoteProductModel::where('debit_id',$debitModel->debit_id)->where('expense_type','discount')->get();
+      $causes = DB::table('list_debit')->get();
       //dd($quoteProducts);
-      return view('debits.form-edit',compact('debitProductDiscount','debitProducts','debitModel','invoiceModel','customer','sales','tour','airline','products','quotationModel','campaignSource','productDiscount'));
+      return view('debits.form-edit',compact('causes','debitProductDiscount','debitProducts','debitModel','invoiceModel','customer','sales','tour','airline','products','quotationModel','campaignSource','productDiscount'));
     }
     
 
