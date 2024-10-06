@@ -281,12 +281,13 @@
                                 </div>
                                 <div class="col-md-1 text-center">
                                     <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
+                                        <option selected value="nonvat">nonVat</option>
                                         <option value="vat">Vat</option>
-                                        <option value="nonvat">nonVat</option>
+                                        
                                     </select>
                                 </div>
                                 <div class="col-md-1"><input type="number" name="quantity[]"
-                                        class="quantity form-control text-end" step="0.01"></div>
+                                        class="quantity form-control text-end" step="1"></div>
                                 <div class="col-md-2"><input type="number" name="price_per_unit[]"
                                         class="price-per-unit form-control text-end" step="0.01">
                                 </div>
@@ -326,13 +327,13 @@
                                     <div class="form-group">
                                         <label for="vat-method">การคำนวณ VAT:</label>
                                         <div>
-                                            <input type="radio" id="vat-include" name="vat_type" value="include">
+                                            <input type="radio" id="vat-include" name="vat_type" value="include" checked>
                                             <label for="vat-include">คำนวณรวมกับราคาสินค้าและบริการ (VAT
                                                 Include)</label>
                                         </div>
                                         <div>
                                             <input type="radio" id="vat-exclude" name="vat_type" value="exclude"
-                                                checked>
+                                                >
                                             <label for="vat-exclude">คำนวณแยกกับราคาสินค้าและบริการ (VAT
                                                 Exclude)</label>
                                         </div>
@@ -490,9 +491,6 @@
                         <input type="hidden" name="quote_include_vat">
                         <input type="hidden" name="quote_grand_total" id="quote-grand-total">
                         <input type="hidden" name="quote_withholding_tax">
-
-
-
                         <button type="submit" class="btn btn-primary btn-sm  mx-3" form="formQuote">
                             <i class="fa fa-save"></i> สร้างใบเสนอราคา</button>
                     </div>
@@ -515,6 +513,51 @@
 
 
     </div>
+
+    <script>
+        //     $(document).ready(function() {
+        //     // ใช้ event delegation เพื่อจับเหตุการณ์การเปลี่ยนแปลงใน .product-select ที่ถูกเพิ่มเข้ามาใหม่ได้
+        //     $('#quotation-table').on('change', '.product-select', function() {
+        //         var productId = $(this).val(); // รับค่า productId จาก select
+        //         var period1 = $('#period1').val();
+        //         var period2 = $('#period2').val();
+        //         var period3 = $('#period3').val();
+        //         var period4 = $('#period4').val();
+
+        //         // อ้างถึง .item-row ที่เกี่ยวข้องกับ product-select ที่เลือก
+        //         var row = $(this).closest('.item-row');
+
+        //         // อ้างถึง price-per-unit และ quantity ที่อยู่ในแถวที่เลือก
+        //         var priceInput = row.find('.price-per-unit');
+        //         var quantityInput = row.find('.quantity');
+
+        //         // กำหนดค่าเริ่มต้นให้ quantity เป็น 1
+        //         quantityInput.val(1);
+
+        //         // 189 ค่าทัวร์ผู้ใหญ่พักคู่ period1
+        //         if(productId == 189) {
+        //             priceInput.val(period1); // แสดงค่า period1 ใน input .price-per-unit
+        //             console.log(period1);
+        //         }
+
+        //         // 185 ค่าทัวร์ผู้ใหญ่พักเดี่ยว period2
+        //         if(productId == 185) {
+        //             priceInput.val(period2); // แสดงค่า period2 ใน input .price-per-unit
+        //         }
+
+        //         // 187 เด็กมีเตียง period3
+        //         if(productId == 187) {
+        //             priceInput.val(period3); // แสดงค่า period3 ใน input .price-per-unit
+        //         }
+
+        //         // 186 เด็กไม่มีเตียง period4
+        //         if(productId == 186) {
+        //             priceInput.val(period4); // แสดงค่า period4 ใน input .price-per-unit
+        //         }
+        //         calculateTotals();
+        //     });
+        // });
+    </script>
 
 
     <script>
@@ -873,6 +916,50 @@
 
             // Initialize Select2 for existing rows
             initializeSelect2();
+            /// ดึงข้อมูลตามการเลือก period
+            $(document).ready(function() {
+                // ใช้ event delegation เพื่อจับเหตุการณ์การเปลี่ยนแปลงใน .product-select ที่ถูกเพิ่มเข้ามาใหม่ได้
+                $('#quotation-table').on('change', '.product-select', function() {
+                    var productId = $(this).val(); // รับค่า productId จาก select
+                    var period1 = $('#period1').val();
+                    var period2 = $('#period2').val();
+                    var period3 = $('#period3').val();
+                    var period4 = $('#period4').val();
+
+                    // อ้างถึง .item-row ที่เกี่ยวข้องกับ product-select ที่เลือก
+                    var row = $(this).closest('.item-row');
+
+                    // อ้างถึง price-per-unit และ quantity ที่อยู่ในแถวที่เลือก
+                    var priceInput = row.find('.price-per-unit');
+                    var quantityInput = row.find('.quantity');
+
+                    // กำหนดค่าเริ่มต้นให้ quantity เป็น 1
+                    quantityInput.val(1);
+
+                    // 189 ค่าทัวร์ผู้ใหญ่พักคู่ period1
+                    if (productId == 189) {
+                        priceInput.val(period1); // แสดงค่า period1 ใน input .price-per-unit
+                        console.log(period1);
+                    }
+
+                    // 185 ค่าทัวร์ผู้ใหญ่พักเดี่ยว period2
+                    if (productId == 185) {
+                        priceInput.val(period2); // แสดงค่า period2 ใน input .price-per-unit
+                    }
+
+                    // 187 เด็กมีเตียง period3
+                    if (productId == 187) {
+                        priceInput.val(period3); // แสดงค่า period3 ใน input .price-per-unit
+                    }
+
+                    // 186 เด็กไม่มีเตียง period4
+                    if (productId == 186) {
+                        priceInput.val(period4); // แสดงค่า period4 ใน input .price-per-unit
+                    }
+                    calculateTotals();
+                });
+            });
+
         });
     </script>
 
@@ -1076,7 +1163,7 @@
                 // $('#period4').val(0);
             });
 
-        
+
 
             // ตรวจสอบและแสดงวันที่เริ่มต้นและวันสิ้นสุดในรูปแบบภาษาไทยหากมีข้อมูล
             var startDate = $('#date-start').val();
@@ -1338,7 +1425,7 @@
                 });
             });
 
-        
+
             // เมื่อคลิกเลือกวันที่จาก list
             $(document).on('click', '.period-select', function(e) {
                 e.preventDefault();
@@ -1347,16 +1434,16 @@
                 var period2 = $(this).data('period2'); // ผู้ใหญ่พักเดียว
                 var period3 = $(this).data('period3'); // เด็กมีเตียง
                 var period4 = $(this).data('period4'); // เด็กไม่มีเตียง
-                var selectedNumday = $('#numday').data('day'); 
+                var selectedNumday = $('#numday').data('day');
 
-            
+
                 $('#period1').val(period1);
                 $('#period2').val(period2);
                 $('#period3').val(period3);
                 $('#period4').val(period4);
 
 
-            
+
 
                 // แปลงวันที่เป็นรูปแบบภาษาไทยสำหรับแสดงใน input
                 var dateObject = new Date(selectedDate);
