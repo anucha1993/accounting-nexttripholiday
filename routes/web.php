@@ -56,6 +56,7 @@ Route::get('/api/tours',[apiTourController::class,'index'])->name('api.tours');
 Route::get('/api/wholesale',[apiTourController::class,'wholesale'])->name('api.wholesale');
 Route::get('/api/country',[apiTourController::class,'country'])->name('api.country');
 Route::get('/api/customer',[apiTourController::class,'customer'])->name('api.customer');
+Route::get('/api/period',[apiTourController::class,'period'])->name('api.period');
 
 Auth::routes();
 

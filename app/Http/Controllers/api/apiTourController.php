@@ -73,6 +73,13 @@ class apiTourController extends Controller
          return response()->json($customer);
      }
 
+     public function period(Request $request)
+     {
+        $search = $request->input('search');
+        $period = DB::connection('mysql2')->table('tb_tour_period')->where('tour_id',$search)->get();
+        return response()->json($period);
+     }
+
      
      
      
