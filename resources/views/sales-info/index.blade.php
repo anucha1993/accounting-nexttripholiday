@@ -260,12 +260,13 @@
                                                         href="{{ route('mail.invoice.formMail', $item->invoice_id) }}"><i
                                                             class="fas fa-envelope"></i>
                                                         ส่งเมล</a>
-                                                    @if ($item->invoice_status === 'wait')
                                                         @can('edit-invoice')
-                                                            <a class="dropdown-item"
-                                                                href="{{ route('invoice.edit', $item->invoice_id) }}"><i
-                                                                    class="fa fa-edit"></i> แก้ไข</a>
-                                                        @endcan
+                                                        <a class="dropdown-item"
+                                                            href="{{ route('invoice.edit', $item->invoice_id) }}"><i
+                                                                class="fa fa-edit"></i> แก้ไข</a>
+                                                    @endcan
+                                                    @if ($item->invoice_status === 'wait')
+                                                       
 
                                                         <a class="dropdown-item"
                                                             href="{{ route('invoice.taxinvoice', $item->invoice_id) }}"
@@ -309,10 +310,7 @@
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
 
-                                                    <a class="dropdown-item"
-                                                                href="{{ route('invoice.edit', $item->invoice_id) }}"><i
-                                                                    class="fa fa-edit"></i> แก้ไข</a>
-
+                                                   
 
                                                    
                                                     <a class="dropdown-item" target="_blank"
