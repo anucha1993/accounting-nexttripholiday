@@ -441,7 +441,7 @@
                                             <select name="vat_status[]" class="vat-status form-select"
                                                 style="width: 110%;">
 
-                                                <option value="nonvat">nonVat</option>
+                                                <option value="nonvat" selected >nonVat</option>
                                             </select>
                                         </div>
                                         <div class="col-md-1"><input type="number" name="quantity[]"
@@ -750,23 +750,42 @@
                     let total = quantity * pricePerUnit;
                     let priceExcludingVat = total;
 
-                    //console.log('data-row-id :' + rowId);
+                    console.log('data-row-id :' + rowId);
 
+
+                    // ตรวจสอบหากเป็น discount
+                    // ตรวจสอบหากเป็นส่วนลด
+                    // ตรวจสอบหากเป็นส่วนลด
+                    // ตรวจสอบว่า expenseType เป็น 'discount' หรือไม่
                     if (expenseType === 'discount') {
+                        // ตรวจสอบว่า rowId เป็น undefined หรือไม่ ถ้าเป็น undefined ให้ข้ามไป
                         if (!rowId || rowId === 'undefined') {
                             console.log('Skipping row with undefined data-row-id');
-                            return; 
+                            return; // ข้ามการคำนวณถ้า rowId เป็น undefined
                         }
+
                         const quantity = parseFloat($(this).find('.quantity').val()) || 0;
                         const pricePerUnit = parseFloat($(this).find('.price-per-unit').val()) || 0;
 
+                        // ตรวจสอบว่าแถวนี้เคยถูกคำนวณส่วนลดแล้วหรือไม่ โดยใช้ rowId
                         if (processedDiscountRows.includes(rowId)) {
                             console.log('Skipping duplicate discount for row: ' + rowId);
-                            return; 
+                            return; // ข้ามแถวนี้ถ้าเคยคำนวณแล้ว
                         }
+
+                        // ถ้ายังไม่ถูกประมวลผล ให้นำไปคำนวณ
                         let discountAmount = quantity * pricePerUnit; // คำนวณส่วนลดเฉพาะรายการ
                         sumDiscount += discountAmount; // เพิ่มค่าลงใน sumDiscount
+
+                        // เพิ่ม rowId ของแถวนี้เข้าไปใน processedDiscountRows เพื่อป้องกันการประมวลผลซ้ำ
                         processedDiscountRows.push(rowId);
+
+                        // ใช้ log เพื่อตรวจสอบค่าที่ได้
+                        //console.log('rowId :' + rowId);
+                        //console.log('quantity :' + quantity);
+                        //console.log('pricePerUnit :' + pricePerUnit);
+                        //console.log('Discount for this row :' + discountAmount);
+                        //console.log('Total sumDiscount :' + sumDiscount);
                     }
                     // คำนวณ VAT 3% หากติ๊ก checkbox
                     if (isVat3) {
@@ -812,7 +831,7 @@
 
                     preVatAmount = sumPriceExcludingVat * 0.07;
 
-                    sumPreVat = listVatTotal - (sumDiscount);
+                    sumPreVat = listVatTotal;
                     sumPreVat = sumPreVat * 100 / 107;
                     vatAmount = sumPreVat * 0.07;
 
@@ -824,13 +843,13 @@
                     // คำนวณ VAT 7% กรณี Exclude VAT
 
 
-                    sumPreVat = listVatTotal - (sumDiscount);
+                    sumPreVat = listVatTotal ;
                     vatAmount = sumPreVat * 0.07;
                     grandTotal = sumPriceExcludingVatNonVat + sumPreVat + vatAmount;
                 }
 
                 // คำนวณหักภาษี ณ ที่จ่าย (Withholding Tax)
-                const withholdingTax = $('#withholding-tax').is(':checked') ? (sumPreVat + vatAmount) * 0.03 : 0;
+                const withholdingTax = $('#withholding-tax').is(':checked') ? sumPreVat * 0.03 : 0;
 
                 //quote_withholding_tax
                 $('input[name="quote_withholding_tax"]').val(withholdingTax.toFixed(2));
@@ -887,7 +906,6 @@
                 $('input[name="quote_grand_total"]').val(grandTotal - sumDiscount.toFixed(2));
 
             }
-
             // Initialize Select2 สำหรับทุก select element ที่มี class .product-select
             function initializeSelect2() {
                 $('#quotation-table .product-select').each(function() {
