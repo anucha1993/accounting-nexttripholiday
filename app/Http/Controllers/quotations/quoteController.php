@@ -196,7 +196,7 @@ class quoteController extends Controller
                     'product_sum' => $request->total_amount[$key],
                     'expense_type' => $request->expense_type[$key],
                     'vat_status' => $request->vat_status[$key],
-                    'withholding_tax' => isset($request->withholding_tax[$key]) ? 'Y' : 'N',
+                    'withholding_tax' => $request->withholding_tax[$key],
                 ]);
             }
         }

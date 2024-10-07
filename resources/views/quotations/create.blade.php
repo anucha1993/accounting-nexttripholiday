@@ -287,9 +287,9 @@
                                     </select>
                                 </div>
                                 <div class="col-md-1"><input type="number" name="quantity[]"
-                                        class="quantity form-control text-end" step="1"></div>
+                                        class="quantity form-control text-end" step="1" value="1"></div>
                                 <div class="col-md-2"><input type="number" name="price_per_unit[]"
-                                        class="price-per-unit form-control text-end" step="0.01">
+                                        class="price-per-unit form-control text-end" step="0.01" value="0">
                                 </div>
                                 <div class="col-md-2"><input type="number" name="total_amount[]"
                                         class="total-amount form-control text-end" value="0" readonly></div>
@@ -318,7 +318,6 @@
 
                     </div>
                     <hr>
-
 
                     <div class="row">
                         <div class="col-6">
@@ -402,93 +401,140 @@
                                 </div>
                             </div>
                             <br>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h5>เงือนไขการชำระเงิน</h5>
-                                </div>
-                                <div class="col-md-12 ">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <input type="radio" name="quote_payment_type" id="quote-payment-deposit"
-                                                value="deposit"> <label for="quote-payment-type"> เงินมัดจำ </label>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input type="radio" name="quote_payment_type" id="quote-payment-full"
-                                                value="full"> <label for="quote-payment-type"> ชำระเต็มจำนวน </label>
-                                        </div>
-                                    </div>
 
-                                </div>
-                                <div class="col-md-4">
-                                    <span for="">ภายในวันที่</span>
-                                    <input type="datetime-local" class="form-control" name="quote_payment_date"
-                                        value="">
-                                </div>
-                                <div class="col-md-4">
-                                    <span for="">เรทเงินมัดจำ</span>
-                                    <select name="quote_payment_price" class="form-select" id="quote-payment-price">
-                                        <option value="0.00">0.00</option>
-                                        <option value="1000">1,000</option>
-                                        <option value="1500">1,500</option>
-                                        <option value="2000">2,000</option>
-                                        <option value="3000">3,000</option>
-                                        <option value="4000">4,000</option>
-                                        <option value="5000">5,000</option>
-                                        <option value="6000">6,000</option>
-                                        <option value="7000">7,000</option>
-                                        <option value="8000">8,000</option>
-                                        <option value="9000">9,000</option>
-                                        <option value="10000">10,000</option>
-                                        <option value="15000">15,000</option>
-                                        <option value="20000">20,000</option>
-                                        <option value="30000">30,000</option>
-                                        <option value="24000">24,000</option>
-                                        <option value="25000">25,000</option>
-                                        <option value="28000">28,000</option>
-                                        <option value="29000">29,000</option>
-                                        <option value="34000">34,000</option>
-                                        <option value="50000">50,000</option>
-                                        <option value="70000">70,000</option>
-                                        <option value="35000">35,000</option>
-                                        <option value="40000">40,000</option>
-                                        <option value="45000">45,000</option>
-                                        <option value="80000">80,000</option>
-                                        <option value="30500">30,500</option>
-                                        <option value="35500">35,500</option>
-                                        <option value="36000">36,000</option>
-                                        <option value="38000">38,000</option>
-                                        <option value="100000">100,000</option>
-                                    </select>
-                                </div>
-                                {{-- <input type="hidden" id="booking-create-date"> --}}
-                                <input type="hidden" id="booking-create-date" value="{{ date('Y-m-d') }}">
 
-                                <div class="col-md-4 mb-3 ">
-                                    <span for="">จำนวนเงินที่ต้องชำระ</span>
-                                    <input type="number" class="form-control pax-total" name="quote_payment_total"
-                                        step="0.01" placeholder="0.00">
-                                </div>
-                            </div>
-                            <div class="row">
-
-                                <div class="col-md-8 ">
-                                    <div class="input-group ">
-                                        <span class="input-group-text float-end">ชำระเงินเพิ่ม</span>
-                                        <input type="number" class="form-control" id="pay-extra" value="0.00">
-                                    </div>
-                                </div>
-                            </div>
-                            <br>
-
-                            <span>วันที่จอง : <label class="text-info">
-                                    -</label></span>
-                            <span>วันที่เดินทาง <label class="text-info">
-                                    -</label></span>
-                            </label></span>
-                            {{-- <input type="text" class="form-control pax-total" readonly
-                                placeholder="ยอด Pax ที่คำนวณได้"> --}}
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>เงือนไขการชำระเงิน</h5>
+                        </div>
+                        <div class="col-md-12 ">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="radio" name="quote_payment_type" id="quote-payment-deposit"
+                                        value="deposit"> <label for="quote-payment-type"> เงินมัดจำ </label>
+                                </div>
+                                {{-- <div class="col-md-6">
+                                    <input type="radio" name="quote_payment_type" id="quote-payment-deposit"
+                                        value="full"> <label for="quote-payment-type"> ชำระเต็มจำนวน</label>
+                                </div> --}}
+
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text" id="basic-addon1">ภายในวันที่</span>
+                                            <input type="datetime-local" class="form-control" name="quote_payment_date" id="quote-payment-date"
+                                                value="">
+                                                <input type="datetime-local" class="form-control" name="quote_payment_date" id="quote-payment-date-new"
+                                                value="" style="display: none" disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text" for="">เรทเงินมัดจำ</span>
+                                            <select name="quote_payment_price" class="form-select"
+                                                id="quote-payment-price">
+                                                <option value="0">0.00</option>
+                                                <option value="1000">1,000</option>
+                                                <option value="1500">1,500</option>
+                                                <option value="2000">2,000</option>
+                                                <option value="3000">3,000</option>
+                                                <option value="4000">4,000</option>
+                                                <option value="5000">5,000</option>
+                                                <option value="6000">6,000</option>
+                                                <option value="7000">7,000</option>
+                                                <option value="8000">8,000</option>
+                                                <option value="9000">9,000</option>
+                                                <option value="10000">10,000</option>
+                                                <option value="15000">15,000</option>
+                                                <option value="20000">20,000</option>
+                                                <option value="30000">30,000</option>
+                                                <option value="24000">24,000</option>
+                                                <option value="25000">25,000</option>
+                                                <option value="28000">28,000</option>
+                                                <option value="29000">29,000</option>
+                                                <option value="34000">34,000</option>
+                                                <option value="50000">50,000</option>
+                                                <option value="70000">70,000</option>
+                                                <option value="35000">35,000</option>
+                                                <option value="40000">40,000</option>
+                                                <option value="45000">45,000</option>
+                                                <option value="80000">80,000</option>
+                                                <option value="30500">30,500</option>
+                                                <option value="35500">35,500</option>
+                                                <option value="36000">36,000</option>
+                                                <option value="38000">38,000</option>
+                                                <option value="100000">100,000</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text" for="">ชำระเพิ่มเติม</span>
+                                            <input type="number" id="pay-extra" class="form-control"
+                                                placeholder="0.00">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text" for="">จำนวนเงินที่ต้องชำระ</span>
+                                            <input type="number" class="form-control pax-total"
+                                                name="quote_payment_total" step="0.01" placeholder="0.00">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <input type="radio" name="quote_payment_type" id="quote-payment-full"
+                                                value="full"> <label for="quote-payment-type"> ชำระเต็มจำนวน</label>
+                                        </div>
+
+
+
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text" id="basic-addon1">ภายในวันที่</span>
+                                            <input type="datetime-local" class="form-control" id="quote-payment-date-full"
+                                                name="quote_payment_date_full" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text" for="">จำนวนเงิน</span>
+                                            <input type="number" class="form-control" name="quote_payment_total_full"
+                                                id="payment-total-full" step="0.01" placeholder="0.00">
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        {{-- <input type="hidden" id="booking-create-date"> --}}
+                        <input type="hidden" id="booking-create-date" value="{{ date('Y-m-d') }}">
+
+
+
+                    </div>
+
 
                     <div class="text-end mt-3">
                         {{-- hidden --}}
@@ -609,122 +655,128 @@
             }
 
             // ฟังก์ชันคำนวณยอดรวม
-            
-function calculateTotals() {
-    let sumTotal = 0;
-    let sumDiscount = 0;
-    let sumPriceExcludingVat = 0;
-    let sumPriceExcludingVatNonVat = 0;
-    let totalBeforeDiscount = 0;
-    let withholdingTaxTotal = 0;
-    let listVatTotal = 0;
 
-    let processedDiscountRows = [];
+            function calculateTotals() {
+                let sumTotal = 0;
+                let sumDiscount = 0;
+                let sumPriceExcludingVat = 0;
+                let sumPriceExcludingVatNonVat = 0;
+                let totalBeforeDiscount = 0;
+                let withholdingTaxTotal = 0;
+                let listVatTotal = 0;
 
-    // ตรวจสอบและกำหนด vatMethod จาก input[name="vat_type"]
-    let vatMethod = $('input[name="vat_type"]:checked').val() || 'exclude'; // กำหนดค่าเริ่มต้นเป็น 'exclude' หากไม่มีค่า
+                let processedDiscountRows = [];
 
-    $('#quotation-table .item-row').each(function(index) {
-        const rowId = $(this).attr('data-row-id');
-        const quantity = parseFloat($(this).find('.quantity').val()) || 0;
-        const pricePerUnit = parseFloat($(this).find('.price-per-unit').val()) || 0;
-        const vatStatus = $(this).find('.vat-status').val(); // ตรวจสอบค่าจาก select
-        const isVat3 = $(this).find('.vat-3').is(':checked'); // ตรวจสอบการติ๊ก checkbox
-        const expenseType = $(this).find('select[name="expense_type[]"]').val();
+                // ตรวจสอบและกำหนด vatMethod จาก input[name="vat_type"]
+                let vatMethod = $('input[name="vat_type"]:checked').val() ||
+                    'exclude'; // กำหนดค่าเริ่มต้นเป็น 'exclude' หากไม่มีค่า
 
-        // คำนวณ total เบื้องต้น
-        let total = quantity * pricePerUnit;
-        let priceExcludingVat = total;
+                $('#quotation-table .item-row').each(function(index) {
+                    const rowId = $(this).attr('data-row-id');
+                    const quantity = parseFloat($(this).find('.quantity').val()) || 0;
+                    const pricePerUnit = parseFloat($(this).find('.price-per-unit').val()) || 0;
+                    const vatStatus = $(this).find('.vat-status').val(); // ตรวจสอบค่าจาก select
+                    const isVat3 = $(this).find('.vat-3').is(':checked'); // ตรวจสอบการติ๊ก checkbox
+                    const expenseType = $(this).find('select[name="expense_type[]"]').val();
 
-        // ตรวจสอบรายการ discount และหักออกก่อนการคำนวณ VAT
-        if (expenseType === 'discount') {
-            if (!rowId || rowId === 'undefined') {
-                return; // ข้ามการคำนวณถ้า rowId เป็น undefined
+                    // คำนวณ total เบื้องต้น
+                    let total = quantity * pricePerUnit;
+                    let priceExcludingVat = total;
+
+                    // ตรวจสอบรายการ discount และหักออกก่อนการคำนวณ VAT
+                    if (expenseType === 'discount') {
+                        if (!rowId || rowId === 'undefined') {
+                            return; // ข้ามการคำนวณถ้า rowId เป็น undefined
+                        }
+
+                        const discountAmount = quantity * pricePerUnit;
+                        sumDiscount += discountAmount; // เก็บค่าส่วนลด
+
+                        // เพิ่ม rowId ในรายการที่ถูกประมวลผลแล้ว
+                        processedDiscountRows.push(rowId);
+                    }
+
+                    // คำนวณ VAT 3% หากมีการเลือก
+                    if (isVat3) {
+                        const vat3 = total * 0.03;
+                        total += vat3;
+                    }
+
+                    // แสดงผลยอดรวมในฟิลด์ total-amount
+                    $(this).find('.total-amount').val(total.toFixed(2));
+
+                    totalBeforeDiscount += (expenseType !== 'discount') ? total : 0;
+
+                    // กรณี Non-VAT
+                    if (vatStatus === 'nonvat') {
+                        $(this).find('.price-excluding-vat').val(total.toFixed(2));
+                        sumPriceExcludingVatNonVat += total; // เพิ่มยอดไปที่ Non-VAT รวม
+                    } else {
+                        listVatTotal += total; // เพิ่มยอดไปที่รายการที่ต้องเสีย VAT
+                    }
+
+                    sumTotal += total;
+                });
+
+                // คำนวณยอดหลังส่วนลด (หักส่วนลดออกจาก total ก่อนการคำนวณ VAT)
+                const afterDiscount = totalBeforeDiscount - sumDiscount;
+
+                let vatAmount = 0;
+                let preVatAmount = 0;
+                let grandTotal = 0;
+                let sumPreVat = 0;
+
+                if (vatMethod === 'include') {
+                    // VAT รวมอยู่ในยอดแล้ว
+                    preVatAmount = sumPriceExcludingVat * 0.07;
+                    sumPreVat = listVatTotal - sumDiscount; // หักส่วนลดออกก่อนคำนวณ
+                    sumPreVat = sumPreVat * 100 / 107;
+                    vatAmount = sumPreVat * 0.07;
+                    grandTotal = sumPriceExcludingVatNonVat + sumPreVat + vatAmount;
+                } else {
+                    // คำนวณ VAT 7% กรณี Exclude VAT
+                    if (sumDiscount < listVatTotal) {
+                        sumPreVat = listVatTotal - sumDiscount;
+                        vatAmount = sumPreVat * 0.07;
+                        grandTotal = sumPriceExcludingVatNonVat + sumPreVat + vatAmount;
+                    } else {
+                        sumPreVat = 0;
+                        vatAmount = sumPreVat * 0.07;
+                        grandTotal = (sumPriceExcludingVatNonVat + sumPreVat + vatAmount) - sumDiscount;
+                    }
+                    // หักส่วนลดออกก่อนคำนวณ
+                }
+
+                // คำนวณหักภาษี ณ ที่จ่าย (Withholding Tax)
+                const withholdingTax = $('#withholding-tax').is(':checked') ? sumPreVat * 0.03 : 0;
+
+                // อัปเดตค่าต่างๆ ในหน้าจอ
+                $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
+                $('#quote-total').val(sumTotal.toFixed(2));
+                $('#after-discount').text(formatNumber(afterDiscount.toFixed(2)));
+                $('#quote-after-discount').val(afterDiscount.toFixed(2));
+                $('#quote-vat-7').val(vatAmount.toFixed(2));
+                $('#price-excluding-vat').text(formatNumber((sumPriceExcludingVat + sumPriceExcludingVatNonVat)
+                    .toFixed(2)));
+                $('#quote-price-excluding-vat').val(((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(
+                    2)));
+                $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
+                $('#sum-total-nonvat').text(formatNumber((sumPriceExcludingVatNonVat - sumDiscount).toFixed(2)));
+                $('input[name="quote_vat_exempted_amount"]').val((sumPriceExcludingVatNonVat - sumDiscount).toFixed(
+                    2));
+                $('#sum-total-vat').text(formatNumber(listVatTotal.toFixed(2)));
+                $('input[name="quote_pre_tax_amount"]').val(listVatTotal.toFixed(2));
+                $('#sum-discount').text(formatNumber(sumDiscount.toFixed(2)));
+                $('input[name="quote_discount"]').val(sumDiscount.toFixed(2));
+                $('#sum-pre-vat').text(formatNumber(sumPreVat.toFixed(2)));
+                $('input[name="quote_pre_vat_amount"]').val(sumPreVat.toFixed(2));
+                $('#vat-amount').text(formatNumber(vatAmount.toFixed(2)));
+                $('input[name="quote_vat"]').val(vatAmount.toFixed(2));
+                $('#sum-include-vat').text(formatNumber((sumPreVat + vatAmount).toFixed(2)));
+                $('input[name="quote_include_vat"]').val((sumPreVat + vatAmount).toFixed(2));
+                $('#grand-total').text(formatNumber((grandTotal - sumDiscount).toFixed(2)));
+                $('input[name="quote_grand_total"]').val((grandTotal - sumDiscount).toFixed(2));
             }
-
-            const discountAmount = quantity * pricePerUnit;
-            sumDiscount += discountAmount; // เก็บค่าส่วนลด
-
-            // เพิ่ม rowId ในรายการที่ถูกประมวลผลแล้ว
-            processedDiscountRows.push(rowId);
-        }
-
-        // คำนวณ VAT 3% หากมีการเลือก
-        if (isVat3) {
-            const vat3 = total * 0.03;
-            total += vat3;
-        }
-
-        // แสดงผลยอดรวมในฟิลด์ total-amount
-        $(this).find('.total-amount').val(total.toFixed(2));
-
-        totalBeforeDiscount += (expenseType !== 'discount') ? total : 0;
-
-        // กรณี Non-VAT
-        if (vatStatus === 'nonvat') {
-            $(this).find('.price-excluding-vat').val(total.toFixed(2));
-            sumPriceExcludingVatNonVat += total; // เพิ่มยอดไปที่ Non-VAT รวม
-        } else {
-            listVatTotal += total; // เพิ่มยอดไปที่รายการที่ต้องเสีย VAT
-        }
-
-        sumTotal += total;
-    });
-
-    // คำนวณยอดหลังส่วนลด (หักส่วนลดออกจาก total ก่อนการคำนวณ VAT)
-    const afterDiscount = totalBeforeDiscount - sumDiscount;
-
-    let vatAmount = 0;
-    let preVatAmount = 0;
-    let grandTotal = 0;
-    let sumPreVat = 0;
-
-    if (vatMethod === 'include') {
-        // VAT รวมอยู่ในยอดแล้ว
-        preVatAmount = sumPriceExcludingVat * 0.07;
-        sumPreVat = listVatTotal - sumDiscount; // หักส่วนลดออกก่อนคำนวณ
-        sumPreVat = sumPreVat * 100 / 107;
-        vatAmount = sumPreVat * 0.07;
-        grandTotal = sumPriceExcludingVatNonVat + sumPreVat + vatAmount;
-    } else {
-        // คำนวณ VAT 7% กรณี Exclude VAT
-        if(sumDiscount < listVatTotal) {
-            sumPreVat = listVatTotal - sumDiscount;
-        }else{
-            sumPreVat = 0;
-        }
-         // หักส่วนลดออกก่อนคำนวณ
-        vatAmount = sumPreVat * 0.07;
-        grandTotal = sumPriceExcludingVatNonVat + sumPreVat + vatAmount;
-    }
-
-    // คำนวณหักภาษี ณ ที่จ่าย (Withholding Tax)
-    const withholdingTax = $('#withholding-tax').is(':checked') ? sumPreVat * 0.03 : 0;
-
-    // อัปเดตค่าต่างๆ ในหน้าจอ
-    $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
-    $('#quote-total').val(sumTotal.toFixed(2));
-    $('#after-discount').text(formatNumber(afterDiscount.toFixed(2)));
-    $('#quote-after-discount').val(afterDiscount.toFixed(2));
-    $('#quote-vat-7').val(vatAmount.toFixed(2));
-    $('#price-excluding-vat').text(formatNumber((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(2)));
-    $('#quote-price-excluding-vat').val(((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(2)));
-    $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
-    $('#sum-total-nonvat').text(formatNumber((sumPriceExcludingVatNonVat - sumDiscount).toFixed(2)));
-    $('input[name="quote_vat_exempted_amount"]').val((sumPriceExcludingVatNonVat - sumDiscount).toFixed(2));
-    $('#sum-total-vat').text(formatNumber(listVatTotal.toFixed(2)));
-    $('input[name="quote_pre_tax_amount"]').val(listVatTotal.toFixed(2));
-    $('#sum-discount').text(formatNumber(sumDiscount.toFixed(2)));
-    $('input[name="quote_discount"]').val(sumDiscount.toFixed(2));
-    $('#sum-pre-vat').text(formatNumber(sumPreVat.toFixed(2)));
-    $('input[name="quote_pre_vat_amount"]').val(sumPreVat.toFixed(2));
-    $('#vat-amount').text(formatNumber(vatAmount.toFixed(2)));
-    $('input[name="quote_vat"]').val(vatAmount.toFixed(2));
-    $('#sum-include-vat').text(formatNumber((sumPreVat + vatAmount).toFixed(2)));
-    $('input[name="quote_include_vat"]').val((sumPreVat + vatAmount).toFixed(2));
-    $('#grand-total').text(formatNumber((grandTotal - sumDiscount).toFixed(2)));
-    $('input[name="quote_grand_total"]').val((grandTotal - sumDiscount).toFixed(2));
-}
 
 
 
@@ -766,7 +818,7 @@ function calculateTotals() {
                <div class="col-md-1 text-center">
     <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
         <option value="vat">Vat</option>
-    <option value="nonvat">nonVat</option>
+    <option selected value="nonvat">nonVat</option>
     </select>
 </div>
                 <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" value="1" step="0.01"></div>
@@ -924,11 +976,16 @@ function calculateTotals() {
                     // เงื่อนไข 1: เลือกวิธีชำระเงินมัดจำ
                     $('#quote-payment-deposit').prop('checked', true);
                     $('#quote-payment-price').prop('disabled', false); // เปิดการใช้งาน dropdown
+                    $('#quote-payment-deposit').prop('disabled', false);
+                    $('#quote-payment-date').prop('disabled', false); 
 
                 } else {
                     // หากไม่เข้าเงื่อนไข 1: เลือกชำระเต็มจำนวน
                     $('#quote-payment-full').prop('checked', true);
+                    $('#quote-payment-deposit').prop('disabled', true);
                     $('#quote-payment-price').prop('disabled', true); // ปิดการใช้งาน dropdown
+                    $('#quote-payment-date').prop('disabled', true); 
+      
                 }
             }
 
@@ -954,13 +1011,66 @@ function calculateTotals() {
             checkPaymentCondition();
             // ตั้งค่าฟิลด์ "ภายในวันที่" เมื่อโหลดหน้าเว็บ
             setPaymentDueDate();
+
+            function setPaymentDueDate30() {
+                var bookingCreateDate = new Date($('#date-start').val());
+                var travelDate = new Date($('#date-start').val());
+                //console.log(travelDate);
+                var bookingDate = new Date($('#booking-create-date').val());
+                // คำนวณจำนวนวันระหว่างวันจองและวันออกเดินทาง
+                var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);
+
+                if(diffDays >= 31) {
+                           // ลบ 31 วัน
+                    bookingCreateDate.setDate(bookingCreateDate.getDate() - 31);
+                }else{
+                     // เพิ่ม 1 วัน
+                    bookingCreateDate.setDate(bookingCreateDate.getDate() + 1);
+                }
+         
+               
+
+                
+                // ตั้งค่าเวลาเป็น 13:00 น.
+                bookingCreateDate.setHours(13);
+                bookingCreateDate.setMinutes(0);
+                bookingCreateDate.setSeconds(0);
+                bookingCreateDate.setMilliseconds(0);
+                // สร้างฟังก์ชันเพื่อแปลงวันที่เป็นรูปแบบ YYYY-MM-DDTHH:MM
+                var year = bookingCreateDate.getFullYear();
+                var month = ('0' + (bookingCreateDate.getMonth() + 1)).slice(-2);
+                var day = ('0' + bookingCreateDate.getDate()).slice(-2);
+                var hours = ('0' + bookingCreateDate.getHours()).slice(-2);
+                var minutes = ('0' + bookingCreateDate.getMinutes()).slice(-2);
+                var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+                // ตั้งค่าให้กับ input datetime-local
+                console.log(formattedDate);
+
+                $('input[name="quote_payment_date_full"]').val(formattedDate);
+            }
+            setPaymentDueDate30();
+            $('#date-start-display').datepicker({
+                dateFormat: 'dd MM yy',
+                onSelect: function(dateText) {
+                    var isoDate = $.datepicker.formatDate('yy-mm-dd', $(this).datepicker('getDate'));
+                    $('#date-start').val(isoDate);
+                    setPaymentDueDate30(); // คำนวณวันสิ้นสุดเมื่อเลือกวันเริ่มต้น
+                    checkPaymentCondition()
+                }
+            });
+
+
+
+
             // ตรวจสอบเมื่อผู้ใช้เลือกชำระเงินเต็มจำนวน
             function checkedPaymentFull() {
                 var QuoteTotalGrand = $('#quote-grand-total').val();
-
                 if ($('#quote-payment-full').is(':checked')) {
                     $('#quote-payment-price').prop('disabled', true); // ปิด dropdown เรทเงินมัดจำ
-                    $('.pax-total').val(QuoteTotalGrand);
+                    $('#payment-total-full').val(QuoteTotalGrand);
+                    $('.pax-total').val(0.00);
+                    $('#quote-payment-price').val(0);
+                    $('#quote-payment-date').prop('disabled', true); 
                 }
             }
 
@@ -972,11 +1082,13 @@ function calculateTotals() {
             $('#quote-payment-deposit').on('change', function() {
                 if ($(this).is(':checked')) {
                     $('#quote-payment-price').prop('disabled', false); // เปิด dropdown เรทเงินมัดจำ
+                    $('#quote-payment-date').prop('disabled', false); 
                     $('#quote-payment-price').val(0.00);
                 }
             });
 
             function calculatePaxAndTotal() {
+                var QuoteTotalGrand = $('#quote-grand-total').val();
                 // ตรวจสอบว่าการชำระเงินเต็มจำนวนถูกเลือกหรือไม่
                 if ($('#quote-payment-deposit').is(':checked')) {
                     // ตัวแปรเก็บผลรวมของ quantity
@@ -1005,6 +1117,7 @@ function calculateTotals() {
 
                         if (isPax) {
                             $('.pax-total').val(paxTotal.toFixed(2)); // อัพเดตยอด Pax
+                            $('#payment-total-full').val(QuoteTotalGrand - paxTotal);
                         }
                     });
                 } else {

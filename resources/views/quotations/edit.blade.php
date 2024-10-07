@@ -107,12 +107,12 @@
 
                 <div class="todo-listing ">
                     <div class="container border bg-white">
-                        <h4 class="text-center my-4">ใบเสนอราคา(แก้ไข) #{{$quotationModel->quote_number}}
+                        <h4 class="text-center my-4">ใบเสนอราคา(แก้ไข) #{{ $quotationModel->quote_number }}
                             <a target="_blank" href="{{ route('mpdf.quote', $quotationModel->quote_id) }}"
                                 class="float-end">พิมพ์ <i class="text-danger fa fa-print"></i></a>
                         </h4>
                         <hr>
-                        <form action="{{ route('quote.update',$quotationModel->quote_id) }}" id="formQuote" method="post">
+                        <form action="{{ route('quote.update', $quotationModel->quote_id) }}" id="formQuote" method="post">
                             @csrf
                             @method('PUT')
                             <div class="row table-custom ">
@@ -131,31 +131,32 @@
 
                                 <div class="col-md-2">
                                     <label>วันที่เสนอราคา</label>
-                                    <input type="text" id="displayDatepickerQuoteDate"
-                                          class="form-control" >
+                                    <input type="text" id="displayDatepickerQuoteDate" class="form-control">
 
-                                        <input type="hidden" id="submitDatepickerQuoteDate" name="quote_date"
-                                        value="{{ $quotationModel->quote_date }}" class="form-control" >
+                                    <input type="hidden" id="submitDatepickerQuoteDate" name="quote_date"
+                                        value="{{ $quotationModel->quote_date }}" class="form-control">
                                 </div>
 
 
                                 <div class="col-md-2 ms-3">
                                     <label>วันที่สั่งซื้อ,จองแพคเกจ:</label>
                                     <input type="text" id="displayDatepicker" class="form-control">
-                                    <input type="hidden" id="submitDatepicker" name="quote_booking_create" value="{{ date('Y-m-d', strtotime($quotationModel->quote_booking_create)) }}">
+                                    <input type="hidden" id="submitDatepicker" name="quote_booking_create"
+                                        value="{{ date('Y-m-d', strtotime($quotationModel->quote_booking_create)) }}">
                                 </div>
                                 <div class="col-md-2">
                                     <label>เลขที่ใบจองทัวร์</label>
-                                    <input type="text" name="quote_booking"
-                                        value="{{ $quotationModel->quote_booking }}" class="form-control" readonly>
+                                    <input type="text" name="quote_booking" value="{{ $quotationModel->quote_booking }}"
+                                        class="form-control" readonly>
                                 </div>
                                 <div class="col-md-2">
                                     <label>รหัสทัวร์</label>
-                                   @if ($quotationModel->quote_tour)
-                                   <input type="text" name="quote_tour" value="{{ $quotationModel->quote_tour }}" class="form-control" readonly>
-                                   
+                                    @if ($quotationModel->quote_tour)
+                                        <input type="text" name="quote_tour" value="{{ $quotationModel->quote_tour }}"
+                                            class="form-control" readonly>
                                     @else
-                                    <input type="text" name="quote_tour_code_old" value="{{ $quotationModel->quote_tour_code }}" class="form-control" readonly>
+                                        <input type="text" name="quote_tour_code_old"
+                                            value="{{ $quotationModel->quote_tour_code }}" class="form-control" readonly>
                                     @endif
                                 </div>
 
@@ -173,7 +174,8 @@
                                     </div>
                                 </div>
 
-                                <input type="hidden" id="tour-code" name="quote_tour" value="{{ $quotationModel->quote_tour}}">
+                                <input type="hidden" id="tour-code" name="quote_tour"
+                                    value="{{ $quotationModel->quote_tour }}">
 
 
                                 <div class="col-md-3">
@@ -182,7 +184,8 @@
                                         <option value="">--เลือกระยะเวลา--</option>
                                         @forelse ($numDays as $item)
                                             <option @if ($quotationModel->quote_numday === $item->num_day_total) selected @endif
-                                                data-day="{{ $item->num_day_total }}" value="{{ $item->num_day_total }}">
+                                                data-day="{{ $item->num_day_total }}"
+                                                value="{{ $item->num_day_total }}">
                                                 {{ $item->num_day_name }}</option>
                                         @empty
                                         @endforelse
@@ -254,7 +257,7 @@
                             </div>
                             <hr>
                             <h5 class="text-danger">ข้อมูลลูกค้า:</h5>
-                            <input type="hidden" name="customer_id" value="{{$customer->customer_id}}">
+                            <input type="hidden" name="customer_id" value="{{ $customer->customer_id }}">
                             <div class="row table-custom">
                                 <div class="col-md-3">
                                     <label class="">ชื่อลูกค้า:</label>
@@ -275,8 +278,8 @@
                                 <div class="col-md-3">
                                     <label>เลขผู้เสียภาษี:</label>
                                     <input type="text" id="texid" class="form-control" name="customer_texid"
-                                        mix="13" value="{{$customer->customer_texid}}" placeholder="เลขประจำตัวผู้เสียภาษี"
-                                        aria-describedby="basic-addon1">
+                                        mix="13" value="{{ $customer->customer_texid }}"
+                                        placeholder="เลขประจำตัวผู้เสียภาษี" aria-describedby="basic-addon1">
                                 </div>
 
                                 <div class="col-md-3">
@@ -288,37 +291,39 @@
                                 </div>
 
                                 <div class="col-md-12">
-                                 <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="col-md-12">
-                                            <label>เบอร์โทรสาร :</label>
-                                            <input type="text" class="form-control" id="fax" name="customer_fax"
-                                                value="{{ $customer->customer_fax }}" placeholder="เบอร์โทรศัพท์" aria-describedby="basic-addon1">
-                                        </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="col-md-12">
+                                                <label>เบอร์โทรสาร :</label>
+                                                <input type="text" class="form-control" id="fax"
+                                                    name="customer_fax" value="{{ $customer->customer_fax }}"
+                                                    placeholder="เบอร์โทรศัพท์" aria-describedby="basic-addon1">
+                                            </div>
 
-                                        <div class="col-md-12">
-                                            <label>ลูกค้ามาจาก :</label>
-                                             <select name="customer_campaign_source" class="form-select">
-                                                @forelse ($campaignSource as $item)
-                                                    <option @if($customer->customer_campaign_source === $item->campaign_source_id ) selected @endif value="{{$item->campaign_source_id}}">{{$item->campaign_source_name}}</option>
-                                                @empty
-                                                    
-                                                @endforelse
-                                             </select>
-                                        </div>
+                                            <div class="col-md-12">
+                                                <label>ลูกค้ามาจาก :</label>
+                                                <select name="customer_campaign_source" class="form-select">
+                                                    @forelse ($campaignSource as $item)
+                                                        <option @if ($customer->customer_campaign_source === $item->campaign_source_id) selected @endif
+                                                            value="{{ $item->campaign_source_id }}">
+                                                            {{ $item->campaign_source_name }}</option>
+                                                    @empty
+                                                    @endforelse
+                                                </select>
+                                            </div>
 
+                                        </div>
+                                        <div class="col-md-9">
+                                            <label>ที่อยู่:</label>
+                                            <textarea name="customer_address" id="address" class="form-control" cols="30" rows="4"
+                                                placeholder="ที่อยู่">{{ $customer->customer_address }}</textarea>
+                                        </div>
                                     </div>
-                                    <div class="col-md-9">
-                                        <label>ที่อยู่:</label>
-                                        <textarea name="customer_address" id="address" class="form-control" cols="30" rows="4"
-                                            placeholder="ที่อยู่">{{ $customer->customer_address }}</textarea>
-                                    </div>
-                                 </div>
                                 </div>
 
 
-                              
-                              
+
+
                             </div>
                             <br>
 
@@ -344,60 +349,60 @@
                                 @endphp
                                 @forelse ($quoteProducts as $key => $item)
                                     <div class="row item-row ">
-                     
-                                            <div class="col-md-1"><span class="row-number"> {{ ++$Runnumber }}</span> <a
-                                                    href="javascript:void(0)" class="remove-row-btn text-danger"><span
-                                                        class=" fa fa-trash"></span></a></div>
-                                            <div class="col-md-4">
-                                                <select name="product_id[]" class="form-select product-select"
-                                                    id="product-select" style="width: 100%;">
-                                                    @forelse ($products as  $product)
-                                                        <option @if ($item->product_id === $product->id) selected @endif
-                                                            data-pax="{{ $product->product_pax }}"
-                                                            value="{{ $product->id }}">
-                                                            {{ $product->product_name }}
-                                                            {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
-                                                    @empty
-                                                    @endforelse
-                                                </select>
 
-                                            </div>
-                                            <div class="col-md-1">
-                        
-                                                <input type="checkbox" name="withholding_tax[]" class="vat-3"
-                                                    value="Y" @if ($item->withholding_tax === 'Y') checked @endif>
-                                            </div>
-                                            <div class="col-md-1" style="display: none">
-                                                <select name="expense_type[]" class="form-select">
-                                                    <option selected value="income"> รายได้ </option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-1 text-center">
-                                                <select name="vat_status[]" class="vat-status form-select"
-                                                    style="width: 110%;">
-                                                    <option @if ($item->vat_status === 'vat') selected @endif
-                                                        value="vat">Vat</option>
-                                                    <option @if ($item->vat_status === 'nonvat') selected @endif
-                                                        value="nonvat">nonVat</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-1"><input type="number" name="quantity[]"
-                                                    class="quantity form-control text-end"
-                                                    value="{{ $item->product_qty }}" step="0.01"></div>
-                                            <div class="col-md-2"><input type="number" name="price_per_unit[]"
-                                                    class="price-per-unit form-control text-end"
-                                                    value="{{ $item->product_price }}" step="0.01">
-                                            </div>
-                                            <div class="col-md-2"><input type="number" name="total_amount[]"
-                                                    class="total-amount form-control text-end" value="0" readonly>
-                                            </div>
+                                        <div class="col-md-1"><span class="row-number"> {{ ++$Runnumber }}</span> <a
+                                                href="javascript:void(0)" class="remove-row-btn text-danger"><span
+                                                    class=" fa fa-trash"></span></a></div>
+                                        <div class="col-md-4">
+                                            <select name="product_id[]" class="form-select product-select"
+                                                id="product-select" style="width: 100%;">
+                                                @forelse ($products as  $product)
+                                                    <option @if ($item->product_id === $product->id) selected @endif
+                                                        data-pax="{{ $product->product_pax }}"
+                                                        value="{{ $product->id }}">
+                                                        {{ $product->product_name }}
+                                                        {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
+                                                @empty
+                                                @endforelse
+                                            </select>
+
                                         </div>
-                                   
+                                        <div class="col-md-1">
+
+                                            <input type="checkbox" name="withholding_tax[]" class="vat-3"
+                                                value="Y" @if ($item->withholding_tax === 'Y') checked @endif>
+                                        </div>
+                                        <div class="col-md-1" style="display: none">
+                                            <select name="expense_type[]" class="form-select">
+                                                <option selected value="income"> รายได้ </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1 text-center">
+                                            <select name="vat_status[]" class="vat-status form-select"
+                                                style="width: 110%;">
+                                                <option @if ($item->vat_status === 'vat') selected @endif value="vat">
+                                                    Vat</option>
+                                                <option @if ($item->vat_status === 'nonvat') selected @endif value="nonvat">
+                                                    nonVat</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1"><input type="number" name="quantity[]"
+                                                class="quantity form-control text-end" value="{{ $item->product_qty }}"
+                                                step="0.01"></div>
+                                        <div class="col-md-2"><input type="number" name="price_per_unit[]"
+                                                class="price-per-unit form-control text-end"
+                                                value="{{ $item->product_price }}" step="0.01">
+                                        </div>
+                                        <div class="col-md-2"><input type="number" name="total_amount[]"
+                                                class="total-amount form-control text-end" value="0" readonly>
+                                        </div>
+                                    </div>
+
                                 @empty
                                 @endforelse
                                 {{-- เพิ่มรายการใหม่ --}}
                                 <div class="table-income">
-                                    
+
                                 </div>
                                 <div class="add-row">
                                     <i class="fa fa-plus"></i><a id="add-row-service" href="javascript:void(0)"
@@ -441,7 +446,7 @@
                                             <select name="vat_status[]" class="vat-status form-select"
                                                 style="width: 110%;">
 
-                                                <option value="nonvat" selected >nonVat</option>
+                                                <option value="nonvat" selected>nonVat</option>
                                             </select>
                                         </div>
                                         <div class="col-md-1"><input type="number" name="quantity[]"
@@ -457,9 +462,9 @@
 
                                 @empty
                                 @endforelse
-                               
+
                                 <div class="table-discount">
-                                   
+
                                 </div>
 
                                 <div class="add-row">
@@ -479,14 +484,14 @@
                                             <div class="form-group">
                                                 <label for="vat-method">การคำนวณ VAT:</label>
                                                 <div>
-                                                    <input type="radio" id="vat-include" name="vat_type" @if($quotationModel->vat_type === 'include') checked @endif
-                                                        value="include">
+                                                    <input type="radio" id="vat-include" name="vat_type"
+                                                        @if ($quotationModel->vat_type === 'include') checked @endif value="include">
                                                     <label for="vat-include">คำนวณรวมกับราคาสินค้าและบริการ (VAT
                                                         Include)</label>
                                                 </div>
                                                 <div>
                                                     <input type="radio" id="vat-exclude" name="vat_type"
-                                                        value="exclude" @if($quotationModel->vat_type === 'exclude') checked @endif >
+                                                        value="exclude" @if ($quotationModel->vat_type === 'exclude') checked @endif>
                                                     <label for="vat-exclude">คำนวณแยกกับราคาสินค้าและบริการ (VAT
                                                         Exclude)</label>
                                                 </div>
@@ -497,10 +502,10 @@
                                         <div class="col-md-12">
                                             <div class="row summary-row">
                                                 <div class="col-md-10">
-                                                    <input type="checkbox" name="quote_withholding_tax_status" 
-                                                        value="Y" id="withholding-tax" 
-                                                        @if($quotationModel->quote_withholding_tax_status === 'Y') checked @endif> 
-                                                        <span class="">
+                                                    <input type="checkbox" name="quote_withholding_tax_status"
+                                                        value="Y" id="withholding-tax"
+                                                        @if ($quotationModel->quote_withholding_tax_status === 'Y') checked @endif>
+                                                    <span class="">
                                                         คิดภาษีหัก ณ ที่จ่าย 3% (คำนวณจากยอด ราคาก่อนภาษีมูลค่าเพิ่ม /
                                                         Pre-VAT
                                                         Amount)</span>
@@ -516,7 +521,7 @@
 
                                         <div class="col-md-12" style="padding-bottom: 10px">
                                             <label>บันทึกเพิ่มเติม</label>
-                                            <textarea name="quote_note" class="form-control" cols="30" rows="2">{{$quotationModel->quote_note}}</textarea>
+                                            <textarea name="quote_note" class="form-control" cols="30" rows="2">{{ $quotationModel->quote_note }}</textarea>
                                         </div>
                                     </div>
 
@@ -569,13 +574,14 @@
                                         <div class="col-md-12 ">
                                             <div class="row">
                                                 <div class="col-md-3">
-                                                    <input type="radio" name="quote_payment_type" @if($quotationModel->quote_payment_type === 'deposit') checked @endif
+                                                    <input type="radio" name="quote_payment_type"
+                                                        @if ($quotationModel->quote_payment_type === 'deposit') checked @endif
                                                         id="quote-payment-deposit" value="deposit"> <label
                                                         for="quote-payment-type"> เงินมัดจำ </label>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <input type="radio" name="quote_payment_type" @if($quotationModel->quote_payment_type === 'full') checked @endif
-
+                                                    <input type="radio" name="quote_payment_type"
+                                                        @if ($quotationModel->quote_payment_type === 'full') checked @endif
                                                         id="quote-payment-full" value="full"> <label
                                                         for="quote-payment-type"> ชำระเต็มจำนวน </label>
                                                 </div>
@@ -584,44 +590,75 @@
                                         </div>
                                         <div class="col-md-4">
                                             <span for="">ภายในวันที่ </span>
-                                            <input type="datetime-local" class="form-control" name="quote_payment_date" value="{{$quotationModel->quote_payment_date}}"
-                                               >
+                                            <input type="datetime-local" class="form-control" name="quote_payment_date"
+                                                value="{{ $quotationModel->quote_payment_date }}">
                                         </div>
                                         <div class="col-md-4">
                                             <span for="">เรทเงินมัดจำ</span>
                                             <select name="quote_payment_price" class="form-select"
                                                 id="quote-payment-price">
-                                                <option  @if($quotationModel->quote_payment_price == 0.00) selected @endif value="0.00">0.00</option>
-                                                <option  @if($quotationModel->quote_payment_price == 1000) selected @endif value="1000">1,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 1500) selected @endif value="1500">1,500</option>
-                                                <option  @if($quotationModel->quote_payment_price == 2000) selected @endif value="2000">2,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 3000) selected @endif value="3000">3,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 4000) selected @endif value="4000">4,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 5000) selected @endif value="5000" >5,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 6000) selected @endif value="6000">6,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 7000) selected @endif value="7000">7,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 8000) selected @endif value="8000">8,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 9000) selected @endif value="9000">9,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 10000) selected @endif value="10000">10,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 15000) selected @endif value="15000">15,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 20000) selected @endif value="20000">20,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 30000) selected @endif value="30000">30,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 24000) selected @endif value="24000">24,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 25000) selected @endif value="25000">25,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 28000) selected @endif value="28000">28,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 29000) selected @endif value="29000">29,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 34000) selected @endif value="34000">34,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 50000) selected @endif value="50000">50,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 70000) selected @endif value="70000">70,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 35000) selected @endif value="35000">35,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 40000) selected @endif value="40000">40,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 45000) selected @endif value="45000">45,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 80000) selected @endif value="80000">80,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 30500) selected @endif value="30500">30,500</option>
-                                                <option  @if($quotationModel->quote_payment_price == 35500) selected @endif value="35500">35,500</option>
-                                                <option  @if($quotationModel->quote_payment_price == 36000) selected @endif value="36000">36,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 38000) selected @endif value="38000">38,000</option>
-                                                <option  @if($quotationModel->quote_payment_price == 100000) selected @endif value="100000">100,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 0.0) selected @endif value="0.00">
+                                                    0.00</option>
+                                                <option @if ($quotationModel->quote_payment_price == 1000) selected @endif value="1000">
+                                                    1,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 1500) selected @endif value="1500">
+                                                    1,500</option>
+                                                <option @if ($quotationModel->quote_payment_price == 2000) selected @endif value="2000">
+                                                    2,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 3000) selected @endif value="3000">
+                                                    3,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 4000) selected @endif value="4000">
+                                                    4,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 5000) selected @endif value="5000">
+                                                    5,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 6000) selected @endif value="6000">
+                                                    6,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 7000) selected @endif value="7000">
+                                                    7,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 8000) selected @endif value="8000">
+                                                    8,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 9000) selected @endif value="9000">
+                                                    9,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 10000) selected @endif value="10000">
+                                                    10,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 15000) selected @endif value="15000">
+                                                    15,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 20000) selected @endif value="20000">
+                                                    20,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 30000) selected @endif value="30000">
+                                                    30,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 24000) selected @endif value="24000">
+                                                    24,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 25000) selected @endif value="25000">
+                                                    25,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 28000) selected @endif value="28000">
+                                                    28,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 29000) selected @endif value="29000">
+                                                    29,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 34000) selected @endif value="34000">
+                                                    34,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 50000) selected @endif value="50000">
+                                                    50,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 70000) selected @endif value="70000">
+                                                    70,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 35000) selected @endif value="35000">
+                                                    35,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 40000) selected @endif value="40000">
+                                                    40,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 45000) selected @endif value="45000">
+                                                    45,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 80000) selected @endif value="80000">
+                                                    80,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 30500) selected @endif value="30500">
+                                                    30,500</option>
+                                                <option @if ($quotationModel->quote_payment_price == 35500) selected @endif value="35500">
+                                                    35,500</option>
+                                                <option @if ($quotationModel->quote_payment_price == 36000) selected @endif value="36000">
+                                                    36,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 38000) selected @endif value="38000">
+                                                    38,000</option>
+                                                <option @if ($quotationModel->quote_payment_price == 100000) selected @endif value="100000">
+                                                    100,000</option>
                                             </select>
                                         </div>
                                         <input type="hidden" id="booking-create-date" name="quote_booking_create"
@@ -692,20 +729,19 @@
         });
 
         $(document).ready(function() {
-    // เมื่อ form ถูก submit
-    $('form').on('submit', function() {
-        // loop ผ่าน checkbox แต่ละตัว
-        $('.vat-3').each(function(index, element) {
-            // ตรวจสอบว่าถ้า checkbox ไม่ได้ถูกติ๊ก
-            if (!$(element).is(':checked')) {
-                // สร้าง hidden input ที่มีค่าเป็น 'N' เพื่อส่งไปกับ form
-                $(element).after('<input type="hidden" name="withholding_tax[]" value="N">');
-            }
+            // เมื่อ form ถูก submit
+            $('form').on('submit', function() {
+                // loop ผ่าน checkbox แต่ละตัว
+                $('.vat-3').each(function(index, element) {
+                    // ตรวจสอบว่าถ้า checkbox ไม่ได้ถูกติ๊ก
+                    if (!$(element).is(':checked')) {
+                        // สร้าง hidden input ที่มีค่าเป็น 'N' เพื่อส่งไปกับ form
+                        $(element).after(
+                        '<input type="hidden" name="withholding_tax[]" value="N">');
+                    }
+                });
+            });
         });
-    });
-});
-
-
     </script>
 
 
@@ -828,24 +864,23 @@
 
                 if ($('input[name="vat_type"]:checked').val() === 'include') {
                     // VAT รวมอยู่ในยอดแล้ว
-
                     preVatAmount = sumPriceExcludingVat * 0.07;
-
-                    sumPreVat = listVatTotal;
+                    sumPreVat = listVatTotal - sumDiscount; // หักส่วนลดออกก่อนคำนวณ
                     sumPreVat = sumPreVat * 100 / 107;
                     vatAmount = sumPreVat * 0.07;
-
                     grandTotal = sumPriceExcludingVatNonVat + sumPreVat + vatAmount;
-                    // console.log('sumPreVat : '+sumPreVat);
-                    // console.log('listVatTotal : '+listVatTotal);
-
                 } else {
                     // คำนวณ VAT 7% กรณี Exclude VAT
-
-
-                    sumPreVat = listVatTotal ;
-                    vatAmount = sumPreVat * 0.07;
-                    grandTotal = sumPriceExcludingVatNonVat + sumPreVat + vatAmount;
+                    if (sumDiscount < listVatTotal) {
+                        sumPreVat = listVatTotal - sumDiscount;
+                        vatAmount = sumPreVat * 0.07;
+                        grandTotal = sumPriceExcludingVatNonVat + sumPreVat + vatAmount;
+                    } else {
+                        sumPreVat = 0;
+                        vatAmount = sumPreVat * 0.07;
+                        grandTotal = (sumPriceExcludingVatNonVat + sumPreVat + vatAmount) - sumDiscount;
+                    }
+                    // หักส่วนลดออกก่อนคำนวณ
                 }
 
                 // คำนวณหักภาษี ณ ที่จ่าย (Withholding Tax)
@@ -1090,14 +1125,14 @@
             // ตรวจสอบเมื่อผู้ใช้เลือกชำระเงินเต็มจำนวน
             function checkedPaymentFull() {
                 var QuoteTotalGrand = $('#quote-grand-total').val();
-                console.log("QuoteTotalGrand : "+QuoteTotalGrand);
+                console.log("QuoteTotalGrand : " + QuoteTotalGrand);
                 if ($('#quote-payment-full').is(':checked')) {
                     $('#quote-payment-price').prop('disabled', true); // ปิด dropdown เรทเงินมัดจำ
                     $('.pax-total').val(QuoteTotalGrand);
                 }
             }
             $('#quote-payment-full').on('change', function() {
-             
+
                 checkedPaymentFull();
             });
             checkedPaymentFull();
@@ -1109,6 +1144,7 @@
                 }
 
             });
+
             function calculatePaxAndTotal() {
                 // ตรวจสอบว่าการชำระเงินเต็มจำนวนถูกเลือกหรือไม่
                 if ($('#quote-payment-deposit').is(':checked')) {
@@ -1160,7 +1196,6 @@
             checkedPaymentFull()
             calculatePaxAndTotal();
         });
-        
     </script>
 
 
@@ -1243,104 +1278,102 @@
         // });
 
         $(function() {
-    // ตั้งค่าภาษาไทยให้กับ Datepicker
-    $.datepicker.regional['th'] = {
-        closeText: 'ปิด',
-        prevText: 'ย้อน',
-        nextText: 'ถัดไป',
-        currentText: 'วันนี้',
-        monthNames: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
-            'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
-        ],
-        monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
-            'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
-        ],
-        dayNames: ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'],
-        dayNamesShort: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
-        dayNamesMin: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
-        weekHeader: 'Wk',
-        dateFormat: 'dd MM yy',
-        firstDay: 0,
-        isRTL: false,
-        showMonthAfterYear: false,
-        yearSuffix: ''
-    };
-    $.datepicker.setDefaults($.datepicker.regional['th']);
+            // ตั้งค่าภาษาไทยให้กับ Datepicker
+            $.datepicker.regional['th'] = {
+                closeText: 'ปิด',
+                prevText: 'ย้อน',
+                nextText: 'ถัดไป',
+                currentText: 'วันนี้',
+                monthNames: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+                    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+                ],
+                monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+                    'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+                ],
+                dayNames: ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'],
+                dayNamesShort: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
+                dayNamesMin: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
+                weekHeader: 'Wk',
+                dateFormat: 'dd MM yy',
+                firstDay: 0,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+            };
+            $.datepicker.setDefaults($.datepicker.regional['th']);
 
-    // ฟังก์ชันคำนวณวันสิ้นสุด
-    function calculateEndDate() {
-        var numDays = parseInt($('#numday option:selected').data('day')) || 0;
-        var startDate = $('#date-start').val();
+            // ฟังก์ชันคำนวณวันสิ้นสุด
+            function calculateEndDate() {
+                var numDays = parseInt($('#numday option:selected').data('day')) || 0;
+                var startDate = $('#date-start').val();
 
-        if (numDays > 0 && startDate) {
-            var start = new Date(startDate);
-            var endDate = new Date(start);
-            endDate.setDate(start.getDate() + numDays - 1); // คำนวณวันสิ้นสุด
+                if (numDays > 0 && startDate) {
+                    var start = new Date(startDate);
+                    var endDate = new Date(start);
+                    endDate.setDate(start.getDate() + numDays - 1); // คำนวณวันสิ้นสุด
 
-            // แสดงวันสิ้นสุดใน input
-            $('#date-end-display').datepicker('setDate', endDate);
-            $('#date-end').val($.datepicker.formatDate('yy-mm-dd', endDate)); // เก็บค่าแบบ yyyy-mm-dd
-        }
-    }
+                    // แสดงวันสิ้นสุดใน input
+                    $('#date-end-display').datepicker('setDate', endDate);
+                    $('#date-end').val($.datepicker.formatDate('yy-mm-dd', endDate)); // เก็บค่าแบบ yyyy-mm-dd
+                }
+            }
 
-    // ฟังก์ชันคำนวณวันเริ่มต้น
-    function calculateStartDate() {
-        var numDays = parseInt($('#numday option:selected').data('day')) || 0;
-        var endDate = $('#date-end').val();
+            // ฟังก์ชันคำนวณวันเริ่มต้น
+            function calculateStartDate() {
+                var numDays = parseInt($('#numday option:selected').data('day')) || 0;
+                var endDate = $('#date-end').val();
 
-        if (numDays > 0 && endDate) {
-            var end = new Date(endDate);
-            var startDate = new Date(end);
-            startDate.setDate(end.getDate() - numDays + 1); // คำนวณวันเริ่มต้น
+                if (numDays > 0 && endDate) {
+                    var end = new Date(endDate);
+                    var startDate = new Date(end);
+                    startDate.setDate(end.getDate() - numDays + 1); // คำนวณวันเริ่มต้น
 
-            // แสดงวันเริ่มต้นใน input
-            $('#date-start-display').datepicker('setDate', startDate);
-            $('#date-start').val($.datepicker.formatDate('yy-mm-dd', startDate)); // เก็บค่าแบบ yyyy-mm-dd
-        }
-    }
+                    // แสดงวันเริ่มต้นใน input
+                    $('#date-start-display').datepicker('setDate', startDate);
+                    $('#date-start').val($.datepicker.formatDate('yy-mm-dd', startDate)); // เก็บค่าแบบ yyyy-mm-dd
+                }
+            }
 
-    // ตั้งค่า Datepicker สำหรับวันเริ่มต้น
-    $('#date-start-display').datepicker({
-        dateFormat: 'dd MM yy',
-        onSelect: function(dateText) {
-            var isoDate = $.datepicker.formatDate('yy-mm-dd', $(this).datepicker('getDate'));
-            $('#date-start').val(isoDate);
-            calculateEndDate(); // คำนวณวันสิ้นสุดเมื่อเลือกวันเริ่มต้น
-        }
-    });
+            // ตั้งค่า Datepicker สำหรับวันเริ่มต้น
+            $('#date-start-display').datepicker({
+                dateFormat: 'dd MM yy',
+                onSelect: function(dateText) {
+                    var isoDate = $.datepicker.formatDate('yy-mm-dd', $(this).datepicker('getDate'));
+                    $('#date-start').val(isoDate);
+                    calculateEndDate(); // คำนวณวันสิ้นสุดเมื่อเลือกวันเริ่มต้น
+                }
+            });
 
-    // ตั้งค่า Datepicker สำหรับวันสิ้นสุด
-    $('#date-end-display').datepicker({
-        dateFormat: 'dd MM yy',
-        onSelect: function(dateText) {
-            var isoDate = $.datepicker.formatDate('yy-mm-dd', $(this).datepicker('getDate'));
-            $('#date-end').val(isoDate);
-            calculateStartDate(); // คำนวณวันเริ่มต้นเมื่อเลือกวันสิ้นสุด
-        }
-    });
+            // ตั้งค่า Datepicker สำหรับวันสิ้นสุด
+            $('#date-end-display').datepicker({
+                dateFormat: 'dd MM yy',
+                onSelect: function(dateText) {
+                    var isoDate = $.datepicker.formatDate('yy-mm-dd', $(this).datepicker('getDate'));
+                    $('#date-end').val(isoDate);
+                    calculateStartDate(); // คำนวณวันเริ่มต้นเมื่อเลือกวันสิ้นสุด
+                }
+            });
 
-    // กำหนดให้คำนวณวันสิ้นสุดเมื่อเปลี่ยนจำนวนวัน
-    $('#numday').on('change', function() {
-        if ($('#date-start').val()) {
-            calculateEndDate();
-        } else if ($('#date-end').val()) {
-            calculateStartDate();
-        }
-    });
+            // กำหนดให้คำนวณวันสิ้นสุดเมื่อเปลี่ยนจำนวนวัน
+            $('#numday').on('change', function() {
+                if ($('#date-start').val()) {
+                    calculateEndDate();
+                } else if ($('#date-end').val()) {
+                    calculateStartDate();
+                }
+            });
 
-    // ตรวจสอบและแสดงวันที่เริ่มต้นและวันสิ้นสุดในรูปแบบภาษาไทยหากมีข้อมูล
-    var startDate = $('#date-start').val();
-    var endDate = $('#date-end').val();
+            // ตรวจสอบและแสดงวันที่เริ่มต้นและวันสิ้นสุดในรูปแบบภาษาไทยหากมีข้อมูล
+            var startDate = $('#date-start').val();
+            var endDate = $('#date-end').val();
 
-    if (startDate) {
-        $('#date-start-display').datepicker('setDate', new Date(startDate));
-    }
-    if (endDate) {
-        $('#date-end-display').datepicker('setDate', new Date(endDate));
-    }
-});
-
-
+            if (startDate) {
+                $('#date-start-display').datepicker('setDate', new Date(startDate));
+            }
+            if (endDate) {
+                $('#date-end-display').datepicker('setDate', new Date(endDate));
+            }
+        });
     </script>
 
 
@@ -1542,8 +1575,8 @@
                 }
             });
 
-             // กำหนดค่าเริ่มต้นให้กับ Datepicker quote_date
-             let defaultDateQuoteDate = '{{ $quotationModel->quote_date }}';
+            // กำหนดค่าเริ่มต้นให้กับ Datepicker quote_date
+            let defaultDateQuoteDate = '{{ $quotationModel->quote_date }}';
             $('#submitDatepickerQuoteDate').val(defaultDateQuoteDate);
             const thaiFormattedDateQuoteDate = formatDateToThai(defaultDateQuoteDate);
             $('#displayDatepickerQuoteDate').val(thaiFormattedDateQuoteDate);
