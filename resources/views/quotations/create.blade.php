@@ -463,10 +463,19 @@
                                 {{-- <input type="hidden" id="booking-create-date"> --}}
                                 <input type="hidden" id="booking-create-date" value="{{ date('Y-m-d') }}">
 
-                                <div class="col-md-4 ">
+                                <div class="col-md-4 mb-3 ">
                                     <span for="">จำนวนเงินที่ต้องชำระ</span>
                                     <input type="number" class="form-control pax-total" name="quote_payment_total"
                                         step="0.01" placeholder="0.00">
+                                </div>
+                            </div>
+                            <div class="row">
+                               
+                                <div class="col-md-8 ">
+                                    <div class="input-group ">
+                                        <span class="input-group-text float-end">ชำระเงินเพิ่ม</span>
+                                        <input type="number" class="form-control" id="pay-extra" min="0.01" value="0.00">
+                                    </div>
                                 </div>
                             </div>
                             <br>
@@ -1010,7 +1019,7 @@
             // ตรวจสอบเมื่อผู้ใช้เลือกชำระเงินเต็มจำนวน
             function checkedPaymentFull() {
                 var QuoteTotalGrand = $('#quote-grand-total').val();
-
+                
                 if ($('#quote-payment-full').is(':checked')) {
                     $('#quote-payment-price').prop('disabled', true); // ปิด dropdown เรทเงินมัดจำ
                     $('.pax-total').val(QuoteTotalGrand);
@@ -1048,7 +1057,8 @@
 
                     // คำนวณยอด Pax โดยใช้ totalQuantity ที่รวมแล้ว
                     var paymentPrice = parseFloat($('#quote-payment-price').val()) || 0;
-                    var paxTotal = totalQuantity * paymentPrice;
+                    var payExtra = parseFloat($('#pay-extra').val()) || 0;
+                    var paxTotal = (totalQuantity * paymentPrice) + payExtra;
 
                     // อัพเดตยอด Pax ในทุกแถวที่มี Pax
                     $('#quotation-table .item-row').each(function() {
@@ -1066,7 +1076,7 @@
             }
 
             // เรียกใช้ calculatePaxAndTotal เมื่อมีการเปลี่ยนแปลงใน quantity, product-select หรือ quote-payment-price
-            $(document).on('change', '.quantity, .product-select, #quote-payment-price', function() {
+            $(document).on('change', '.quantity, .product-select, #quote-payment-price, #pay-extra', function() {
                 calculatePaxAndTotal();
                 // checkPaymentCondition();
                 checkedPaymentFull();
