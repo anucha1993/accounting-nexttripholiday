@@ -65,7 +65,7 @@ class invoiceController extends Controller
         $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
         $numDays = numDayModel::orderBy('num_day_total')->get();
         $wholesale = wholesaleModel::where('status', 'on')->get();
-        $products = productModel::where('product_type','income')->get();
+        $products = productModel::where('product_type','!=', 'discount')->get();
         $productDiscount = productModel::where('product_type','discount')->get();
         $quoteProducts = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','income')->get();
         $quoteProductsDiscount = quoteProductModel::where('quote_id',$quotationModel->quote_id)->where('expense_type','discount')->get();
@@ -137,7 +137,7 @@ class invoiceController extends Controller
         $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
         $numDays = numDayModel::orderBy('num_day_total')->get();
         $wholesale = wholesaleModel::where('status', 'on')->get();
-        $products = productModel::where('product_type','income')->get();
+        $products = productModel::where('product_type','!=', 'discount')->get();
         $productDiscount = productModel::where('product_type','discount')->get();
         $quoteProducts = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->where('expense_type','income')->get();
         $quoteProductsDiscount = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->where('expense_type','discount')->get();
