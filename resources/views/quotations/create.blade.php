@@ -78,6 +78,8 @@
                             </div>
                         </div>
 
+                        <input type="hidden" id="tourSearch1" class="form-control" name="quote_tour_name1">
+
                         <input type="hidden" id="tour-code" name="quote_tour">
                         <input type="hidden" id="tour-id">
 
@@ -235,7 +237,7 @@
                     </div>
                     <br>
 
-                    <h5 style="background: #e0e0e0; padding: 5px">ข้อมูลค่าบริการ</h5>
+                    <h5 style="background: #e0e0e0; padding: 5px">ข้อมูลค่าบริการ <span id="pax" class="float-end"></span></h5> 
                     <hr>
                     <div id="quotation-table" class="table-custom text-center">
                         <div class="row header-row" style="padding: 5px">
@@ -415,11 +417,7 @@
                                     <input type="radio" name="quote_payment_type" id="quote-payment-deposit"
                                         value="deposit"> <label for="quote-payment-type"> เงินมัดจำ </label>
                                 </div>
-                                {{-- <div class="col-md-6">
-                                    <input type="radio" name="quote_payment_type" id="quote-payment-deposit"
-                                        value="full"> <label for="quote-payment-type"> ชำระเต็มจำนวน</label>
-                                </div> --}}
-
+                              
                             </div>
 
                         </div>
@@ -478,7 +476,7 @@
                                     <div class="col-md-3">
                                         <div class="input-group mb-3">
                                             <span class="input-group-text" for="">ชำระเพิ่มเติม</span>
-                                            <input type="number" id="pay-extra" class="form-control"
+                                            <input type="number" id="pay-extra" class="form-control" name="quote_payment_extra"
                                                 placeholder="0.00">
                                         </div>
 
@@ -960,10 +958,7 @@
             });
 
         });
-    </script>
 
-
-    <script>
         $(document).ready(function() {
             function checkPaymentCondition() {
                 var travelDate = new Date($('#date-start').val());
@@ -978,6 +973,7 @@
                     $('#quote-payment-price').prop('disabled', false); // เปิดการใช้งาน dropdown
                     $('#quote-payment-deposit').prop('disabled', false);
                     $('#quote-payment-date').prop('disabled', false); 
+                    setPaymentDueDate();
 
                 } else {
                     // หากไม่เข้าเงื่อนไข 1: เลือกชำระเต็มจำนวน
@@ -1010,12 +1006,12 @@
             }
             checkPaymentCondition();
             // ตั้งค่าฟิลด์ "ภายในวันที่" เมื่อโหลดหน้าเว็บ
-            setPaymentDueDate();
+            //setPaymentDueDate();
 
             function setPaymentDueDate30() {
                 var bookingCreateDate = new Date($('#date-start').val());
                 var travelDate = new Date($('#date-start').val());
-                //console.log(travelDate);
+                console.log(travelDate);
                 var bookingDate = new Date($('#booking-create-date').val());
                 // คำนวณจำนวนวันระหว่างวันจองและวันออกเดินทาง
                 var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);
@@ -1028,9 +1024,6 @@
                     bookingCreateDate.setDate(bookingCreateDate.getDate() + 1);
                 }
          
-               
-
-                
                 // ตั้งค่าเวลาเป็น 13:00 น.
                 bookingCreateDate.setHours(13);
                 bookingCreateDate.setMinutes(0);
@@ -1044,7 +1037,7 @@
                 var minutes = ('0' + bookingCreateDate.getMinutes()).slice(-2);
                 var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
                 // ตั้งค่าให้กับ input datetime-local
-                console.log(formattedDate);
+          
 
                 $('input[name="quote_payment_date_full"]').val(formattedDate);
             }
@@ -1060,8 +1053,6 @@
             });
 
 
-
-
             // ตรวจสอบเมื่อผู้ใช้เลือกชำระเงินเต็มจำนวน
             function checkedPaymentFull() {
                 var QuoteTotalGrand = $('#quote-grand-total').val();
@@ -1074,7 +1065,7 @@
                 }
             }
 
-            $('#quote-payment-full, .quantity').on('change', function() {
+            $('#quote-payment-full, .quantity, .price-per-unit').on('change', function() {
                 checkedPaymentFull();
             });
             checkedPaymentFull();
@@ -1090,7 +1081,7 @@
             function calculatePaxAndTotal() {
                 var QuoteTotalGrand = $('#quote-grand-total').val();
                 // ตรวจสอบว่าการชำระเงินเต็มจำนวนถูกเลือกหรือไม่
-                if ($('#quote-payment-deposit').is(':checked')) {
+                if ($('#quote-payment-deposit,#quote-payment-full').is(':checked')) {
                     // ตัวแปรเก็บผลรวมของ quantity
                     let totalQuantity = 0;
                     $('#quotation-table .item-row').each(function() {
@@ -1101,9 +1092,13 @@
 
                         // ถ้าเป็น Pax ให้รวมค่า quantity
                         if (isPax) {
+
                             totalQuantity += quantity;
                         }
+                        $('#pax').text('(จำนวน : '+ totalQuantity + ' ท่าน)');
                     });
+
+                   
 
                     // คำนวณยอด Pax โดยใช้ totalQuantity ที่รวมแล้ว
                     var paymentPrice = parseFloat($('#quote-payment-price').val()) || 0;
@@ -1114,10 +1109,10 @@
                     $('#quotation-table .item-row').each(function() {
                         const selectedProduct = $(this).find('select[name="product_id[]"] option:selected');
                         var isPax = selectedProduct.data('pax') === "Y";
-
                         if (isPax) {
                             $('.pax-total').val(paxTotal.toFixed(2)); // อัพเดตยอด Pax
                             $('#payment-total-full').val(QuoteTotalGrand - paxTotal);
+            
                         }
                     });
                 } else {
@@ -1125,6 +1120,8 @@
                     $('#quotation-table .pax-total').val();
                 }
             }
+
+            calculatePaxAndTotal()
 
             // เรียกใช้ calculatePaxAndTotal เมื่อมีการเปลี่ยนแปลงใน quantity, product-select หรือ quote-payment-price
             $(document).on('change', '.quantity, .product-select, #quote-payment-price, #pay-extra', function() {
@@ -1134,7 +1131,7 @@
             });
 
             // ตรวจสอบเมื่อมีการเปลี่ยนแปลงในการเลือกชำระเงิน
-            $('#quote-payment-deposit').on('change', function() {
+            $('#quote-payment-deposit,#quote-payment-full').on('change', function() {
                 if ($(this).is(':checked')) {
                     calculatePaxAndTotal(); // คำนวณยอด Pax เฉพาะเมื่อเลือกชำระเต็มจำนวน
                 }
@@ -1144,11 +1141,7 @@
             // checkedPaymentFull()
             //calculatePaxAndTotal();
         });
-    </script>
-
-
-
-    <script>
+    
         $(function() {
             // ตั้งค่าภาษาไทยให้กับ Datepicker
             $.datepicker.regional['th'] = {
@@ -1239,11 +1232,7 @@
 
 
         });
-    </script>
-
-
-    {{-- API TOUR --}}
-    <script>
+   
         $(document).ready(function() {
 
             $('#customerSearch').on('keydown', function(e) {
@@ -1364,7 +1353,7 @@
                             if (data.length > 0) {
                                 // วนลูปแสดงรายการผลลัพธ์
                                 $.each(data, function(index, item) {
-                                    $('#tourResults').append(`<a href="#" id="tour-select" class="list-group-item list-group-item-action" data-tour="${item.id}" data-numday="${item.num_day}" data-airline="${item.airline_id}"  data-wholesale="${item.wholesale_id}" data-code="${item.code}" data-name="${item.code} - ${item.name}">${item.code} - ${item.code1} - ${item.name}</a>
+                                    $('#tourResults').append(`<a href="#" id="tour-select" class="list-group-item list-group-item-action" data-tour="${item.id}" data-numday="${item.num_day}" data-airline="${item.airline_id}"  data-wholesale="${item.wholesale_id}" data-code="${item.code}" data-name1="${item.code} - ${item.name}" data-name="${item.code} - ${item.code1} - ${item.name}">${item.code} - ${item.code1} - ${item.name}</a>
                             `);
                                 });
                             }
@@ -1384,12 +1373,14 @@
                 e.preventDefault();
                 var selectedCode = $(this).data('code') || ''; // ถ้า selectedCode ไม่มีค่า ให้ใส่ค่าว่าง
                 var selectedText = $(this).data('name');
+                var selectedText1 = $(this).data('name1');
                 var selectedAirline = $(this).data('airline');
                 var selectedNumday = $(this).data('numday'); // ข้อความ 6 วัน 4 คืน
                 var selectedTour = $(this).data('tour'); // 
 
                 $('#tour-id').val(selectedTour); // แสดงชื่อแพคเกจที่เลือกใน input
                 $('#tourSearch').val(selectedText); // แสดงชื่อแพคเกจที่เลือกใน input
+                $('#tourSearch1').val(selectedText1); // แสดงชื่อแพคเกจที่เลือกใน input
                 $('#tour-code').val(selectedCode); // เก็บค่า code ใน hidden input หรือค่าว่าง
                 $('#tourResults').empty(); // ล้างผลลัพธ์การค้นหา
 
@@ -1500,14 +1491,10 @@
                 var period4 = $(this).data('period4'); // เด็กไม่มีเตียง
                 var selectedNumday = $('#numday').data('day');
 
-
                 $('#period1').val(period1);
                 $('#period2').val(period2);
                 $('#period3').val(period3);
                 $('#period4').val(period4);
-
-
-
 
                 // แปลงวันที่เป็นรูปแบบภาษาไทยสำหรับแสดงใน input
                 var dateObject = new Date(selectedDate);
@@ -1522,6 +1509,40 @@
                 // ล้างรายการวันที่หลังจากเลือก
                 $('#date-list').empty();
 
+                function setPaymentDueDate30() {
+                var bookingCreateDate = new Date($('#date-start').val());
+                var travelDate = new Date($('#date-start').val());
+                console.log(travelDate);
+                var bookingDate = new Date($('#booking-create-date').val());
+                // คำนวณจำนวนวันระหว่างวันจองและวันออกเดินทาง
+                var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);
+                if(diffDays >= 31) {
+                           // ลบ 31 วัน
+                    bookingCreateDate.setDate(bookingCreateDate.getDate() - 31);
+                }else{
+                     // เพิ่ม 1 วัน
+                    bookingCreateDate = new Date();
+                    bookingCreateDate.setDate(bookingCreateDate.getDate() + 1);
+                }
+    
+                // ตั้งค่าเวลาเป็น 13:00 น.
+                bookingCreateDate.setHours(13);
+                bookingCreateDate.setMinutes(0);
+                bookingCreateDate.setSeconds(0);
+                bookingCreateDate.setMilliseconds(0);
+                // สร้างฟังก์ชันเพื่อแปลงวันที่เป็นรูปแบบ YYYY-MM-DDTHH:MM
+                var year = bookingCreateDate.getFullYear();
+                var month = ('0' + (bookingCreateDate.getMonth() + 1)).slice(-2);
+                var day = ('0' + bookingCreateDate.getDate()).slice(-2);
+                var hours = ('0' + bookingCreateDate.getHours()).slice(-2);
+                var minutes = ('0' + bookingCreateDate.getMinutes()).slice(-2);
+                var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+                // ตั้งค่าให้กับ input datetime-local
+
+                $('input[name="quote_payment_date_full"]').val(formattedDate);
+            }
+            setPaymentDueDate30()
+                
                 // เรียกฟังก์ชันคำนวณวันเดินทางกลับ
                 calculateEndDate();
             });

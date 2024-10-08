@@ -19,6 +19,7 @@ class quotationModel extends Model
        'quote_number',
        'customer_id',
        'quote_tour_name',
+       'quote_tour_name1',// NEW
        'quote_date_start',
        'quote_date_end',
        'quote_airline',
@@ -45,8 +46,10 @@ class quotationModel extends Model
        'payment',
        'quote_payment_type',
        'quote_payment_date',
+       'quote_payment_date_full', // NEW
        'quote_payment_price',
-       'quote_payment_total',
+       'quote_payment_extra', // NEW
+       'quote_payment_total_full', //NEW
        'quote_vat_exempted_amount',
        'quote_pre_tax_amount',
        'quote_discount',
