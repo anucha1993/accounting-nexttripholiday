@@ -22,7 +22,7 @@
                                 รายละเอียดลูกค้า (Customer)
                             </div>
                             <div class="card-body">
-                                <table>
+                                <table style="font-size: 12px">
                                     <tbody>
                                         <tr>
                                             <td align="right" class="text-info">ชื่อลูกค้า :</td>
@@ -65,7 +65,7 @@
                                 รายละเอียดใบจองทัวร์ (Booking Form)
                             </div>
                             <div class="card-body">
-                                <table>
+                                <table style="font-size: 12px">
                                     <tbody>
                                         <tr>
                                             <td align="right" class="text-info">Quotation No. :</td>
@@ -105,20 +105,89 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="card-group">
-                            <div class="card p-2 p-lg-3">
-                                <div class="p-lg-3 p-2">
+                        <div class="card">
+                            <div class="card-header ">
+                                <i data-feather="flag" class="feather-sm fill-white me-2 text-primary "></i>
+                                รายละเอียดแพคเกจที่ซื้อ/วันเดินทาง
+                            </div>
+                            <div class="card-body">
+                                <table style="font-size: 12px">
+                                    <tbody>
+                                        <tr>
+                                            <td align="right" class="text-info">ชื่อแพคเกจ :</td>
+                                            <td>&nbsp; {{ $quotationModel->quote_tour_name1 ? $quotationModel->quote_tour_name1 : $quotationModel->quote_tour_name  }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" class="text-info">สายการบิน :</td>
+                                            <td>&nbsp; {{ $airline->travel_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" class="text-info">ช่วงเวลาเดินทาง :</td>
+                                            <td>&nbsp;
+                                                {{ thaidate('j F Y', $quotationModel->quote_date_start) . ' -ถึง- '. thaidate('j F Y', $quotationModel->quote_date_end)}} </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" class="text-info">ผู้เดินทาง (PAX) :</td>
+                                            <td>&nbsp; {{ $quotationModel->quote_pax_total ?  $quotationModel->quote_pax_total : '-'  }} ท่าน
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" class="text-info">โฮลเซลล์ :</td>
+                                            <td>&nbsp; {{ $wholesale->wholesale_name_th }}</td>
+                                        </tr>
 
-                                </div>
+                                      
+
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card-group">
-                            <div class="card p-2 p-lg-3">
-                                <div class="p-lg-3 p-2">
+                        <div class="card">
+                            <div class="card-header ">
+                                <i data-feather="dollar-sign" class="feather-sm fill-white me-2 text-primary "></i>
+                                ยอดรวมสุทธิและกำหนดชำระเงิน
+                            </div>
+                            <div class="card-body">
+                                <table style="font-size: 12px">
+                                    <tbody>
+                                        <tr>
+                                            <td align="right" class="text-info">ราคารวมสุทธิ :</td>
+                                            <td align="align-center" style="font-size: 28px">&nbsp; <b class="text-danger">{{number_format($quotationModel->quote_grand_total, 2, '.', ',')}} .-</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" class="text-info">จำนวนเงินอักษร :</td>
+                                            <td>&nbsp; <span >(@bathText($quotationModel->quote_grand_total)) </span></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" class="text-info">กำหนดชำระเต็ม: :</td>
+                                            <td>&nbsp; {{thaidate('j F Y', $quotationModel->quote_payment_date_full) .' ก่อนเวลา '. date('H:m',strtotime($quotationModel->quote_payment_date_full)).' น.'}}
+                                                &nbsp; {{'จำนวนเงิน :'. number_format($quotationModel->quote_payment_total_full, 2, '.', ',').'.-'}}
 
-                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" class="text-info">สถานะการชำระเงิน :</td>
+                                            <td>&nbsp;
+                                                @if ($quotationModel->quote_payment_status === 'wait')
+                                                <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
+                                            @endif
+                                            @if ($quotationModel->quote_payment_status === 'success')
+                                                <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
+                                            @endif
+                                            @if ($quotationModel->quote_payment_status === 'cancel')
+                                                <span class="badge rounded-pill bg-danger">ยกเลิก</span>
+                                            @endif
+                                            @if ($quotationModel->quote_payment_status === 'payment')
+                                                <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
+                                            @endif
+                                           
+                                            </td>
+                                        </tr>
+                                      
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

@@ -41,6 +41,7 @@ class quotationModel extends Model
        'deposit',
        'payment_date',
        'total_qty',
+       'quote_pax_total',
        'wholesale_payment_status',
        'wholesale_payment_total',
        'payment',

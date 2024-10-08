@@ -544,6 +544,7 @@
                         <input type="hidden" name="quote_include_vat">
                         <input type="hidden" name="quote_grand_total" id="quote-grand-total">
                         <input type="hidden" name="quote_withholding_tax">
+                        <input type="hidden" name="quote_pax_total" id="quote-pax-total">
                         <button type="submit" class="btn btn-primary btn-sm  mx-3" form="formQuote">
                             <i class="fa fa-save"></i> สร้างใบเสนอราคา</button>
                     </div>
@@ -1096,6 +1097,7 @@
                             totalQuantity += quantity;
                         }
                         $('#pax').text('(จำนวน : '+ totalQuantity + ' ท่าน)');
+                        $('quote-pax-total').val(totalQuantity);
                     });
 
                    
