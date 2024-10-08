@@ -126,6 +126,11 @@ Route::put('quote/update/ajax/{quotationModel}',[quoteController::class,'AjaxUpd
 Route::get('quote/cancel/{quotationModel}',[quoteController::class,'cancel'])->name('quote.cancel');
 Route::get('quote/create/new',[quoteController::class,'createNew'])->name('quote.createNew');
 
+Route::get('quote/edit/new/{quotationModel}',[quoteController::class,'editNew'])->name('quote.editNew');
+
+
+
+
 // Sales info
 Route::get('quote/sales/{quotationModel}',[salesInformationController::class,'index'])->name('saleInfo.index');
 Route::get('quote/sales/info/{quotationModel}',[salesInformationController::class,'info'])->name('saleInfo.info');

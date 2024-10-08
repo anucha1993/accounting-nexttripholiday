@@ -231,6 +231,9 @@ class quoteController extends Controller
         return view('quotations.edit', compact('campaignSource', 'customer', 'quoteProducts', 'quotationModel', 'sales', 'country', 'airline', 'numDays', 'wholesale', 'products', 'productDiscount', 'quoteProductsDiscount'));
     }
 
+
+
+
     public function update(quotationModel $quotationModel, Request $request)
     {
         //dd($request);
@@ -333,4 +336,12 @@ class quoteController extends Controller
 
         return redirect()->back();
     }
+
+    public function editNew(quotationModel $quotationModel, Request $request)
+    {
+        $sale = saleModel::where('id',$quotationModel->quote_sale)->first();
+        $customer = customerModel::where('customer_id',$quotationModel->customer_id)->leftjoin('campaign_source','campaign_source.campaign_source_id','customer.customer_campaign_source')->first();
+        return view('quotations.form-edit-new',compact('quotationModel','customer','sale'));
+    }
+    
 }
