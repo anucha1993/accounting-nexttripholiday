@@ -1335,6 +1335,7 @@
                 checkedPaymentFull();
             });
 
+           
             // ตรวจสอบเมื่อมีการเปลี่ยนแปลงในการเลือกชำระเงิน
             $('#quote-payment-deposit,#quote-payment-full').on('change', function() {
                 if ($(this).is(':checked')) {

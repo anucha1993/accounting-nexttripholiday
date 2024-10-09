@@ -6,7 +6,7 @@
             <div class="col-md-9">
 
                 <div class="card">
-                    <div class="card-header bg-info text-white">
+                    <div class="card-header bg-info text-white" >
                         Quotation No. : {{ $quotationModel->quote_number }}
                         <span class="float-end">วันที่ออกใบเสนอราคา :
                             {{ thaidate('j F Y', $quotationModel->quote_date) }}</span>
