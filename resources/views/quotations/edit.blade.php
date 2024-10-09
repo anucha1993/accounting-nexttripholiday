@@ -1329,7 +1329,7 @@
             calculatePaxAndTotal()
 
             // เรียกใช้ calculatePaxAndTotal เมื่อมีการเปลี่ยนแปลงใน quantity, product-select หรือ quote-payment-price
-            $(document).on('change', '.quantity, .product-select, #quote-payment-price, #pay-extra', function() {
+            $(document).on('change', '.quantity, .product-select, #quote-payment-price, #pay-extra, .price-per-unit', function() {
                 calculatePaxAndTotal();
                 // checkPaymentCondition();
                 checkedPaymentFull();
