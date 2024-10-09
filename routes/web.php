@@ -128,6 +128,8 @@ Route::get('quote/create/new',[quoteController::class,'createNew'])->name('quote
 
 Route::get('quote/edit/new/{quotationModel}',[quoteController::class,'editNew'])->name('quote.editNew');
 
+Route::get('quote/ajax/new/{quotationModel}',[quoteController::class,'editQuote'])->name('quote.editAjax');
+
 
 
 

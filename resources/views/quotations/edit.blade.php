@@ -815,6 +815,8 @@
 
 
     <script>
+
+
         $(document).ready(function() {
             $('.country-select').select2();
             $('.product-select').select2();
@@ -832,6 +834,7 @@
                             '<input type="hidden" name="withholding_tax[]" value="N">');
                     }
                 });
+               // window.close();
             });
         });
     </script>

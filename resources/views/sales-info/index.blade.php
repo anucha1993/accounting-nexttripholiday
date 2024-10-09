@@ -63,8 +63,7 @@
                             class="todo-link list-group-item-action p-3 d-flex align-items-center" id="current-task-done">
                             <i data-feather="dollar-sign" class="feather-sm me-2"></i>
                             การชำระเงินโฮลเซลล์
-                            <span
-                                class="todo-badge badge rounded-pill px-3 text-success font-weight-medium bg-light-success ms-auto"></span>
+                            <span class="todo-badge badge rounded-pill px-3 text-success font-weight-medium bg-light-success ms-auto"></span>
                         </a>
                     </li>
 

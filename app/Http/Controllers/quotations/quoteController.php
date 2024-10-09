@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\booking\bookingModel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use App\Models\invoices\invoiceModel;
 use App\Models\products\productModel;
 use App\Models\customers\customerModel;
@@ -244,8 +245,23 @@ class quoteController extends Controller
         $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)
         ->select('quote_product.*', 'products.product_pax')
         ->leftjoin('products','products.id','quote_product.product_id')->get();
-        return view('quotations.form-edit-new',compact('quotationModel','customer','sale','airline','wholesale','quoteProducts'));
+
+        $quotations = quotationModel::where('quotation.quote_id',$quotationModel->quote_id)->leftjoin('customer', 'customer.customer_id', 'quotation.customer_id')->get();
+
+        return view('quotations.form-edit-new',compact('quotationModel','customer','sale','airline','wholesale','quoteProducts','quotations'));
     }
+
+    public function editQuote(quotationModel $quotationModel, Request $request)
+    {
+        $quotations = quotationModel::where('quotation.quote_id',$quotationModel->quote_id)->leftjoin('customer', 'customer.customer_id', 'quotation.customer_id')->get();
+        $invoices = invoiceModel::where('invoices.invoice_quote_id',$quotationModel->quote_id)->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')->get();
+
+        return View::make('quotations.quote-table', compact('quotations','quotationModel','invoices'))->render();
+    }
+
+    
+
+
 
 
 

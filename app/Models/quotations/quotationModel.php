@@ -29,7 +29,6 @@ class quotationModel extends Model
        'quote_tour_code',
        'quote_tour',
        'quote_date',
-       'quote_date',
        'quote_booking',
        'quote_sale',
        'quote_numday',
