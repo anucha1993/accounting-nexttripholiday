@@ -55,8 +55,8 @@
                             <input type="hidden" id="quote-date" name="quote_date">
                         </div>
                         <div class="col-md-2">
-                            <label>เลขที่ใบจองทัวร์</label>
-                            <input type="text" class="form-control" disabled>
+                            <label>เลขที่ใบเสนอราคา</label>
+                            <input type="text" class="form-control"  placeholder="???????" disabled>
                         </div>
                         <div class="col-md-2">
                             <label>วันที่เสนอราคา</label>
@@ -88,7 +88,7 @@
                             <select name="quote_numday" class="form-select" id="numday">
                                 <option value="">--เลือกระยะเวลา--</option>
                                 @forelse ($numDays as $item)
-                                    <option data-day="{{ $item->num_day_total }}" value="{{ $item->quote_numday }}">
+                                    <option data-day="{{ $item->num_day_total }}" value="{{ $item->num_day_name }}">
                                         {{ $item->num_day_name }}</option>
                                 @empty
                                 @endforelse
@@ -219,13 +219,17 @@
                                             @endforelse
                                         </select>
                                     </div>
+                                    <div class="col-md-12">
+                                        <label>Social id</label>
+                                        <input type="text" class="form-control" name="customer_social_id" placeholder="Social id">
+                                    </div>
                                 </div>
 
                                 <div class="col-md-9">
                                     <div class="col-md-12">
                                         <label>ที่อยู่:</label>
-                                        <textarea name="customer_address" id="address" class="form-control" id="customer_address" cols="30"
-                                            rows="4" placeholder="ที่อยู่"></textarea>
+                                        <textarea name="customer_address"class="form-control" id="customer_address" cols="30"
+                                            rows="7" placeholder="ที่อยู่"></textarea>
                                     </div>
                                 </div>
 
@@ -562,57 +566,7 @@
     </div>
     </div>
 
-
-
-
-
     </div>
-
-    <script>
-        //     $(document).ready(function() {
-        //     // ใช้ event delegation เพื่อจับเหตุการณ์การเปลี่ยนแปลงใน .product-select ที่ถูกเพิ่มเข้ามาใหม่ได้
-        //     $('#quotation-table').on('change', '.product-select', function() {
-        //         var productId = $(this).val(); // รับค่า productId จาก select
-        //         var period1 = $('#period1').val();
-        //         var period2 = $('#period2').val();
-        //         var period3 = $('#period3').val();
-        //         var period4 = $('#period4').val();
-
-        //         // อ้างถึง .item-row ที่เกี่ยวข้องกับ product-select ที่เลือก
-        //         var row = $(this).closest('.item-row');
-
-        //         // อ้างถึง price-per-unit และ quantity ที่อยู่ในแถวที่เลือก
-        //         var priceInput = row.find('.price-per-unit');
-        //         var quantityInput = row.find('.quantity');
-
-        //         // กำหนดค่าเริ่มต้นให้ quantity เป็น 1
-        //         quantityInput.val(1);
-
-        //         // 189 ค่าทัวร์ผู้ใหญ่พักคู่ period1
-        //         if(productId == 189) {
-        //             priceInput.val(period1); // แสดงค่า period1 ใน input .price-per-unit
-        //             console.log(period1);
-        //         }
-
-        //         // 185 ค่าทัวร์ผู้ใหญ่พักเดี่ยว period2
-        //         if(productId == 185) {
-        //             priceInput.val(period2); // แสดงค่า period2 ใน input .price-per-unit
-        //         }
-
-        //         // 187 เด็กมีเตียง period3
-        //         if(productId == 187) {
-        //             priceInput.val(period3); // แสดงค่า period3 ใน input .price-per-unit
-        //         }
-
-        //         // 186 เด็กไม่มีเตียง period4
-        //         if(productId == 186) {
-        //             priceInput.val(period4); // แสดงค่า period4 ใน input .price-per-unit
-        //         }
-        //         calculateTotals();
-        //     });
-        // });
-    </script>
-
 
     <script>
         $(document).ready(function() {
@@ -1043,15 +997,15 @@
                 $('input[name="quote_payment_date_full"]').val(formattedDate);
             }
             setPaymentDueDate30();
-            $('#date-start-display').datepicker({
-                dateFormat: 'dd MM yy',
-                onSelect: function(dateText) {
-                    var isoDate = $.datepicker.formatDate('yy-mm-dd', $(this).datepicker('getDate'));
-                    $('#date-start').val(isoDate);
-                    setPaymentDueDate30(); // คำนวณวันสิ้นสุดเมื่อเลือกวันเริ่มต้น
-                    checkPaymentCondition()
-                }
-            });
+            // $('#date-start-display').datepicker({
+            //     dateFormat: 'dd MM yy',
+            //     onSelect: function(dateText) {
+            //         var isoDate = $.datepicker.formatDate('yy-mm-dd', $(this).datepicker('getDate'));
+            //         $('#date-start').val(isoDate);
+            //         setPaymentDueDate30(); // คำนวณวันสิ้นสุดเมื่อเลือกวันเริ่มต้น
+            //         checkPaymentCondition()
+            //     }
+            // });
 
 
             // ตรวจสอบเมื่อผู้ใช้เลือกชำระเงินเต็มจำนวน
@@ -1097,7 +1051,7 @@
                             totalQuantity += quantity;
                         }
                         $('#pax').text('(จำนวน : '+ totalQuantity + ' ท่าน)');
-                        $('quote-pax-total').val(totalQuantity);
+                        $('#quote-pax-total').val(totalQuantity);
                     });
 
                    
@@ -1142,7 +1096,8 @@
             // เรียกใช้ฟังก์ชันเมื่อเริ่มต้น
             // checkedPaymentFull()
             //calculatePaxAndTotal();
-        });
+   
+   
     
         $(function() {
             // ตั้งค่าภาษาไทยให้กับ Datepicker
@@ -1174,6 +1129,8 @@
                 var numDays = parseInt($('#numday option:selected').data('day')) || 0;
                 var startDate = $('#date-start').val();
 
+                
+
                 if (numDays > 0 && startDate) {
                     var start = new Date(startDate);
                     var endDate = new Date(start);
@@ -1182,19 +1139,19 @@
                     // แสดงวันสิ้นสุดในรูปแบบภาษาไทย
                     var thaiFormattedEndDate = $.datepicker.formatDate('dd MM yy', endDate);
                     $('#date-end-display').val(thaiFormattedEndDate); // แสดงใน input
-                    $('#date-end').val($.datepicker.formatDate('yy-mm-dd',
-                        endDate)); // เก็บค่าแบบ yyyy-mm-dd ใน hidden input
+                    $('#date-end').val($.datepicker.formatDate('yy-mm-dd',endDate)); // เก็บค่าแบบ yyyy-mm-dd ใน hidden input
                 }
             }
-
+          
             // ตั้งค่า Datepicker สำหรับวันเริ่มต้น
             $('#date-start-display').datepicker({
-
                 dateFormat: 'dd MM yy',
                 onSelect: function(dateText) {
                     var isoDate = $.datepicker.formatDate('yy-mm-dd', $(this).datepicker('getDate'));
                     $('#date-start').val(isoDate);
                     calculateEndDate(); // คำนวณวันสิ้นสุดเมื่อเลือกวันเริ่มต้น
+                    setPaymentDueDate30(); // คำนวณวันสิ้นสุดเมื่อเลือกวันเริ่มต้น
+                    checkPaymentCondition()
                 }
             });
 
@@ -1213,10 +1170,6 @@
                 if ($('#date-start').val()) {
                     calculateEndDate();
                 }
-                // $('#period1').val(0);
-                // $('#period2').val(0);
-                // $('#period3').val(0);
-                // $('#period4').val(0);
             });
 
 
@@ -1234,6 +1187,7 @@
 
 
         });
+    });
    
         $(document).ready(function() {
 
@@ -1271,7 +1225,7 @@
                                     data-tel="${item.customer_tel}"
                                     data-fax="${item.customer_fax}"
                                     data-address="${item.customer_address}"
-                                >${item.customer_email} - ${item.customer_name}</a>
+                                >${item.customer_email} - ${item.customer_name} - ${item.customer_tel}</a>
                             `);
                                 });
 
@@ -1514,7 +1468,7 @@
                 function setPaymentDueDate30() {
                 var bookingCreateDate = new Date($('#date-start').val());
                 var travelDate = new Date($('#date-start').val());
-                console.log(travelDate);
+                //console.log(travelDate);
                 var bookingDate = new Date($('#booking-create-date').val());
                 // คำนวณจำนวนวันระหว่างวันจองและวันออกเดินทาง
                 var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);

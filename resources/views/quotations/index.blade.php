@@ -171,7 +171,7 @@
                                         </td>
 
                                         <td> {{ $item->Salename->name }}</td>
-                                        <td><a href="{{ route('saleInfo.index', $item->quote_id) }}"
+                                        <td><a href="{{ route('quote.editNew', $item->quote_id) }}"
                                                 class="btn btn-info btn-sm">จัดการข้อมูล</a></td>
 
                                     </tr>

@@ -94,7 +94,7 @@ class quoteController extends Controller
         return $runningCode;
     }
 
-    public function generateRunningCodeTour($prefix, $dateStart)
+    public function generateRunningCodeTour($prefix, $dateStart, $wholesale)
     {
         $quote = quotationModel::select('quote_tour_code')->latest()->first();
         $prefix = $prefix;
@@ -113,22 +113,24 @@ class quoteController extends Controller
         return $runningCode;
     }
 
-    public function generateRunningCodeTourUpdate($prefix, $tourcodeOld, $dateStart)
+    public function generateRunningCodeTourUpdate($prefix, $tourcodeOld, $dateStart, $wholesale)
     {
         $quote = quotationModel::select('quote_tour_code')->latest()->first();
+        $wholesale = wholesaleModel::select('code')->where('id',$wholesale)->first();
         $prefix = $prefix;
+        $code = $wholesale->code;
 
         if (!empty($quote)) {
             $quoteCode = $tourcodeOld;
         } else {
-            $quoteCode = $prefix . date('dmy', strtotime($dateStart)) . '0000';
+            $quoteCode =  $code . $prefix . date('dmy', strtotime($dateStart)) . '0000';
         }
 
         $dateStart = date('dmy', strtotime($dateStart));
         $lastFourDigits = substr($quoteCode, -4);
         $incrementedNumber = intval($lastFourDigits);
         $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
-        $runningCode = $prefix . $dateStart . $newNumber;
+        $runningCode =  $code . $prefix . $dateStart . $newNumber;
         return $runningCode;
     }
 
@@ -147,7 +149,7 @@ class quoteController extends Controller
             ->select('iso2')
             ->where('id', $request->quote_country)
             ->first();
-        $runningCodeTour = $this->generateRunningCodeTour($country->iso2, $request->quote_date_start);
+        $runningCodeTour = $this->generateRunningCodeTour($country->iso2, $request->quote_date_start, $request->quote_wholesale);
         //dd($runningCodeTour);
 
         $runningCode = $this->generateRunningCodeIV();
@@ -176,6 +178,7 @@ class quoteController extends Controller
             'quote_tour_code' => $runningCodeTour,
             'quote_number' => $runningCode,
             'quote_status' => 'wait',
+            'quote_payment_status' => 'wait',
             'customer_id' => $customerModel->customer_id,
             'created_by' => Auth::user()->name,
         ]);
@@ -204,7 +207,7 @@ class quoteController extends Controller
         //Update status ใบจองทัวเป็น status = 'invoice'
         bookingModel::where('code', $quote->quote_booking)->update(['status' => 'quote']);
         $quoteID = $quote->quote_id;
-        return redirect('quote/edit/' . $quoteID);
+        return redirect('quote/edit/new/' . $quoteID);
     }
 
     public function edit(quotationModel $quotationModel, Request $request)
@@ -238,7 +241,10 @@ class quoteController extends Controller
         $tour = DB::connection('mysql2')->table('tb_tour')->where('id', $quotationModel->tour_id)->first();
         $airline = DB::connection('mysql2')->table('tb_travel_type') ->select('travel_name')->where('id', $quotationModel->quote_airline)->first();
         $wholesale = wholesaleModel::where('id', $quotationModel->quote_wholesale)->first();
-        return view('quotations.form-edit-new',compact('quotationModel','customer','sale','airline','wholesale'));
+        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)
+        ->select('quote_product.*', 'products.product_pax')
+        ->leftjoin('products','products.id','quote_product.product_id')->get();
+        return view('quotations.form-edit-new',compact('quotationModel','customer','sale','airline','wholesale','quoteProducts'));
     }
 
 
@@ -254,7 +260,7 @@ class quoteController extends Controller
             ->where('id', $request->quote_country)
             ->first();
 
-        $runningCodeTourUpdate = $this->generateRunningCodeTourUpdate($country->iso2, $request->quote_tour_code_old, $request->quote_date_start);
+        $runningCodeTourUpdate = $this->generateRunningCodeTourUpdate($country->iso2, $request->quote_tour_code_old, $request->quote_date_start,$request->quote_wholesale);
 
         $request->merge(['quote_tour_code' => $runningCodeTourUpdate]);
 
@@ -295,7 +301,7 @@ class quoteController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Update Quotation Successfully.');
+        return redirect()->route('quote.editNew',$quotationModel->quote_id)->with('success', 'Update Quotation Successfully.');
     }
 
     public function cancel(quotationModel $quotationModel)
@@ -328,7 +334,7 @@ class quoteController extends Controller
             ->select('iso2')
             ->where('id', $request->quote_country)
             ->first();
-        $runningCodeTourUpdate = $this->generateRunningCodeTourUpdate($country->iso2, $request->quote_tour_code_old, $request->quote_date_start);
+        $runningCodeTourUpdate = $this->generateRunningCodeTourUpdate($country->iso2, $request->quote_tour_code_old, $request->quote_date_start,$request->quote_wholesale);
         $request->merge(['quote_tour_code' => $runningCodeTourUpdate]);
         $request->merge(['quote_withholding_tax_status' => isset($request->quote_withholding_tax_status) ? 'Y' : 'N']);
 
