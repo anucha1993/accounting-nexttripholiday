@@ -52,17 +52,21 @@ class paymentController extends Controller
 
         $bankCompany = bankCompanyModel::where('bank_company_status','active')->get();
         $totaPayment = 0 ;
+        $paymentType = '';
         if ($quotationModel->payment <= 0) {
             if($quotationModel->quote_payment_type === 'full') {
                 $totaPayment = $quotationModel->quote_grand_total;
+                $paymentType = 'full';
             }else{
                 $totaPayment = $quotationModel->quote_payment_total ? $quotationModel->quote_payment_total : 0;
+                $paymentType = 'deposit';
             }
         } else {
-            # code...
+            $totaPayment = $quotationModel->quote_grand_total - $quotationModel->payment;
+            $paymentType = 'full';
         }
         
-        return view('payments.quote-modal', compact('quotationModel','bank','bankCompany','totaPayment'));
+        return view('payments.quote-modal', compact('quotationModel','bank','bankCompany','totaPayment','paymentType'));
     }
 
 

@@ -16,8 +16,8 @@
                 <div class="col-md-3 mt-3">
                     <label>การชำระเงิน </label>
                     <select name="payment_type" id="payment-type" class="form-select">
-                        <option value="deposit">ชำระเงินมัดจำ</option>
-                        <option value="full">ชำระเงินเต็มจำนวน</option>
+                        <option {{$paymentType === 'deposit' ? 'selected' : '' }} value="deposit">ชำระเงินมัดจำ</option>
+                        <option {{$paymentType === 'full' ? 'selected' : '' }} value="full">ชำระเงินเต็มจำนวน</option>
                     </select>
                 </div>
                 <div class="col-md-3 mt-3">

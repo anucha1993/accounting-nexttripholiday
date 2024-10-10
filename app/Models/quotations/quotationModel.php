@@ -50,6 +50,7 @@ class quotationModel extends Model
        'quote_payment_price',
        'quote_payment_extra', // NEW
        'quote_payment_total_full', //NEW
+       'quote_payment_total', //NEW
        'quote_vat_exempted_amount',
        'quote_pre_tax_amount',
        'quote_discount',

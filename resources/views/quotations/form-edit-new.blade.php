@@ -270,8 +270,8 @@
                             คัดลอกใบเสนอราคา
                         </button>
 
-                        <button type="button"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
+                        <a href="{{ route('payment.quotation', $quotationModel->quote_id) }}"
+                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 invoice-modal">
                             <i data-feather="dollar-sign" class="feather-sm fill-white me-2 text-success"></i>
                             แจ้งชำระเงิน
                         </button>
