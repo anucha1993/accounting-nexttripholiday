@@ -293,7 +293,7 @@ class quoteController extends Controller
 
     public function update(quotationModel $quotationModel, Request $request)
     {
-       // dd($request);
+        //dd($request);
         $country = DB::connection('mysql2')
             ->table('tb_country')
             ->select('iso2')

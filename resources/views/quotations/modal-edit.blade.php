@@ -647,10 +647,8 @@
 
                             <div class="col-md-3">
                                 <div class="input-group mb-3">
-                                    <span class="input-group-text" for="">จำนวนเงินที่ต้องชำระ</span>
-                                    <input type="number" class="form-control pax-total" name="quote_payment_total"
-                                        step="0.01" placeholder="0.00"
-                                        value="{{ $quotationModel->quote_payment_total }}">
+                                    <span class="input-group-text" for="">จำนวนเงินที่ต้องชำระ {{ $quotationModel->quote_payment_total }}</span>
+                                    <input type="number" class="form-control pax-total" name="quote_payment_total" step="0.01" placeholder="0.00"  >
                                 </div>
 
                             </div>
@@ -739,9 +737,9 @@
 
     <script>
         $(document).ready(function() {
-//             $('.country-select').select2({
-//                 dropdownParent: $('#modal-quote-edit')
-//             });
+            $('.country-select').select2({
+                dropdownParent: $('#modal-quote-edit')
+            });
             //         $('.product-select').select2({
             //             dropdownParent: $('#modal-quote-edit')
             //         });

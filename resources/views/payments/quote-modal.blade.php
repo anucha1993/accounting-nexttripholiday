@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="col-md-3 mt-3">
                     <label for="">จำนวนเงินที่จะชำระ</label>
-                    <input type="number" value="{{ $quotationModel->quote_grand_total -  $quotationModel->payment }}" name="payment_total"
+                    <input type="number" value="{{$totaPayment}}" name="payment_total"
                         class="form-control bg-success" step="0.01" >
                 </div>
                 <div class="col-md-3 mt-3">

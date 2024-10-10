@@ -6,19 +6,22 @@
                     {{ $quotationModel->quote_booking }}</span></h4>
         </div>
         <div class="card-body">
-            <div class="table">
+            <div class="table table-responsive">
                 <table class="table product-overview">
                     <thead>
                         <tr>
                             <th style="width: 100px">ปรเภท</th>
                             <th>วันที่</th>
                             <th>เลขที่เอกสาร</th>
-                            <th style="width: 500px">ชื่อลูกค้า</th>
+                            {{-- <th style="width: 500px">ชื่อลูกค้า</th> --}}
                             <th style="text-align: center">ยอดรวมสิทธิ์</th>
                             <th style="text-align: center">ยอดชำระแล้ว</th>
                             <th style="text-align: center">ยอดคงค้าง</th>
                             <th style="text-align: center">สถานะชำระ</th>
-                            <th style="text-align: center">Action</th>
+                            <th style="text-align: left">Actions Report</th>
+                            <th style="text-align: left">Action Payment</th>
+                            <th style="text-align: left">Actions</th>
+                            <th style="text-align: left">Cancel</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -27,9 +30,10 @@
                             <tr>
                                 <td>ใบเสนอราคา</td>
                                 <td>{{ date('d/m/Y', strtotime($quotationModel->created_at)) }}</td>
-                                <td><span class="badge bg-dark">{{ $quotationModel->quote_number }}</span>
+                                <td><span class="badge bg-dark">{{ $quotationModel->quote_number }} </span>
+                                    
                                 </td>
-                                <td>{{ $item->customer_name }}</td>
+                                {{-- <td>{{ $item->customer_name }}</td> --}}
                                 <td align="center">
                                     {{ number_format($quotationModel->quote_grand_total, 2, '.', ',') }}</td>
                                 <td align="center">{{ number_format($quotationModel->payment, 2, '.', ',') }}
@@ -52,56 +56,55 @@
                                         <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
                                     @endif
                                 </td>
-                                <td align="center">
-                                    <div class="btn-group" role="group">
-                                        <button id="btnGroupVerticalDrop2" type="button"
-                                            class="btn btn-sm btn-light-secondary text-dark font-weight-medium dropdown-toggle"
-                                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            จัดการข้อมูล
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
+                                <td>
+                                    <a class="dropdown-item" target="_blank"
+                                        href="{{ route('mpdf.quote', $quotationModel->quote_id) }}"onclick="openPdfPopup(this.href); return false;">
+                                        <i class="fa fa-print text-danger "></i>
+                                        พิมพ์ใบเสนอราคา
+                                    </a>
+                                    <a class="dropdown-item mail-quote"
+                                        href="{{ route('mail.quote.formMail', $quotationModel->quote_id) }}">
+                                        <i class="fas fa-envelope text-info"></i>
+                                        ส่งเมล
+                                    </a>
+                                </td>
+                                <td>
 
-                                            <a class="dropdown-item" target="_blank"
-                                                href="{{ route('mpdf.quote', $quotationModel->quote_id) }}"
-                                                onclick="openPdfPopup(this.href); return false;">
-                                                <i class="fa fa-print"></i> พิมพ์ใบเสนอราคา</a>
+                                    <a class="dropdown-item invoice-modal"
+                                        href="{{ route('payment.quotation', $quotationModel->quote_id) }}"><i
+                                            class="fas fa-credit-card text-warning"></i> แจ้งชำระเงิน</a>
 
-                                            <a class="dropdown-item mail-quote"
-                                                href="{{ route('mail.quote.formMail', $quotationModel->quote_id) }}"><i
-                                                    class="fas fa-envelope"></i>
-                                                ส่งเมล</a>
-
-                                            <a class="dropdown-item invoice-modal"
-                                                href="{{ route('payment.quotation', $quotationModel->quote_id) }}"><i
-                                                    class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
-
-                                            <a class="dropdown-item payment-quote-wholesale"
-                                                href="{{ route('paymentWholesale.quote', $quotationModel->quote_id) }}"><i
-                                                    class="fas fa-credit-card"></i> แจ้งชำระเงินโฮลเซลล์</a>
+                                    <a class="dropdown-item payment-quote-wholesale"
+                                        href="{{ route('paymentWholesale.quote', $quotationModel->quote_id) }}"><i
+                                            class="fas fa-credit-card text-warning"></i> แจ้งชำระเงินโฮลเซลล์</a>
+                                </td>
+                                <td align="left">
 
 
 
-                                            @if ($quotationModel->quote_status != 'cancel')
-                                                @can('edit-quote')
-                                                    <a class="dropdown-item modal-quote-edit"
-                                                        href="{{ route('quote.modalEdit', $quotationModel->quote_id) }}"><i
-                                                            class="fa fa-edit"></i> แก้ไข</a>
-                                                @endcan
-                                                @can('create-invoice')
-                                                    <a class="dropdown-item"
-                                                        href="{{ route('invoice.create', $quotationModel->quote_id) }}"><i
-                                                            class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
-                                                @endcan
-                                                @can('edit-quote')
-                                                    <a class="dropdown-item"
-                                                        href="{{ route('quote.cancel', $quotationModel->quote_id) }}"
-                                                        onclick="return confirm('ยืนยันการยกเลิกใบเสนอราคา')"><i
-                                                            class="fas fa-minus-circle"></i> ยกเลิกใบงาน</a>
-                                                @endcan
-                                            @endif
 
-                                        </div>
-                                    </div>
+                                    @if ($quotationModel->quote_status != 'cancel')
+                                        @can('edit-quote')
+                                            <a class="dropdown-item modal-quote-edit"
+                                                href="{{ route('quote.modalEdit', $quotationModel->quote_id) }}"><i
+                                                    class="fa fa-edit text-info"></i> แก้ไข</a>
+                                        @endcan
+                                        @can('create-invoice')
+                                            <a class="dropdown-item"
+                                                href="{{ route('invoice.create', $quotationModel->quote_id) }}"><i
+                                                    class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
+                                        @endcan
+                                       
+                                    @endif
+                                </td>
+
+                                <td>
+                                    @can('edit-quote')
+                                    <a class="dropdown-item"
+                                        href="{{ route('quote.cancel', $quotationModel->quote_id) }}"
+                                        onclick="return confirm('ยืนยันการยกเลิกใบเสนอราคา')"><i
+                                            class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
+                                @endcan
                                 </td>
                             </tr>
                         @empty

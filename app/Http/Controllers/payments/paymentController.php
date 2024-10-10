@@ -51,7 +51,18 @@ class paymentController extends Controller
         $bank = bankModel::where('bank_status','active')->get();
 
         $bankCompany = bankCompanyModel::where('bank_company_status','active')->get();
-        return view('payments.quote-modal', compact('quotationModel','bank','bankCompany'));
+        $totaPayment = 0 ;
+        if ($quotationModel->payment <= 0) {
+            if($quotationModel->quote_payment_type === 'full') {
+                $totaPayment = $quotationModel->quote_grand_total;
+            }else{
+                $totaPayment = $quotationModel->quote_payment_total ? $quotationModel->quote_payment_total : 0;
+            }
+        } else {
+            # code...
+        }
+        
+        return view('payments.quote-modal', compact('quotationModel','bank','bankCompany','totaPayment'));
     }
 
 
