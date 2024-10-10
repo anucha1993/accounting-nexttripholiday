@@ -38,7 +38,7 @@
                                     {{ number_format($quotationModel->quote_grand_total - $quotationModel->payment, 2, '.', ',') }}
                                 </td>
                                 <td align="center">
-                                    @if ($item->quote_payment_status === '')
+                                    @if ($item->quote_payment_status === null)
                                         <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
                                     @endif
 
@@ -83,9 +83,8 @@
 
                                             @if ($quotationModel->quote_status != 'cancel')
                                                 @can('edit-quote')
-                                                    <a class="dropdown-item"
-                                                       
-                                                        href="{{ route('quote.edit', $quotationModel->quote_id) }}"><i
+                                                    <a class="dropdown-item modal-quote-edit"
+                                                        href="{{ route('quote.modalEdit', $quotationModel->quote_id) }}"><i
                                                             class="fa fa-edit"></i> แก้ไข</a>
                                                 @endcan
                                                 @can('create-invoice')
@@ -240,11 +239,19 @@
     </div>
 </div>
 
+{{-- Edit form quote --}}
+<div class="modal fade bd-example-modal-sm modal-xl" id="modal-quote-edit" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            ...
+        </div>
+    </div>
+</div>
+
 
 
 <script>
-   
-
     function openPdfPopup(url) {
         var width = 800; // กำหนดความกว้างของหน้าต่าง
         var height = 600; // กำหนดความสูงของหน้าต่าง
@@ -254,6 +261,17 @@
         // เปิดหน้าต่างใหม่ด้วยการคำนวณตำแหน่งและขนาด
         window.open(url, 'PDFPopup', 'width=' + width + ',height=' + height + ',top=' + top + ',left=' + left);
     }
+
+    // modal add payment wholesale quote
+    $(".modal-quote-edit").click("click", function(e) {
+        e.preventDefault();
+        $("#modal-quote-edit")
+            .modal("show")
+            .addClass("modal-lg")
+            .find(".modal-content")
+            .load($(this).attr("href"));
+    });
+
 
 
     $(document).ready(function() {

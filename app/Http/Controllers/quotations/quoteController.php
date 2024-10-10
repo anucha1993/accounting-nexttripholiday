@@ -259,6 +259,30 @@ class quoteController extends Controller
         return View::make('quotations.quote-table', compact('quotations','quotationModel','invoices'))->render();
     }
 
+    public function modalEdit(quotationModel $quotationModel)
+    {
+        $bookingModel = bookingModel::where('code', $quotationModel->quote_booking)->first();
+        $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
+        $sales = saleModel::select('name', 'id')
+            ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+            ->get();
+        $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
+        $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
+        $numDays = numDayModel::orderBy('num_day_total')->get();
+        $wholesale = wholesaleModel::where('status', 'on')->get();
+        $products = productModel::where('product_type','!=', 'discount')->get();
+        $productDiscount = productModel::where('product_type', 'discount')->get();
+        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)
+            ->where('expense_type', 'income')
+            ->get();
+        $quoteProductsDiscount = quoteProductModel::where('quote_id', $quotationModel->quote_id)
+            ->where('expense_type', 'discount')
+            ->get();
+        $campaignSource = DB::table('campaign_source')->get();
+
+        return view('quotations.modal-edit', compact('campaignSource', 'customer', 'quoteProducts', 'quotationModel', 'sales', 'country', 'airline', 'numDays', 'wholesale', 'products', 'productDiscount', 'quoteProductsDiscount'));
+    }
+
     
 
 
@@ -269,7 +293,7 @@ class quoteController extends Controller
 
     public function update(quotationModel $quotationModel, Request $request)
     {
-        //dd($request);
+       // dd($request);
         $country = DB::connection('mysql2')
             ->table('tb_country')
             ->select('iso2')
@@ -278,7 +302,9 @@ class quoteController extends Controller
 
         $runningCodeTourUpdate = $this->generateRunningCodeTourUpdate($country->iso2, $request->quote_tour_code_old, $request->quote_date_start,$request->quote_wholesale);
 
-        $request->merge(['quote_tour_code' => $runningCodeTourUpdate]);
+        $request->merge(['quote_tour_code' => $runningCodeTourUpdate,
+        'updated_by' => Auth::user()->name,
+       ]);
 
         //dd($runningCodeTourUpdate);
 

@@ -6,7 +6,7 @@
             <div class="col-md-9">
 
                 <div class="card">
-                    <div class="card-header bg-info text-white" >
+                    <div class="card-header bg-info text-white">
                         Quotation No. : {{ $quotationModel->quote_number }}
                         <span class="float-end">วันที่ออกใบเสนอราคา :
                             {{ thaidate('j F Y', $quotationModel->quote_date) }}</span>
@@ -24,6 +24,10 @@
                             <div class="card-body">
                                 <table style="font-size: 12px">
                                     <tbody>
+                                        <tr>
+                                            <td align="right" class="text-info">เลขเสียภาษี :</td>
+                                            <td>&nbsp;{{ $customer->customer_texid ? $customer->customer_texid : '-' }}</td>
+                                        </tr>
                                         <tr>
                                             <td align="right" class="text-info">ชื่อลูกค้า :</td>
                                             <td>&nbsp; คุณ {{ $customer->customer_name }}</td>
@@ -50,6 +54,12 @@
                                             <td align="right" class="text-info">ลูกค้าจาก :</td>
                                             <td>&nbsp;
                                                 {{ $customer->campaign_source_name ? $customer->campaign_source_name : '-' }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" class="text-info">Social ID :</td>
+                                            <td>&nbsp;
+                                                {{ $customer->customer_social_id ? $customer->customer_social_id : '-' }}
                                             </td>
                                         </tr>
 
@@ -95,11 +105,20 @@
                                         </tr>
 
                                         <tr>
-                                            <td align="right" class="text-info">Email :</td>
-                                            <td>&nbsp; nexttripholiday@hotmail.com</td>
+                                            <td align="right" class="text-info">Tel :</td>
+                                            <td>&nbsp; 091-091-6364 </td>
                                         </tr>
 
-
+                                        <tr>
+                                            <td align="right" class="text-info">แก้ไขล่าสุดโดย :</td>
+                                            <td>&nbsp; {{$quotationModel->updated_by ? $quotationModel->updated_by : $quotationModel->created_by}} </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" class="text-info">วันที่แก้ไขล่าสุด :</td>
+                                            <td>&nbsp;  {{date('d/m/Y H:m:s',strtotime($quotationModel->updated_at))}}
+                                            </td>
+                                        </tr>
+                                       
                                     </tbody>
                                 </table>
                             </div>
@@ -170,18 +189,38 @@
                                             <td align="right" class="text-info">จำนวนเงินอักษร :</td>
                                             <td>&nbsp; <span>(@bathText($quotationModel->quote_grand_total)) </span></td>
                                         </tr>
+                                          <tr>
+                                            <td align="right" class="text-info">กำหนดชำระมัดจำ: :</td>
+                                            <td>&nbsp;
+                                                @if ($quotationModel->quote_payment_total > 0)
+                                                {{ thaidate('j F Y', $quotationModel->quote_payment_date) . ' ก่อนเวลา ' . date('H:m', strtotime($quotationModel->quote_payment_date)) . ' น.' }}
+                                                &nbsp;
+                                                {{ 'จำนวนเงิน :' . number_format($quotationModel->quote_payment_total, 2, '.', ',') . '.-' }}
+
+                                                @else
+                                                    -ไม่มียอดมัดจำ-
+                                                @endif
+                                                
+                                            </td>
+                                        </tr>
                                         <tr>
+
                                             <td align="right" class="text-info">กำหนดชำระเต็ม: :</td>
                                             <td>&nbsp;
                                                 {{ thaidate('j F Y', $quotationModel->quote_payment_date_full) . ' ก่อนเวลา ' . date('H:m', strtotime($quotationModel->quote_payment_date_full)) . ' น.' }}
                                                 &nbsp;
                                                 {{ 'จำนวนเงิน :' . number_format($quotationModel->quote_payment_total_full, 2, '.', ',') . '.-' }}
-
                                             </td>
+
                                         </tr>
+
+                                      
                                         <tr>
                                             <td align="right" class="text-info">สถานะการชำระเงิน :</td>
                                             <td>&nbsp;
+                                                @if ($quotationModel->quote_payment_status === NULL)
+                                                <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
+                                            @endif
                                                 @if ($quotationModel->quote_payment_status === 'wait')
                                                     <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
                                                 @endif
@@ -212,19 +251,14 @@
                 <div class="card">
                     <div class="card-body">
 
-                        <a data-id="{{ $quotationModel->quote_id }}"
+                        <a href="{{ route('mpdf.quote', $quotationModel->quote_id) }}"
+                            onclick="openPdfPopup(this.href); return false;"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 quote-table">
-                            <i data-feather="file" class="feather-sm fill-white me-2 text-info"></i>
-                             ข้อมูลการขาย
+                            <i data-feather="printer" class="feather-sm fill-white me-2 text-danger"></i>
+                            พิมพ์ใบเสนอราคา
                         </a>
-                        {{-- <a data-id="{{ $quotationModel->quote_id }}"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 invoice-table">
-                            <i data-feather="dollar-sign" class="feather-sm fill-white me-2 text-success"></i>
-                            ใบแจ้งหนี้
-                        </a> --}}
 
-
-                        {{-- <button type="button"
+                        <button type="button"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
                             <i data-feather="folder-plus" class="feather-sm fill-white me-2 text-success"></i>
                             ออกใบแจ้งหนี้
@@ -242,8 +276,8 @@
                             แจ้งชำระเงิน
                         </button>
 
-                        <a href="{{ route('quote.edit', $quotationModel->quote_id) }}"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
+                        <a href="{{ route('quote.modalEdit', $quotationModel->quote_id) }}"
+                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 modal-quote-edit ">
                             <i data-feather="edit" class="feather-sm fill-white me-2 "></i>
                             แก้ไขใบเสนอราคา
                         </a>
@@ -264,7 +298,7 @@
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 mail-quote">
                             <i data-feather="mail" class="feather-sm fill-white me-2 text-info"></i>
                             ส่งเมลล์ใบเสนอราคา
-                        </a> --}}
+                        </a>
 
                     </div>
                 </div>
@@ -281,10 +315,78 @@
 
         </div>
 
-        
+
+
+        {{-- invoice payment Modal --}}
+        <div class="modal fade bd-example-modal-sm modal-lg" id="invoice-payment" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
+            </div>
+        </div>
+
+        {{-- debit payment Modal --}}
+        <div class="modal fade bd-example-modal-sm modal-lg" id="debit-payment" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
+            </div>
+        </div>
+
+        {{-- credit payment Modal --}}
+        <div class="modal fade bd-example-modal-sm modal-lg" id="credit-payment" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
+            </div>
+        </div>
+
+        {{-- credit payment WholeSale  Quote --}}
+        <div class="modal fade bd-example-modal-sm modal-lg" id="quote-payment-wholesale" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
+            </div>
+        </div>
+
+        {{-- mail form quote --}}
+        <div class="modal fade bd-example-modal-sm modal-lg" id="modal-mail-quote" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
+            </div>
+        </div>
+
+
+         {{-- Edit form quote --}}
+         <div class="modal fade bd-example-modal-sm modal-xl" id="modal-quote-edit" tabindex="-1" role="dialog"
+         aria-labelledby="mySmallModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-xl">
+             <div class="modal-content">
+                 ...
+             </div>
+         </div>
+     </div>
+     
+   
+     
+
         <script>
+
+            
             $(document).ready(function() {
-                 var quoteId = "{{$quotationModel->quote_id}}"
+                var quoteId = "{{ $quotationModel->quote_id }}"
+
                 function quoteEdit(quoteId) {
                     // โหลดเนื้อหาของไฟล์ฟอร์มและแสดงใน DOM
                     $.ajax({
@@ -299,9 +401,16 @@
                     });
                 }
                 quoteEdit(quoteId);
-                // เมื่อมีการคลิกที่ปุ่ม .quote-edit
-                $('.quote-edit').on('click', function() {
-                    quoteEdit(quoteId);
+
+
+                // modal add payment wholesale quote
+                $(".modal-quote-edit").click("click", function(e) {
+                    e.preventDefault();
+                    $("#modal-quote-edit")
+                        .modal("show")
+                        .addClass("modal-lg")
+                        .find(".modal-content")
+                        .load($(this).attr("href"));
                 });
 
 
@@ -356,8 +465,6 @@
                 });
             });
         </script>
-
-
 
 
         <script>
