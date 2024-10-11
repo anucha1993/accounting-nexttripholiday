@@ -71,17 +71,37 @@
 
 
 <div class="modal-body">
-    <form action="{{ route('quote.update', $quotationModel->quote_id) }}" id="formQuote" method="post">
+    <form action="{{ route('invoice.store') }}" id="formQuote" method="post">
         @csrf
-        @method('PUT')
+        @method('POST') 
+
+        <input type="hidden" value="{{$quotationModel->quote_id}}" name="invoice_quote_id">
         {{-- รายละเอียดใบเสนอราคา --}}
+
+        <h5 class="text-primary">สร้างใบแจ้งหนี้</h5>
+
         <fieldset class="border p-2">
             <legend class="float-none w-auto text-danger" style="font-size: 15px"><span>รายละเอียดใบเสนอราคา</span>
             </legend>
 
+            <div class="row">
+                <div class="col-md-2  ms-auto">
+                    <label>เลขที่ใบเสนอราคา:</label>
+                    <input type="text" class="form-control bg-secondary text-white" name="invoice_quote_number" value="{{$quotationModel->quote_number}}" readonly >
+                </div>
+                <div class="col-md-2">
+                    <label>ยอดยกมา:</label>
+                    <input type="text" class="form-control bg-success text-white" id="quote-grand-total-old" value="{{$quotationModel->quote_grand_total}}" readonly >
+                </div>
+            </div>
+            
+
+
             <div class="row" style="font-size: 12px ">
+              
+                
                 <div class="col-md-2 ms-auto">
-                    <label><b>เซลล์ผู้ขายแพคเกจ:</b> {{ $quotationModel->quote_sale }}</label>
+                    <label><b>เซลล์ผู้ขายแพคเกจ:</b></label>
                     <select name="quote_sale" class="form-select">
                         @forelse ($sales as $item)
                             <option @if ($quotationModel->quote_sale === $item->id) selected @endif value="{{ $item->id }}">
@@ -93,16 +113,18 @@
                 </div>
 
                 <div class="col-md-2">
-                    <label>วันที่เสนอราคา</label>
+                    <label>วันที่ออกใบแจ้งหนี้</label>
                     <input type="text" id="displayDatepickerQuoteDate" class="form-control">
 
-                    <input type="hidden" id="submitDatepickerQuoteDate" name="quote_date"
+                    <input type="hidden" id="submitDatepickerQuoteDate" name="invoice_date"
                         value="{{ $quotationModel->quote_date }}" class="form-control">
                 </div>
 
+              
+
 
                 <div class="col-md-2 ms-3">
-                    <label>วันที่สั่งซื้อ,จองแพคเกจ:</label>
+                    <label>วันที่สั่งซื้อทัวร์:</label>
                     <input type="text" id="displayDatepicker" class="form-control">
                     <input type="hidden" id="submitDatepicker" name="quote_booking_create"
                         value="{{ date('Y-m-d', strtotime($quotationModel->quote_booking_create)) }}">
@@ -111,6 +133,8 @@
                     <label>เลขที่ใบจองทัวร์</label>
                     <input type="text" name="quote_booking" value="{{ $quotationModel->quote_booking }}"
                         class="form-control" readonly>
+
+                        <input type="hidden" name="invoice_booking" value="{{ $quotationModel->quote_booking }}">
                 </div>
                 <div class="col-md-2">
                     <label>รหัสทัวร์</label>
@@ -223,6 +247,7 @@
                     <label class="">ชื่อลูกค้า:</label>
                     <input type="text" class="form-control" name="customer_name" placeholder="ชื่อลูกค้า"
                         value="{{ $customer->customer_name }}" required aria-describedby="basic-addon1">
+
                 </div>
 
                 <div class="col-md-3">
@@ -452,13 +477,13 @@
                         <div class="form-group">
                             <label for="vat-method">การคำนวณ VAT:</label>
                             <div>
-                                <input type="radio" id="vat-include" name="vat_type"
+                                <input type="radio" id="vat-include" name="invoice_vat_type"
                                     @if ($quotationModel->vat_type === 'include') checked @endif value="include">
                                 <label for="vat-include">คำนวณรวมกับราคาสินค้าและบริการ (VAT
                                     Include)</label>
                             </div>
                             <div>
-                                <input type="radio" id="vat-exclude" name="vat_type" value="exclude"
+                                <input type="radio" id="vat-exclude" name="invoice_vat_type" value="exclude"
                                     @if ($quotationModel->vat_type === 'exclude') checked @endif>
                                 <label for="vat-exclude">คำนวณแยกกับราคาสินค้าและบริการ (VAT
                                     Exclude)</label>
@@ -470,7 +495,7 @@
                     <div class="col-md-12">
                         <div class="row summary-row">
                             <div class="col-md-10">
-                                <input type="checkbox" name="quote_withholding_tax_status" value="Y"
+                                <input type="checkbox" name="invoice_withholding_tax_status" value="Y"
                                     id="withholding-tax" @if ($quotationModel->quote_withholding_tax_status === 'Y') checked @endif>
                                 <span class="">
                                     คิดภาษีหัก ณ ที่จ่าย 3% (คำนวณจากยอด ราคาก่อนภาษีมูลค่าเพิ่ม /
@@ -486,9 +511,11 @@
                         <hr>
                     </div>
 
+
+
                     <div class="col-md-12" style="padding-bottom: 10px">
                         <label>บันทึกเพิ่มเติม</label>
-                        <textarea name="quote_note" class="form-control" cols="30" rows="2">{{ $quotationModel->quote_note }}</textarea>
+                        <textarea name="invoice_note" class="form-control" cols="30" rows="2">{{ $quotationModel->quote_note }}</textarea>
                     </div>
                 </div>
 
@@ -525,6 +552,14 @@
                             <div class="col-md-2 text-end"><span id="sum-include-vat">0.00</span>
                             </div>
                         </div>
+
+                        <div class="row summary-row ">
+                            <div class="col-md-10 text-end">หักเงินมัดจำ / Deposit: :</div>
+                            <div class="col-md-2 ">
+                                <input type="text" value="{{$quotationModel->payment}}" name="payment" id="deposit" class="form-control" style="height: 25px;">
+                            </div>
+                        </div>
+
                         <div class="row summary-row">
                             <div class="col-md-10 text-end">จำนวนเงินรวมทั้งสิ้น / Grand Total:</div>
                             <div class="col-md-2 text-end"><b><span class="bg-warning"
@@ -698,27 +733,74 @@
             </div>
         </div>
 
-
-
         <div class="text-end mt-3">
             {{-- hidden --}}
-            <input type="hidden" name="quote_vat_exempted_amount">
-            <input type="hidden" name="quote_pre_tax_amount">
-            <input type="hidden" name="quote_discount">
-            <input type="hidden" name="quote_pre_vat_amount">
-            <input type="hidden" name="quote_vat">
-            <input type="hidden" name="quote_include_vat">
-            <input type="hidden" name="quote_grand_total" id="quote-grand-total">
-            <input type="hidden" name="quote_withholding_tax">
-            <a class="btn btn-sm btn-info text-left" href="{{ route('quote.editNew', $quotationModel->quote_id) }}">
-                Back</a>
+            <input type="hidden" name="invoice_vat_exempted_amount">
+            <input type="hidden" name="invoice_pre_tax_amount">
+            <input type="hidden" name="invoice_discount">
+            <input type="hidden" name="invoice_pre_vat_amount">
+            <input type="hidden" name="invoice_vat">
+            <input type="hidden" name="invoice_include_vat">
+            <input type="hidden" name="invoice_grand_total" id="invoice-grand-total">
+            <input type="hidden" name="invoice_withholding_tax">
+           
             <button type="submit" class="btn btn-primary btn-sm  mx-3" form="formQuote"><i class="fa fa-save"></i>
-                Update</button>
+                สร้างใบแจ้งหนี้</button>
 
 
         </div>
 
     </form>
+
+
+    <script>
+        $(document).ready(function() {
+            // ใช้ฟังก์ชันนี้ถ้าคุณต้องการทำบางอย่างก่อน submit ฟอร์ม
+            $('#formQuote').on('submit', function(event) {
+                // ตรวจสอบหรือทำงานเพิ่มเติมก่อน submit
+                var totalPayment = 0;
+                var isValid = false; // สมมติว่าคุณมีการตรวจสอบอะไรบางอย่าง
+                var quoteGrandTotalOld = parseFloat($('#quote-grand-total-old').val());
+                var deposit = parseFloat($('#deposit').val());
+               
+                var quoteGrandTotalNew =  parseFloat($('#invoice-grand-total').val());
+
+                totalPayment = quoteGrandTotalNew + deposit;
+
+                if (totalPayment === quoteGrandTotalOld) {
+                    isValid = true;
+
+                    let form = this;
+                    let formData = $(form).serialize(); // เก็บข้อมูลจากฟอร์มทั้งหมด
+                    form.submit();
+
+                    $.ajax({
+                    url: "{{ route('quote.AjaxUpdate', $quotationModel->quote_id) }}", // เส้นทาง Controller ที่ 2
+                    method: 'PUT',
+                    data: formData, // ข้อมูลที่ต้องการส่ง
+                    success: function(response) {
+                        console.log('Updated Controller 2:', response);
+                    },
+                    error: function(error) {
+                        console.log('Error in Controller 2:', error);
+                    }
+                });
+
+                }
+
+                if (!isValid) {
+                    event.preventDefault(); // หยุดการ submit ฟอร์ม
+                    Swal.fire({
+                        title: "Oops...",
+                        text: "ราคาใบแจ้งหนี้ ไม่ตรงกับ ใบเสนอราคา",
+                        icon: "error"
+                    });
+                }
+            });
+
+        });
+    </script>
+    
 
 
     <script>
@@ -875,6 +957,8 @@
 
                 // คำนวณหักภาษี ณ ที่จ่าย (Withholding Tax)
                 const withholdingTax = $('#withholding-tax').is(':checked') ? sumPreVat * 0.03 : 0;
+                var deposit = parseFloat($('#deposit').val());
+
 
                 // อัปเดตค่าต่างๆ ในหน้าจอ
                 $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
@@ -888,20 +972,20 @@
                     2)));
                 $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
                 $('#sum-total-nonvat').text(formatNumber((sumPriceExcludingVatNonVat - sumDiscount).toFixed(2)));
-                $('input[name="quote_vat_exempted_amount"]').val((sumPriceExcludingVatNonVat - sumDiscount).toFixed(
+                $('input[name="invoice_vat_exempted_amount"]').val((sumPriceExcludingVatNonVat - sumDiscount).toFixed(
                     2));
                 $('#sum-total-vat').text(formatNumber(listVatTotal.toFixed(2)));
-                $('input[name="quote_pre_tax_amount"]').val(listVatTotal.toFixed(2));
+                $('input[name="invoice_pre_tax_amount"]').val(listVatTotal.toFixed(2));
                 $('#sum-discount').text(formatNumber(sumDiscount.toFixed(2)));
-                $('input[name="quote_discount"]').val(sumDiscount.toFixed(2));
+                $('input[name="invoice_discount"]').val(sumDiscount.toFixed(2));
                 $('#sum-pre-vat').text(formatNumber(sumPreVat.toFixed(2)));
-                $('input[name="quote_pre_vat_amount"]').val(sumPreVat.toFixed(2));
+                $('input[name="invoice_pre_vat_amount"]').val(sumPreVat.toFixed(2));
                 $('#vat-amount').text(formatNumber(vatAmount.toFixed(2)));
-                $('input[name="quote_vat"]').val(vatAmount.toFixed(2));
+                $('input[name="invoice_vat"]').val(vatAmount.toFixed(2));
                 $('#sum-include-vat').text(formatNumber((sumPreVat + vatAmount).toFixed(2)));
-                $('input[name="quote_include_vat"]').val((sumPreVat + vatAmount).toFixed(2));
-                $('#grand-total').text(formatNumber((grandTotal - sumDiscount).toFixed(2)));
-                $('input[name="quote_grand_total"]').val((grandTotal - sumDiscount).toFixed(2));
+                $('input[name="invoice_include_vat"]').val((sumPreVat + vatAmount).toFixed(2));
+                $('#grand-total').text(formatNumber(((grandTotal - sumDiscount) - deposit).toFixed(2)));
+                $('input[name="invoice_grand_total"]').val(((grandTotal - sumDiscount)- deposit).toFixed(2));
             }
 
 
@@ -1034,10 +1118,10 @@
             });
 
             // เรียกฟังก์ชันคำนวณใหม่ทุกครั้งที่มีการเปลี่ยนแปลง checkbox หรือ input
-            $('#quotation-table').on('change', '.vat-3, .vat-status, select[name="expense_type[]"]',
-                calculateTotals);
-            $('#quotation-table').on('input', '.quantity, .price-per-unit', calculateTotals);
+            $('#quotation-table').on('change', '.vat-3, .vat-status, select[name="expense_type[]"]',calculateTotals);
+            $('#quotation-table').on('input', '.quantity, .price-per-unit, #deposit', calculateTotals);
             $('#withholding-tax').change(calculateTotals);
+            $('#deposit').change(calculateTotals);
             $('input[name="vat_type"]').change(calculateTotals);
 
             // Remove row

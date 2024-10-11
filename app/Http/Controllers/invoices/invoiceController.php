@@ -72,7 +72,7 @@ class invoiceController extends Controller
         $campaignSource = DB::table('campaign_source')->get();
 
         
-        return view('invoices.form-create', compact('campaignSource','customer','quoteProducts','quotationModel','sales','country','airline','numDays','wholesale','products','productDiscount','quoteProductsDiscount'));
+        return view('invoices.modal-create', compact('campaignSource','customer','quoteProducts','quotationModel','sales','country','airline','numDays','wholesale','products','productDiscount','quoteProductsDiscount'));
         
     }
 
@@ -123,7 +123,7 @@ class invoiceController extends Controller
             }
            
         }
-        return redirect('quote/sales/'.$request->quote_id);
+        return redirect()->back();
 
     }
 

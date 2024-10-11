@@ -258,12 +258,13 @@
                             พิมพ์ใบเสนอราคา
                         </a>
 
-                        <button type="button"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
+                        <a href="{{ route('invoice.create', $quotationModel->quote_id) }}"
+                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 modal-invoice">
                             <i data-feather="folder-plus" class="feather-sm fill-white me-2 text-success"></i>
                             ออกใบแจ้งหนี้
-                        </button>
+                        </a>
 
+                      
                         <button type="button"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
                             <i data-feather="repeat" class="feather-sm fill-white me-2 text-info"></i>
@@ -310,6 +311,10 @@
 
         <div class="row">
             <div class="col-md-12" id="quote-centent">
+
+            </div>
+
+            <div class="col-md-12" id="quote-payment">
 
             </div>
 
@@ -377,6 +382,19 @@
              </div>
          </div>
      </div>
+
+        {{-- Edit form quote --}}
+        <div class="modal fade bd-example-modal-sm modal-xl" id="modal-quote-edit" tabindex="-1" role="dialog"
+        aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                ...
+            </div>
+        </div>
+    </div>
+
+    
+
      
    
      
@@ -401,6 +419,25 @@
                     });
                 }
                 quoteEdit(quoteId);
+
+                function paymentTable(quoteId) {
+                    // โหลดเนื้อหาของไฟล์ฟอร์มและแสดงใน DOM
+                    $.ajax({
+                        url: "{{ route('payments', '') }}/" + quoteId, // ประกอบ URL แบบถูกต้อง
+                        type: 'GET',
+                        success: function(response) {
+                            $('#quote-payment').html(response); // แสดง response ใน #quote-centent
+                        },
+                        error: function(xhr) {
+                            console.log(xhr.responseText); // แสดงข้อผิดพลาดใน console
+                        }
+                    });
+                }
+                paymentTable(quoteId);
+
+              
+
+               
 
 
                 // modal add payment wholesale quote

@@ -1,9 +1,9 @@
 <div class="col-md-12">
     <div class="card">
         <div class="card-header bg-success">
-            <h4 class="mb-0 text-white"><i data-feather="file" class="feather-sm fill-white me-2 "></i>
+            <h5 class="mb-0 text-white"><i class="fa fa-file"></i>
                 รายละเอียดใบจองใบทัวร์ <span class="float-end">Booking No. :
-                    {{ $quotationModel->quote_booking }}</span></h4>
+                    {{ $quotationModel->quote_booking }}</span></h5>
         </div>
         <div class="card-body">
             <div class="table table-responsive">
@@ -31,7 +31,7 @@
                                 <td>ใบเสนอราคา</td>
                                 <td>{{ date('d/m/Y', strtotime($quotationModel->created_at)) }}</td>
                                 <td><span class="badge bg-dark">{{ $quotationModel->quote_number }} </span>
-                                    
+
                                 </td>
                                 {{-- <td>{{ $item->customer_name }}</td> --}}
                                 <td align="center">
@@ -58,7 +58,8 @@
                                 </td>
                                 <td>
                                     <a class="dropdown-item" target="_blank"
-                                        href="{{ route('mpdf.quote', $quotationModel->quote_id) }}"onclick="openPdfPopup(this.href); return false;">
+                                        href="{{ route('mpdf.quote', $quotationModel->quote_id) }}"
+                                        onclick="openPdfPopup(this.href); return false;">
                                         <i class="fa fa-print text-danger "></i>
                                         พิมพ์ใบเสนอราคา
                                     </a>
@@ -90,21 +91,20 @@
                                                     class="fa fa-edit text-info"></i> แก้ไข</a>
                                         @endcan
                                         @can('create-invoice')
-                                            <a class="dropdown-item"
+                                            <a class="dropdown-item modal-invoice"
                                                 href="{{ route('invoice.create', $quotationModel->quote_id) }}"><i
                                                     class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
                                         @endcan
-                                       
                                     @endif
                                 </td>
 
                                 <td>
                                     @can('edit-quote')
-                                    <a class="dropdown-item"
-                                        href="{{ route('quote.cancel', $quotationModel->quote_id) }}"
-                                        onclick="return confirm('ยืนยันการยกเลิกใบเสนอราคา')"><i
-                                            class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
-                                @endcan
+                                        <a class="dropdown-item"
+                                            href="{{ route('quote.cancel', $quotationModel->quote_id) }}"
+                                            onclick="return confirm('ยืนยันการยกเลิกใบเสนอราคา')"><i
+                                                class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty
@@ -120,7 +120,6 @@
                                 <td>{{ date('d/m/Y', strtotime($item->invoice_date)) }}</td>
                                 <td><span class="badge bg-dark">{{ $item->invoice_number }}</span>
                                 </td>
-                                <td>{{ $item->customer_name }}</td>
                                 <td align="center">
                                     {{ number_format($item->invoice_grand_total, 2, '.', ',') }}</td>
                                 <td align="center">
@@ -138,6 +137,33 @@
                                     @endif
 
                                 </td>
+                                <td>
+                                    <a class="dropdown-item" onclick="openPdfPopup(this.href); return false;"
+                                        href="{{ route('mpdf.invoice', $item->invoice_id) }}"><i
+                                            class="fa fa-print text-danger"></i>
+                                        พิมพ์ใบแจ้งหนี้</a>
+
+                                    <a class="dropdown-item mail-quote"
+                                        href="{{ route('mail.invoice.formMail', $item->invoice_id) }}"><i
+                                            class="fas fa-envelope text-info"></i>
+                                        ส่งเมล</a>
+                                </td>
+                                <td>N/A</td>
+                                <td>
+                                    @can('edit-invoice')
+                                        <a class="dropdown-item" href="{{ route('invoice.edit', $item->invoice_id) }}"><i
+                                                class="fa fa-edit text-info"></i> แก้ไข</a>
+                                    @endcan
+                                </td>
+
+                                <td>
+                                    @if ($item->invoice_status === 'wait')
+                                        <a class="dropdown-item"
+                                            href="{{ route('invoice.taxinvoice', $item->invoice_id) }}"
+                                            onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
+                                                class="fas fa-plus"></i> สร้างใบกำกับภาษี</a>
+                                    @endif
+                                </td>
                                 <td align="center">
                                     <div class="btn-group" role="group">
                                         <button id="btnGroupVerticalDrop2" type="button"
@@ -147,20 +173,7 @@
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
 
-                                            <a class="dropdown-item" target="_blank"
-                                                href="{{ route('mpdf.invoice', $item->invoice_id) }}"><i
-                                                    class="fa fa-print"></i>
-                                                พิมพ์ใบแจ้งหนี้</a>
 
-                                            <a class="dropdown-item mail-quote"
-                                                href="{{ route('mail.invoice.formMail', $item->invoice_id) }}"><i
-                                                    class="fas fa-envelope"></i>
-                                                ส่งเมล</a>
-                                            @can('edit-invoice')
-                                                <a class="dropdown-item"
-                                                    href="{{ route('invoice.edit', $item->invoice_id) }}"><i
-                                                        class="fa fa-edit"></i> แก้ไข</a>
-                                            @endcan
                                             @if ($item->invoice_status === 'wait')
                                                 <a class="dropdown-item"
                                                     href="{{ route('invoice.taxinvoice', $item->invoice_id) }}"
@@ -168,7 +181,7 @@
                                                         class="fas fa-plus"></i> สร้างใบกำกับภาษี</a>
                                                 @can('cancel-invoice')
                                                     <a class="dropdown-item"
-                                                        href="{{ route('invoice.cancel', $invoice->invoice_id) }}"
+                                                        href="{{ route('invoice.cancel', $item->invoice_id) }}"
                                                         onclick="return confirm('ยืนยันการยกเลิกใบแจ้งหนี้')"><i
                                                             class="fas fa-minus-circle"></i> ยกเลิกใบงาน</a>
                                                 @endcan
@@ -252,6 +265,17 @@
     </div>
 </div>
 
+{{-- create form invoice --}}
+<div class="modal fade bd-example-modal-sm modal-xl" id="modal-invoice-create" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            ...
+        </div>
+    </div>
+</div>
+
+
 
 
 <script>
@@ -274,6 +298,18 @@
             .find(".modal-content")
             .load($(this).attr("href"));
     });
+
+    // modal add payment wholesale quote
+    $(".modal-invoice").click("click", function(e) {
+        e.preventDefault();
+        $("#modal-invoice-create")
+            .modal("show")
+            .addClass("modal-lg")
+            .find(".modal-content")
+            .load($(this).attr("href"));
+    });
+
+
 
 
 

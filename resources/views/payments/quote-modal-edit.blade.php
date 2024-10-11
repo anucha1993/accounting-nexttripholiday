@@ -96,7 +96,7 @@
             <br>
             <label for="">แนบไฟล์เอกสาร</label></br>
           
-            <a href="{{ asset('storage/' . $paymentModel->payment_file_path) }}"><i
+            <a href="{{ asset('storage/' . $paymentModel->payment_file_path) }}"  onclick="openPdfPopup(this.href); return false;"><i
                 class="fa fa-file text-danger"></i> {{$paymentModel->payment_file_path}}</a>
 
                 <a href="#"></a>

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\payments;
 
 
 use Illuminate\Http\Request;
-use Spatie\FlareClient\View;
 use App\Http\Controllers\Controller;
 use App\Models\bank\bankCompanyModel;
 use App\Models\bank\bankModel;
@@ -13,6 +12,7 @@ use App\Models\invoices\invoiceModel;
 use App\Models\payments\paymentModel;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\quotations\quotationModel;
+use Illuminate\Support\Facades\View;
 
 class paymentController extends Controller
 {
@@ -20,11 +20,11 @@ class paymentController extends Controller
 
     public function index(quotationModel $quotationModel, Request $request)
     {
-
+        //dd($quotationModel->quote_number);
         $quotationModel = quotationModel::where('quotation.quote_number', $quotationModel->quote_number)
-        ->leftjoin('invoices','invoices.quote_number','quotation.quote_number')
-        ->leftjoin('debit_note','debit_note.invoice_number','invoices.invoice_number')
-        ->leftjoin('credit_note','credit_note.invoice_number','invoices.invoice_number')
+        ->leftjoin('invoices','invoices.invoice_quote_number','quotation.quote_number')
+        ->leftjoin('debit_note','debit_note.debit_invoice_id','invoices.invoice_id')
+        ->leftjoin('credit_note','credit_note.credit_invoice_id','invoices.invoice_id')
         ->first();
         
 
@@ -41,8 +41,7 @@ class paymentController extends Controller
         ->where('payment_doc_type','credit-note')
         ->latest()->get();
         
-        
-        return view('payments.index', compact('quotationModel', 'payments','paymentDebit','paymentCredit'));
+        return View::make('payments.payment-table',compact('payments','quotationModel','paymentDebit','paymentCredit'))->render();
     }
 
 
@@ -133,9 +132,9 @@ class paymentController extends Controller
 
         // การอัปเดตสถานะของใบเสนอราคา
         if ($total >= $quote->quote_grand_total) {
-            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'success']);
+            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'success','quote_payment_status' => 'success']);
         } else {
-            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'payment']);
+            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_payment_status' => 'payment']);
         }
 
         return redirect()->back()->with('success', 'Payment processed successfully.');

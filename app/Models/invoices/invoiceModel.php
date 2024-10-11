@@ -34,7 +34,7 @@ class invoiceModel extends Model
           'invoice_withholding_tax_status',
           'invoice_status',
           'invoice_note',
-          'vat_type',
+          'invoice_vat_type',
           'created_by',
           'updated_by',
     ];
