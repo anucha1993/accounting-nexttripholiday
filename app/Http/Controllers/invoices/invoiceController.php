@@ -102,7 +102,7 @@ class invoiceController extends Controller
 
         $request->merge(['created_by' => Auth::user()->name]); 
        $invoice = invoiceModel::create($request->all());
-       quotationModel::where('quote_number',$invoice->invoice_quote)->update(['quote_status'=> 'invoice']);
+       quotationModel::where('quote_id',$invoice->invoice_quote_id)->update(['quote_status'=> 'invoice']);
 
          // Create product lits
          foreach ($request->product_id as $key => $product) {
@@ -127,11 +127,13 @@ class invoiceController extends Controller
 
     }
 
+   
     public function edit(invoiceModel $invoiceModel, Request $request)
     {
-        $quotationModel = quotationModel::where('quote_number',$invoiceModel->invoice_quote)->first();
-        // $bookingModel = bookingModel::where('code',$quotationModel->quote_booking)->first();
-        $customer = customerModel::where('customer_id', $invoiceModel->customer_id)->first();
+      
+        $quotationModel = quotationModel::where('quote_id',$invoiceModel->invoice_quote_id)->first();
+        $bookingModel = bookingModel::where('code',$quotationModel->quote_booking)->first();
+        $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
         $sales = saleModel::select('name', 'id')->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])->get();
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
         $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
@@ -139,11 +141,12 @@ class invoiceController extends Controller
         $wholesale = wholesaleModel::where('status', 'on')->get();
         $products = productModel::where('product_type','!=', 'discount')->get();
         $productDiscount = productModel::where('product_type','discount')->get();
-        $quoteProducts = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->where('expense_type','income')->get();
-        $quoteProductsDiscount = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->where('expense_type','discount')->get();
+        $invoiceProducts = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->where('expense_type','income')->get();
+        $invoiceProductsDiscount = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->where('expense_type','discount')->get();
         $campaignSource = DB::table('campaign_source')->get();
-       
-        return view('invoices.form-edit', compact('invoiceModel','quotationModel','campaignSource','customer','quoteProducts','sales','country','airline','numDays','wholesale','products','productDiscount','quoteProductsDiscount'));
+
+        
+        return view('invoices.modal-edit', compact('invoiceModel','campaignSource','customer','invoiceProducts','quotationModel','sales','country','airline','numDays','wholesale','products','productDiscount','invoiceProductsDiscount'));
         
     }
 

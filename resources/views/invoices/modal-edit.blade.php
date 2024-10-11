@@ -71,23 +71,23 @@
 
 
 <div class="modal-body">
-    <form action="{{ route('invoice.store') }}" id="formQuote" method="post">
+    <form action="{{ route('invoice.update',$invoiceModel->invoice_id) }}" id="formQuote" method="post">
         @csrf
-        @method('POST') 
+        @method('PUT') 
 
         <input type="hidden" value="{{$quotationModel->quote_id}}" name="invoice_quote_id">
         {{-- รายละเอียดใบเสนอราคา --}}
 
-        <h5 class="text-primary">สร้างใบแจ้งหนี้</h5>
+        <h5 class="text-primary">แก้ไขใบแจ้งหนี้ </h5>
 
         <fieldset class="border p-2">
-            <legend class="float-none w-auto text-danger" style="font-size: 15px"><span>รายละเอียดใบเสนอราคา</span>
+            <legend class="float-none w-auto text-danger" style="font-size: 15px"><span>รายละเอียดใบแจ้งหนี้ #{{$invoiceModel->invoice_number}}</span>
             </legend>
 
             <div class="row">
                 <div class="col-md-2  ms-auto">
-                    <label>เลขที่ใบเสนอราคา:</label>
-                    <input type="text" class="form-control bg-secondary text-white" name="invoice_quote_number" value="{{$quotationModel->quote_number}}" readonly >
+                    <label>เลขที่ใบแจ้งหนี้:</label>
+                    <input type="text" class="form-control bg-secondary text-white" name="invoice_number" value="{{$invoiceModel->invoice_number}}" readonly >
                 </div>
                 <div class="col-md-2">
                     <label>ยอดยกมา:</label>
@@ -117,7 +117,7 @@
                     <input type="text" id="displayDatepickerQuoteDate" class="form-control">
 
                     <input type="hidden" id="submitDatepickerQuoteDate" name="invoice_date"
-                        value="{{ $quotationModel->quote_date }}" class="form-control">
+                        value="{{ $invoiceModel->invoice_date }}" class="form-control">
                 </div>
 
               
@@ -330,17 +330,13 @@
                         <div class="col-md-2">ยอดรวม</div>
                     </div>
                     <hr>
-
                     {{-- ค่าบริการ --}}
                     @php
                         $Runnumber = 0;
                         $W_tax = 0;
                     @endphp
 
-
-
-
-                    @forelse ($quoteProducts as $key => $item)
+                    @forelse ($invoiceProducts as $key => $item)
                         <div class="row item-row ">
 
                             <div class="col-md-1"><span class="row-number"> {{ ++$Runnumber }}</span> <a
@@ -411,7 +407,7 @@
                     </div>
 
                     {{-- ส่วนลด --}}
-                    @forelse ($quoteProductsDiscount as $keyD => $itemD)
+                    @forelse ($invoiceProductsDiscount as $keyD => $itemD)
                         <div class="row item-row" data-row-id="{{ $keyD }}">
                             <div class="col-md-1"><span class="row-number">{{ ++$Runnumber }}</span>
                                 <a href="javascript:void(0)" class="remove-row-btn text-danger"><span
@@ -478,13 +474,13 @@
                             <label for="vat-method">การคำนวณ VAT:</label>
                             <div>
                                 <input type="radio" id="vat-include" name="invoice_vat_type"
-                                    @if ($quotationModel->vat_type === 'include') checked @endif value="include">
+                                    @if ($invoiceModel->invoice_vat_type === 'include') checked @endif value="include">
                                 <label for="vat-include">คำนวณรวมกับราคาสินค้าและบริการ (VAT
                                     Include)</label>
                             </div>
                             <div>
                                 <input type="radio" id="vat-exclude" name="invoice_vat_type" value="exclude"
-                                    @if ($quotationModel->vat_type === 'exclude') checked @endif>
+                                    @if ($invoiceModel->invoice_vat_type === 'exclude') checked @endif>
                                 <label for="vat-exclude">คำนวณแยกกับราคาสินค้าและบริการ (VAT
                                     Exclude)</label>
                             </div>
@@ -496,7 +492,7 @@
                         <div class="row summary-row">
                             <div class="col-md-10">
                                 <input type="checkbox" name="invoice_withholding_tax_status" value="Y"
-                                    id="withholding-tax" @if ($quotationModel->quote_withholding_tax_status === 'Y') checked @endif>
+                                    id="withholding-tax" @if ($invoiceModel->invoice_withholding_tax_status === 'Y') checked @endif>
                                 <span class="">
                                     คิดภาษีหัก ณ ที่จ่าย 3% (คำนวณจากยอด ราคาก่อนภาษีมูลค่าเพิ่ม /
                                     Pre-VAT
@@ -515,7 +511,7 @@
 
                     <div class="col-md-12" style="padding-bottom: 10px">
                         <label>บันทึกเพิ่มเติม</label>
-                        <textarea name="invoice_note" class="form-control" cols="30" rows="2">{{ $quotationModel->quote_note }}</textarea>
+                        <textarea name="invoice_note" class="form-control" cols="30" rows="2">{{ $invoiceModel->invoice_note }}</textarea>
                     </div>
                 </div>
 
@@ -744,8 +740,8 @@
             <input type="hidden" name="invoice_grand_total" id="invoice-grand-total">
             <input type="hidden" name="invoice_withholding_tax">
            
-            <button type="submit" class="btn btn-primary btn-sm  mx-3" form="formQuote"><i class="fa fa-save"></i>
-                สร้างใบแจ้งหนี้</button>
+            <button type="submit" class="btn btn-success btn-sm  mx-3" form="formQuote"><i class="fa fa-save"></i>
+                อัพเดทใบแจ้งหนี้</button>
 
 
         </div>
@@ -819,7 +815,7 @@
     <script>
         $(document).ready(function() {
             $('.country-select').select2({
-                dropdownParent: $('#modal-invoice-create')
+                dropdownParent: $('#modal-invoice-edit')
             });
             //         $('.product-select').select2({
             //             dropdownParent: $('#modal-quote-edit')
@@ -876,7 +872,7 @@
                 let processedDiscountRows = [];
 
                 // ตรวจสอบและกำหนด vatMethod จาก input[name="vat_type"]
-                let vatMethod = $('input[name="vat_type"]:checked').val() ||
+                let vatMethod = $('input[name="invoice_vat_type"]:checked').val() ||
                     'exclude'; // กำหนดค่าเริ่มต้นเป็น 'exclude' หากไม่มีค่า
 
                 $('#quotation-table .item-row').each(function(index) {
@@ -1122,7 +1118,7 @@
             $('#quotation-table').on('input', '.quantity, .price-per-unit, #deposit', calculateTotals);
             $('#withholding-tax').change(calculateTotals);
             $('#deposit').change(calculateTotals);
-            $('input[name="vat_type"]').change(calculateTotals);
+            $('input[name="invoice_vat_type"]').change(calculateTotals);
 
             // Remove row
             $('#quotation-table').on('click', '.remove-row-btn', function() {
@@ -1278,7 +1274,7 @@
 
             // ตรวจสอบเมื่อผู้ใช้เลือกชำระเงินเต็มจำนวน
             function checkedPaymentFull() {
-                var QuoteTotalGrand = $('#quote-grand-total').val();
+                var QuoteTotalGrand = $('#invoice-grand-total').val();
                 if ($('#quote-payment-full').is(':checked')) {
                     $('#quote-payment-price').prop('disabled', true); // ปิด dropdown เรทเงินมัดจำ
                     $('#payment-total-full').val(QuoteTotalGrand);
@@ -1302,7 +1298,7 @@
             });
 
             function calculatePaxAndTotal() {
-                var QuoteTotalGrand = $('#quote-grand-total').val();
+                var QuoteTotalGrand = $('#invoice-grand-total').val();
                 // ตรวจสอบว่าการชำระเงินเต็มจำนวนถูกเลือกหรือไม่
                 if ($('#quote-payment-deposit,#quote-payment-full').is(':checked')) {
                     // ตัวแปรเก็บผลรวมของ quantity

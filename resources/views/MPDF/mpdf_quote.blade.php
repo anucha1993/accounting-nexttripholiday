@@ -325,28 +325,17 @@
                     <td style="width: 200px; text-align: right; border-left: none; border-bottom: none;"><b>บาท</b></td>
                     </tr>
                     @endif
-                    @if ($quotationModel->quote_payment_type === 'full')
+                   
                     <tr style="border-right: none;">
                         <td style="width: 100px; padding: 5x; border-right: none; border-top: none;"><b>วันที่ชำระยอดเต็ม</b></td>
                         <td style="width: 110px; border-right: none; border-left: none; border-top: none; " >{{ thaidate('j F Y',$quotationModel->quote_payment_date_full) }}</td>
                         <td style="width: 100px; border-right: none; border-left: none; border-top: none;"><b>ก่อนเวลา</b></td>
                         <td style="width: 110px; border-right: none; border-left: none; border-top: none;">{{date('H:m',strtotime($quotationModel->quote_payment_date_full))}} น.</td>
                         <td style="width: 100px; border-right: none; border-left: none; border-top: none;"><b>จำนวนเงิน</b></td>
-                        <td style="width: 110px; border-right: none; border-left:center; border-left:  none; border-top: none;">{{  number_format($quotationModel->quote_payment_total_full  , 2, '.', ',')}}</td>
+                        <td style="width: 110px; border-right: none; text-align: center; border-left: none; border-top: none;">{{  number_format($quotationModel->quote_payment_total_full  , 2, '.', ',')}}</td>
                         <td style="width: 200px; text-align: right; border-left: none; border-top: none;"><b>บาท</b></td>
                     </tr>
-                    @else
-                    <tr style="border-right: none;">
-                        <td style="width: 100px; padding: 5x; border-right: none; border-top: none;"><b>วันที่ชำระยอดเต็ม</b></td>
-                        <td style="width: 110px; border-right: none; border-left: none; border-top: none; " >-</td>
-                        <td style="width: 100px; border-right: none; border-left: none; border-top: none;"><b>ก่อนเวลา</b></td>
-                        <td style="width: 110px; border-right: none; border-left: none; border-top: none;">-น.</td>
-                        <td style="width: 100px; border-right: none; border-left: none; border-top: none;"><b>จำนวนเงิน</b></td>
-                        <td style="width: 110px; border-right: none; border-left: none; border-top: none;">-</td>
-                        <td style="width: 200px; text-align: right; border-left: none; border-top: none;"><b>บาท</b></td>
-                    </tr>
-                    @endif
-                    
+                   
                 </table>
             </div>
 

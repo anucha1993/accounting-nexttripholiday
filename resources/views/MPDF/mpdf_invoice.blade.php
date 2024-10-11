@@ -155,7 +155,7 @@
 
                     <td
                         style="padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{ $invoiceModel->quote_number }}</span></p>
+                        <p><span>{{ $invoiceModel->invoice_quote_number }}</span></p>
                     </td>
                 </tr>
                 <tr>
@@ -198,7 +198,7 @@
 
                     <td
                         style="padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        {{ $invoiceModel->invoice_tour_code }}</span></p>
+                        {{$quotationModel->quote_tour ? $quotationModel->quote_tour : $quotationModel->quote_tour_code}}</span></p>
                     </td>
                 </tr>
                 <tr style="padding: 3px">
@@ -244,12 +244,10 @@
                     <td
                         style="padding: 0; text-align: left; border-left: none;  ; background-color: #f9c68f; vertical-align: top;">
                         <p style="margin: 0; padding: 10px;">
-                            @if ($quotationModel->quote_payment_type === 'full')
-                                <span> {{ thaidate('j M Y', $quotationModel->quote_payment_date) }} เวลา
-                                    {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.</span>
-                            @else
-                                - ก่อนเวลา - น.
-                            @endif
+                         
+                                <span> {{ thaidate('j M Y', $quotationModel->quote_payment_date_full) }} เวลา
+                                    {{ date('H:m', strtotime($quotationModel->quote_payment_date_full)) }} น.</span>
+                           
 
                         </p>
                     </td>
@@ -299,10 +297,10 @@
 
                     <td style="width: 270px;  text-align: left; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
-                        @if ($item->expense_type === 'discount')
-                        <p style="margin: 0;">{{ $item->product_name}} <b>(ส่วนลด)</b></p>
+                        @if ($item->vat_status === 'vat')
+                        <p style="margin: 0;">{{ $item->product_name}} <b> &nbsp;**(VAT) </b></p>
                         @else
-                        <p style="margin: 0;">{{ $item->product_name}}</p>
+                        <p style="margin: 0;">{{ $item->product_name}} <b>  &nbsp;**(Non VAT) </b></p>
                         @endif
                        
                         @empty

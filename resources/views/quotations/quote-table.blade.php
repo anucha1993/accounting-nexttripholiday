@@ -81,9 +81,6 @@
                                 </td>
                                 <td align="left">
 
-
-
-
                                     @if ($quotationModel->quote_status != 'cancel')
                                         @can('edit-quote')
                                             <a class="dropdown-item modal-quote-edit"
@@ -91,9 +88,14 @@
                                                     class="fa fa-edit text-info"></i> แก้ไข</a>
                                         @endcan
                                         @can('create-invoice')
-                                            <a class="dropdown-item modal-invoice"
-                                                href="{{ route('invoice.create', $quotationModel->quote_id) }}"><i
-                                                    class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
+                                        @if ($quotationModel->quote_status === 'invoice') 
+                                            <span class="badge rounded-pill bg-success">ออกใบแจ้งหนี้แล้ว</span>
+                                        @else
+                                        <a class="dropdown-item modal-invoice" 
+                                        href="{{ route('invoice.create', $quotationModel->quote_id) }}"><i
+                                            class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
+                                        @endif
+                                           
                                         @endcan
                                     @endif
                                 </td>
@@ -108,7 +110,7 @@
                                 </td>
                             </tr>
                         @empty
-                            No Data Found
+      
                         @endforelse
 
 
@@ -151,48 +153,29 @@
                                 <td>N/A</td>
                                 <td>
                                     @can('edit-invoice')
-                                        <a class="dropdown-item" href="{{ route('invoice.edit', $item->invoice_id) }}"><i
-                                                class="fa fa-edit text-info"></i> แก้ไข</a>
+                                        <a class="dropdown-item modal-invoice-edit" href="{{route('invoice.edit',$item->invoice_id)}}">
+                                            <i class="fa fa-edit text-info" ></i> แก้ไข</a>
                                     @endcan
-                                </td>
-
-                                <td>
+                                
                                     @if ($item->invoice_status === 'wait')
                                         <a class="dropdown-item"
                                             href="{{ route('invoice.taxinvoice', $item->invoice_id) }}"
                                             onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
-                                                class="fas fa-plus"></i> สร้างใบกำกับภาษี</a>
+                                                class="fas fa-file-alt"></i> สร้างใบกำกับภาษี</a>
                                     @endif
                                 </td>
-                                <td align="center">
-                                    <div class="btn-group" role="group">
-                                        <button id="btnGroupVerticalDrop2" type="button"
-                                            class="btn btn-sm btn-light-secondary text-dark font-weight-medium dropdown-toggle"
-                                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            จัดการข้อมูล
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
+                                <td >
 
-
-                                            @if ($item->invoice_status === 'wait')
-                                                <a class="dropdown-item"
-                                                    href="{{ route('invoice.taxinvoice', $item->invoice_id) }}"
-                                                    onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
-                                                        class="fas fa-plus"></i> สร้างใบกำกับภาษี</a>
-                                                @can('cancel-invoice')
-                                                    <a class="dropdown-item"
-                                                        href="{{ route('invoice.cancel', $item->invoice_id) }}"
-                                                        onclick="return confirm('ยืนยันการยกเลิกใบแจ้งหนี้')"><i
-                                                            class="fas fa-minus-circle"></i> ยกเลิกใบงาน</a>
-                                                @endcan
-                                            @endif
-
-                                        </div>
-                                    </div>
+                                    @can('cancel-invoice')
+                                    <a class="dropdown-item"
+                                        href="{{ route('invoice.cancel', $item->invoice_id) }}"
+                                        onclick="return confirm('ยืนยันการยกเลิกใบแจ้งหนี้')"><i
+                                            class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
+                                      @endcan
                                 </td>
                             </tr>
                         @empty
-                            No Data Found
+                         
                         @endforelse
 
 
@@ -255,15 +238,6 @@
     </div>
 </div>
 
-{{-- Edit form quote --}}
-<div class="modal fade bd-example-modal-sm modal-xl" id="modal-quote-edit" tabindex="-1" role="dialog"
-    aria-labelledby="mySmallModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            ...
-        </div>
-    </div>
-</div>
 
 {{-- create form invoice --}}
 <div class="modal fade bd-example-modal-sm modal-xl" id="modal-invoice-create" tabindex="-1" role="dialog"
@@ -274,6 +248,28 @@
         </div>
     </div>
 </div>
+
+{{-- Edit form invoice --}}
+<div class="modal fade bd-example-modal-sm modal-xl" id="modal-invoice-edit" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            ...
+        </div>
+    </div>
+</div>
+
+  {{-- Edit form quote --}}
+         <div class="modal fade bd-example-modal-sm modal-xl" id="modal-quote-edit" tabindex="-1" role="dialog"
+         aria-labelledby="mySmallModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-xl">
+             <div class="modal-content">
+                 ...
+             </div>
+         </div>
+     </div>
+
+
 
 
 
@@ -288,26 +284,56 @@
         // เปิดหน้าต่างใหม่ด้วยการคำนวณตำแหน่งและขนาด
         window.open(url, 'PDFPopup', 'width=' + width + ',height=' + height + ',top=' + top + ',left=' + left);
     }
-
-    // modal add payment wholesale quote
-    $(".modal-quote-edit").click("click", function(e) {
-        e.preventDefault();
-        $("#modal-quote-edit")
-            .modal("show")
-            .addClass("modal-lg")
-            .find(".modal-content")
-            .load($(this).attr("href"));
+// เปิด modal แก้ไขใบเสนอราคา
+$(".modal-quote-edit").off("click").on("click", function(e) {
+    e.preventDefault();
+    var modal = $("#modal-quote-edit");
+    
+    // ล้างข้อมูลเก่าก่อนเปิด modal
+    modal.find(".modal-content").html('');
+    
+    // โหลดเนื้อหาใหม่
+    modal.modal("show").addClass("modal-lg").find(".modal-content").load($(this).attr("href"));
+    
+    // เมื่อปิด modal, ล้างข้อมูล
+    modal.on('hidden.bs.modal', function() {
+        $(this).find(".modal-content").html(''); // รีเซ็ตเนื้อหา
     });
+});
 
-    // modal add payment wholesale quote
-    $(".modal-invoice").click("click", function(e) {
-        e.preventDefault();
-        $("#modal-invoice-create")
-            .modal("show")
-            .addClass("modal-lg")
-            .find(".modal-content")
-            .load($(this).attr("href"));
+// เปิด modal แก้ไขใบแจ้งหนี้
+$(".modal-invoice").off("click").on("click", function(e) {
+    e.preventDefault();
+    var modal = $("#modal-invoice-create");
+    
+    // ล้างข้อมูลเก่าก่อนเปิด modal
+    modal.find(".modal-content").html('');
+    
+    // โหลดเนื้อหาใหม่
+    modal.modal("show").addClass("modal-lg").find(".modal-content").load($(this).attr("href"));
+    
+    // เมื่อปิด modal, ล้างข้อมูล
+    modal.on('hidden.bs.modal', function() {
+        $(this).find(".modal-content").html(''); // รีเซ็ตเนื้อหา
     });
+});
+
+// เปิด modal แก้ไขใบแจ้งหนี้
+$(".modal-invoice-edit").off("click").on("click", function(e) {
+    e.preventDefault();
+    var modal = $("#modal-invoice-edit");
+    
+    // ล้างข้อมูลเก่าก่อนเปิด modal
+    modal.find(".modal-content").html('');
+    
+    // โหลดเนื้อหาใหม่
+    modal.modal("show").addClass("modal-lg").find(".modal-content").load($(this).attr("href"));
+    
+    // เมื่อปิด modal, ล้างข้อมูล
+    modal.on('hidden.bs.modal', function() {
+        $(this).find(".modal-content").html(''); // รีเซ็ตเนื้อหา
+    });
+});
 
 
 

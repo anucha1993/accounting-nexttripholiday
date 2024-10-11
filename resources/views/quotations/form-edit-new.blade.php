@@ -373,25 +373,7 @@
         </div>
 
 
-         {{-- Edit form quote --}}
-         <div class="modal fade bd-example-modal-sm modal-xl" id="modal-quote-edit" tabindex="-1" role="dialog"
-         aria-labelledby="mySmallModalLabel" aria-hidden="true">
-         <div class="modal-dialog modal-xl">
-             <div class="modal-content">
-                 ...
-             </div>
-         </div>
-     </div>
-
-        {{-- Edit form quote --}}
-        <div class="modal fade bd-example-modal-sm modal-xl" id="modal-quote-edit" tabindex="-1" role="dialog"
-        aria-labelledby="mySmallModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                ...
-            </div>
-        </div>
-    </div>
+       
 
     
 
@@ -434,72 +416,56 @@
                     });
                 }
                 paymentTable(quoteId);
-
-              
-
                
+                // // modal add payment wholesale quote
+                // $(".mail-quote").click("click", function(e) {
+                //     e.preventDefault();
+                //     $("#modal-mail-quote")
+                //         .modal("show")
+                //         .addClass("modal-lg")
+                //         .find(".modal-content")
+                //         .load($(this).attr("href"));
+                // });
 
-
-                // modal add payment wholesale quote
-                $(".modal-quote-edit").click("click", function(e) {
-                    e.preventDefault();
-                    $("#modal-quote-edit")
-                        .modal("show")
-                        .addClass("modal-lg")
-                        .find(".modal-content")
-                        .load($(this).attr("href"));
-                });
-
-
-                // modal add payment wholesale quote
-                $(".mail-quote").click("click", function(e) {
-                    e.preventDefault();
-                    $("#modal-mail-quote")
-                        .modal("show")
-                        .addClass("modal-lg")
-                        .find(".modal-content")
-                        .load($(this).attr("href"));
-                });
-
-                // modal add payment wholesale quote
-                $(".payment-quote-wholesale").click("click", function(e) {
-                    e.preventDefault();
-                    $("#quote-payment-wholesale")
-                        .modal("show")
-                        .addClass("modal-lg")
-                        .find(".modal-content")
-                        .load($(this).attr("href"));
-                });
+                // // modal add payment wholesale quote
+                // $(".payment-quote-wholesale").click("click", function(e) {
+                //     e.preventDefault();
+                //     $("#quote-payment-wholesale")
+                //         .modal("show")
+                //         .addClass("modal-lg")
+                //         .find(".modal-content")
+                //         .load($(this).attr("href"));
+                // });
 
 
 
-                // modal add payment invoice
-                $(".invoice-modal").click("click", function(e) {
-                    e.preventDefault();
-                    $("#invoice-payment")
-                        .modal("show")
-                        .addClass("modal-lg")
-                        .find(".modal-content")
-                        .load($(this).attr("href"));
-                });
-                // modal add payment debit
-                $(".debit-modal").click("click", function(e) {
-                    e.preventDefault();
-                    $("#debit-payment")
-                        .modal("show")
-                        .addClass("modal-lg")
-                        .find(".modal-content")
-                        .load($(this).attr("href"));
-                });
-                // modal add payment credit
-                $(".credit-modal").click("click", function(e) {
-                    e.preventDefault();
-                    $("#credit-payment")
-                        .modal("show")
-                        .addClass("modal-lg")
-                        .find(".modal-content")
-                        .load($(this).attr("href"));
-                });
+                // // modal add payment invoice
+                // $(".invoice-modal").click("click", function(e) {
+                //     e.preventDefault();
+                //     $("#invoice-payment")
+                //         .modal("show")
+                //         .addClass("modal-lg")
+                //         .find(".modal-content")
+                //         .load($(this).attr("href"));
+                // });
+                // // modal add payment debit
+                // $(".debit-modal").click("click", function(e) {
+                //     e.preventDefault();
+                //     $("#debit-payment")
+                //         .modal("show")
+                //         .addClass("modal-lg")
+                //         .find(".modal-content")
+                //         .load($(this).attr("href"));
+                // });
+                // // modal add payment credit
+                // $(".credit-modal").click("click", function(e) {
+                //     e.preventDefault();
+                //     $("#credit-payment")
+                //         .modal("show")
+                //         .addClass("modal-lg")
+                //         .find(".modal-content")
+                //         .load($(this).attr("href"));
+                // });
             });
         </script>
 
