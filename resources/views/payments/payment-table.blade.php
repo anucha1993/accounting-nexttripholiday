@@ -91,7 +91,7 @@
 
                                 </td>
                                 <td>
-                                    <a href="{{ route('mpdf.payment', $item->payment_id) }}" target="_blank"><i
+                                    <a href="{{ route('mpdf.payment', $item->payment_id) }}" onclick="openPdfPopup(this.href); return false;"><i
                                             class="fa fa-print"></i> พิมพ์</a>
                                 </td>
                                 <td>

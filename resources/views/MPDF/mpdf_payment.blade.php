@@ -199,7 +199,7 @@
 
                     <td
                         style="width: 150px; padding-left: 5px5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{ $quotationModel->quote_tour_code }}</span></p>
+                        <p><span>{{$quotationModel->quote_tour ? $quotationModel->quote_tour : $quotationModel->quote_tour_code}}</span></p>
                     </td>
                 </tr>
                 <tr style="padding: 3px">
@@ -232,8 +232,8 @@
                         <p><b>Program:</span></p>
                     </td>
 
-                    <td style="width: 400px; padding-left: 5px; background-color: #f9c68f;">
-                        <p><span>{{ $quotationModel->quote_tour_code }}</span></p>
+                    <td style="width: 400px; padding-left: 5px; background-color: #f9c68f; font-size: 14px">
+                        <p><span>{{$quotationModel->quote_tour_name1 ? $quotationModel->quote_tour_name1 : $quotationModel->quote_tour_name }}</span></p>
                     </td>
                     <td style="border: none;"></td>
                     <td style="width: 100px; padding-left: 5px">
@@ -241,7 +241,7 @@
                     </td>
                     <td style="width: 150px; padding: 0; text-align: center; background-color: #f9c68f;">
                         <p style="margin: 0; padding: 10px;">
-                            <span>{{ date('d', strtotime($booking->start_date)) }}-{{ thaidate('j F Y', $booking->end_date) }}</span>
+                            <span>{{ date('d', strtotime($quotationModel->quote_date_start)) }}-{{ thaidate('j F Y', $quotationModel->quote_date_end) }}</span>
                         </p>
                     </td>
                 </tr>

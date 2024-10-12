@@ -23,9 +23,10 @@ class MPDF_PaymentController extends Controller
         // การตั้งค่า font สำหรับภาษาไทย
         $quotationModel = quotationModel::where('quote_number',$paymentModel->payment_doc_number)
         ->first();
+
         $bank = bankModel::where('bank_id', $paymentModel->payment_bank_number)->first();
         
-        $invoice = invoiceModel::where('quote_number',$quotationModel->quote_number)->first();
+        $invoice = invoiceModel::where('invoice_quote_id',$quotationModel->quote_id)->first();
         $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir'];
         $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
@@ -34,19 +35,20 @@ class MPDF_PaymentController extends Controller
         
         $customer = customerModel::where('customer_id',$quotationModel->customer_id)->first();
         $sale = saleModel::where('id',$quotationModel->quote_sale)->first();
-        $tour = DB::connection('mysql2')
-        ->table('tb_tour')
-        ->where('id', $quotationModel->tour_id)
-        ->first();
-         $airline = DB::connection('mysql2')
-        ->table('tb_travel_type')
-        ->select('travel_name')
-        ->where('id', $tour->airline_id)
-        ->first();
-        $booking = bookingModel::where('code', $quotationModel->quote_booking)->first();
+        // $tour = DB::connection('mysql2')
+        // ->table('tb_tour')
+        // ->where('id', $quotationModel->tour_id)
+        // ->first();
+        //  $airline = DB::connection('mysql2')
+        // ->table('tb_travel_type')
+        // ->select('travel_name')
+        // ->where('id', $tour->airline_id)
+        // ->first();
+        // $booking = bookingModel::where('code', $quotationModel->quote_booking)->first();
+        $airline = DB::connection('mysql2')->table('tb_travel_type')->where('id', $quotationModel->quote_airline)->first();
         $productLists = quoteProductModel::where('quote_id',$quotationModel->quote_id)->get();
         // ดึง HTML จาก Blade Template
-        $html = view('MPDF.mpdf_payment',compact('quotationModel','customer','sale','airline','booking','productLists','paymentModel','invoice','bank'))->render();
+        $html = view('MPDF.mpdf_payment',compact('quotationModel','customer','sale','airline','productLists','paymentModel','invoice','bank'))->render();
     
         // กำหนดค่าเริ่มต้นของ mPDF และเพิ่มฟอนต์ภาษาไทย
         $mpdf = new \Mpdf\Mpdf([
