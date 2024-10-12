@@ -185,7 +185,7 @@ class paymentController extends Controller
         if ($quote->payment >= $quote->quote_grand_total) {
             quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'success']);
         } else {
-            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'payment']);
+            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_payment_status' => 'payment']);
         }
 
         $file = $request->file('payment_file');
