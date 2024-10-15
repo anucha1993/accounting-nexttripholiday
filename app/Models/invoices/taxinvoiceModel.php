@@ -13,9 +13,11 @@ class taxinvoiceModel extends Model
     protected $fillable = [
         'taxinvoice_number',
         'taxinvoice_date',
+        'invoice_id',
         'invoice_number',
         'taxinvoice_note',
         'created_by',
         'updated_by',
+        'taxinvoice_status',
     ];
 }

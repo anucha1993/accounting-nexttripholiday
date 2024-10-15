@@ -13,10 +13,12 @@ use Illuminate\Support\Facades\View;
 use App\Models\invoices\invoiceModel;
 use App\Models\products\productModel;
 use App\Models\customers\customerModel;
+use App\Models\invoices\taxinvoiceModel;
 use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
 use App\Models\quotations\quoteProductModel;
 use App\Models\booking\bookingQuotationModel;
+use Carbon\Carbon;
 
 class quoteController extends Controller
 {
@@ -255,8 +257,12 @@ class quoteController extends Controller
     {
         $quotations = quotationModel::where('quotation.quote_id',$quotationModel->quote_id)->leftjoin('customer', 'customer.customer_id', 'quotation.customer_id')->get();
         $invoices = invoiceModel::where('invoices.invoice_quote_id',$quotationModel->quote_id)->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')->get();
+        $invoicesIds = $invoices->pluck('invoice_id');
+        $taxinvoices = taxinvoiceModel::whereIn('taxinvoices.invoice_id', $invoicesIds)
+        ->leftjoin('invoices', 'invoices.invoice_number', 'taxinvoices.invoice_number')
+        ->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')->get();
 
-        return View::make('quotations.quote-table', compact('quotations','quotationModel','invoices'))->render();
+        return View::make('quotations.quote-table', compact('quotations','quotationModel','invoices','taxinvoices'))->render();
     }
 
     public function modalEdit(quotationModel $quotationModel)
@@ -379,6 +385,7 @@ class quoteController extends Controller
         $runningCodeTourUpdate = $this->generateRunningCodeTourUpdate($country->iso2, $request->quote_tour_code_old, $request->quote_date_start,$request->quote_wholesale);
         $request->merge(['quote_tour_code' => $runningCodeTourUpdate]);
         $request->merge(['quote_withholding_tax_status' => isset($request->quote_withholding_tax_status) ? 'Y' : 'N']);
+
 
         customerModel::where('customer_id', $request->customer_id)->update([
             'customer_name' => $request->customer_name,

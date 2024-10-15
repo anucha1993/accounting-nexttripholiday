@@ -47,6 +47,8 @@ class taxInvoiceController extends Controller
             'taxinvoice_number' => $runningCode,
             'taxinvoice_date' => date('Y-m-d') ,
             'invoice_number' => $invoiceModel->invoice_number,
+            'invoice_id' => $invoiceModel->invoice_id,
+            'taxinvoice_status' => 'success',
             'created_by' => Auth::user()->name, 
           ]);
           $invoiceModel->update(['taxinvoice_number' => $runningCode, 'invoice_status' => 'success']);
@@ -108,6 +110,13 @@ class taxInvoiceController extends Controller
          return redirect()->back();
          
         
+    }
+
+    public function cancel(taxinvoiceModel $taxinvoiceModel)
+    {
+        $taxinvoiceModel->update(['taxinvoice_status' => 'cancel']);
+        invoiceModel::where('invoice_id',$taxinvoiceModel->invoice_id)->update(['invoice_status' => 'wait']);
+        return redirect()->back();
     }
 
 

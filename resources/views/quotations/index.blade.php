@@ -141,32 +141,54 @@
                                         <td>{{ $item->quoteWholesale->wholesale_name_th }}</td>
                                         
                                         <td>
-                                            @if ($item->quote_status === 'wait' || $item->quote_status === 'invoice')
-                                                <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
-                                            @endif
-                                            @if ($item->quote_status === 'success')
-                                                <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
-                                            @endif
-                                            @if ($item->quote_status === 'cancel')
-                                                <span class="badge rounded-pill bg-danger">ยกเลิก</span>
-                                            @endif
-                                            @if ($item->quote_status === 'payment')
-                                                <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
-                                            @endif
-                                        </td> 
+                                            @php
+                                                // กำหนดวันที่ปัจจุบัน
+                                                $now = date('Y-m-d');
+                                        
+                                                // กำหนดสถานะเริ่มต้น
+                                                $status = '';
+                                        
+                                                // ตรวจสอบสถานะการสั่งซื้อ
+                                                if ($item->quote_status === 'cancel') {
+                                                    $status = '<span class="badge rounded-pill bg-danger">ยกเลิกการสั่งซื้อ</span>';
+                                                } elseif ($item->quote_status === 'success') {
+                                                    $status = '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>';
+                                                } elseif ($item->payment_amount > 0) {
+                                                    // หากมีการชำระเงินมัดจำแล้ว
+                                                    $status = '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
+                                                } elseif ($item->quote_payment_type === 'deposit') {
+                                                    // ตรวจสอบกำหนดชำระเงินมัดจำ
+                                                    if (strtotime($now) > strtotime($item->quote_payment_date)) {
+                                                        $status = '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
+                                                    } else {
+                                                        $status = '<span class="badge rounded-pill bg-warning text-dark">รอชำระเงินมัดจำ</span>';
+                                                    }
+                                                } elseif ($item->quote_payment_type === 'full') {
+                                                    // ตรวจสอบกำหนดชำระเงินเต็มจำนวน
+                                                    if (strtotime($now) > strtotime($item->quote_payment_date_full)) {
+                                                        $status  = '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
+                                                    } else {
+                                                        $status  = '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
+                                                    }
+                                                } else {
+                                                    // กรณีที่ไม่ตรงเงื่อนไขใดๆ
+                                                    $status = '<span class="badge rounded-pill bg-secondary">สถานะไม่ระบุ</span>';
+                                                }
+                                            @endphp
+                                        
+                                            {!! $status !!}
+                                        </td>
+                                        
 
                                         <td>{{ number_format($item->quote_grand_total, 2, '.', ',') }}</td>
                                         <td>
-                                            @if ($item->quote_status != 'cancel')
-                                                @if ($item->wholesale_payment_status === 'wait' || $item->wholesale_payment_status === NULL)
-                                                    <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
-                                                @endif
-                                                @if ($item->quote_status === 'success')
-                                                <span class="badge rounded-pill bg-success">ชำระเงินแล้ว</span>
-                                            @endif
+
+                                            @if ($item->wholesale_payment_status === 'wait' || $item->wholesale_payment_status === NULL)
+                                            <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
                                             @else
-                                                <span class="badge rounded-pill bg-danger">ยกเลิก</span>
+                                            <span class="badge rounded-pill bg-success">ชำระเงินแล้ว</span>
                                             @endif
+                                           
 
                                         </td>
 

@@ -99,6 +99,7 @@ Route::post('invoice/store',[invoiceController::class,'store'])->name('invoice.s
 Route::get('taxinvoice/{invoiceModel}',[taxInvoiceController::class,'store'])->name('invoice.taxinvoice');
 Route::get('taxinvoice/edit/{invoiceModel}',[taxInvoiceController::class,'edit'])->name('taxinvoice.edit');
 Route::put('taxinvoice/update/{invoiceModel}',[taxInvoiceController::class,'update'])->name('taxinvoice.update');
+Route::put('taxinvoice/cancel/{taxinvoiceModel}',[taxInvoiceController::class,'cancel'])->name('taxinvoice.cancel');
 
 //invoice booking
 Route::get('invoice/booking',[InvoiceBookingController::class,'index'])->name('invoiceBooking.index');
@@ -204,7 +205,7 @@ Route::get('mpdf/quote/{quotationModel}',[MPDF_QuotationController::class,'gener
 Route::get('mpdf/payment/{paymentModel}',[MPDF_PaymentController::class,'generatePDF'])->name('mpdf.payment');
 Route::get('mpdf/payment/debit/{paymentModel}',[MPDF_PaymentDebitController::class,'generatePDF'])->name('mpdf.paymentDebit');
 Route::get('mpdf/invoice/{invoiceModel}',[MPDF_invoiceController::class,'generatePDF'])->name('mpdf.invoice');
-Route::get('mpdf/texreceipt/{invoiceModel}',[MPDF_taxReceiptController::class,'generatePDF'])->name('mpdf.texreceipt');
+Route::get('mpdf/taxreceipt/{invoiceModel}',[MPDF_taxReceiptController::class,'generatePDF'])->name('mpdf.taxreceipt');
 Route::get('mpdf/debitreceipt/{debitModel}',[MPDF_DebitReceiptController::class,'generatePDF'])->name('mpdf.debitreceipt');
 Route::get('mpdf/creditreceipt/{creditModel}',[MPDF_CreditReceiptController::class,'generatePDF'])->name('mpdf.creditreceipt');
 

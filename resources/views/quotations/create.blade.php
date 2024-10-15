@@ -714,6 +714,7 @@
                 $('#quote-price-excluding-vat').val(((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(
                     2)));
                 $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
+                $('input[name="quote_withholding_tax"]').val(withholdingTax.toFixed(2));
                 $('#sum-total-nonvat').text(formatNumber((sumPriceExcludingVatNonVat - sumDiscount).toFixed(2)));
                 $('input[name="quote_vat_exempted_amount"]').val((sumPriceExcludingVatNonVat - sumDiscount).toFixed(
                     2));

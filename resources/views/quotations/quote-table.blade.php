@@ -17,9 +17,9 @@
                             <th style="text-align: center">ยอดรวมสิทธิ์</th>
                             <th style="text-align: center">ยอดชำระแล้ว</th>
                             <th style="text-align: center">ยอดคงค้าง</th>
-                            <th style="text-align: center">สถานะชำระ</th>
+                            <th style="text-align: center">หัก ณ. ที่จ่าย</th>
                             <th style="text-align: left">Actions Report</th>
-                            <th style="text-align: left">Action Payment</th>
+
                             <th style="text-align: left">Actions</th>
                             <th style="text-align: left">Cancel</th>
                         </tr>
@@ -42,20 +42,13 @@
                                     {{ number_format($quotationModel->quote_grand_total - $quotationModel->payment, 2, '.', ',') }}
                                 </td>
                                 <td align="center">
-                                    @if ($item->quote_payment_status === null)
-                                        <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
-                                    @endif
-
-                                    @if ($item->quote_payment_status === 'wait')
-                                        <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
-                                    @endif
-                                    @if ($item->quote_payment_status === 'payment')
-                                        <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
-                                    @endif
-                                    @if ($item->quote_payment_status === 'success')
-                                        <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
+                                    @if ($item->quote_withholding_tax_status === 'Y')
+                                        {{ number_format($item->quote_withholding_tax, 2, '.', ',') }}
+                                    @else
+                                        N/A
                                     @endif
                                 </td>
+
                                 <td>
                                     <a class="dropdown-item" target="_blank"
                                         href="{{ route('mpdf.quote', $quotationModel->quote_id) }}"
@@ -69,16 +62,8 @@
                                         ส่งเมล
                                     </a>
                                 </td>
-                                <td>
 
-                                    <a class="dropdown-item invoice-modal"
-                                        href="{{ route('payment.quotation', $quotationModel->quote_id) }}"><i
-                                            class="fas fa-credit-card text-warning"></i> แจ้งชำระเงิน</a>
 
-                                    <a class="dropdown-item payment-quote-wholesale"
-                                        href="{{ route('paymentWholesale.quote', $quotationModel->quote_id) }}"><i
-                                            class="fas fa-credit-card text-warning"></i> แจ้งชำระเงินโฮลเซลล์</a>
-                                </td>
                                 <td align="left">
 
                                     @if ($quotationModel->quote_status != 'cancel')
@@ -88,14 +73,13 @@
                                                     class="fa fa-edit text-info"></i> แก้ไข</a>
                                         @endcan
                                         @can('create-invoice')
-                                        @if ($quotationModel->quote_status === 'invoice') 
-                                            <span class="badge rounded-pill bg-success">ออกใบแจ้งหนี้แล้ว</span>
-                                        @else
-                                        <a class="dropdown-item modal-invoice" 
-                                        href="{{ route('invoice.create', $quotationModel->quote_id) }}"><i
-                                            class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
-                                        @endif
-                                           
+                                            @if ($quotationModel->quote_status === 'invoice')
+                                                <span class="badge rounded-pill bg-success">ออกใบแจ้งหนี้แล้ว</span>
+                                            @else
+                                                <a class="dropdown-item modal-invoice"
+                                                    href="{{ route('invoice.create', $quotationModel->quote_id) }}"><i
+                                                        class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
+                                            @endif
                                         @endcan
                                     @endif
                                 </td>
@@ -110,17 +94,84 @@
                                 </td>
                             </tr>
                         @empty
-      
+
                         @endforelse
 
 
                         {{-- Invoice table --}}
 
-                        @forelse ($invoices as $item)
+                        @forelse ($invoices as $itemInvoice)
                             <tr>
                                 <td class="text-success">ใบแจ้งหนี้</td>
-                                <td>{{ date('d/m/Y', strtotime($item->invoice_date)) }}</td>
-                                <td><span class="badge bg-dark">{{ $item->invoice_number }}</span>
+                                <td>{{ date('d/m/Y', strtotime($itemInvoice->invoice_date)) }}</td>
+                                <td><span class="badge bg-dark">{{ $itemInvoice->invoice_number }}</span>
+                                </td>
+                                <td align="center">
+                                    {{ number_format($itemInvoice->invoice_grand_total, 2, '.', ',') }}</td>
+                                <td align="center">
+                                    N/A
+                                </td>
+                                <td align="center">
+                                    N/A
+                                </td>
+                                <td align="center">
+                                    @if ($itemInvoice->invoice_withholding_tax_status === 'Y')
+                                        {{ number_format($itemInvoice->invoice_withholding_tax, 2, '.', ',') }}
+                                    @else
+                                        N/A
+                                    @endif
+                                </td>
+                                <td>
+                                    <a class="dropdown-item" onclick="openPdfPopup(this.href); return false;"
+                                        href="{{ route('mpdf.invoice', $itemInvoice->invoice_id) }}"><i
+                                            class="fa fa-print text-danger"></i>
+                                        พิมพ์ใบแจ้งหนี้</a>
+
+                                    <a class="dropdown-item mail-quote"
+                                        href="{{ route('mail.invoice.formMail', $itemInvoice->invoice_id) }}"><i
+                                            class="fas fa-envelope text-info"></i>
+                                        ส่งเมล</a>
+                                </td>
+                                {{-- <td>
+                                    <a class="dropdown-item"
+                                    href="{{ route('invoice.taxinvoice', $item->invoice_id) }}"
+                                    onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
+                                        class="fas fa-file-alt"></i> ออกใบกำกับภาษี</a>
+                                </td> --}}
+                                <td>
+                                    @can('edit-invoice')
+                                        <a class="dropdown-item modal-invoice-edit"
+                                            href="{{ route('invoice.edit', $itemInvoice->invoice_id) }}">
+                                            <i class="fa fa-edit text-info"></i> แก้ไข</a>
+
+                                            @if ($itemInvoice->invoice_status === 'wait')
+                                            <a class="dropdown-item"
+                                                href="{{ route('invoice.taxinvoice', $itemInvoice->invoice_id) }}"
+                                                onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
+                                                    class="fas fa-file-alt"></i> ออกใบกำกับภาษี</a>
+                                        @endif
+                                    @endcan
+
+                                   
+                                </td>
+                                <td>
+                                    @can('cancel-invoice')
+                                        <a class="dropdown-item" href="{{ route('invoice.cancel', $itemInvoice->invoice_id) }}"
+                                            onclick="return confirm('ยืนยันการยกเลิกใบแจ้งหนี้')"><i
+                                                class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
+                                    @endcan
+                                </td>
+                            </tr>
+                        @empty
+                        @endforelse
+
+                        {{-- taxinvoices table --}}
+
+                        @forelse ($taxinvoices as $item)
+                            <tr>
+                                <td class="text-primary">ใบกำกับภาษี</td>
+                                <td>{{ date('d/m/Y', strtotime($item->taxinvoice_date)) }}</td>
+                                <td><span class="badge bg-dark">{{ $item->taxinvoice_number }}</span>
                                 </td>
                                 <td align="center">
                                     {{ number_format($item->invoice_grand_total, 2, '.', ',') }}</td>
@@ -131,51 +182,53 @@
                                     N/A
                                 </td>
                                 <td align="center">
-                                    @if ($item->invoice_status === 'wait')
-                                        <span class="badge rounded-pill bg-primary">กำลังดำเนินการ</span>
+                                    @if ($item->invoice_withholding_tax_status === 'Y')
+                                        {{ number_format($item->invoice_withholding_tax, 2, '.', ',') }}
+                                    @else
+                                        N/A
                                     @endif
-                                    @if ($item->invoice_status === 'success')
-                                        <span class="badge rounded-pill bg-info">ดำเนินการสำเร็จ</span>
-                                    @endif
-
                                 </td>
                                 <td>
                                     <a class="dropdown-item" onclick="openPdfPopup(this.href); return false;"
-                                        href="{{ route('mpdf.invoice', $item->invoice_id) }}"><i
+                                        href="{{ route('mpdf.taxreceipt', $item->invoice_id) }}"><i
                                             class="fa fa-print text-danger"></i>
-                                        พิมพ์ใบแจ้งหนี้</a>
+                                        พิมพ์ใบกำกับภาษี</a>
 
                                     <a class="dropdown-item mail-quote"
-                                        href="{{ route('mail.invoice.formMail', $item->invoice_id) }}"><i
+                                        href="{{ route('mail.taxreceipt.formMail', $item->invoice_id) }}"><i
                                             class="fas fa-envelope text-info"></i>
                                         ส่งเมล</a>
                                 </td>
-                                <td>N/A</td>
+                                {{-- <td>
+                                 <a class="dropdown-item"
+                                 href="{{ route('invoice.taxinvoice', $item->invoice_id) }}"
+                                 onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
+                                     class="fas fa-file-alt"></i> ออกใบกำกับภาษี</a>
+                             </td> --}}
                                 <td>
                                     @can('edit-invoice')
-                                        <a class="dropdown-item modal-invoice-edit" href="{{route('invoice.edit',$item->invoice_id)}}">
-                                            <i class="fa fa-edit text-info" ></i> แก้ไข</a>
-                                    @endcan
-                                
-                                    @if ($item->invoice_status === 'wait')
-                                        <a class="dropdown-item"
+                                        <a class="dropdown-item modal-invoice-edit"
+                                            href="{{ route('invoice.edit', $item->invoice_id) }}">
+                                            <i class="fa fa-edit text-info"></i> แก้ไข</a>
+                                            <a class="dropdown-item"
                                             href="{{ route('invoice.taxinvoice', $item->invoice_id) }}"
                                             onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
-                                                class="fas fa-file-alt"></i> สร้างใบกำกับภาษี</a>
-                                    @endif
-                                </td>
-                                <td >
+                                                class="fas fa-file-alt"></i> ออกใบกำกับภาษี</a>
+                                  
+                                    @endcan
 
+
+                                </td>
+                                <td>
                                     @can('cancel-invoice')
-                                    <a class="dropdown-item"
-                                        href="{{ route('invoice.cancel', $item->invoice_id) }}"
-                                        onclick="return confirm('ยืนยันการยกเลิกใบแจ้งหนี้')"><i
-                                            class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
-                                      @endcan
+                                        <a class="dropdown-item" href="{{ route('taxinvoice.cancel', $item->taxinvoice_id) }}"
+                                            onclick="return confirm('ยืนยันการยกเลิกใบกำกับภาษี')"><i
+                                                class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty
-                         
+
                         @endforelse
 
 
@@ -259,15 +312,15 @@
     </div>
 </div>
 
-  {{-- Edit form quote --}}
-         <div class="modal fade bd-example-modal-sm modal-xl" id="modal-quote-edit" tabindex="-1" role="dialog"
-         aria-labelledby="mySmallModalLabel" aria-hidden="true">
-         <div class="modal-dialog modal-xl">
-             <div class="modal-content">
-                 ...
-             </div>
-         </div>
-     </div>
+{{-- Edit form quote --}}
+<div class="modal fade bd-example-modal-sm modal-xl" id="modal-quote-edit" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            ...
+        </div>
+    </div>
+</div>
 
 
 
@@ -284,56 +337,56 @@
         // เปิดหน้าต่างใหม่ด้วยการคำนวณตำแหน่งและขนาด
         window.open(url, 'PDFPopup', 'width=' + width + ',height=' + height + ',top=' + top + ',left=' + left);
     }
-// เปิด modal แก้ไขใบเสนอราคา
-$(".modal-quote-edit").off("click").on("click", function(e) {
-    e.preventDefault();
-    var modal = $("#modal-quote-edit");
-    
-    // ล้างข้อมูลเก่าก่อนเปิด modal
-    modal.find(".modal-content").html('');
-    
-    // โหลดเนื้อหาใหม่
-    modal.modal("show").addClass("modal-lg").find(".modal-content").load($(this).attr("href"));
-    
-    // เมื่อปิด modal, ล้างข้อมูล
-    modal.on('hidden.bs.modal', function() {
-        $(this).find(".modal-content").html(''); // รีเซ็ตเนื้อหา
-    });
-});
+    // เปิด modal แก้ไขใบเสนอราคา
+    $(".modal-quote-edit").off("click").on("click", function(e) {
+        e.preventDefault();
+        var modal = $("#modal-quote-edit");
 
-// เปิด modal แก้ไขใบแจ้งหนี้
-$(".modal-invoice").off("click").on("click", function(e) {
-    e.preventDefault();
-    var modal = $("#modal-invoice-create");
-    
-    // ล้างข้อมูลเก่าก่อนเปิด modal
-    modal.find(".modal-content").html('');
-    
-    // โหลดเนื้อหาใหม่
-    modal.modal("show").addClass("modal-lg").find(".modal-content").load($(this).attr("href"));
-    
-    // เมื่อปิด modal, ล้างข้อมูล
-    modal.on('hidden.bs.modal', function() {
-        $(this).find(".modal-content").html(''); // รีเซ็ตเนื้อหา
-    });
-});
+        // ล้างข้อมูลเก่าก่อนเปิด modal
+        modal.find(".modal-content").html('');
 
-// เปิด modal แก้ไขใบแจ้งหนี้
-$(".modal-invoice-edit").off("click").on("click", function(e) {
-    e.preventDefault();
-    var modal = $("#modal-invoice-edit");
-    
-    // ล้างข้อมูลเก่าก่อนเปิด modal
-    modal.find(".modal-content").html('');
-    
-    // โหลดเนื้อหาใหม่
-    modal.modal("show").addClass("modal-lg").find(".modal-content").load($(this).attr("href"));
-    
-    // เมื่อปิด modal, ล้างข้อมูล
-    modal.on('hidden.bs.modal', function() {
-        $(this).find(".modal-content").html(''); // รีเซ็ตเนื้อหา
+        // โหลดเนื้อหาใหม่
+        modal.modal("show").addClass("modal-lg").find(".modal-content").load($(this).attr("href"));
+
+        // เมื่อปิด modal, ล้างข้อมูล
+        modal.on('hidden.bs.modal', function() {
+            $(this).find(".modal-content").html(''); // รีเซ็ตเนื้อหา
+        });
     });
-});
+
+    // เปิด modal แก้ไขใบแจ้งหนี้
+    $(".modal-invoice").off("click").on("click", function(e) {
+        e.preventDefault();
+        var modal = $("#modal-invoice-create");
+
+        // ล้างข้อมูลเก่าก่อนเปิด modal
+        modal.find(".modal-content").html('');
+
+        // โหลดเนื้อหาใหม่
+        modal.modal("show").addClass("modal-lg").find(".modal-content").load($(this).attr("href"));
+
+        // เมื่อปิด modal, ล้างข้อมูล
+        modal.on('hidden.bs.modal', function() {
+            $(this).find(".modal-content").html(''); // รีเซ็ตเนื้อหา
+        });
+    });
+
+    // เปิด modal แก้ไขใบแจ้งหนี้
+    $(".modal-invoice-edit").off("click").on("click", function(e) {
+        e.preventDefault();
+        var modal = $("#modal-invoice-edit");
+
+        // ล้างข้อมูลเก่าก่อนเปิด modal
+        modal.find(".modal-content").html('');
+
+        // โหลดเนื้อหาใหม่
+        modal.modal("show").addClass("modal-lg").find(".modal-content").load($(this).attr("href"));
+
+        // เมื่อปิด modal, ล้างข้อมูล
+        modal.on('hidden.bs.modal', function() {
+            $(this).find(".modal-content").html(''); // รีเซ็ตเนื้อหา
+        });
+    });
 
 
 

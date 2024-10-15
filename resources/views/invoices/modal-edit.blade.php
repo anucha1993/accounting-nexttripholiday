@@ -955,8 +955,8 @@
                 const withholdingTax = $('#withholding-tax').is(':checked') ? sumPreVat * 0.03 : 0;
                 var deposit = parseFloat($('#deposit').val());
 
-
-                // อัปเดตค่าต่างๆ ในหน้าจอ
+ 
+                // อัปเดตค่าต่างๆ ในหน้าจอ 
                 $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
                 $('#quote-total').val(sumTotal.toFixed(2));
                 $('#after-discount').text(formatNumber(afterDiscount.toFixed(2)));
@@ -967,6 +967,8 @@
                 $('#quote-price-excluding-vat').val(((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(
                     2)));
                 $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
+                $('input[name="invoice_withholding_tax"]').val(withholdingTax.toFixed(2));
+
                 $('#sum-total-nonvat').text(formatNumber((sumPriceExcludingVatNonVat - sumDiscount).toFixed(2)));
                 $('input[name="invoice_vat_exempted_amount"]').val((sumPriceExcludingVatNonVat - sumDiscount).toFixed(
                     2));

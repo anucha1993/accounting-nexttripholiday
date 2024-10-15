@@ -290,9 +290,9 @@
 
                     <td style="width: 65px; height: 250px; text-align: center; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
-                        @if ($item->expense_type === 'income')
+                       
                             <p style="margin: 0;">{{ $key + 1 }}</p>
-                         @endif
+                       
                         @empty
                         @endforelse
 
@@ -300,25 +300,33 @@
 
                     <td style="width: 270px;  text-align: left; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
-                            @if ($item->expense_type === 'income')
-                            <p style="margin: 0;">{{ $item->product_name }} {{$item->vat === 'Y' ? '**(Non VAT)' : ''}}</p>
-                            @endif
+                        
 
+                        @if ($item->expense_type === 'income')
+                        @if ($item->vat_status === 'vat')
+                        <p style="margin: 0;">{{ $item->product_name}} <b> &nbsp;**(VAT) </b></p>
+                        @else
+                        <p style="margin: 0;">{{ $item->product_name}} <b>  &nbsp;**(Non VAT) </b></p>
+                        @endif
+
+                        @else
+                         ส่วนลด
+                        @endif
                         @empty
+                            
                         @endforelse
-
                     </td>
+
                     <td style="width: 70px; text-align: center; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
-                        @if ($item->expense_type === 'income')
+           
                             <p style="margin: 0;">{{ $item->product_qty }}</p>
-                            @endif
+                
                         @empty
                         @endforelse
                     </td>
-                    <td style="width: 120px; text-align: right; vertical-align: top;">
+                    <td style="width: 120px; text-align: center; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
-                        @if ($item->expense_type === 'income')
                         <p style="margin: 0;">
                             @if ($item->withholding_tax === 'N')
                             {{  number_format( $item->product_price  , 2, '.', ',')}}
@@ -327,15 +335,15 @@
                             {{  number_format( ($item->product_price * 0.03)+$item->product_price  , 2, '.', ',')}}
                             @endif
                         </p>
-                            @endif
                         @empty
+                            
                         @endforelse
                     </td>
                     <td style="width: 120px; text-align: right; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
-                        @if ($item->expense_type === 'income')
+                       
                             <p style="margin: 0;">{{ number_format($item->product_sum, 2, '.', ',') }}</p>
-                            @endif
+                       
                         @empty
                         @endforelse
                     </td>
@@ -379,19 +387,19 @@
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">หักเงินมัดจำ / Deposit</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_withholding_tax, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($quotationModel->payment, 2, '.', ',') }}</td>
                 </tr>
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ยอดชำระทั้งสิ้น / Grand Total</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_grand_total-$invoiceModel->invoice_withholding_tax, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_grand_total-$invoiceModel->payment, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; background-color: #fff;">
                         <h3>จำนวนเงินตัวอักษร:</h3>
                     </td>
                     <td colspan="3" style="text-align: right; background-color: #bbdefb;">
-                        <h3>(@bathText($invoiceModel->invoice_grand_total-$invoiceModel->invoice_withholding_tax))</h3>
+                        <h3>(@bathText($invoiceModel->invoice_grand_total-$invoiceModel->payment))</h3>
                     </td>
 
                 </tr>

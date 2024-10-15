@@ -217,6 +217,51 @@
                                       
                                         <tr>
                                             <td align="right" class="text-info">สถานะการชำระเงิน :</td>
+                                            <td>
+                                                @php
+                                                    use Carbon\Carbon;
+                                            
+                                                    // กำหนดวันที่ปัจจุบัน
+                                                    $now = Carbon::now();
+                                            
+                                                    // กำหนดสถานะเริ่มต้น
+                                                    $status = '';
+                                            
+                                                    // ตรวจสอบสถานะการสั่งซื้อ
+                                                    if ($quotationModel->quote_status === 'cancel') {
+                                                        $status = '<span class="badge rounded-pill bg-danger">ยกเลิกการสั่งซื้อ</span>';
+                                                    } elseif ($quotationModel->quote_status === 'success') {
+                                                        $status = '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>';
+                                                    } elseif ($quotationModel->payment_amount > 0) {
+                                                        // หากมีการชำระเงินมัดจำแล้ว
+                                                        $status = '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
+                                                    } elseif ($quotationModel->quote_payment_type === 'deposit') {
+                                                        // ตรวจสอบกำหนดชำระเงินมัดจำ
+                                                        if ($now->gt(Carbon::parse($quotationModel->quote_payment_date))) {
+                                                            $status = '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
+                                                        } else {
+                                                            $status = '<span class="badge rounded-pill bg-warning text-dark"">รอชำระเงินมัดจำ</span>';
+                                                        }
+                                                    } elseif ($quotationModel->quote_payment_type === 'full') {
+                                                        // ตรวจสอบกำหนดชำระเงินเต็มจำนวน
+                                                        if ($now->gt(Carbon::parse($quotationModel->quote_payment_date_full))) {
+                                                            $status  = '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
+                                                        } else {
+                                                            $status  = '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
+                                                        }
+                                                    } else {
+                                                        // กรณีที่ไม่ตรงเงื่อนไขใดๆ
+                                                        $status = '<span class="badge rounded-pill bg-secondary">สถานะไม่ระบุ</span>';
+                                                    }
+                                                @endphp
+                                            
+                                                {!! $status !!}
+                                            </td>
+                                            
+                                        </tr>
+
+                                        {{-- <tr>
+                                            <td align="right" class="text-info">สถานะการชำระเงิน :</td>
                                             <td>&nbsp;
                                                 @if ($quotationModel->quote_payment_status === NULL)
                                                 <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
@@ -235,7 +280,7 @@
                                                 @endif
 
                                             </td>
-                                        </tr>
+                                        </tr> --}}
 
                                     </tbody>
                                 </table>
@@ -251,7 +296,7 @@
                 <div class="card">
                     <div class="card-body">
 
-                        <a href="{{ route('mpdf.quote', $quotationModel->quote_id) }}"
+                        {{-- <a href="{{ route('mpdf.quote', $quotationModel->quote_id) }}"
                             onclick="openPdfPopup(this.href); return false;"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 quote-table">
                             <i data-feather="printer" class="feather-sm fill-white me-2 text-danger"></i>
@@ -262,7 +307,7 @@
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 modal-invoice">
                             <i data-feather="folder-plus" class="feather-sm fill-white me-2 text-success"></i>
                             ออกใบแจ้งหนี้
-                        </a>
+                        </a> --}}
 
                       
                         <button type="button"
@@ -275,19 +320,19 @@
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 invoice-modal">
                             <i data-feather="dollar-sign" class="feather-sm fill-white me-2 text-success"></i>
                             แจ้งชำระเงิน
-                        </button>
+                        </a>
 
-                        <a href="{{ route('quote.modalEdit', $quotationModel->quote_id) }}"
+                        {{-- <a href="{{ route('quote.modalEdit', $quotationModel->quote_id) }}"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 modal-quote-edit ">
                             <i data-feather="edit" class="feather-sm fill-white me-2 "></i>
                             แก้ไขใบเสนอราคา
-                        </a>
-
+                        </a> --}}
+{{-- 
                         <button type="button"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
                             <i data-feather="file" class="feather-sm fill-white me-2 text-info"></i>
                             ยกเลิกใบเสนอราคา
-                        </button>
+                        </button> --}}
 
                         <button type="button"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
@@ -295,11 +340,11 @@
                             แจ้งชำระเงินโฮลเซลล์
                         </button>
 
-                        <a href="{{ route('mail.quote.formMail', $quotationModel->quote_id) }}"
+                        {{-- <a href="{{ route('mail.quote.formMail', $quotationModel->quote_id) }}"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 mail-quote">
                             <i data-feather="mail" class="feather-sm fill-white me-2 text-info"></i>
                             ส่งเมลล์ใบเสนอราคา
-                        </a>
+                        </a> --}}
 
                     </div>
                 </div>

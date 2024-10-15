@@ -876,7 +876,7 @@
                 let processedDiscountRows = [];
 
                 // ตรวจสอบและกำหนด vatMethod จาก input[name="vat_type"]
-                let vatMethod = $('input[name="vat_type"]:checked').val() ||
+                let vatMethod = $('input[name="invoice_vat_type"]:checked').val() ||
                     'exclude'; // กำหนดค่าเริ่มต้นเป็น 'exclude' หากไม่มีค่า
 
                 $('#quotation-table .item-row').each(function(index) {
@@ -960,7 +960,7 @@
                 var deposit = parseFloat($('#deposit').val());
 
 
-                // อัปเดตค่าต่างๆ ในหน้าจอ
+                // อัปเดตค่าต่างๆ ในหน้าจอ i
                 $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
                 $('#quote-total').val(sumTotal.toFixed(2));
                 $('#after-discount').text(formatNumber(afterDiscount.toFixed(2)));
@@ -971,6 +971,8 @@
                 $('#quote-price-excluding-vat').val(((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(
                     2)));
                 $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
+                $('input[name="invoice_withholding_tax"]').val(withholdingTax.toFixed(2));
+                
                 $('#sum-total-nonvat').text(formatNumber((sumPriceExcludingVatNonVat - sumDiscount).toFixed(2)));
                 $('input[name="invoice_vat_exempted_amount"]').val((sumPriceExcludingVatNonVat - sumDiscount).toFixed(
                     2));
@@ -1122,7 +1124,7 @@
             $('#quotation-table').on('input', '.quantity, .price-per-unit, #deposit', calculateTotals);
             $('#withholding-tax').change(calculateTotals);
             $('#deposit').change(calculateTotals);
-            $('input[name="vat_type"]').change(calculateTotals);
+            $('input[name="invoice_vat_type"]').change(calculateTotals);
 
             // Remove row
             $('#quotation-table').on('click', '.remove-row-btn', function() {

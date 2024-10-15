@@ -878,6 +878,7 @@
 
                 // อัปเดตค่าต่างๆ ในหน้าจอ
                 $('#sum-total').text(formatNumber(sumTotal.toFixed(2)));
+
                 $('#quote-total').val(sumTotal.toFixed(2));
                 $('#after-discount').text(formatNumber(afterDiscount.toFixed(2)));
                 $('#quote-after-discount').val(afterDiscount.toFixed(2));
@@ -887,6 +888,8 @@
                 $('#quote-price-excluding-vat').val(((sumPriceExcludingVat + sumPriceExcludingVatNonVat).toFixed(
                     2)));
                 $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
+                $('input[name="quote_withholding_tax"]').val(withholdingTax.toFixed());
+
                 $('#sum-total-nonvat').text(formatNumber((sumPriceExcludingVatNonVat - sumDiscount).toFixed(2)));
                 $('input[name="quote_vat_exempted_amount"]').val((sumPriceExcludingVatNonVat - sumDiscount).toFixed(
                     2));

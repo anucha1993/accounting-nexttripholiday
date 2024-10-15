@@ -288,21 +288,28 @@
 
                     <td style="width: 65px; height: 300px; text-align: center; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
+                       
                         <p style="margin: 0;">{{ $key+1}}</p>
+                       
                         @empty
                             
                         @endforelse
                     
                     </td>
-
                     <td style="width: 270px;  text-align: left; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
+                        
+
+                        @if ($item->expense_type === 'income')
                         @if ($item->vat_status === 'vat')
                         <p style="margin: 0;">{{ $item->product_name}} <b> &nbsp;**(VAT) </b></p>
                         @else
                         <p style="margin: 0;">{{ $item->product_name}} <b>  &nbsp;**(Non VAT) </b></p>
                         @endif
-                       
+
+                        @else
+                         ส่วนลด
+                        @endif
                         @empty
                             
                         @endforelse
@@ -383,14 +390,14 @@
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ยอดชำระทั้งสิ้น / Grand Total</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_grand_total-$invoiceModel->invoice_withholding_tax, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_grand_total-$invoiceModel->payment, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; background-color: #fff;">
                         <h3>จำนวนเงินตัวอักษร:</h3>
                     </td>
                     <td colspan="3" style="text-align: right; background-color: #f9c68f;">
-                        <h3> @bathText($invoiceModel->invoice_grand_total-$invoiceModel->invoice_withholding_tax)</h3>
+                        <h3> @bathText($invoiceModel->invoice_grand_total-$invoiceModel->payment)</h3>
                     </td>
 
                 </tr>

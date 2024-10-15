@@ -29,7 +29,7 @@ class MPDF_taxReceiptController extends Controller
         $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
 
-        $quotationModel = quotationModel::where('quote_number',$invoiceModel->invoice_quote)->first();
+        $quotationModel = quotationModel::where('quote_id',$invoiceModel->invoice_quote_id)->first();
         
         $customer = customerModel::where('customer_id',$invoiceModel->customer_id)->first();
         $sale = saleModel::where('id',$invoiceModel->invoice_sale)->first();
@@ -37,12 +37,10 @@ class MPDF_taxReceiptController extends Controller
         ->table('tb_tour')
         ->where('id', $invoiceModel->tour_id)
         ->first();
-         $airline = DB::connection('mysql2')
-        ->table('tb_travel_type')
-        ->select('travel_name')
-        ->where('id', $quotationModel->quote_airline)
-        ->first();
 
+        $airline = DB::connection('mysql2')->table('tb_travel_type')->where('id', $quotationModel->quote_airline)->first();
+
+      
         $booking = bookingModel::where('code', $invoiceModel->invoice_booking)->first();
         $productLists = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->get();
         $NonVat = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)
