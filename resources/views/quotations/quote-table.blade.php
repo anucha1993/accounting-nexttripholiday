@@ -210,10 +210,8 @@
                                         <a class="dropdown-item modal-invoice-edit"
                                             href="{{ route('invoice.edit', $item->invoice_id) }}">
                                             <i class="fa fa-edit text-info"></i> แก้ไข</a>
-                                            <a class="dropdown-item"
-                                            href="{{ route('invoice.taxinvoice', $item->invoice_id) }}"
-                                            onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
-                                                class="fas fa-file-alt"></i> ออกใบกำกับภาษี</a>
+                                            <a class="dropdown-item debit-create"
+                                            href="{{ route('debit.create', $item->invoice_id) }}"><i class="fas fa-file-alt"></i> ออกใบเพิ่มหนี้</a>
                                   
                                     @endcan
 
@@ -323,6 +321,16 @@
 </div>
 
 
+{{-- create form debit --}}
+<div class="modal fade bd-example-modal-sm modal-xl" id="modal-debit-create" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            ...
+        </div>
+    </div>
+</div>
+
 
 
 
@@ -375,6 +383,23 @@
     $(".modal-invoice-edit").off("click").on("click", function(e) {
         e.preventDefault();
         var modal = $("#modal-invoice-edit");
+
+        // ล้างข้อมูลเก่าก่อนเปิด modal
+        modal.find(".modal-content").html('');
+
+        // โหลดเนื้อหาใหม่
+        modal.modal("show").addClass("modal-lg").find(".modal-content").load($(this).attr("href"));
+
+        // เมื่อปิด modal, ล้างข้อมูล
+        modal.on('hidden.bs.modal', function() {
+            $(this).find(".modal-content").html(''); // รีเซ็ตเนื้อหา
+        });
+    });
+
+     // เปิด modal เพิ่มใบเพิ่มหนี้
+     $(".debit-create").off("click").on("click", function(e) {
+        e.preventDefault();
+        var modal = $("#modal-debit-create");
 
         // ล้างข้อมูลเก่าก่อนเปิด modal
         modal.find(".modal-content").html('');

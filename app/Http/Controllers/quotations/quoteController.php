@@ -258,9 +258,12 @@ class quoteController extends Controller
         $quotations = quotationModel::where('quotation.quote_id',$quotationModel->quote_id)->leftjoin('customer', 'customer.customer_id', 'quotation.customer_id')->get();
         $invoices = invoiceModel::where('invoices.invoice_quote_id',$quotationModel->quote_id)->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')->get();
         $invoicesIds = $invoices->pluck('invoice_id');
+
         $taxinvoices = taxinvoiceModel::whereIn('taxinvoices.invoice_id', $invoicesIds)
         ->leftjoin('invoices', 'invoices.invoice_number', 'taxinvoices.invoice_number')
-        ->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')->get();
+        ->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')
+
+        ->get();
 
         return View::make('quotations.quote-table', compact('quotations','quotationModel','invoices','taxinvoices'))->render();
     }

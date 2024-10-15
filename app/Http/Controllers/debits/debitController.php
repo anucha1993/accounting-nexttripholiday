@@ -5,16 +5,20 @@ namespace App\Http\Controllers\debits;
 use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
 use App\Models\debits\debitModel;
+use App\Models\mumday\numDayModel;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\booking\bookingModel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\invoices\invoiceModel;
 use App\Models\products\productModel;
 use App\Models\customers\customerModel;
-use App\Models\debits\debitNoteProductModel;
-use App\Models\invoices\taxinvoiceModel;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\invoices\taxinvoiceModel;
+use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
+use App\Models\debits\debitNoteProductModel;
+use App\Models\invoices\invoicePorductsModel;
 
 class debitController extends Controller
 {
@@ -47,18 +51,24 @@ class debitController extends Controller
 
     public function create(invoiceModel $invoiceModel, Request $request)
     {
-        $taxinvoiceModel = taxinvoiceModel::where('invoice_number',$invoiceModel->invoice_number)->first();
-        $customer = customerModel::where('customer_id',$invoiceModel->customer_id)->first();
-        $sales = saleModel::where('id',$invoiceModel->invoice_sale)->first();
-        $tour = DB::connection('mysql2')->table('tb_tour')->select('code','airline_id')->where('id',$invoiceModel->tour_id)->first();
-        $airline = DB::connection('mysql2')->table('tb_travel_type')->select('travel_name')->where('id',$invoiceModel->invoice_airline)->first();
-        $products = productModel::where('product_type','income')->get();
+      
+        $quotationModel = quotationModel::where('quote_id',$invoiceModel->invoice_quote_id)->first();
+        $bookingModel = bookingModel::where('code',$quotationModel->quote_booking)->first();
+        $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
+        $sales = saleModel::select('name', 'id')->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])->get();
+        $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
+        $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
+        $numDays = numDayModel::orderBy('num_day_total')->get();
+        $wholesale = wholesaleModel::where('status', 'on')->get();
+        $products = productModel::where('product_type','!=', 'discount')->get();
         $productDiscount = productModel::where('product_type','discount')->get();
-        $quotationModel = quotationModel::where('quote_number',$invoiceModel->invoice_quote)->first();
+        $invoiceProducts = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->where('expense_type','income')->get();
+        $invoiceProductsDiscount = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->where('expense_type','discount')->get();
         $campaignSource = DB::table('campaign_source')->get();
-        $causes = DB::table('list_debit')->get();
-        //dd($quoteProducts);
-        return view('debits.form-create',compact('causes','taxinvoiceModel','invoiceModel','customer','sales','tour','airline','products','quotationModel','campaignSource','productDiscount'));
+
+        
+        return view('debits.modal-create', compact('invoiceModel','campaignSource','customer','invoiceProducts','quotationModel','sales','country','airline','numDays','wholesale','products','productDiscount','invoiceProductsDiscount'));
+        
     }
 
     public function store(Request $request) 
