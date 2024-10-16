@@ -132,6 +132,7 @@ class debitController extends Controller
 
     public function update(debitModel $debitModel, Request $request)
     {
+      //dd($request);
 
       if($request->customer_id) {
         customerModel::where('customer_id', $request->customer_id)->update([

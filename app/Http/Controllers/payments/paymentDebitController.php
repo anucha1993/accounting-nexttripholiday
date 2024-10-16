@@ -42,20 +42,23 @@ class paymentDebitController extends Controller
      }
 
 
-    public function payment(Request $request)
+    public function payment(debitModel $debitModel, Request $request)
     {
         // ตรวจสอบข้อมูลที่รับมาจาก request
-        $debit = debitModel::where('debit_note_number', $request->payment_doc_number)->first();
-        $invoice = invoiceModel::where('invoice_number', $debit->invoice_number)->first();
+        //$debit = debitModel::where('debit_number', $request->payment_doc_number)->first();
+        // $invoice = invoiceModel::where('invoice_number', $debit->invoice_number)->first();
 
         $request->merge([
-            'payment_number' => $this->generateRunningCodePM()
+            'payment_number' => $this->generateRunningCodePM(),
+            'payment_doc_number' => $debitModel->debit_number
         ]);
+
+        //dd($request);
 
         $paymentModel = paymentModel::create($request->all());
 
         // สร้างพาธที่ถูกต้อง
-        $folderPath = 'public/' . $invoice->customer_id . '/' . $debit->debit_note_number;
+        $folderPath = 'public/' . $debitModel->customer_id . '/' . $debitModel->debit_number;
         $absolutePath = storage_path('app/' . $folderPath);
 
         // เช็คว่าไดเร็กทอรีมีอยู่แล้วหรือไม่ หากไม่มีให้สร้างขึ้นมา
@@ -68,7 +71,7 @@ class paymentDebitController extends Controller
         if ($file) {
             $extension = $file->getClientOriginalExtension(); // นามสกุลไฟล์
             $uniqueName = $paymentModel->payment_id . '_' . $paymentModel->payment_doc_number . '_' . date('Ymd') . '.' . $extension;
-            $filePath = $invoice->customer_id . '/' . $debit->debit_note_number . '/' . $uniqueName;
+            $filePath = $debitModel->customer_id . '/' . $debitModel->debit_number . '/' . $uniqueName;
 
             // ย้ายไฟล์ไปยังตำแหน่งที่ต้องการ
             $file->move($absolutePath, $uniqueName);
@@ -78,16 +81,16 @@ class paymentDebitController extends Controller
         }
 
         // การจัดการการชำระเงิน
-        $totalOld = $debit->payment !== NULL ? $debit->payment : 0;
+        $totalOld = $debitModel->payment !== NULL ? $debitModel->payment : 0;
         $total = $totalOld + $request->payment_total;
 
-        debitModel::where('debit_note_number', $request->payment_doc_number)->update(['payment' => $total]);
+        debitModel::where('debit_number', $paymentModel->payment_doc_number)->update(['payment' => $total]);
 
         // การอัปเดตสถานะของใบเพิ่มหนี้
-        if ($total >= $debit->grand_total) {
-            debitModel::where('debit_note_number', $request->payment_doc_number)->update(['debit_note_status' => 'success']);
+        if ($total >= $debitModel->grand_total) {
+            debitModel::where('debit_number', $paymentModel->payment_doc_number)->update(['debit_status' => 'success']);
         } else {
-            debitModel::where('debit_note_number', $request->payment_doc_number)->update(['debit_note_status' => 'payment']);
+            debitModel::where('debit_number', $paymentModel->payment_doc_number)->update(['debit_status' => 'payment']);
         }
 
         return redirect()->back()->with('success', 'Payment processed successfully.');
@@ -99,16 +102,16 @@ class paymentDebitController extends Controller
         $paymentModel->update(['payment_total' => NULL, 'payment_status' => 'cancel']);
 
         // quote
-        $debitModel = debitModel::where('debit_note_number', $paymentModel->payment_doc_number)->first();
+        $debitModel = debitModel::where('debit_number', $paymentModel->payment_doc_number)->first();
         $debitTotalOld = $debitModel->payment;
         $totalNew = $debitTotalOld - $totalOld;
-        $debitModel->update(['payment' => $totalNew, 'debit_note_status' => 'payment']);
+        $debitModel->update(['payment' => $totalNew, 'debit_status' => 'payment']);
 
           // การอัปเดตสถานะของใบเพิ่มหนี้
           if ($debitModel->payment <= 0 ) {
-            debitModel::where('debit_note_number', $request->payment_doc_number)->update(['debit_note_status' => 'wait']);
+            debitModel::where('debit_number', $request->payment_doc_number)->update(['debit_status' => 'wait']);
         } else {
-            debitModel::where('debit_note_number', $request->payment_doc_number)->update(['debit_note_status' => 'payment']);
+            debitModel::where('debit_number', $request->payment_doc_number)->update(['debit_status' => 'payment']);
         }
 
         return redirect()->back();
@@ -118,7 +121,7 @@ class paymentDebitController extends Controller
     {
         $bank = bankModel::where('bank_status','active')->get();
         $bankCompany = bankCompanyModel::where('bank_company_status','active')->get();
-        $debitModel = debitModel::where('debit_note_number', $paymentModel->payment_doc_number)->first();
+        $debitModel = debitModel::where('debit_number', $paymentModel->payment_doc_number)->first();
         return view('payments.debit-modal-edit', compact('debitModel', 'paymentModel','bank','bankCompany'));
     }
 
@@ -131,16 +134,16 @@ class paymentDebitController extends Controller
         $paymentModel->update($request->all());
 
 
-        $debit = debitModel::where('debit_note_number', $paymentModel->payment_doc_number)->first();
+        $debit = debitModel::where('debit_number', $paymentModel->payment_doc_number)->first();
         $debit->update(['payment' => $debit->debit - $totalOld]);
         $debit->update(['payment' => $totaNew + $debit->payment]);
 
         $invoice = invoiceModel::where('invoice_number', $debit->invoice_number)->first();
 
         if ($debit->payment >= $debit->grand_total) {
-            debitModel::where('debit_note_number', $request->payment_doc_number)->update(['debit_note_status' => 'success']);
+            debitModel::where('debit_number', $request->payment_doc_number)->update(['debit_status' => 'success']);
         } else {
-            debitModel::where('debit_note_number', $request->payment_doc_number)->update(['debit_note_status' => 'payment']);
+            debitModel::where('debit_number', $request->payment_doc_number)->update(['debit_status' => 'payment']);
         }
 
         $file = $request->file('payment_file');
@@ -152,7 +155,7 @@ class paymentDebitController extends Controller
             }
 
             // สร้างพาธที่ถูกต้อง
-            $folderPath = 'public/' . $invoice->customer_id . '/' . $debit->debit_note_number;
+            $folderPath = 'public/' . $invoice->customer_id . '/' . $debit->debit_number;
             $absolutePath = storage_path('app/' . $folderPath);
 
             // เช็คว่าไดเร็กทอรีมีอยู่แล้วหรือไม่ หากไม่มีให้สร้างขึ้นมา
@@ -163,7 +166,7 @@ class paymentDebitController extends Controller
 
             $extension = $file->getClientOriginalExtension(); // นามสกุลไฟล์
             $uniqueName = $paymentModel->payment_id . '_' . $paymentModel->payment_doc_number . '_' . date('Ymd') . '.' . $extension;
-            $filePath = $invoice->customer_id . '/' .$debit->debit_note_number . '/' . $uniqueName;
+            $filePath = $invoice->customer_id . '/' .$debit->debit_number . '/' . $uniqueName;
 
             // ย้ายไฟล์ไปยังตำแหน่งที่ต้องการ
             $file->move($absolutePath, $uniqueName);

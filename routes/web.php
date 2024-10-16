@@ -177,7 +177,7 @@ Route::get('payments/debit/edit/{paymentModel}',[paymentDebitController::class,'
 Route::put('payments/debit/update/{paymentModel}',[paymentDebitController::class,'update'])->name('payment.debit-update');
 Route::get('payment/debit/{debitModel}',[paymentDebitController::class,'debit'])->name('payment.debit');
 Route::get('payment/debit/cancel/{paymentModel}',[paymentDebitController::class,'cancel'])->name('payment.debit-cancel');
-Route::post('payment/debit/store',[paymentDebitController::class,'payment'])->name('payment.debit-payment');
+Route::post('payment/debit/store/{debitModel}',[paymentDebitController::class,'payment'])->name('payment.debit-payment');
 
 //payment credit
 Route::get('payments/credit/edit/{paymentModel}',[paymentCreditController::class,'edit'])->name('payment.credit-edit');

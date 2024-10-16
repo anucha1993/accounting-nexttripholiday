@@ -3,14 +3,14 @@
         <h4>แจ้งชำระเงิน Debit Note</h4>
     </div>
     <div class="card-body">
-        <form action="{{route('payment.debit-payment')}}" method="post" enctype="multipart/form-data">
+        <form action="{{route('payment.debit-payment',$debitModel->debit_id)}}" method="post" enctype="multipart/form-data">
             @csrf
-            <input type="hidden" name="payment_doc_number" value="{{$debitModel->debit_note_number}}">
+            {{-- <input type="hidden" name="payment_doc_number" value="{{$debitModel->debit_note_number}}"> --}}
             <input type="hidden" name="payment_doc_type" value="debit-note">
             <div class="row">
                 <div class="col-md-3 mt-3">
                     <label for="">จำนวนเงินที่จะชำระ</label>
-                    <input type="number" value="{{ $debitModel->grand_total -  $debitModel->payment }}" name="payment_total"
+                    <input type="number" value="{{ $debitModel->debit_grand_total -  $debitModel->payment }}" name="payment_total"
                         class="form-control bg-success" step="0.01" >
                 </div>
                 <div class="col-md-3 mt-3">
@@ -23,7 +23,6 @@
                 <div class="col-md-3 mt-3">
                     <label>วิธีการชำระเงิน </label>
                     <select id="payment-method" class="form-select" name="payment_method">
-                        <option value="">--กรุณาเลือก--</option>
                         <option value="cash">เงินสด</option>
                         <option value="transfer-money">โอนเงินเข้าบัญชี</option>
                         <option value="check">เช็คธนาคาร</option>
@@ -33,7 +32,7 @@
                 </div>
                 <div class="col-md-3 mt-3">
                     <label>วันที่ชำะเงิน</label>
-                    <input type="date" name="payment_in_date" class="form-control">
+                    <input type="date" name="payment_in_date" class="form-control" value="{{date('Y-m-d')}}">
                 </div>
 
             </div>

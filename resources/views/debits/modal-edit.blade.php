@@ -81,9 +81,9 @@
 
 
 <div class="modal-body">
-    <form action="{{route('debit.store')}}" id="formQuote" method="post">
+    <form action="{{route('debit.update',$debitModel->debit_id)}}" id="formQuote" method="post">
         @csrf
-        @method('POST')
+        @method('PUT')
 
 
         {{-- hidden --}}
@@ -107,13 +107,13 @@
             <div class="row">
                 <div class="col-md-2 ms-auto">
                     <label>วันที่ออกใบเพิ่มหนี้:</label>
-                    <input type="date" class="form-control" name="debit_date" value="{{ date('Y-m-d') }}">
+                    <input type="date" class="form-control" name="debit_date" value="{{ $debitModel->debit_date}}">
                 </div>
 
                 <div class="col-md-2  ">
                     <label>เลขที่ใบเพิ่มหนี้:</label>
                     <input type="text" class="form-control bg-secondary text-white" placeholder="????????"
-                        value="????????" readonly>
+                        value="{{$debitModel->debit_number}}" readonly>
                 </div>
 
                 <div class="col-md-2">
@@ -357,50 +357,66 @@
                         <div class="col-md-2">ยอดรวม</div>
                     </div>
                     <hr>
+                    
                     {{-- ค่าบริการ --}}
+                    @php
+                        $Runnumber = 0;
+                        $W_tax = 0;
+                    @endphp
+                    @forelse ($debitProducts as $key => $item)
+                        <div class="row item-row ">
 
-                    <div class="row item-row ">
+                            <div class="col-md-1"><span class="row-number"> {{ ++$Runnumber }}</span> <a
+                                    href="javascript:void(0)" class="remove-row-btn text-danger"><span
+                                        class=" fa fa-trash"></span></a></div>
+                            <div class="col-md-4">
+                              
+                                <select class="selectpicker product-select selectpicker-select" name="product_id[]"  data-live-search="true" id="product-select">
+                                             @forelse ($products as  $product)
+                                             <option @if ($item->product_id === $product->id) selected @endif
+                                                 data-pax="{{ $product->product_pax }}" value="{{ $product->id }}">
+                                                 {{ $product->product_name }}
+                                                 {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
+                                         @empty
+                                         @endforelse
+                                </select>
 
-                        <div class="col-md-1"><span class="row-number"></span> <a href="javascript:void(0)"
-                                class="remove-row-btn text-danger"><span class=" fa fa-trash"></span></a></div>
-                        <div class="col-md-4">
 
-                            <select class="selectpicker product-select selectpicker-select" name="product_id[]"
-                                data-live-search="true" id="product-select">
-                                <option>--กรุณาเลือกบริการ--</option>
-                                @forelse ($products as  $product)
-                                    <option data-pax="{{ $product->product_pax }}" value="{{ $product->id }}">
-                                        {{ $product->product_name }}
-                                        {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
-                                @empty
-                                @endforelse
-                            </select>
+                            </div>
+
+                            
+                            <div class="col-md-1">
+
+                                <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y"
+                                    @if ($item->withholding_tax === 'Y') checked @endif>
+                            </div>
+                            <div class="col-md-1" style="display: none">
+                                <select name="expense_type[]" class="form-select">
+                                    <option selected value="income"> รายได้ </option>
+                                </select>
+                            </div>
+                            <div class="col-md-1 text-center">
+                                <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
+                                    <option @if ($item->vat_status === 'vat') selected @endif value="vat">
+                                        Vat</option>
+                                    <option @if ($item->vat_status === 'nonvat') selected @endif value="nonvat">
+                                        nonVat</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1"><input type="number" name="quantity[]"  style="width: 70%"
+                                    class="quantity form-control text-end" value="{{ $item->product_qty }}"
+                                    step="0.01"></div>
+                            <div class="col-md-2"><input type="number" name="price_per_unit[]" style="width: 80%"
+                                    class="price-per-unit form-control text-end" value="{{ $item->product_price }}"
+                                    step="0.01">
+                            </div>
+                            <div class="col-md-2"><input type="number" name="total_amount[]" style="width: 80%"
+                                    class="total-amount form-control text-end" value="0" readonly>
+                            </div>
                         </div>
 
-                        <div class="col-md-1">
-                            <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y">
-                        </div>
-                        <div class="col-md-1" style="display: none">
-                            <select name="expense_type[]" class="form-select">
-                                <option selected value="income"> รายได้ </option>
-                            </select>
-                        </div>
-                        <div class="col-md-1 text-center">
-                            <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
-                                <option value="nonvat">nonVat</option>
-                                <option value="vat"> Vat</option>
-                               
-                            </select>
-                        </div>
-                        <div class="col-md-1"><input type="number" name="quantity[]" style="width: 70%"
-                                class="quantity form-control text-end" value="1" step="0.01"></div>
-                        <div class="col-md-2"><input type="number" name="price_per_unit[]" style="width: 80%"
-                                class="price-per-unit form-control text-end" value="0" step="0.01">
-                        </div>
-                        <div class="col-md-2"><input type="number" name="total_amount[]" style="width: 80%"
-                                class="total-amount form-control text-end" value="0" readonly>
-                        </div>
-                    </div>
+                    @empty
+                    @endforelse
 
 
                     {{-- เพิ่มรายการใหม่ --}}
@@ -420,7 +436,7 @@
                     </div>
 
                     {{-- ส่วนลด --}}
-                    {{-- @forelse ($invoiceProductsDiscount as $keyD => $itemD)
+                    @forelse ($debitProductDiscount as $keyD => $itemD)
                         <div class="row item-row" data-row-id="{{ $keyD }}">
                             <div class="col-md-1"><span class="row-number">{{ ++$Runnumber }}</span>
                                 <a href="javascript:void(0)" class="remove-row-btn text-danger"><span
@@ -462,7 +478,7 @@
                         </div>
 
                     @empty
-                    @endforelse --}}
+                    @endforelse
 
                     <div class="table-discount">
 
@@ -487,13 +503,13 @@
                             <label for="vat-method">การคำนวณ VAT:</label>
                             <div>
                                 <input type="radio" id="vat-include" name="debit_vat_type"
-                                    @if ($invoiceModel->invoice_vat_type === 'include') checked @endif value="include">
+                                    @if ($debitModel->debit_vat_type === 'include') checked @endif value="include">
                                 <label for="vat-include">คำนวณรวมกับราคาสินค้าและบริการ (VAT
                                     Include)</label>
                             </div>
                             <div>
                                 <input type="radio" id="vat-exclude" name="debit_vat_type" value="exclude"
-                                    @if ($invoiceModel->invoice_vat_type === 'exclude') checked @endif>
+                                    @if ($debitModel->debit_vat_type === 'exclude') checked @endif>
                                 <label for="vat-exclude">คำนวณแยกกับราคาสินค้าและบริการ (VAT Exclude)</label>
                             </div>
                         </div>
@@ -504,7 +520,7 @@
                         <div class="row summary-row">
                             <div class="col-md-10">
                                 <input type="checkbox" name="debit_withholding_tax_status" value="Y"
-                                    id="withholding-tax" @if ($invoiceModel->invoice_withholding_tax_status === 'Y') checked @endif>
+                                    id="withholding-tax" @if ($debitModel->debit_withholding_tax_status === 'Y') checked @endif>
                                 <span class="">
                                     คิดภาษีหัก ณ ที่จ่าย 3% (คำนวณจากยอด ราคาก่อนภาษีมูลค่าเพิ่ม /
                                     Pre-VAT
@@ -522,7 +538,7 @@
                     <div class="col-md-12" style="padding-bottom: 10px">
                         <label>เหตุผลการออกใบเพิ่มหนี้ </label>
                         <select name="debit_cause" class="form-select" required>
-                            <option value="">--กรุณาเลือกเหตุผล--</option>
+                            <option value="{{$debitModel->debit_cause}}">{{$debitModel->debit_cause}}</option>
                             @forelse ($debitCause as $item)
                                 <option value="{{ $item->list_debit_name }}">{{ $item->list_debit_name }}</option>
                             @empty
@@ -532,7 +548,7 @@
 
                     <div class="col-md-12" style="padding-bottom: 10px">
                         <label>บันทึกเพิ่มเติม</label>
-                        <textarea name="debit_note" class="form-control" cols="30" rows="2"></textarea>
+                        <textarea name="debit_note" class="form-control" cols="30" rows="2">{{$debitModel->debit_note}}</textarea>
                     </div>
                 </div>
 
@@ -781,8 +797,8 @@
 <div class="text-end mt-3">
     
 
-    <button type="submit" class="btn btn-primary btn-sm  mx-3" form="formQuote"><i class="fa fa-save"></i>
-        สร้างใบเพิ่มหนี้ </button>
+    <button type="submit" class="btn btn-success btn-sm  mx-3" form="formQuote"><i class="fa fa-save"></i>
+        อัพเดทใบเพิ่มหนี้ </button>
 
 </div>
 <br>

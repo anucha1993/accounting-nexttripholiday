@@ -149,7 +149,7 @@
             </div>
         </fieldset>
         {{-- รายละเอียดแพคเกจทัวร์ --}}
-        <fieldset class="border p-2">
+        {{-- <fieldset class="border p-2">
             <legend class="float-none w-auto text-danger" style="font-size: 15px"><span>รายละเอียดแพคเกจทัวร์</span>
             </legend>
             <div class="row">
@@ -237,7 +237,7 @@
                 </div>
             </div>
         </fieldset>
-
+ --}}
 
         <fieldset class="border p-2">
             <legend class="float-none w-auto text-danger" style="font-size: 15px"><span>ข้อมูลลูกค้า:</span></legend>
@@ -567,7 +567,7 @@
                 <br>
 
             </div>
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-md-12">
                     <h5>เงือนไขการชำระเงิน</h5>
                 </div>
@@ -718,7 +718,8 @@
                     </div>
 
 
-                </div>
+                </div> --}}
+            
 
 
                 {{-- <input type="hidden" id="booking-create-date"> --}}
@@ -745,6 +746,7 @@
 
 
         </div>
+        <br>
 
     </form>
 

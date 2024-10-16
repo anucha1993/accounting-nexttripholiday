@@ -43,21 +43,39 @@ class quoteController extends Controller
         return view('quotations.index', compact('sales', 'quotations'));
     }
 
-    public static function generateRunningBooking()
+    // public function generateRunningBooking()
+    // {
+    //     $prefix = 'BK';
+    //     $year = date('y'); // ปีสองหลัก เช่น 24
+    //     $month = date('m'); // เดือนสองหลัก เช่น 07
+
+    //     $latestCode = quotationModel::select('quote_booking')->latest()->first();
+
+    //     if ($latestCode) {
+    //         $lastNumber = (int) substr($latestCode, 5); // ตัด prefix, ปี และเดือนออก
+    //         $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+    //     } else {
+    //         $newNumber = '001';
+    //     }
+    //     return $prefix . $year . $month . $newNumber;
+    // }
+
+    public function generateRunningBooking()
     {
-        $prefix = 'BK';
-        $year = date('y'); // ปีสองหลัก เช่น 24
-        $month = date('m'); // เดือนสองหลัก เช่น 07
-
-        $latestCode = quotationModel::select('quote_booking')->latest()->first();
-
-        if ($latestCode) {
-            $lastNumber = (int) substr($latestCode, 5); // ตัด prefix, ปี และเดือนออก
-            $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        $quote = quotationModel::select('quote_booking')->latest()->first();
+        if (!empty($quote)) {
+            $quoteNumber = $quote->quote_booking;
         } else {
-            $newNumber = '001';
+            $quoteNumber = 'BK' . date('y') . date('m') . '0000';
         }
-        return $prefix . $year . $month . $newNumber;
+        $prefix = 'BK';
+        $year = date('y');
+        $month = date('m');
+        $lastFourDigits = substr($quoteNumber, -4);
+        $incrementedNumber = intval($lastFourDigits) + 1;
+        $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
+        $runningCode = $prefix . $year . $month . $newNumber;
+        return $runningCode;
     }
 
     // function Runnumber ใบเสนอราคา
@@ -140,12 +158,13 @@ class quoteController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request);
+       
         $runningBooking = $this->generateRunningBooking();
 
         if (empty($request->quote_bookin)) {
             $request->merge(['quote_booking' => $runningBooking]);
         }
+        dd($request);
         //dd($request->quote_booking);
 
         $country = DB::connection('mysql2')

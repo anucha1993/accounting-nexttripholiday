@@ -190,11 +190,14 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label>วันออกเดินทาง:</label>
+                    <label>วันออกเดินทาง: </label>
+
                     <input type="text" class="form-control" id="date-start-display" placeholder="วันออกเดินทาง..." style="width: 100%">
                     <input type="hidden" id="date-start" name="quote_date_start"
                         value="{{ date('Y-m-d', strtotime($quotationModel->quote_date_start)) }}">
+                        
                 </div>
+            
                 <div class="col-md-3">
                     <label>วันเดินทางกลับ: </label>
                     <input type="text" class="form-control" id="date-end-display"  style="width: 100%"
