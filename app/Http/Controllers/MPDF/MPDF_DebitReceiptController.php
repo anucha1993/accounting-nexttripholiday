@@ -30,8 +30,8 @@ class MPDF_DebitReceiptController extends Controller
         $fontDirs = $defaultConfig['fontDir'];
         $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
-        $invoiceModel = invoiceModel::where('invoice_number', $debitModel->debit_invoice)->first();
-        $quotationModel = quotationModel::where('quote_number', $invoiceModel->invoice_quote)->first();
+        $invoiceModel = invoiceModel::where('invoice_id', $debitModel->debit_invoice_id)->first();
+        $quotationModel = quotationModel::where('quote_id', $invoiceModel->invoice_quote_id)->first();
 
         $customer = customerModel::where('customer_id', $invoiceModel->customer_id)->first();
         $sale = saleModel::where('id', $invoiceModel->invoice_sale)->first();

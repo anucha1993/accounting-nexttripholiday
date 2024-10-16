@@ -52,22 +52,13 @@ class debitController extends Controller
     public function create(invoiceModel $invoiceModel, Request $request)
     {
       
-        $quotationModel = quotationModel::where('quote_id',$invoiceModel->invoice_quote_id)->first();
-        $bookingModel = bookingModel::where('code',$quotationModel->quote_booking)->first();
-        $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
-        $sales = saleModel::select('name', 'id')->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])->get();
-        $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
-        $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
-        $numDays = numDayModel::orderBy('num_day_total')->get();
-        $wholesale = wholesaleModel::where('status', 'on')->get();
-        $products = productModel::where('product_type','!=', 'discount')->get();
-        $productDiscount = productModel::where('product_type','discount')->get();
-        $invoiceProducts = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->where('expense_type','income')->get();
-        $invoiceProductsDiscount = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->where('expense_type','discount')->get();
-        $campaignSource = DB::table('campaign_source')->get();
-
-        
-        return view('debits.modal-create', compact('invoiceModel','campaignSource','customer','invoiceProducts','quotationModel','sales','country','airline','numDays','wholesale','products','productDiscount','invoiceProductsDiscount'));
+       $taxinvoiceModel = taxinvoiceModel::where('invoice_id',$invoiceModel->invoice_id)->first();
+       $customer = customerModel::where('customer_id',$invoiceModel->customer_id)->first();
+       $campaignSource = DB::table('campaign_source')->get();
+       $products = productModel::where('product_type','!=', 'discount')->get();
+       $productDiscount = productModel::where('product_type','discount')->get();
+       $debitCause = DB::table('list_debit')->get();
+        return view('debits.modal-create', compact('taxinvoiceModel','invoiceModel','customer','campaignSource','products','productDiscount','debitCause'));
         
     }
 
@@ -108,19 +99,19 @@ class debitController extends Controller
                   'product_sum' => $request->total_amount[$key],
                   'expense_type' => $request->expense_type[$key],
                   'vat_status' => $request->vat_status[$key],
-                  'withholding_tax' => isset($request->withholding_tax[$key]) ? 'Y' : 'N',
+                  'withholding_tax' =>$request->withholding_tax[$key],
               ]);
           }
          
       }
 
-        return redirect()->route('debit.edit',$debitModel->debit_id);
+        return redirect()->back();
     }
 
     public function edit(debitModel $debitModel) 
     {
 
-      $invoiceModel = invoiceModel::where('invoice_number',$debitModel->debit_invoice)->first();
+      $invoiceModel = invoiceModel::where('invoice_number',$debitModel->debit_invoice_number)->first();
       $customer = customerModel::where('customer_id',$invoiceModel->customer_id)->first();
       $sales = saleModel::where('id',$invoiceModel->invoice_sale)->first();
       $tour = DB::connection('mysql2')->table('tb_tour')->select('code','airline_id')->where('id',$invoiceModel->tour_id)->first();
@@ -132,9 +123,10 @@ class debitController extends Controller
       $campaignSource = DB::table('campaign_source')->get();
       $debitProducts = debitNoteProductModel::where('debit_id',$debitModel->debit_id)->where('expense_type','income')->get();
       $debitProductDiscount = debitNoteProductModel::where('debit_id',$debitModel->debit_id)->where('expense_type','discount')->get();
-      $causes = DB::table('list_debit')->get();
+      $debitCause  = DB::table('list_debit')->get();
       //dd($quoteProducts);
-      return view('debits.form-edit',compact('causes','debitProductDiscount','debitProducts','debitModel','invoiceModel','customer','sales','tour','airline','products','quotationModel','campaignSource','productDiscount'));
+
+      return view('debits.modal-edit',compact('debitCause','debitProductDiscount','debitProducts','debitModel','invoiceModel','customer','sales','tour','airline','products','quotationModel','campaignSource','productDiscount'));
     }
     
 
@@ -166,15 +158,15 @@ class debitController extends Controller
         if ($request->product_id[$key]) {
             $productName = productModel::where('id',$request->product_id[$key])->first();
             debitNoteProductModel::create([
-                'debit_id' => $debitModel->debit_id,
-                'product_id' => $request->product_id[$key],
-                'product_name' => $productName->product_name,
-                'product_qty' => $request->quantity[$key],
-                'product_price' => $request->price_per_unit[$key],
-                'product_sum' => $request->total_amount[$key],
-                'expense_type' => $request->expense_type[$key],
-                'vat_status' => $request->vat_status[$key],
-                'withholding_tax' => isset($request->withholding_tax[$key]) ? 'Y' : 'N',
+              'debit_id' => $debitModel->debit_id,
+              'product_id' => $request->product_id[$key],
+              'product_name' => $productName->product_name,
+              'product_qty' => $request->quantity[$key],
+              'product_price' => $request->price_per_unit[$key],
+              'product_sum' => $request->total_amount[$key],
+              'expense_type' => $request->expense_type[$key],
+              'vat_status' => $request->vat_status[$key],
+              'withholding_tax' =>$request->withholding_tax[$key],
             ]);
         }
     }

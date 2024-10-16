@@ -84,12 +84,12 @@
         </div>
 
         <div style="width: 30%; float: left; padding: 0px;">
-            <div class="text-center  " style="padding-left: 10px">
-                <h4>ต้นฉบับใบเสร็จรับเงิน/ใบกำกับภาษี</h4>
+            <div class="text-center  " style="padding-left: 52px">
+                <h4>ต้นฉบับ/ใบกำกับภาษี</h4>
             </div>
 
-            <div class="text-center " style="padding-left: 13px; padding-top: -55px;">
-                <h4><b>Original Receipt/Tax Receipt</b></h4>
+            <div class="text-center " style="padding-left: 50px; padding-top: -55px;">
+                <h4><b>Original/Tax Receipt</b></h4>
             </div>
             <div class="" style="padding-left: 65px; padding-top: -35px;">
                 <h5><b>(สำหรับลูกค้า) </b> </h5>

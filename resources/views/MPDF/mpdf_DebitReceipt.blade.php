@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>{{ $debitModel->debit_note_number }}</title>
+    <title>{{ $debitModel->debit_number }}</title>
     <meta http-equiv="Content-Language" content="th" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <style>
@@ -285,9 +285,9 @@
 
                     <td style="width: 65px; height: 200px; text-align: center; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
-                        @if ($item->expense_type === 'income')
+                     
                             <p style="margin: 0;">{{ $key + 1 }}</p>
-                         @endif
+                       
                         @empty
                         @endforelse
 
@@ -295,35 +295,49 @@
 
                     <td style="width: 270px;  text-align: left; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
-                            @if ($item->expense_type === 'income')
-                            <p style="margin: 0;">{{ $item->product_name }} {{$item->vat === 'Y' ? '**(Non VAT)' : ''}}</p>
-                            @endif
+                        
 
+                        @if ($item->expense_type === 'income')
+                        @if ($item->vat_status === 'vat')
+                        <p style="margin: 0;">{{ $item->product_name}} <b> &nbsp;**(VAT) </b></p>
+                        @else
+                        <p style="margin: 0;">{{ $item->product_name}} <b>  &nbsp;**(Non VAT) </b></p>
+                        @endif
+
+                        @else
+                         ส่วนลด
+                        @endif
                         @empty
+                            
                         @endforelse
-
                     </td>
                     <td style="width: 70px; text-align: center; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
-                        @if ($item->expense_type === 'income')
+                      
                             <p style="margin: 0;">{{ $item->product_qty }}</p>
-                            @endif
+                           
                         @empty
                         @endforelse
                     </td>
                     <td style="width: 120px; text-align: right; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
-                        @if ($item->expense_type === 'income')
-                            <p style="margin: 0;">{{ number_format($item->product_price, 2, '.', ',') }}</p>
+                        <p style="margin: 0;">
+                            @if ($item->withholding_tax === 'N')
+                            {{  number_format( $item->product_price  , 2, '.', ',')}}
+                            @else
+     
+                            {{  number_format( ($item->product_price * 0.03)+$item->product_price  , 2, '.', ',')}}
                             @endif
+                        </p>
                         @empty
+                            
                         @endforelse
                     </td>
                     <td style="width: 120px; text-align: right; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
-                        @if ($item->expense_type === 'income')
+                       
                             <p style="margin: 0;">{{ number_format($item->product_sum, 2, '.', ',') }}</p>
-                            @endif
+                           
                         @empty
                         @endforelse
                     </td>

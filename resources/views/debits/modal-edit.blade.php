@@ -68,7 +68,15 @@
 <!-- Bootstrap CSS -->
 
 
-
+{{-- <!-- Bootstrap Select CSS -->
+<link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap Select JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script> --}}
 
 
 
@@ -77,11 +85,6 @@
         @csrf
         @method('POST')
 
-        <input type="hidden" value="{{ $taxinvoiceModel->taxinvoice_id }}" name="debit_taxinvoice_id">
-        <input type="hidden" value="{{ $taxinvoiceModel->taxinvoice_number }}" name="debit_taxinvoice_number">
-
-        <input type="hidden" value="{{ $invoiceModel->invoice_id }}" name="debit_invoice_id">
-        <input type="hidden" value="{{ $invoiceModel->invoice_number }}" name="debit_invoice_number">
 
         {{-- hidden --}}
     <input type="hidden" name="debit_vat_exempted_amount">
@@ -92,7 +95,7 @@
     <input type="hidden" name="debit_include_vat">
     <input type="hidden" name="debit_grand_total" id="invoice-grand-total">
     <input type="hidden" name="debit_withholding_tax">
-
+    
         {{-- รายละเอียดใบเสนอราคา --}}
 
         <h5 class="text-primary">สร้างใบเพิ่มหนี้ </h5>
@@ -115,8 +118,8 @@
 
                 <div class="col-md-2">
                     <label>เลขที่ใบกำกับภาษีเดิม:</label>
-                    <input type="text" class="form-control bg-secondary text-white" name="invoice_number"
-                        value="{{ $taxinvoiceModel->taxinvoice_number }}" readonly>
+                    <input type="text" class="form-control bg-secondary text-white" name="debit_taxinvoice_number"
+                        value="{{ $debitModel->debit_taxinvoice_number }}" readonly>
                 </div>
 
             </div>

@@ -229,6 +229,63 @@
 
                         @endforelse
 
+                         {{-- Debit table --}}
+
+                         @forelse ($debits as $item)
+                         <tr>
+                             <td class="text-info">ใบเพิ่มหนี้</td>
+                             <td>{{ date('d/m/Y', strtotime($item->debit_date)) }}</td>
+                             <td><span class="badge bg-dark">{{ $item->debit_number }}</span>
+                             </td>
+                             <td align="center">
+                                 {{ number_format($item->debit_grand_total, 2, '.', ',') }}</td>
+                             <td align="center">
+                                 N/A
+                             </td>
+                             <td align="center">
+                                 N/A
+                             </td>
+                             <td align="center">
+                                 @if ($item->debit_withholding_tax_status === 'Y')
+                                     {{ number_format($item->debit_withholding_tax, 2, '.', ',') }}
+                                 @else
+                                     N/A
+                                 @endif
+                             </td>
+                             <td>
+                                 <a class="dropdown-item" onclick="openPdfPopup(this.href); return false;"
+                                     href="{{ route('mpdf.debitreceipt', $item->debit_id) }}"><i
+                                         class="fa fa-print text-danger"></i>
+                                     พิมพ์ใบเพิ่มหนี้</a>
+
+                                 <a class="dropdown-item mail-quote"
+                                     href="{{ route('mail.debitReceipt.formMail', $item->debit_id) }}"><i
+                                         class="fas fa-envelope text-info"></i>
+                                     ส่งเมล</a>
+                             </td>
+                           
+                             <td>
+                                 @can('edit-invoice')
+                                     <a class="dropdown-item modal-invoice-edit"
+                                         href="{{ route('debit.edit', $item->debit_id) }}">
+                                         <i class="fa fa-edit text-info"></i> แก้ไข</a>
+                                 @endcan
+
+
+                             </td>
+                             <td>
+                                 @can('cancel-invoice')
+                                     <a class="dropdown-item" href="{{ route('taxinvoice.cancel', $item->debit_id) }}"
+                                         onclick="return confirm('ยืนยันการยกเลิกใบกำกับภาษี')"><i
+                                             class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
+                                 @endcan
+                             </td>
+                         </tr>
+                     @empty
+
+                     @endforelse
+
+
 
 
                     </tbody>

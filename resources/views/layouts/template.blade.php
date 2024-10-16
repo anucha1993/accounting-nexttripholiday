@@ -35,10 +35,24 @@
     <script src="{{ URL::asset('template/assets/libs/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    
+
     <!-- รวมไฟล์ jQuery และ jQuery UI -->
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+<!-- Bootstrap Select CSS -->
+<link rel="stylesheet"
+    href="{{ URL::asset('bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css') }}">
+
+<!-- Bootstrap JS -->
+<script src="{{ URL::asset('bootstrap-select@1.14.0-beta3/dist/js/bootstrap.bundle.min.js') }}"></script>
+
+<script src="{{ URL::asset('bootstrap-select@1.14.0-beta3/dist/js/bootstrap.bundle.min.js') }}"></script>
+<!-- Bootstrap Select JS -->
+<script src="{{ URL::asset('bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js') }}"></script>
 
 
 
