@@ -153,7 +153,7 @@
                                                     $status = '<span class="badge rounded-pill bg-danger">ยกเลิกการสั่งซื้อ</span>';
                                                 } elseif ($item->quote_status === 'success') {
                                                     $status = '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>';
-                                                } elseif ($item->payment_amount > 0) {
+                                                } elseif ($item->payment> 0) {
                                                     // หากมีการชำระเงินมัดจำแล้ว
                                                     $status = '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
                                                 } elseif ($item->quote_payment_type === 'deposit') {

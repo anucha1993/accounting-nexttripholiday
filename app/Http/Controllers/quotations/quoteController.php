@@ -19,6 +19,7 @@ use App\Models\quotations\quotationModel;
 use App\Models\quotations\quoteProductModel;
 use App\Models\booking\bookingQuotationModel;
 use App\Models\debits\debitModel;
+use App\Models\payments\paymentModel;
 use Carbon\Carbon;
 
 class quoteController extends Controller
@@ -350,8 +351,20 @@ class quoteController extends Controller
        ]);
 
         //dd($runningCodeTourUpdate);
+         
+        $checkPaymentTotal = paymentModel::where('payment_doc_number',$quotationModel->quote_number)->where('payment_status','success')->sum('payment_total');
 
-        $request->merge(['quote_withholding_tax_status' => isset($request->quote_withholding_tax_status) ? 'Y' : 'N']);
+        if ($checkPaymentTotal >= $quotationModel->quote_grand_total) {
+            $paymentStatus = 'success';
+        } else {
+            $paymentStatus = 'wait'; 
+        }
+
+        $request->merge([
+            'quote_withholding_tax_status' => isset($request->quote_withholding_tax_status) ? 'Y' : 'N',
+            'quote_status' =>  $paymentStatus,
+            'payment' =>  $checkPaymentTotal,
+             ]);
 
         customerModel::where('customer_id', $request->customer_id)->update([
             'customer_name' => $request->customer_name,
