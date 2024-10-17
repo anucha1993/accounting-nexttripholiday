@@ -1162,7 +1162,7 @@
 
                 if (diffDays >= 31) {
                     // ลบ 31 วัน
-                    bookingCreateDate.setDate(bookingCreateDate.getDate() - 31);
+                    bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
                 } else {
                     // เพิ่ม 1 วัน
                     bookingCreateDate.setDate(bookingCreateDate.getDate() + 1);

@@ -67,7 +67,7 @@
                         @endif
 
                         @forelse ($quoteProductsDiscount as $item)
-                            <tr>
+                            <tr class="text-danger">
                                 <td>{{++$key}}</td>
                                 <td>
                                     @if ($item->product_pax === 'Y')
