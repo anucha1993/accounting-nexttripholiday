@@ -98,6 +98,9 @@
                     <input type="hidden" id="submitDatepicker" name="quote_booking_create"
                         value="{{ date('Y-m-d', strtotime($quotationModel->quote_booking_create)) }}">
                 </div>
+
+                <input type="hidden" id="tour-id">
+
                 <div class="col-md-2">
                     <label>เลขที่ใบจองทัวร์</label>
                     <input type="text" name="quote_booking" value="{{ $quotationModel->quote_booking }}"
@@ -190,9 +193,14 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label>วันออกเดินทาง: </label>
-
+                    <label>วันออกเดินทาง: <a href="#" class="" id="list-period">เลือกวันที่</a></label>
                     <input type="text" class="form-control" id="date-start-display" placeholder="วันออกเดินทาง..." style="width: 100%">
+
+
+                    <div id="date-list" class="list-group" style="position: absolute; z-index: 1000; width: 20%;">
+                        
+                    </div>
+
                     <input type="hidden" id="date-start" name="quote_date_start"
                         value="{{ date('Y-m-d', strtotime($quotationModel->quote_date_start)) }}">
                         
