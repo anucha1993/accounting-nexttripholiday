@@ -92,7 +92,12 @@
                                 </td>
                                 <td>
                                     <a href="{{ route('mpdf.payment', $item->payment_id) }}" onclick="openPdfPopup(this.href); return false;"><i
-                                            class="fa fa-print"></i> พิมพ์</a>
+                                            class="fa fa-print text-danger"></i> พิมพ์</a>
+
+                                            <a class="dropdown-item " 
+                                            href=""><i
+                                                class="fas fa-envelope text-info"></i>
+                                            ส่งเมล</a>
                                 </td>
                                 <td>
                                     @if ($item->payment_status === 'success')
@@ -111,6 +116,8 @@
                                             href="{{ route('payment.edit', $item->payment_id) }}"><i
                                                 class="fa fa-edit text-info"></i>
                                             แก้ไข</a>
+
+                                         
 
                                         <a class="dropdown-item text-danger py-1"
                                             onclick="return confirm('หากยกเลิกระบบจะ คืนจำนวนเงิน ที่ชำระ ไปยังยอดค้างชำระ')"

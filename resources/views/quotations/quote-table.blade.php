@@ -120,7 +120,7 @@
 
         <div class="card-header bg-dark">
             <h5 class="mb-0 text-white"><i class="fa fa-file"></i>
-                รายละเอียดใบแจ้งหนี้ <span class="float-end">invoice No. :
+                รายละเอียดใบแจ้งหนี้ <span class="float-end">invoice 
                     {{-- {{ $invoiceModel->invoice_number }} --}}
                 </span></h5>
         </div>
