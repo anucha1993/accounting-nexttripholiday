@@ -21,7 +21,6 @@ class paymentDebitController extends Controller
         $bankCompany = bankCompanyModel::where('bank_company_status','active')->get();
         return view('payments.debit-modal', compact('debitModel','bank','bankCompany'));
     }
-
      // function Runnumber Payment
      public function generateRunningCodePM()
      {

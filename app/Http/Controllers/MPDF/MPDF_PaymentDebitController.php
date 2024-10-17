@@ -22,11 +22,16 @@ class MPDF_PaymentDebitController extends Controller
     public function generatePDF(paymentModel $paymentModel)
     {
         // การตั้งค่า font สำหรับภาษาไทย
-        $debitModel = debitModel::where('debit_note_number',$paymentModel->payment_doc_number)->first();
+        $debitModel = debitModel::where('debit_number',$paymentModel->payment_doc_number)->first();
         $bank = bankModel::where('bank_id', $paymentModel->payment_bank_number)->first();
 
-        $invoice = invoiceModel::where('invoice_number',$debitModel->invoice_number)->first();
-        $quotationModel = quotationModel::where('quote_number',$invoice->quote_number)->first();
+       
+
+        $invoice = invoiceModel::where('invoice_id',$debitModel->debit_invoice_id)->first();
+
+        //dd($invoice->invoice_quote_id);
+
+        $quotationModel = quotationModel::where('quote_id',$invoice->invoice_quote_id)->first();
 
         $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir'];
@@ -39,11 +44,8 @@ class MPDF_PaymentDebitController extends Controller
         ->table('tb_tour')
         ->where('id', $quotationModel->tour_id)
         ->first();
-         $airline = DB::connection('mysql2')
-        ->table('tb_travel_type')
-        ->select('travel_name')
-        ->where('id', $tour->airline_id)
-        ->first();
+        $airline = DB::connection('mysql2')->table('tb_travel_type')->where('id', $quotationModel->quote_airline)->first();
+
         $booking = bookingModel::where('code', $quotationModel->quote_booking)->first();
         $productLists = quoteProductModel::where('quote_id',$quotationModel->quote_id)->get();
         // ดึง HTML จาก Blade Template

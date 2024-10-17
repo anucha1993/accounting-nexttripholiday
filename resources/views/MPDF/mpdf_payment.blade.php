@@ -151,12 +151,12 @@
                     <td style="border: none;"></td>
                     <td
                         style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <h4><b>Sale:</b></h4>
+                        <h4><b>Tel:</b></h4>
                     </td>
 
                     <td
                         style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{ $sale->name }}</span></p>
+                        <p><span>091-0916364</span></p>
                     </td>
                 </tr>
                 <tr>
@@ -228,6 +228,7 @@
                     <td style="border: none;"></td>
                 </tr>
                 <tr>
+
                     <td style="width: 100px; padding-right: 5px; text-align: right;">
                         <p><b>Program:</span></p>
                     </td>
@@ -235,6 +236,7 @@
                     <td style="width: 400px; padding-left: 5px; background-color: #f9c68f; font-size: 14px">
                         <p><span>{{$quotationModel->quote_tour_name1 ? $quotationModel->quote_tour_name1 : $quotationModel->quote_tour_name }}</span></p>
                     </td>
+                    
                     <td style="border: none;"></td>
                     <td style="width: 100px; padding-left: 5px">
                         <h4><b> Period:</b></h4>

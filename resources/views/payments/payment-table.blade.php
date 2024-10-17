@@ -198,7 +198,7 @@
 
                                 </td>
                                 <td>
-                                    <a href="{{ route('mpdf.paymentDebit', $item->payment_id) }}" target="_blank"><i
+                                    <a href="{{ route('mpdf.paymentDebit', $item->payment_id) }}" onclick="openPdfPopup(this.href); return false;"><i
                                             class="fa fa-print"></i> พิมพ์</a>
                                 </td>
                                 <td>
@@ -212,28 +212,18 @@
                                         <span class="badge rounded-pill bg-warning">NULL</span>
                                     @endif
                                 </td>
+
                                 <td>
                                     @if ($item->payment_status !== 'cancel')
-                                        <div class="btn-group" role="group">
-                                            <button id="btnGroupVerticalDrop2" type="button"
-                                                class="btn btn-sm btn-light-secondary text-secondary font-weight-medium dropdown-toggle"
-                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                จัดการข้อมูล
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
-                                                <a class="dropdown-item debit-modal"
-                                                    href="{{ route('payment.debit-edit', $item->payment_id) }}"><i
-                                                        class="fa fa-edit"></i>
-                                                    แก้ไข</a>
+                                        <a class="dropdown-item payment-modal"
+                                            href="{{ route('payment.debit-edit', $item->payment_id) }}"><i
+                                                class="fa fa-edit text-info"></i>
+                                            แก้ไข</a>
 
-                                                <a class="dropdown-item text-danger"
-                                                    onclick="return confirm('หากยกเลิกระบบจะ คืนจำนวนเงิน ที่ชำระ ไปยังยอดค้างชำระ')"
-                                                    href="{{ route('payment.debit-cancel', $item->payment_id) }}"><i
-                                                        class="fas fa-minus-circle "></i> ยกเลิก</a>
-
-
-                                            </div>
-                                        </div>
+                                        <a class="dropdown-item text-danger py-1"
+                                            onclick="return confirm('หากยกเลิกระบบจะ คืนจำนวนเงิน ที่ชำระ ไปยังยอดค้างชำระ')"
+                                            href="{{ route('payment.debit-cancel', $item->payment_id) }}"><i
+                                                class="fas fa-minus-circle "></i> ยกเลิก</a>
                                     @else
                                         -
                                     @endif
@@ -241,6 +231,8 @@
 
 
                                 </td>
+
+                              
                             </tr>
 
                         @empty

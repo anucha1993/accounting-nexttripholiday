@@ -164,7 +164,7 @@ class quoteController extends Controller
         if (empty($request->quote_bookin)) {
             $request->merge(['quote_booking' => $runningBooking]);
         }
-        dd($request);
+        //dd($request);
         //dd($request->quote_booking);
 
         $country = DB::connection('mysql2')
@@ -283,10 +283,23 @@ class quoteController extends Controller
         ->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')
         ->get();
 
+        $invoiceModel =  $invoices->first();
+
         $taxinvoiceIds = $taxinvoices->pluck('taxinvoice_number');
         $debits = debitModel::whereIn('debit_taxinvoice_number',$taxinvoiceIds)->get();
 
-        return View::make('quotations.quote-table', compact('quotations','quotationModel','invoices','taxinvoices','debits'))->render();
+        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)
+        ->select('quote_product.*','products.product_pax')
+        ->leftJoin('products', 'products.id', '=', 'quote_product.product_id')
+        ->where('quote_product.expense_type', 'income')
+        ->get();
+        $quoteProductsDiscount = quoteProductModel::where('quote_id', $quotationModel->quote_id)
+        ->select('quote_product.*','products.product_pax')
+        ->leftJoin('products', 'products.id', '=', 'quote_product.product_id')
+        ->where('expense_type', 'discount')
+        ->get();
+
+        return View::make('quotations.quote-table', compact('quoteProductsDiscount','quoteProducts','quotations','quotationModel','invoices','taxinvoices','debits','invoiceModel'))->render();
     }
 
     public function modalEdit(quotationModel $quotationModel)

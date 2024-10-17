@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\View;
 class paymentController extends Controller
 {
     //
-
     public function index(quotationModel $quotationModel, Request $request)
     {
         //dd($quotationModel->quote_number);
@@ -26,18 +25,16 @@ class paymentController extends Controller
         ->leftjoin('debit_note','debit_note.debit_invoice_id','invoices.invoice_id')
         ->leftjoin('credit_note','credit_note.credit_invoice_id','invoices.invoice_id')
         ->first();
-        
-
+    
         $payments = paymentModel::where('payment_doc_number', $quotationModel->quote_number)
         ->where('payment_doc_type','quote')
         ->latest()->get();
         
-        
-        $paymentDebit = paymentModel::where('payment_doc_number', $quotationModel->debit_note_number)
+        $paymentDebit = paymentModel::where('payment_doc_number', $quotationModel->debit_number)
         ->where('payment_doc_type','debit-note')
         ->latest()->get();
 
-        $paymentCredit = paymentModel::where('payment_doc_number', $quotationModel->credit_note_number)
+        $paymentCredit = paymentModel::where('payment_doc_number', $quotationModel->credit_number)
         ->where('payment_doc_type','credit-note')
         ->latest()->get();
         
@@ -91,26 +88,19 @@ class paymentController extends Controller
 
     public function payment(Request $request)
     {
-
         // ตรวจสอบข้อมูลที่รับมาจาก request
         $quote = quotationModel::where('quote_number', $request->payment_doc_number)->first();
         $request->merge([
             'payment_number' => $this->generateRunningCodePM()
         ]);
-
-        
         $paymentModel = paymentModel::create($request->all());
-
-       
         // สร้างพาธที่ถูกต้อง
         $folderPath = 'public/' . $quote->customer_id . '/' . $quote->quote_number;
         $absolutePath = storage_path('app/' . $folderPath);
-
         // เช็คว่าไดเร็กทอรีมีอยู่แล้วหรือไม่ หากไม่มีให้สร้างขึ้นมา
         if (!File::exists($absolutePath)) {
              File::makeDirectory($absolutePath, 0775, true);
         }
-
         $file = $request->file('payment_file');
 
         if ($file) {

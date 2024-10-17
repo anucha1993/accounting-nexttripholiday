@@ -5,6 +5,124 @@
                 รายละเอียดใบจองใบทัวร์ <span class="float-end">Booking No. :
                     {{ $quotationModel->quote_booking }}</span></h5>
         </div>
+
+        <div class="card-body">
+            <div class="table table-responsive">
+                <table class="table product-overview">
+                    <thead>
+                        <tr>
+                            <th style="width: 100px">ลำดับ</th>
+                            <th>รายการ</th>
+                            <th>จำนวน</th>
+                            {{-- <th style="width: 500px">ชื่อลูกค้า</th> --}}
+                            <th style="text-align: center">ราคาต่อหน่วย/บาท	</th>
+                            <th style="text-align: center"> 3%</th>
+                            <th style="text-align: center">ราคารวม/บาท</th>
+                           
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @forelse ($quoteProducts as $key => $item)
+                            <tr>
+                                <td>{{++$key}}</td>
+                                <td>
+                                    @if ($item->product_pax === 'Y')
+                                    {{$item->product_name}} <i class="fa fa-user text-secondary"></i> <span class="text-secondary">(PAX)</span>
+                                    @else
+                                    {{$item->product_name}}
+                                    @endif
+                                    
+                                </td>
+                                <td>{{$item->product_qty}}</td>
+                                <td align="center">
+                                    @if ($item->withholding_tax === 'N')
+                                    {{  number_format( $item->product_price  , 2, '.', ',')}}
+                                    @else
+             
+                                    {{  number_format( ($item->product_price * 0.03)+$item->product_price  , 2, '.', ',')}}
+                                    @endif
+                                </td>
+                                <td align="center">
+                                    @if ($item->withholding_tax === 'N')
+                                    <input type="checkbox" disabled>
+                                    @else
+        
+                                     <input type="checkbox" checked disabled>
+                                    @endif
+                                </td>
+                                <td align="center">{{number_format($item->product_sum , 2, '.', ',')}}</td>
+                                
+                            </tr>
+                        @empty
+                            
+                        @endforelse
+                      
+                        @if ($quoteProductsDiscount->isNotEmpty())
+                            <tr class="text-danger">
+                                <td colspan="6">ส่วนลด</td>
+                            </tr>
+                        @else
+                            
+                        @endif
+
+                        @forelse ($quoteProductsDiscount as $item)
+                            <tr>
+                                <td>{{++$key}}</td>
+                                <td>
+                                    @if ($item->product_pax === 'Y')
+                                    {{$item->product_name}} <i class="fa fa-user text-secondary"></i> <span class="text-secondary">(PAX)</span>
+                                    @else
+                                    {{$item->product_name}}
+                                    @endif
+                                    
+                                </td>
+                                <td>{{$item->product_qty}}</td>
+                                <td align="center">
+                                    @if ($item->withholding_tax === 'N')
+                                    {{  number_format( $item->product_price  , 2, '.', ',')}}
+                                    @else
+             
+                                    {{  number_format( ($item->product_price * 0.03)+$item->product_price  , 2, '.', ',')}}
+                                    @endif
+                                </td>
+                                <td align="center">
+                                    @if ($item->withholding_tax === 'N')
+                                      <input type="checkbox" disabled>
+                                    @else
+             
+                                    {{  number_format( ($item->product_price * 0.03)  , 2, '.', ',')}}
+                                    @endif
+                                </td>
+                                <td align="center">{{number_format($item->product_sum , 2, '.', ',')}}</td>
+                                
+                            </tr>
+                        @empty
+                            
+                        @endforelse
+
+
+                        <tr class="text-info">
+                            <td align="right" colspan="5"><b>(@bathText($quotationModel->quote_grand_total))</b></td>
+                            <td align="center" ><b><u>{{number_format($quotationModel->quote_grand_total , 2, '.', ',')}}</u></b></td>
+                        </tr>
+                    </tbody>
+                </table>
+    </div>
+     </div>
+</div>
+
+
+<div class="col-md-12">
+    <div class="card">
+
+
+
+        <div class="card-header bg-dark">
+            <h5 class="mb-0 text-white"><i class="fa fa-file"></i>
+                รายละเอียดใบแจ้งหนี้ <span class="float-end">invoice No. :
+                    {{ $invoiceModel->invoice_number }}</span></h5>
+        </div>
         <div class="card-body">
             <div class="table table-responsive">
                 <table class="table product-overview">
@@ -74,12 +192,10 @@
                                         @endcan
                                         @can('create-invoice')
                                             @if ($quotationModel->quote_status == 'wait')
-                                              <a class="dropdown-item modal-invoice"
+                                                <a class="dropdown-item modal-invoice"
                                                     href="{{ route('invoice.create', $quotationModel->quote_id) }}"><i
                                                         class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
-                                                
                                             @else
-                                              
                                             @endif
                                         @endcan
                                     @endif
@@ -272,9 +388,14 @@
                                             href="{{ route('debit.edit', $item->debit_id) }}">
                                             <i class="fa fa-edit text-info"></i> แก้ไข</a>
 
-                                        <a class="dropdown-item debit-modal"
-                                            href="{{ route('payment.debit', $item->debit_id) }}"><i
-                                                class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
+
+                                        @if ($item->debit_status === 'wait')
+                                            <a class="dropdown-item debit-modal"
+                                                href="{{ route('payment.debit', $item->debit_id) }}"><i
+                                                    class="fas fa-credit-card"></i> แจ้งชำระเงิน</a>
+                                        @else
+                                            <span class="badge rounded-pill bg-success">ชำระเงินแล้ว</span>
+                                        @endif
                                     @endcan
 
 

@@ -20,6 +20,7 @@
                         <option value="full">ชำระเงินเต็มจำนวน</option>
                     </select>
                 </div>
+                
                 <div class="col-md-3 mt-3">
                     <label>วิธีการชำระเงิน </label>
                     <select id="payment-method" class="form-select" name="payment_method">
@@ -28,7 +29,6 @@
                         <option value="check">เช็คธนาคาร</option>
                         <option value="credit">บัตรเครดิต</option>
                     </select>
-                    
                 </div>
                 <div class="col-md-3 mt-3">
                     <label>วันที่ชำะเงิน</label>
