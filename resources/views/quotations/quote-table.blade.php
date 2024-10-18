@@ -21,7 +21,7 @@
                            
                         </tr>
                     </thead>
-
+                     
                     <tbody>
                         @forelse ($quoteProducts as $key => $item)
                             <tr>
@@ -143,6 +143,12 @@
                             <th style="text-align: left">Cancel</th>
                         </tr>
                     </thead>
+
+                    @php
+                         $incomeTotal = 0;
+                         $CreditNoteTotal = 0;
+                    @endphp
+                     
                     <tbody>
 
                         @forelse ($quotations as $item)
@@ -154,6 +160,9 @@
                                 </td>
                                 {{-- <td>{{ $item->customer_name }}</td> --}}
                                 <td align="center">
+                                    @php
+                                        $incomeTotal += $quotationModel->quote_grand_total
+                                    @endphp
                                     {{ number_format($quotationModel->quote_grand_total, 2, '.', ',') }}</td>
                                 <td align="center">{{ number_format($quotationModel->payment, 2, '.', ',') }}
                                 </td>
@@ -225,6 +234,8 @@
                                 <td><span class="badge bg-dark">{{ $itemInvoice->invoice_number }}</span>
                                 </td>
                                 <td align="center">
+                                  
+
                                     {{ number_format($itemInvoice->invoice_grand_total, 2, '.', ',') }}</td>
                                 <td align="center">
                                     N/A
@@ -357,6 +368,10 @@
                                 <td><span class="badge bg-dark">{{ $item->debit_number }}</span>
                                 </td>
                                 <td align="center">
+                                    @php
+                                    $incomeTotal += $item->debit_grand_total
+                                    @endphp
+
                                     {{ number_format($item->debit_grand_total, 2, '.', ',') }}</td>
                                 <td align="center">
                                     N/A
@@ -413,7 +428,10 @@
                         @endforelse
 
 
-
+                        <tr>
+                            <td align="right" colspan="9"><b class="text-success">(@bathText($incomeTotal))</b></td>
+                            <td align="center"><b class="text-success">{{number_format($incomeTotal,2)}}</b></td>
+                        </tr>
 
                     </tbody>
                 </table>

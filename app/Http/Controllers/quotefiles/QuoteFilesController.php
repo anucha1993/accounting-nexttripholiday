@@ -16,7 +16,7 @@ class QuoteFilesController extends Controller
     public function index(quotationModel $quotationModel, Request $request)
     {
         $quoteFiles = DB::table('quote_file')->where('quote_number',$quotationModel->quote_number)->get();
-        return view('quoteFiles.quoteFile',compact('quotationModel','quoteFiles'));
+        return view('quoteFiles.files-table',compact('quotationModel','quoteFiles'));
     }
 
     public function upload(Request $request)

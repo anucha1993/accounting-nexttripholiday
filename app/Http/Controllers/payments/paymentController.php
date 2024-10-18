@@ -90,9 +90,11 @@ class paymentController extends Controller
     {
         // ตรวจสอบข้อมูลที่รับมาจาก request
         $quote = quotationModel::where('quote_number', $request->payment_doc_number)->first();
+
         $request->merge([
-            'payment_number' => $this->generateRunningCodePM()
+            'payment_number' => $this->generateRunningCodePM(),
         ]);
+
         $paymentModel = paymentModel::create($request->all());
         // สร้างพาธที่ถูกต้อง
         $folderPath = 'public/' . $quote->customer_id . '/' . $quote->quote_number;

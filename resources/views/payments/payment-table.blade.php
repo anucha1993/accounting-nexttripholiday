@@ -21,6 +21,10 @@
                             <th>จัดการ</th>
                         </tr>
                     </thead>
+                    @php
+                        $paymentTotal = 0;
+                        $paymentDebitTotal = 0;
+                    @endphp
                     <tbody>
                         <tr>
                             <td colspan="10">แจ้งชำระเงิน ใบเสนอราคา</td>
@@ -61,8 +65,11 @@
                                 <td>
 
                                     @if ($item->payment_status === 'cancel')
-                                        -
+                                        0
                                     @else
+                                         @php
+                                             $paymentTotal += $item->payment_total;
+                                         @endphp
                                         {{ number_format($item->payment_total, 2, '.', ',') }}
                                     @endif
 
@@ -176,8 +183,11 @@
                                 <td>
 
                                     @if ($item->payment_status === 'cancel')
-                                        -
+                                        0
                                     @else
+                                    @php
+                                    $paymentTotal += $item->payment_total;
+                                     @endphp
                                         {{ number_format($item->payment_total, 2, '.', ',') }}
                                     @endif
 
@@ -245,6 +255,11 @@
                         @empty
 
                         @endforelse
+
+                        <tr>
+                            <td align="right" class="text-success" colspan="9"><b>(@bathText($paymentTotal))</b></td>
+                            <td align="center" class="text-success" ><b>{{number_format($paymentTotal,2)}}</b></td>
+                        </tr>
 
                         @if ($paymentCredit->isNotEmpty())
                             <tr>
@@ -362,6 +377,8 @@
 
                         @endforelse
 
+
+                       
 
 
                     </tbody>

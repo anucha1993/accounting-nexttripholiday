@@ -382,6 +382,10 @@
 
             </div>
 
+            <div class="col-md-12" id="files">
+
+            </div>
+
         </div>
 
 
@@ -518,6 +522,24 @@
                 }
                 
                 paymentWholesale(quoteId);
+
+
+                function files(quoteId) {
+                    // โหลดเนื้อหาของไฟล์ฟอร์มและแสดงใน DOM
+                    $.ajax({
+                        url: "{{ route('quotefile.index', '') }}/" + quoteId, // ประกอบ URL แบบถูกต้อง
+                        type: 'GET',
+                        success: function(response) {
+                            $('#files').html(response); // แสดง response ใน #quote-centent
+                        },
+                        error: function(xhr) {
+                            console.log(xhr.responseText); // แสดงข้อผิดพลาดใน console
+                        }
+                    });
+                }
+                
+                files(quoteId);
+
 
                 // // modal add payment wholesale quote
                 // $(".mail-quote").click("click", function(e) {
