@@ -38,7 +38,7 @@
                 </div>
                 <div class="col-md-3 mt-3">
                     <label>วันที่ชำะเงิน</label>
-                    <input type="date" name="payment_in_date" class="form-control" value="{{$paymentModel->payment_in_date}}">
+                    <input type="datetime-local" name="payment_in_date" class="form-control" value="{{$paymentModel->payment_in_date}}">
                 </div>
 
             </div>
@@ -57,10 +57,10 @@
                        
                     </select>
                 </div>
-                <div class="col-md-3 mt-3">
+                {{-- <div class="col-md-3 mt-3">
                     <label for="">วันที่โอนเงิน</label>
                     <input type="datetime-local" name="payment_date_time" class="form-control" value="{{$paymentModel->payment_date_time}}">
-                </div>
+                </div> --}}
             </div>
 
             {{-- เช็คธนาคาร check --}}

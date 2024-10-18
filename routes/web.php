@@ -193,6 +193,7 @@ Route::post('quotefile/upload',[QuoteFilesController::class,'upload'])->name('qu
 
 // Payment Wholesale
 Route::get('payment/wholesales/{quotationModel}',[paymentWholesaleController::class,'index'])->name('paymentWholesale.index');
+Route::get('payment/wholesales/payment/{quotationModel}',[paymentWholesaleController::class,'payment'])->name('wholesale.payment');
 Route::get('payment/wholesale/delete/{paymentWholesaleModel}',[paymentWholesaleController::class,'delete'])->name('paymentWholesale.delete');
 Route::get('payment/wholesales/quote/{quotationModel}',[paymentWholesaleController::class,'quote'])->name('paymentWholesale.quote');
 Route::post('payment/wholesales/store',[paymentWholesaleController::class,'store'])->name('paymentWholesale.store');

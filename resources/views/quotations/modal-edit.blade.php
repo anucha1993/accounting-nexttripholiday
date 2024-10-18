@@ -1148,8 +1148,9 @@
                 // ตั้งค่าให้กับ input datetime-local
                 $('input[name="quote_payment_date"]').val(formattedDate);
             }
+
             //checkPaymentCondition();
-            // ตั้งค่าฟิลด์ "ภายในวันที่" เมื่อโหลดหน้าเว็บ
+            //ตั้งค่าฟิลด์ "ภายในวันที่" เมื่อโหลดหน้าเว็บ
             //setPaymentDueDate();
 
             function setPaymentDueDate30() {
@@ -1182,21 +1183,10 @@
                 var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
                 // ตั้งค่าให้กับ input datetime-local
 
-
                 $('input[name="quote_payment_date_full"]').val(formattedDate);
             }
             setPaymentDueDate30();
-            // $('#date-start-display').datepicker({
-            //     dateFormat: 'dd MM yy',
-            //     onSelect: function(dateText) {
-            //         var isoDate = $.datepicker.formatDate('yy-mm-dd', $(this).datepicker('getDate'));
-            //         $('#date-start').val(isoDate);
-            //         setPaymentDueDate30(); // คำนวณวันสิ้นสุดเมื่อเลือกวันเริ่มต้น
-            //         checkPaymentCondition()
-            //     }
-            // });
-
-
+           
             // ตรวจสอบเมื่อผู้ใช้เลือกชำระเงินเต็มจำนวน
             function checkedPaymentFull() {
                 var QuoteTotalGrand = $('#quote-grand-total').val();

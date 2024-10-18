@@ -4,11 +4,12 @@ namespace App\Http\Controllers\paymentWholesale;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\View;
 use App\Models\payments\paymentModel;
 use App\Models\quotations\quotationModel;
 use App\Models\payments\paymentWholesaleModel;
-use Illuminate\Support\Facades\Auth;
 
 class paymentWholesaleController extends Controller
 {
@@ -95,6 +96,13 @@ public function delete(paymentWholesaleModel $paymentWholesaleModel)
 public function quote(quotationModel $quotationModel)
 {
     return view('paymentWholesale.modal-quote',compact('quotationModel'));
+}
+
+public function payment(quotationModel $quotationModel)
+{
+    $paymentWholesale = paymentWholesaleModel::where('payment_wholesale_doc',$quotationModel->quote_number)->get();
+
+    return View::make('paymentWholesale.wholesale-table',compact('quotationModel','paymentWholesale'))->render();
 }
 
 }

@@ -1,4 +1,7 @@
 <div class="modal-body">
+    <div class="header">
+        <h5>แจ้งชำระเงินโฮลเซลล์</h5>
+    </div>
     <form action="{{ route('paymentWholesale.store') }}" enctype="multipart/form-data" method="post" id="form-upload">
         @csrf
         @method('POST')
@@ -7,7 +10,7 @@
         <div class="row">
             <div class="col-md-3">
                 <label>จำนวนเงินที่ชำระ</label>
-                <input type="number" name="payment_wholesale_total" step="0.01" class="form-control">
+                <input type="number" name="payment_wholesale_total" step="0.01" class="form-control" placeholder="0.00">
             </div>
             <div class="col-md-3">
                 <label>ประเภทการชำระเงิน</label>

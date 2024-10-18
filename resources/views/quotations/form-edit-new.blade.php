@@ -111,14 +111,16 @@
 
                                         <tr>
                                             <td align="right" class="text-info">แก้ไขล่าสุดโดย :</td>
-                                            <td>&nbsp; {{$quotationModel->updated_by ? $quotationModel->updated_by : $quotationModel->created_by}} </td>
+                                            <td>&nbsp;
+                                                {{ $quotationModel->updated_by ? $quotationModel->updated_by : $quotationModel->created_by }}
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td align="right" class="text-info">วันที่แก้ไขล่าสุด :</td>
-                                            <td>&nbsp;  {{date('d/m/Y H:m:s',strtotime($quotationModel->updated_at))}}
+                                            <td>&nbsp; {{ date('d/m/Y H:m:s', strtotime($quotationModel->updated_at)) }}
                                             </td>
                                         </tr>
-                                       
+
                                     </tbody>
                                 </table>
                             </div>
@@ -189,18 +191,17 @@
                                             <td align="right" class="text-info">จำนวนเงินอักษร :</td>
                                             <td>&nbsp; <span>(@bathText($quotationModel->quote_grand_total)) </span></td>
                                         </tr>
-                                          <tr>
+                                        <tr>
                                             <td align="right" class="text-info">กำหนดชำระมัดจำ: :</td>
                                             <td>&nbsp;
                                                 @if ($quotationModel->quote_payment_total > 0)
-                                                {{ thaidate('j F Y', $quotationModel->quote_payment_date) . ' ก่อนเวลา ' . date('H:m', strtotime($quotationModel->quote_payment_date)) . ' น.' }}
-                                                &nbsp;
-                                                {{ 'จำนวนเงิน :' . number_format($quotationModel->quote_payment_total, 2, '.', ',') . '.-' }}
-
+                                                    {{ thaidate('j F Y', $quotationModel->quote_payment_date) . ' ก่อนเวลา ' . date('H:m', strtotime($quotationModel->quote_payment_date)) . ' น.' }}
+                                                    &nbsp;
+                                                    {{ 'จำนวนเงิน :' . number_format($quotationModel->quote_payment_total, 2, '.', ',') . '.-' }}
                                                 @else
                                                     -ไม่มียอดมัดจำ-
                                                 @endif
-                                                
+
                                             </td>
                                         </tr>
                                         <tr>
@@ -214,56 +215,70 @@
 
                                         </tr>
 
-                                      
+
                                         <tr>
                                             <td align="right" class="text-info">สถานะการชำระเงิน :</td>
                                             <td>
                                                 @php
                                                     use Carbon\Carbon;
-                                            
+
                                                     // กำหนดวันที่ปัจจุบัน
                                                     $now = Carbon::now();
-                                            
+
                                                     // กำหนดสถานะเริ่มต้น
                                                     $status = '';
-                                            
+
                                                     // ตรวจสอบสถานะการสั่งซื้อ
                                                     if ($quotationModel->quote_status === 'cancel') {
-                                                        $status = '<span class="badge rounded-pill bg-danger">ยกเลิกการสั่งซื้อ</span>';
+                                                        $status =
+                                                            '<span class="badge rounded-pill bg-danger">ยกเลิกการสั่งซื้อ</span>';
                                                     } elseif ($quotationModel->quote_status === 'success') {
-                                                        $status = '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>';
+                                                        $status =
+                                                            '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>';
                                                     } elseif ($quotationModel->payment > 0) {
                                                         // หากมีการชำระเงินมัดจำแล้ว
-                                                        $status = '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
+                                                        $status =
+                                                            '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
                                                     } elseif ($quotationModel->quote_payment_type === 'deposit') {
                                                         // ตรวจสอบกำหนดชำระเงินมัดจำ
-                                                        if ($now->gt(Carbon::parse($quotationModel->quote_payment_date))) {
-                                                            $status = '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
+                                                        if (
+                                                            $now->gt(Carbon::parse($quotationModel->quote_payment_date))
+                                                        ) {
+                                                            $status =
+                                                                '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
                                                         } else {
-                                                            $status = '<span class="badge rounded-pill bg-warning text-dark"">รอชำระเงินมัดจำ</span>';
+                                                            $status =
+                                                                '<span class="badge rounded-pill bg-warning text-dark"">รอชำระเงินมัดจำ</span>';
                                                         }
                                                     } elseif ($quotationModel->quote_payment_type === 'full') {
                                                         // ตรวจสอบกำหนดชำระเงินเต็มจำนวน
-                                                        if ($now->gt(Carbon::parse($quotationModel->quote_payment_date_full))) {
-                                                            $status  = '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
+                                                        if (
+                                                            $now->gt(
+                                                                Carbon::parse($quotationModel->quote_payment_date_full),
+                                                            )
+                                                        ) {
+                                                            $status =
+                                                                '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
                                                         } else {
-                                                            $status  = '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
+                                                            $status =
+                                                                '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
                                                         }
                                                     } else {
                                                         // กรณีที่ไม่ตรงเงื่อนไขใดๆ
-                                                        $status = '<span class="badge rounded-pill bg-secondary">สถานะไม่ระบุ</span>';
+                                                        $status =
+                                                            '<span class="badge rounded-pill bg-secondary">สถานะไม่ระบุ</span>';
                                                     }
                                                 @endphp
-                                            
+
                                                 {!! $status !!}
                                             </td>
-                                            
+
                                         </tr>
 
                                         {{-- <tr>
                                             <td align="right" class="text-info">สถานะการชำระเงิน :</td>
                                             <td>&nbsp;
-                                                @if ($quotationModel->quote_payment_status === NULL)
+                                                @if ($quotationModel->quote_payment_status === null)
                                                 <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
                                             @endif
                                                 @if ($quotationModel->quote_payment_status === 'wait')
@@ -309,7 +324,7 @@
                             ออกใบแจ้งหนี้
                         </a> --}}
 
-                      
+
                         <button type="button"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
                             <i data-feather="repeat" class="feather-sm fill-white me-2 text-info"></i>
@@ -327,18 +342,18 @@
                             <i data-feather="edit" class="feather-sm fill-white me-2 "></i>
                             แก้ไขใบเสนอราคา
                         </a> --}}
-{{-- 
+                        {{-- 
                         <button type="button"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
                             <i data-feather="file" class="feather-sm fill-white me-2 text-info"></i>
                             ยกเลิกใบเสนอราคา
                         </button> --}}
 
-                        <button type="button"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
+                        <a href="{{route('paymentWholesale.quote',$quotationModel->quote_id)}}"
+                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 payment-wholesale">
                             <i data-feather="dollar-sign" class="feather-sm fill-white me-2 "></i>
                             แจ้งชำระเงินโฮลเซลล์
-                        </button>
+                        </a>
 
                         {{-- <a href="{{ route('mail.quote.formMail', $quotationModel->quote_id) }}"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 mail-quote">
@@ -363,11 +378,15 @@
 
             </div>
 
+            <div class="col-md-12" id="wholesale-payment">
+
+            </div>
+
         </div>
 
 
 
-        {{-- invoice payment Modal --}}
+        {{-- invoice payment Modal
         <div class="modal fade bd-example-modal-sm modal-lg" id="invoice-payment" tabindex="-1" role="dialog"
             aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
@@ -375,40 +394,52 @@
                     ...
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         {{-- debit payment Modal --}}
-        <div class="modal fade bd-example-modal-sm modal-lg" id="debit-payment" tabindex="-1" role="dialog"
+        {{-- <div class="modal fade bd-example-modal-sm modal-lg" id="debit-payment" tabindex="-1" role="dialog"
             aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     ...
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         {{-- credit payment Modal --}}
-        <div class="modal fade bd-example-modal-sm modal-lg" id="credit-payment" tabindex="-1" role="dialog"
+        {{-- <div class="modal fade bd-example-modal-sm modal-lg" id="credit-payment" tabindex="-1" role="dialog"
             aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     ...
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         {{-- credit payment WholeSale  Quote --}}
-        <div class="modal fade bd-example-modal-sm modal-lg" id="quote-payment-wholesale" tabindex="-1" role="dialog"
+        {{-- <div class="modal fade bd-example-modal-sm modal-lg" id="quote-payment-wholesale" tabindex="-1" role="dialog"
             aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     ...
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         {{-- mail form quote --}}
-        <div class="modal fade bd-example-modal-sm modal-lg" id="modal-mail-quote" tabindex="-1" role="dialog"
+        {{-- <div class="modal fade bd-example-modal-sm modal-lg" id="modal-mail-quote" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
+            </div>
+        </div> --}}
+
+
+
+        {{-- Payment Wholesale --}}
+        <div class="modal fade bd-example-modal-sm modal-lg" id="payment-wholesale" tabindex="-1" role="dialog"
             aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
@@ -418,18 +449,27 @@
         </div>
 
 
-       
 
-    
 
-     
-   
-     
+
+
+
+
 
         <script>
-
-            
             $(document).ready(function() {
+
+                // modal Payment Wholesale
+                $(".payment-wholesale").click("click", function(e) {
+                    e.preventDefault();
+                    $("#payment-wholesale")
+                        .modal("show")
+                        .addClass("modal-lg")
+                        .find(".modal-content")
+                        .load($(this).attr("href"));
+                });
+
+
                 var quoteId = "{{ $quotationModel->quote_id }}"
 
                 function quoteEdit(quoteId) {
@@ -460,8 +500,25 @@
                         }
                     });
                 }
+
                 paymentTable(quoteId);
-               
+
+                function paymentWholesale(quoteId) {
+                    // โหลดเนื้อหาของไฟล์ฟอร์มและแสดงใน DOM
+                    $.ajax({
+                        url: "{{ route('wholesale.payment', '') }}/" + quoteId, // ประกอบ URL แบบถูกต้อง
+                        type: 'GET',
+                        success: function(response) {
+                            $('#wholesale-payment').html(response); // แสดง response ใน #quote-centent
+                        },
+                        error: function(xhr) {
+                            console.log(xhr.responseText); // แสดงข้อผิดพลาดใน console
+                        }
+                    });
+                }
+                
+                paymentWholesale(quoteId);
+
                 // // modal add payment wholesale quote
                 // $(".mail-quote").click("click", function(e) {
                 //     e.preventDefault();

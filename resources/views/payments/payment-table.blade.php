@@ -384,6 +384,8 @@
     </div>
 </div>
 
+
+
 <script>
   $(document).ready( function() {
       // modal   payment-modal
@@ -395,5 +397,7 @@
             .find(".modal-content")
             .load($(this).attr("href"));
     });
+
+    
   })
 </script>

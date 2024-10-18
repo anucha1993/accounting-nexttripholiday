@@ -50,10 +50,10 @@
                         @endforelse
                     </select>
                 </div>
-                <div class="col-md-3 mt-3">
+                {{-- <div class="col-md-3 mt-3">
                     <label for="">วันที่โอนเงิน</label>
                     <input type="datetime-local" name="payment_date_time" class="form-control">
-                </div>
+                </div> --}}
             </div>
 
             {{-- เช็คธนาคาร check --}}
