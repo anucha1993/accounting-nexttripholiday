@@ -617,7 +617,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <h5>เงือนไขการชำระเงิน</h5>
+                                        <h5>เงือนไขการชำระเงิน </h5>
                                     </div>
                                     <div class="col-md-12 ">
                                         <div class="row">
@@ -635,7 +635,7 @@
                                             <div class="row">
                                                 <div class="col-md-3">
                                                     <div class="input-group mb-3">
-                                                        <span class="input-group-text" id="basic-addon1">ภายในวันที่</span>
+                                                        <span class="input-group-text" id="basic-addon1">ภายในวันที่</span> 
                                                         <input type="datetime-local" class="form-control" name="quote_payment_date" id="quote-payment-date"
                                                             value="">
                                                             <input type="datetime-local" class="form-control" name="quote_payment_date" id="quote-payment-date-new"
@@ -1208,7 +1208,7 @@
                 // ตั้งค่าให้กับ input datetime-local
                 $('input[name="quote_payment_date"]').val(formattedDate);
             }
-            checkPaymentCondition();
+            //checkPaymentCondition();
             // ตั้งค่าฟิลด์ "ภายในวันที่" เมื่อโหลดหน้าเว็บ
             //setPaymentDueDate();
 

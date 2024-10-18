@@ -32,7 +32,7 @@
                                     {{ $item->payment_number }}
                                 </td>
                                 <td>
-                                    {{ date('d-m-Y', strtotime($item->payment_in_date)) }}
+                                    {{ date('d-m-Y H:m:s', strtotime($item->payment_in_date)) }}
                                 </td>
                                 <td>
 
