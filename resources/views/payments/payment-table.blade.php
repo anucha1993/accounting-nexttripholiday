@@ -257,8 +257,10 @@
                         @endforelse
 
                         <tr>
-                            <td align="right" class="text-success" colspan="9"><b>(@bathText($paymentTotal))</b></td>
+ 
+                            <td align="right" class="text-success" colspan="8"><b>(@bathText($paymentTotal))</b></td>
                             <td align="center" class="text-success" ><b>{{number_format($paymentTotal,2)}}</b></td>
+                            <td align="center" class="text-danger" ><b>( ยอดค้างชำระ : {{ number_format($quotation->quote_grand_total - $paymentTotal , 2, '.', ',') }} )</b></td>
                         </tr>
 
                         @if ($paymentCredit->isNotEmpty())

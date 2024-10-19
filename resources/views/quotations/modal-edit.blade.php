@@ -127,13 +127,13 @@
                     <label>ชื่อแพคเกจทัวร์:</label>
                     <input type="text" id="tourSearch" class="form-control" name="quote_tour_name"
                         placeholder="ค้นหาแพคเกจทัวร์...ENTER เพื่อค้นหา"
-                        value="{{ $quotationModel->quote_tour_name1 ? $quotationModel->quote_tour_name1 : $quotationModel->quote_tour_name }}">
+                        value="{{ $quotationModel->quote_tour_name }}">
                     <div id="tourResults" class="list-group" style="">
                     </div>
                 </div>
 
                 <input type="hidden" id="tour-code" name="quote_tour" value="{{ $quotationModel->quote_tour }}">
-
+                <input type="hidden" id="tourSearch1" class="form-control" name="quote_tour_name1">
 
                 <div class="col-md-3">
                     <label>ระยะเวลาทัวร์ (วัน/คืน): </label>
@@ -1149,7 +1149,7 @@
                 $('input[name="quote_payment_date"]').val(formattedDate);
             }
 
-            //checkPaymentCondition();
+            checkPaymentCondition();
             //ตั้งค่าฟิลด์ "ภายในวันที่" เมื่อโหลดหน้าเว็บ
             //setPaymentDueDate();
 
@@ -1185,7 +1185,7 @@
 
                 $('input[name="quote_payment_date_full"]').val(formattedDate);
             }
-            setPaymentDueDate30();
+            //setPaymentDueDate30();
            
             // ตรวจสอบเมื่อผู้ใช้เลือกชำระเงินเต็มจำนวน
             function checkedPaymentFull() {

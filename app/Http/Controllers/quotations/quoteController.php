@@ -355,14 +355,20 @@ class quoteController extends Controller
         $checkPaymentTotal = paymentModel::where('payment_doc_number',$quotationModel->quote_number)->where('payment_status','success')->sum('payment_total');
 
         if ($checkPaymentTotal >= $quotationModel->quote_grand_total) {
+            $quotePaymentStatus = 'success';
             $paymentStatus = 'success';
+        } elseif($checkPaymentTotal <= 0) {
+            $paymentStatus = 'wait';
         } else {
-            $paymentStatus = 'wait'; 
+            $quotePaymentStatus = 'wait'; 
+            $paymentStatus = 'payment';
+            
         }
 
         $request->merge([
             'quote_withholding_tax_status' => isset($request->quote_withholding_tax_status) ? 'Y' : 'N',
-            'quote_status' =>  $paymentStatus,
+            'quote_payment_status' =>  $paymentStatus,
+            'quote_status' =>  $quotePaymentStatus,
             'payment' =>  $checkPaymentTotal,
              ]);
 

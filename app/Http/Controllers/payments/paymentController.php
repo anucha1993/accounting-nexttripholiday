@@ -25,6 +25,9 @@ class paymentController extends Controller
         ->leftjoin('debit_note','debit_note.debit_invoice_id','invoices.invoice_id')
         ->leftjoin('credit_note','credit_note.credit_invoice_id','invoices.invoice_id')
         ->first();
+
+        $quotation = quotationModel::where('quote_number', $quotationModel->quote_number)->first();
+        
     
         $payments = paymentModel::where('payment_doc_number', $quotationModel->quote_number)
         ->where('payment_doc_type','quote')
@@ -38,7 +41,7 @@ class paymentController extends Controller
         ->where('payment_doc_type','credit-note')
         ->latest()->get();
         
-        return View::make('payments.payment-table',compact('payments','quotationModel','paymentDebit','paymentCredit'))->render();
+        return View::make('payments.payment-table',compact('payments','quotationModel','quotation','paymentDebit','paymentCredit'))->render();
     }
 
 
