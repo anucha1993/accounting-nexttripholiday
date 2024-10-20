@@ -20,6 +20,5 @@ class debitNoteProductModel extends Model
         'expense_type',
         'vat_status',
         'withholding_tax'
-
     ];
 }

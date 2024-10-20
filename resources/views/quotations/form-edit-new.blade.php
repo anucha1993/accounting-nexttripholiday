@@ -9,7 +9,7 @@
                     <div class="card-header bg-info text-white">
                         Quotation No. : {{ $quotationModel->quote_number }}
                         <span class="float-end">วันที่ออกใบเสนอราคา :
-                            {{ thaidate('j F Y', $quotationModel->quote_date) }}</span>
+                            {{ thaidate('j F Y', $quotationModel->created_at) }} เวลา : {{date('H:m:s',strtotime($quotationModel->created_at))}}</span>
                     </div>
                 </div>
 
@@ -141,7 +141,7 @@
                                         <tr>
                                             <td align="right" class="text-info">ชื่อแพคเกจ :</td>
                                             <td>&nbsp;
-                                                {{ $quotationModel->quote_tour_name1 ? $quotationModel->quote_tour_name1 : $quotationModel->quote_tour_name }}
+                                                {{ $quotationModel->quote_tour_name }}
                                             </td>
                                         </tr>
                                         <tr>
@@ -337,11 +337,7 @@
                             แจ้งชำระเงิน
                         </a>
 
-                        {{-- <a href="{{ route('quote.modalEdit', $quotationModel->quote_id) }}"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 modal-quote-edit ">
-                            <i data-feather="edit" class="feather-sm fill-white me-2 "></i>
-                            แก้ไขใบเสนอราคา
-                        </a> --}}
+                      
                         {{-- 
                         <button type="button"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
@@ -354,6 +350,13 @@
                             <i data-feather="dollar-sign" class="feather-sm fill-white me-2 "></i>
                             แจ้งชำระเงินโฮลเซลล์
                         </a>
+
+                        <a href="{{route('inputtax.createWholesale',$quotationModel->quote_id)}}"
+                        class="justify-content-left w-100 btn btn-rounded btn-outline-primary d-flex align-items-center mb-3 modal-input-tax ">
+                        <i data-feather="file-minus" class="feather-sm fill-white me-2 "></i>
+                        บันทึกภาษีซื้อ , ต้นทุนอื่นๆ
+                    </a>
+
 
                         {{-- <a href="{{ route('mail.quote.formMail', $quotationModel->quote_id) }}"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 mail-quote">
@@ -385,6 +388,11 @@
             <div class="col-md-12" id="files">
 
             </div>
+            <div class="col-md-12" id="inputtax">
+
+            </div>
+
+            
 
         </div>
 
@@ -452,7 +460,16 @@
             </div>
         </div>
 
-
+          {{-- modal-input-tax  --}}
+          <div class="modal fade bd-example-modal-sm modal-lg" id="input-tax" tabindex="-1" role="dialog"
+          aria-labelledby="mySmallModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+              <div class="modal-content">
+                  ...
+              </div>
+          </div>
+      </div>
+        
 
 
 
@@ -464,7 +481,17 @@
             $(document).ready(function() {
 
                 // modal Payment Wholesale
-                $(".payment-wholesale").click("click", function(e) {
+                $(".modal-input-tax").click("click", function(e) {
+                    e.preventDefault();
+                    $("#input-tax")
+                        .modal("show")
+                        .addClass("modal-lg")
+                        .find(".modal-content")
+                        .load($(this).attr("href"));
+                });
+
+                 // modal Payment Wholesale
+                 $(".payment-wholesale").click("click", function(e) {
                     e.preventDefault();
                     $("#payment-wholesale")
                         .modal("show")
@@ -540,6 +567,22 @@
                 
                 files(quoteId);
 
+                function inputtax(quoteId) {
+                    // โหลดเนื้อหาของไฟล์ฟอร์มและแสดงใน DOM
+                    $.ajax({
+                        url: "{{ route('inputtax.table', '') }}/" + quoteId, // ประกอบ URL แบบถูกต้อง
+                        type: 'GET',
+                        success: function(response) {
+                            $('#inputtax').html(response); // แสดง response ใน #quote-centent
+                        },
+                        error: function(xhr) {
+                            console.log(xhr.responseText); // แสดงข้อผิดพลาดใน console
+                        }
+                    });
+                }
+                inputtax(quoteId)
+
+               
 
                 // // modal add payment wholesale quote
                 // $(".mail-quote").click("click", function(e) {

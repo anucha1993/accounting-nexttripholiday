@@ -307,7 +307,7 @@
                             ชำระเงินมัดจำ
                         @endif
                         @if ($paymentModel->payment_type === 'full')
-                        ชำระเงินเ๖็มจำนวน
+                        ชำระเงินเต็มจำนวน
                     @endif
                     </td>
                     {{-- <td style="width: 120px; text-align: center; vertical-align: top;">

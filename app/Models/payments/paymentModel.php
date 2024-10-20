@@ -27,5 +27,7 @@ class paymentModel extends Model
         'payment_status',
         'payment_number',
         'created_by',
+        'payment_cancel_note',
+        'payment_cancel_file_path',
     ];
 }

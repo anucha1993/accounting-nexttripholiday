@@ -75,12 +75,20 @@
 
                                 </td>
                                 <td>
+                                    @if ($item->payment_status === 'cancel')
+                                    <a href="{{ asset('storage/' . $item->payment_cancel_file_path) }}"
+                                        onclick="openPdfPopup(this.href); return false;"><i
+                                            class="fa fa-file text-danger"></i> ไฟล์แนบยกเลิก</a>
+                                    @else
+
                                     @if ($item->payment_file_path)
-                                        <a href="{{ asset('storage/' . $item->payment_file_path) }}"
-                                            onclick="openPdfPopup(this.href); return false;"><i
-                                                class="fa fa-file text-danger"></i></a>
+                                    <a href="{{ asset('storage/' . $item->payment_file_path) }}"
+                                        onclick="openPdfPopup(this.href); return false;"><i
+                                            class="fa fa-file text-danger"></i> สลิปโอน</a>
                                     @else
                                         -
+                                    @endif
+                                   
                                     @endif
                                 </td>
                                 <td>
@@ -126,12 +134,10 @@
 
                                          
 
-                                        <a class="dropdown-item text-danger py-1"
-                                            onclick="return confirm('หากยกเลิกระบบจะ คืนจำนวนเงิน ที่ชำระ ไปยังยอดค้างชำระ')"
-                                            href="{{ route('payment.cancel', $item->payment_id) }}"><i
+                                            <a class="dropdown-item text-danger payment-modal-cancel" href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
                                                 class="fas fa-minus-circle "></i> ยกเลิก</a>
                                     @else
-                                        -
+                                    {{$item->payment_cancel_note}}
                                     @endif
 
 
@@ -237,12 +243,10 @@
                                                 class="fa fa-edit text-info"></i>
                                             แก้ไข</a>
 
-                                        <a class="dropdown-item text-danger py-1"
-                                            onclick="return confirm('หากยกเลิกระบบจะ คืนจำนวนเงิน ที่ชำระ ไปยังยอดค้างชำระ')"
-                                            href="{{ route('payment.debit-cancel', $item->payment_id) }}"><i
+                                            <a class="dropdown-item text-danger payment-modal-cancel" href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
                                                 class="fas fa-minus-circle "></i> ยกเลิก</a>
                                     @else
-                                        -
+                                    {{$item->payment_cancel_note}}
                                     @endif
 
 
@@ -258,9 +262,9 @@
 
                         <tr>
  
-                            <td align="right" class="text-success" colspan="8"><b>(@bathText($paymentTotal))</b></td>
+                            <td align="right" class="text-success" colspan="7"><b>(@bathText($paymentTotal))</b></td>
                             <td align="center" class="text-success" ><b>{{number_format($paymentTotal,2)}}</b></td>
-                            <td align="center" class="text-danger" ><b>( ยอดค้างชำระ : {{ number_format($quotation->quote_grand_total - $paymentTotal , 2, '.', ',') }} )</b></td>
+                            <td align="center" class="text-danger" colspan="2"><b>( ยอดค้างชำระ : {{ number_format($quotation->quote_grand_total - $paymentTotal , 2, '.', ',') }} )</b></td>
                         </tr>
 
                         @if ($paymentCredit->isNotEmpty())
@@ -359,15 +363,14 @@
                                                         class="fa fa-edit"></i>
                                                     แก้ไข</a>
 
-                                                <a class="dropdown-item text-danger"
-                                                    onclick="return confirm('หากยกเลิกระบบจะ คืนจำนวนเงิน ที่ชำระ ไปยังยอดค้างชำระ')"
-                                                    href="{{ route('payment.credit-cancel', $item->payment_id) }}"><i
+                                                <a class="dropdown-item text-danger payment-modal-cancel" href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
                                                         class="fas fa-minus-circle "></i> ยกเลิก</a>
 
 
                                             </div>
                                         </div>
                                     @else
+                                    {{$item->payment_cancel_note}}
                                     @endif
 
 
@@ -403,6 +406,15 @@
     </div>
 </div>
 
+{{-- payment-modal --}}
+<div class="modal fade bd-example-modal-sm modal-lg" id="modal-payment-cancel" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
 
 
 <script>
@@ -411,6 +423,15 @@
       $(".payment-modal").click("click", function(e) {
         e.preventDefault();
         $("#modal-payment-edit")
+            .modal("show")
+            .addClass("modal-lg")
+            .find(".modal-content")
+            .load($(this).attr("href"));
+    });
+  // modal   payment-modal camcel
+  $(".payment-modal-cancel").click("click", function(e) {
+        e.preventDefault();
+        $("#modal-payment-cancel")
             .modal("show")
             .addClass("modal-lg")
             .find(".modal-content")

@@ -31,15 +31,15 @@ class paymentController extends Controller
     
         $payments = paymentModel::where('payment_doc_number', $quotationModel->quote_number)
         ->where('payment_doc_type','quote')
-        ->latest()->get();
+        ->get();
         
         $paymentDebit = paymentModel::where('payment_doc_number', $quotationModel->debit_number)
         ->where('payment_doc_type','debit-note')
-        ->latest()->get();
+        ->get();
 
         $paymentCredit = paymentModel::where('payment_doc_number', $quotationModel->credit_number)
         ->where('payment_doc_type','credit-note')
-        ->latest()->get();
+        ->get();
         
         return View::make('payments.payment-table',compact('payments','quotationModel','quotation','paymentDebit','paymentCredit'))->render();
     }
@@ -135,23 +135,49 @@ class paymentController extends Controller
         return redirect()->back()->with('success', 'Payment processed successfully.');
     }
 
+    public function cancelModal(paymentModel $paymentModel)
+    {
+        return view('payments.camcel-payment',compact('paymentModel'));
+    }
+
     public function cancel(paymentModel $paymentModel, Request $request)
     {
         $totalOld = $paymentModel->payment_total;
-        $paymentModel->update(['payment_total' => NULL, 'payment_status' => 'cancel']);
+        $paymentModel->update(['payment_total' => NULL, 'payment_status' => 'cancel', 'payment_cancel_note' => $request->payment_cancel_note]);
 
         // quote
         $quotationModel = quotationModel::where('quote_number', $paymentModel->payment_doc_number)->first();
         $quoteTotalOld = $quotationModel->payment;
         $totalNew = $quoteTotalOld - $totalOld;
-        $quotationModel->update(['payment' => $totalNew, 'quote_status' => 'payment']);
+        $quotationModel->update(['payment' => $totalNew, 'quote_payment_status' => 'payment']);
 
          // การอัปเดตสถานะของใบเสนอราคา
          if ($quotationModel->payment <= 0) {
             quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'wait']);
         } else {
-            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'payment']);
+            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'wait','quote_payment_status'=> 'payment']);
         }
+
+        $folderPath = 'public/' . $quotationModel->customer_id . '/' . $quotationModel->quote_number;
+        $absolutePath = storage_path('app/' . $folderPath);
+        // เช็คว่าไดเร็กทอรีมีอยู่แล้วหรือไม่ หากไม่มีให้สร้างขึ้นมา
+        if (!File::exists($absolutePath)) {
+             File::makeDirectory($absolutePath, 0775, true);
+        }
+        $file = $request->file('payment_cancel_file_path');
+
+        if ($file) {
+            $extension = $file->getClientOriginalExtension(); // นามสกุลไฟล์
+            $uniqueName = $paymentModel->payment_id . '_' . $paymentModel->payment_doc_number . '_cancel_' . date('Ymd') . '.' . $extension;
+            $filePath = $quotationModel->customer_id . '/' . $quotationModel->quote_number . '/' . $uniqueName;
+
+            // ย้ายไฟล์ไปยังตำแหน่งที่ต้องการ
+            $file->move($absolutePath, $uniqueName);
+
+            // อัปเดตพาธไฟล์ในฐานข้อมูล
+            $paymentModel->update(['payment_cancel_file_path' => $filePath]);
+        }
+
 
         return redirect()->back();
     }

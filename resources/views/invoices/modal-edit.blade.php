@@ -552,7 +552,7 @@
                         <div class="row summary-row ">
                             <div class="col-md-10 text-end">หักเงินมัดจำ / Deposit: :</div>
                             <div class="col-md-2 ">
-                                <input type="text" value="{{$quotationModel->payment}}" name="payment" id="deposit" class="form-control" style="height: 25px;">
+                                <input type="text" name="payment" id="deposit" class="form-control" style="height: 25px;">
                             </div>
                         </div>
 
@@ -728,18 +728,19 @@
 
 
             </div>
+              {{-- hidden --}}
+              <input type="hidden" name="invoice_vat_exempted_amount">
+              <input type="hidden" name="invoice_pre_tax_amount">
+              <input type="hidden" name="invoice_discount">
+              <input type="hidden" name="invoice_pre_vat_amount">
+              <input type="hidden" name="invoice_vat">
+              <input type="hidden" name="invoice_include_vat">
+              <input type="hidden" name="invoice_grand_total" id="invoice-grand-total">
+              <input type="hidden" name="invoice_withholding_tax">
         </div>
 
         <div class="text-end mt-3">
-            {{-- hidden --}}
-            <input type="hidden" name="invoice_vat_exempted_amount">
-            <input type="hidden" name="invoice_pre_tax_amount">
-            <input type="hidden" name="invoice_discount">
-            <input type="hidden" name="invoice_pre_vat_amount">
-            <input type="hidden" name="invoice_vat">
-            <input type="hidden" name="invoice_include_vat">
-            <input type="hidden" name="invoice_grand_total" id="invoice-grand-total">
-            <input type="hidden" name="invoice_withholding_tax">
+          
            
             <button type="submit" class="btn btn-success btn-sm  mx-3" form="formQuote"><i class="fa fa-save"></i>
                 อัพเดทใบแจ้งหนี้</button>

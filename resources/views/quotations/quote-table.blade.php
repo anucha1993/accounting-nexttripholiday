@@ -273,7 +273,7 @@
                                             href="{{ route('invoice.edit', $itemInvoice->invoice_id) }}">
                                             <i class="fa fa-edit text-info"></i> แก้ไข</a>
 
-                                        @if ($itemInvoice->invoice_status === 'wait')
+                                        @if ($itemInvoice->invoice_status === 'wait' && $quotationModel->quote_payment_status === 'success')
                                             <a class="dropdown-item"
                                                 href="{{ route('invoice.taxinvoice', $itemInvoice->invoice_id) }}"
                                                 onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i

@@ -21,6 +21,7 @@ use App\Http\Controllers\MPDF\MPDF_invoiceController;
 use App\Http\Controllers\MPDF\MPDF_PaymentController;
 use App\Http\Controllers\customers\customerController;
 use App\Http\Controllers\FPDF\FPDF_QuotatioController;
+use App\Http\Controllers\inputTax\inputTaxController;
 use App\Http\Controllers\invoices\taxInvoiceController;
 use App\Http\Controllers\MPDF\MPDF_QuotationController;
 use App\Http\Controllers\MPDF\MPDF_taxReceiptController;
@@ -168,8 +169,10 @@ Route::post('credit/store/',[creditController::class,'store'])->name('credit.sto
 Route::get('payments/{quotationModel}',[paymentController::class,'index'])->name('payments');
 Route::get('payments/edit/{paymentModel}',[paymentController::class,'edit'])->name('payment.edit');
 Route::put('payments/update/{paymentModel}',[paymentController::class,'update'])->name('payment.update');
+Route::get('payments/cancelModal/{paymentModel}',[paymentController::class,'cancelModal'])->name('payment.cancelModal');
+
 Route::get('payment/quotation/{quotationModel}',[paymentController::class,'quotation'])->name('payment.quotation');
-Route::get('payment/cancel/{paymentModel}',[paymentController::class,'cancel'])->name('payment.cancel');
+Route::put('payment/cancel/{paymentModel}',[paymentController::class,'cancel'])->name('payment.cancel');
 Route::post('payment/quotation/store',[paymentController::class,'payment'])->name('payment.payment');
 
 //payment debit
@@ -196,6 +199,8 @@ Route::post('quotefile/upload',[QuoteFilesController::class,'upload'])->name('qu
 Route::get('payment/wholesales/{quotationModel}',[paymentWholesaleController::class,'index'])->name('paymentWholesale.index');
 Route::get('payment/wholesales/payment/{quotationModel}',[paymentWholesaleController::class,'payment'])->name('wholesale.payment');
 Route::get('payment/wholesale/delete/{paymentWholesaleModel}',[paymentWholesaleController::class,'delete'])->name('paymentWholesale.delete');
+Route::get('payment/wholesale/edit/{paymentWholesaleModel}',[paymentWholesaleController::class,'edit'])->name('paymentWholesale.edit');
+Route::PUT('payment/wholesale/update/{paymentWholesaleModel}',[paymentWholesaleController::class,'update'])->name('paymentWholesale.update');
 Route::get('payment/wholesales/quote/{quotationModel}',[paymentWholesaleController::class,'quote'])->name('paymentWholesale.quote');
 Route::post('payment/wholesales/store',[paymentWholesaleController::class,'store'])->name('paymentWholesale.store');
 
@@ -226,3 +231,9 @@ Route::get('modal/mail/debit/{debitModel}',[MailController::class,'formMailDebit
 //Send Mail  Creadit
 Route::post('mpdf/mail/credit/{creditModel}',[MPDF_CreditReceiptController::class,'sendPdf'])->name('mpdf.creditReceipt.sendPdf');
 Route::get('modal/mail/credit/{creditModel}',[MailController::class,'formMailCreditReceipt'])->name('mail.creditReceipt.formMail');
+
+// input tax 
+Route::get('inputtax/create/wholesale/{quotationModel}',[inputTaxController::class,'createWholesale'])->name('inputtax.createWholesale');
+Route::get('inputtax/table/{quotationModel}',[inputTaxController::class,'table'])->name('inputtax.table');
+Route::POST('inputtax/store',[inputTaxController::class,'store'])->name('inputtax.store');
+

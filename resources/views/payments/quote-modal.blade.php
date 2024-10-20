@@ -44,7 +44,7 @@
                     <select name="payment_bank_number" id="bank-number" class="form-select">
                         <option value="">--กรุณาเลือก--</option>
                         @forelse ($bankCompany as $item)
-                        <option value="{{$item->bank_company_id}}">{{$item->bank_company_name}}</option>
+                        <option @if($item->bank_company_id === 4) selected  @endif  value="{{$item->bank_company_id}}">{{$item->bank_company_name}}</option>
                         @empty
                             
                         @endforelse
@@ -63,7 +63,7 @@
                 <select name="payment_bank" id="bank" class="form-select">
                     <option value="">--กรุณาเลือก--</option>
                     @forelse ($bank as $item)
-                    <option value="{{$item->bank_id}}">{{$item->bank_name}}</option>
+                    <option @if($item->bank_id === 4) selected  @endif value="{{$item->bank_id}}">{{$item->bank_name}}</option>
                     @empty
                     @endforelse
                 </select>
