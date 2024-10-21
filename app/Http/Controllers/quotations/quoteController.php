@@ -353,7 +353,7 @@ class quoteController extends Controller
         //dd($runningCodeTourUpdate);
          
         $checkPaymentTotal = paymentModel::where('payment_doc_number',$quotationModel->quote_number)->where('payment_status','success')->sum('payment_total');
-
+        $quotePaymentStatus = 'wait';
         if ($checkPaymentTotal >= $quotationModel->quote_grand_total) {
             $quotePaymentStatus = 'success';
             $paymentStatus = 'success';
