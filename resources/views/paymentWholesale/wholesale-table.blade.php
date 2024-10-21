@@ -50,8 +50,8 @@
                                         class=" text-info payment-wholesale-edit"><i class="fa fa-edit"></i> แก้ไข</a>
                                     &nbsp;
                                     <a href="{{ route('paymentWholesale.delete', $item->payment_wholesale_id) }}"
-                                        onclick="return confirm('ยืนยันการลบ');" class="text-danger"><i
-                                            class="fa fa-trash"></i> ลบ</a>
+                                        onclick="return confirm('ยกเลิกคืนเงินลูกค้า');" class="text-primary"><i
+                                            class="fa fas fa-reply-all"></i> ยกเลิกรอคืนเงิน</a>
                                 </td>
                             </tr>
                         @endforeach
