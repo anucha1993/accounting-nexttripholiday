@@ -101,6 +101,7 @@ class invoiceController extends Controller
          }
 
         $request->merge(['created_by' => Auth::user()->name]); 
+       
        $invoice = invoiceModel::create($request->all());
        quotationModel::where('quote_id',$invoice->invoice_quote_id)->update(['quote_status'=> 'invoice']);
 
