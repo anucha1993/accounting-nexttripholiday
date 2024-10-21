@@ -84,7 +84,7 @@
                                 <td>{{number_format($item->input_tax_grand_total,2)}}</td>
 
                                 <td>
-                                    <a href=""> <i class="fa fa-edit"> แก้ไข</i></a>
+                                    <a href="{{route('inputtax.editWholesale',$item->input_tax_id)}}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
                                     <a href="" class="text-danger"> <i class="fas fa-minus-circle"> ยกเลิก</i></a>
                                 </td>
                             </tr>
@@ -107,3 +107,28 @@
         </div>
     </div>
 </div>
+
+
+{{-- modal-input-tax edit --}}
+<div class="modal fade bd-example-modal-sm modal-lg" id="input-tax-edit" tabindex="-1" role="dialog"
+aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-xl">
+    <div class="modal-content">
+        ...
+    </div>
+</div>
+</div>
+
+
+<script>
+     // modal Payment Wholesale
+     $(".input-tax-edit").click("click", function(e) {
+                    e.preventDefault();
+                    $("#input-tax-edit")
+                        .modal("show")
+                        .addClass("modal-lg")
+                        .find(".modal-content")
+                        .load($(this).attr("href"));
+                });
+
+</script>

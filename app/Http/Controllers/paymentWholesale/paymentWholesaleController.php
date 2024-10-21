@@ -79,8 +79,6 @@ class paymentWholesaleController extends Controller
         return redirect()->back();
     }
 
-
-
     
 public function delete(paymentWholesaleModel $paymentWholesaleModel)
 {
@@ -88,6 +86,7 @@ public function delete(paymentWholesaleModel $paymentWholesaleModel)
     if (File::exists($paymentWholesaleModel->payment_wholesale_file_path)) {
         File::delete($paymentWholesaleModel->payment_wholesale_file_path); // ลบไฟล์
     }
+
     // ลบเรคคอร์ดออกจากฐานข้อมูล 
     $paymentWholesaleModel->delete();
     return redirect()->back()->with('success', 'ไฟล์ถูกลบเรียบร้อยแล้ว');

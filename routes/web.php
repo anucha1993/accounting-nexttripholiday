@@ -234,6 +234,8 @@ Route::get('modal/mail/credit/{creditModel}',[MailController::class,'formMailCre
 
 // input tax 
 Route::get('inputtax/create/wholesale/{quotationModel}',[inputTaxController::class,'createWholesale'])->name('inputtax.createWholesale');
+Route::get('inputtax/create/edit/{inputTaxModel}',[inputTaxController::class,'editWholesale'])->name('inputtax.editWholesale');
+Route::put('inputtax/create/update/{inputTaxModel}',[inputTaxController::class,'update'])->name('inputtax.update');
 Route::get('inputtax/table/{quotationModel}',[inputTaxController::class,'table'])->name('inputtax.table');
 Route::POST('inputtax/store',[inputTaxController::class,'store'])->name('inputtax.store');
 
