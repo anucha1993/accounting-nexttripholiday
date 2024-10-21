@@ -35,6 +35,7 @@ class invoiceModel extends Model
           'invoice_status',
           'invoice_note',
           'invoice_vat_type',
+          'deposit',
           'created_by',
           'updated_by',
     ];

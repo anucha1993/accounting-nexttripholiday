@@ -570,8 +570,7 @@
                         <div class="row summary-row ">
                             <div class="col-md-10 text-end">หักเงินมัดจำ / Deposit: </div>
                             <div class="col-md-2 ">
-                                <input type="text" value="0.0" name="payment" id="deposit"
-                                    class="form-control" style="height: 25px;">
+                                <input type="number" name="deposit" id="deposit" class="form-control" value="0" style="height: 25px;">
                             </div>
                         </div>
 

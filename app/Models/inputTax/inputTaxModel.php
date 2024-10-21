@@ -22,6 +22,7 @@ class inputTaxModel extends Model
         'input_tax_quote_number',
         'input_tax_cancel',
         'input_tax_status',
+        'input_tax_service_total',
         'created_by',
         'upated_by',
     ];

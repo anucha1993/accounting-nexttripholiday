@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\View;
 use App\Models\inputTax\inputTaxModel;
 use App\Models\quotations\quotationModel;
 use App\Http\Controllers\uploadfiles\uploadfileQuoteController;
+use App\Models\invoices\invoiceModel;
+use App\Models\invoices\taxinvoiceModel;
 
 class inputTaxController extends Controller
 {
@@ -86,7 +88,8 @@ class inputTaxController extends Controller
     public function table(quotationModel $quotationModel)
 
     {
+        $invoiceModel = invoiceModel::where('invoice_quote_id',$quotationModel->quote_id)->get();
         $inputTax = inputTaxModel::where('input_tax_quote_id', $quotationModel->quote_id)->get();
-        return View::make('inputTax.inputtax-table', compact('quotationModel', 'inputTax'))->render();
+        return View::make('inputTax.inputtax-table', compact('quotationModel', 'inputTax','invoiceModel'))->render();
     }
 }

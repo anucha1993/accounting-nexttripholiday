@@ -21,9 +21,16 @@
                 <input type="text" name="input_tax_ref" class="form-control" placeholder="tax number" >
             </div>
 
+            
+            <div class="col-md-12 mb-3">
+                <label>ยอดค่าบริการ</label>
+                <input type="number" class="form-control" name="input_tax_service_total" id="service-total" placeholder="0.0" >
+            </div>
+
+
             <div class="col-md-12 mb-3">
                 <label for="">ภาษี ณ ที่จ่าย </label>
-                <input type="number" name="input_tax_withholding" step="0.01" class="form-control" placeholder="0.0" id="withholding">
+                <input type="number" name="input_tax_withholding" step="0.01" class="form-control" placeholder="0.0" id="withholding"  readonly style="background-color: antiquewhite">
             </div>
 
             <div class="col-md-12 mb-3">
@@ -48,14 +55,17 @@
 </div>
 
 <script>
-  $(document).ready(function() {
-    $('#withholding, #vat').on('keyup', function () {
-        let total = 0;
-        let withholding = parseFloat($('#withholding').val()) || 0;
-        let vat = parseFloat($('#vat').val()) || 0;
-        total = withholding+vat;
-        $('#total').val((total).toFixed(2));;
+ $(document).ready(function() {
 
-    });
-  });
+$('#service-total, #vat').on('keyup', function () {
+    let total = 0;
+    let withholding = parseFloat($('#withholding').val()) || 0;
+    let serviceTotal = parseFloat($('#service-total').val()) || 0;
+    let vat = parseFloat($('#vat').val()) || 0;
+    total = withholding+vat;
+    withholdingTotal = serviceTotal * 0.03 || 0;
+    $('#withholding').val(withholdingTotal);
+    $('#total').val((total).toFixed(2));;
+});
+});
 </script>

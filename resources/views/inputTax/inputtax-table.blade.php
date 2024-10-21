@@ -14,8 +14,10 @@
                             <th>ประเภท</th>
                             <th>เลขที่เอกสารอ้างอิง</th>
                             <th>ไฟล์แนบ</th>
-                            <th>จำนวน:หัก ณ ที่จ่าย</th>
-                            <th>จำนวน:ภาษี</th>
+                            <th>ยอดค่าบริการ</th>
+                            <th>ใบหัก ณ ที่จ่าย</th>
+                            <th>จำนวน:ภาษีหัก</th>
+                            <th>จำนวน:ภาษี 7%</th>
                             <th>ยอดทั้งสิ้น</th>
                             <th>Actions</th>
                         </tr>
@@ -25,10 +27,10 @@
                         $inputTaxTotal = 0;
                     @endphp
                     <tbody>
-
+                        @forelse ($invoiceModel as $item)
                         @php
-                        $inputTaxTotal += $quotationModel->quote_withholding_tax;
-                        $inputTaxTotal += $quotationModel->quote_vat;
+                        $inputTaxTotal += $item->invoice_withholding_tax;
+                        $inputTaxTotal += $item->invoice_vat;
                         @endphp
 
                         <tr>
@@ -37,12 +39,26 @@
                             <td>{{$quotationModel->quote_number}}</td>
                             <td>-</td>
                             <td>
-                                {{number_format($quotationModel->quote_withholding_tax,2)}}
+                                {{number_format($item->invoice_pre_vat_amount,2)}}
                               
                             </td>
-                            <td>{{number_format($quotationModel->quote_vat,2)}}</td>
-                            <td>{{number_format($quotationModel->quote_vat + $quotationModel->quote_withholding_tax,2)}}</td>
+                            <td>
+                                @if ($item->invoice_withholding_tax > 0)
+                                <a href="#"> <i class="fa fa-file-pdf text-danger"></i> ใบหัก ณ ที่จ่าย</a>
+                                @else
+                                    -
+                                @endif
+                                
+                            </td>
+                            <td>{{number_format($item->invoice_withholding_tax,2)}}</td>
+                            <td>{{number_format($item->invoice_vat,2)}}</td>
+                            <td>{{number_format($item->invoice_vat + $item->invoice_withholding_tax,2)}}</td>
                             <td>-</td>
+                        @empty
+                            
+                        @endforelse
+
+                       
                         </tr>
 
                         @forelse ($inputTax as $item)
@@ -81,10 +97,21 @@
                                             class="fa fa-file text-danger"></i> ไฟล์แนบ</a>
                                 </td>
                                 <td>
-                                    {{number_format($item->input_tax_withholding,2)}}
+                                    {{number_format($item->input_tax_service_total,2)}}
                                    
                                 </td>
+                                <td>
+                                    @if ($item->input_tax_withholding > 0)
+                                    <a href="#"> <i class="fa fa-file-pdf text-danger"></i> ใบหัก ณ ที่จ่าย</a>
+                                    @else
+                                        -
+                                    @endif
+                                    
+                                </td>
+
+                                <td>{{number_format($item->input_tax_withholding,2)}}</td>
                                 <td>{{number_format($item->input_tax_vat,2)}}</td>
+                                
                                 <td>{{number_format($item->input_tax_grand_total,2)}}</td>
 
                                 <td>
