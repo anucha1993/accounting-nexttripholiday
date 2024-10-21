@@ -134,8 +134,8 @@
 
                                          
 
-                                            <a class="dropdown-item text-danger payment-modal-cancel" href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
-                                                class="fas fa-minus-circle "></i> ยกเลิก</a>
+                                            <a class="dropdown-item text-primary payment-modal-cancel" href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
+                                                class="fas fa-redo-alt"></i> คืนเงินลูกค้า</a>
                                     @else
                                     {{$item->payment_cancel_note}}
                                     @endif
@@ -243,8 +243,8 @@
                                                 class="fa fa-edit text-info"></i>
                                             แก้ไข</a>
 
-                                            <a class="dropdown-item text-danger payment-modal-cancel" href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
-                                                class="fas fa-minus-circle "></i> ยกเลิก</a>
+                                            <a class="dropdown-item text-primary payment-modal-cancel" href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
+                                                class="fas fa-redo-alt"></i> คืนเงินลูกค้า</a>
                                     @else
                                     {{$item->payment_cancel_note}}
                                     @endif
@@ -363,8 +363,8 @@
                                                         class="fa fa-edit"></i>
                                                     แก้ไข</a>
 
-                                                <a class="dropdown-item text-danger payment-modal-cancel" href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
-                                                        class="fas fa-minus-circle "></i> ยกเลิก</a>
+                                                <a class="dropdown-item text-primary payment-modal-cancel" href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
+                                                    class="fas fa-redo-alt"></i> คืนเงินลูกค้า</a>
 
 
                                             </div>
