@@ -25,6 +25,18 @@ class inputTaxController extends Controller
         $quotationModel = quotationModel::where('quote_id', $inputTaxModel->input_tax_quote_id)->first();
         return view('inputTax.modal-edit', compact('inputTaxModel', 'quotationModel'));
     }
+   
+    public function cancelWholesale(inputTaxModel $inputTaxModel)
+    {
+        $quotationModel = quotationModel::where('quote_id', $inputTaxModel->input_tax_quote_id)->first();
+        return view('inputTax.modal-cancel', compact('inputTaxModel', 'quotationModel'));
+    }
+
+    public function  updateCancel(Request $request, inputTaxModel $inputTaxModel)
+    {
+        $inputTaxModel->update(['input_tax_status' => 'cancel','input_tax_cancel' => $request->input_tax_cancel]);
+        return redirect()->back();
+    }
 
     public function update(Request $request, inputTaxModel $inputTaxModel)
     {

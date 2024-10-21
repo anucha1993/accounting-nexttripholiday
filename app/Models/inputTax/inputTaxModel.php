@@ -20,6 +20,8 @@ class inputTaxModel extends Model
         'input_tax_file',
         'input_tax_quote_id',
         'input_tax_quote_number',
+        'input_tax_cancel',
+        'input_tax_status',
         'created_by',
         'upated_by',
     ];

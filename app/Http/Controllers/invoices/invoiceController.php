@@ -145,7 +145,6 @@ class invoiceController extends Controller
         $invoiceProductsDiscount = invoicePorductsModel::where('invoice_id',$invoiceModel->invoice_id)->where('expense_type','discount')->get();
         $campaignSource = DB::table('campaign_source')->get();
 
-        
         return view('invoices.modal-edit', compact('invoiceModel','campaignSource','customer','invoiceProducts','quotationModel','sales','country','airline','numDays','wholesale','products','productDiscount','invoiceProductsDiscount'));
         
     }

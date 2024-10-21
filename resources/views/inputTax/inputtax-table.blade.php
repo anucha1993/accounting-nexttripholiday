@@ -48,11 +48,15 @@
                         @forelse ($inputTax as $item)
 
                         @php
+
+                        if ($item->input_tax_status === 'success') {
                         $inputTaxTotal += $item->input_tax_withholding;
                         $inputTaxTotal += $item->input_tax_vat;
-                        @endphp
+                        }
 
-                            <tr>
+                    
+                        @endphp
+                            <tr class="@if($item->input_tax_status === 'cancel') text-danger @endif">
                                 <td>{{++$key}}</td>
                                 <td>
                                     @if ($item->input_tax_type === 0)
@@ -84,8 +88,13 @@
                                 <td>{{number_format($item->input_tax_grand_total,2)}}</td>
 
                                 <td>
+                                    @if ($item->input_tax_status === 'success')
                                     <a href="{{route('inputtax.editWholesale',$item->input_tax_id)}}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
-                                    <a href="" class="text-danger"> <i class="fas fa-minus-circle"> ยกเลิก</i></a>
+                                    <a href="{{route('inputtax.cancelWholesale',$item->input_tax_id)}}" class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle"> ยกเลิก</i></a>
+                                    @else
+                                        {{$item->input_tax_cancel}}
+                                    @endif
+                                    
                                 </td>
                             </tr>
                         @empty
@@ -95,7 +104,7 @@
                         <tr>
                             <tr>
  
-                                <td align="right" class="text-success" colspan="7"><b>(@bathText($inputTaxTotal))</b></td>
+                                <td align="right" class="text-success"  colspan="7"><b>(@bathText($inputTaxTotal))</b></td>
                                 <td align="center" class="text-danger" colspan="1"><b>{{number_format($inputTaxTotal,2)}}</b></td>
                             </tr>
                         </tr>
@@ -119,12 +128,31 @@ aria-labelledby="mySmallModalLabel" aria-hidden="true">
 </div>
 </div>
 
+{{-- modal-input-tax cancel --}}
+<div class="modal fade bd-example-modal-sm modal-lg" id="input-tax-cancel" tabindex="-1" role="dialog"
+aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-xl">
+    <div class="modal-content">
+        ...
+    </div>
+</div>
+</div>
 
 <script>
-     // modal Payment Wholesale
-     $(".input-tax-edit").click("click", function(e) {
+
+      $(".input-tax-edit").click("click", function(e) {
                     e.preventDefault();
                     $("#input-tax-edit")
+                        .modal("show")
+                        .addClass("modal-lg")
+                        .find(".modal-content")
+                        .load($(this).attr("href"));
+                });
+
+ 
+     $(".input-tax-cancel").click("click", function(e) {
+                    e.preventDefault();
+                    $("#input-tax-cancel")
                         .modal("show")
                         .addClass("modal-lg")
                         .find(".modal-content")
