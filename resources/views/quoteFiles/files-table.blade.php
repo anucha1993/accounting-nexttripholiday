@@ -14,8 +14,9 @@
                         <tr>
                             <th>ลำดับ</th>
                             <th>ตำแหน่งไฟล์</th>
+                            <th>วันที่</th>
                             <th>ไฟล์</th>
-                            <th>Action</th>
+                            <th >Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -25,14 +26,16 @@
                                 <td>
                                     {{ $item->quote_file_path }}
                                 </td>
+                                <td>{{date('d-m-Y H:m:s',strtotime($item->created_at))}}</td>
                                 <td>
                                     <a  onclick="openPdfPopup(this.href); return false;"
                                         href="{{ asset($item->quote_file_path) }}">{{ $item->quote_file_name }}</a>
                                 </td>
                                 <td>
-                                    <a href="{{ route('quotefile.delete', $item->quote_file_id) }}"
-                                        onclick="return confirm('ยืนยันการลบ');" class="text-danger"><i
-                                            class="fa fa-trash"></i> Delete</a>
+                                    <a href="" class="text-info py-3"><i  class="fa fa-edit mt-3"></i> แก้ไข</a> &nbsp;
+                                    <a class="mt-3" href="#"><i class="fas fa-envelope text-info"></i> ส่งเมล</a> &nbsp; &nbsp;
+                                    <a href="{{ route('quotefile.delete', $item->quote_file_id) }}" onclick="return confirm('ยืนยันการลบ');" class="text-danger"><i class="fa fa-trash"></i> Delete</a>
+                                    
                                 </td>
                             </tr>
                         @empty
