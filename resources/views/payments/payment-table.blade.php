@@ -75,21 +75,23 @@
 
                                 </td>
                                 <td>
-                                    @if ($item->payment_status === 'cancel')
-                                    <a href="{{ asset('storage/' . $item->payment_cancel_file_path) }}"
-                                        onclick="openPdfPopup(this.href); return false;"><i
-                                            class="fa fa-file text-danger"></i> ไฟล์แนบยกเลิก</a>
-                                    @else
-
                                     @if ($item->payment_file_path)
-                                    <a href="{{ asset('storage/' . $item->payment_file_path) }}"
+                                    <a href="{{ asset('storage/' . $item->payment_file_path) }}" class="dropdown-item"
                                         onclick="openPdfPopup(this.href); return false;"><i
                                             class="fa fa-file text-danger"></i> สลิปโอน</a>
                                     @else
                                         -
                                     @endif
-                                   
+
+                                    @if ($item->payment_status === 'cancel' || $item->payment_status === 'refund')
+
+                                    <a href="{{ asset('storage/' . $item->payment_cancel_file_path) }}" class="dropdown-item"
+                                        onclick="openPdfPopup(this.href); return false;"><i
+                                            class="fa fa-file text-danger"></i> สลิปคืนเงิน</a>
+                                    @else
+
                                     @endif
+
                                 </td>
                                 <td>
 
@@ -121,6 +123,10 @@
                                     @if ($item->payment_status === 'cancel')
                                         <span class="badge rounded-pill bg-danger">Cancel</span>
                                     @endif
+                                    @if ($item->payment_status === 'refund')
+                                    <span class="badge rounded-pill bg-warning text-dark">คืนเงินลูกค้า</span>
+                                @endif
+
                                     @if ($item->payment_status === null)
                                         <span class="badge rounded-pill bg-warning">NULL</span>
                                     @endif

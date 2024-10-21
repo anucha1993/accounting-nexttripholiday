@@ -142,21 +142,41 @@ class paymentController extends Controller
 
     public function cancel(paymentModel $paymentModel, Request $request)
     {
-        $totalOld = $paymentModel->payment_total;
-        $paymentModel->update(['payment_total' => NULL, 'payment_status' => 'cancel', 'payment_cancel_note' => $request->payment_cancel_note]);
-
+;
+        $paymentStatus = 'refund';
+        if($request->payment_total <= 0){
+            $paymentStatus = 'cancel';
+        }
+        $request->merge([
+            'payment_status' => $paymentStatus,
+        ]);
+        
+        $paymentModel->update($request->all());
+       
         // quote
         $quotationModel = quotationModel::where('quote_number', $paymentModel->payment_doc_number)->first();
-        $quoteTotalOld = $quotationModel->payment;
-        $totalNew = $quoteTotalOld - $totalOld;
-        $quotationModel->update(['payment' => $totalNew, 'quote_payment_status' => 'payment']);
 
-         // การอัปเดตสถานะของใบเสนอราคา
-         if ($quotationModel->payment <= 0) {
-            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'wait']);
-        } else {
-            quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'wait','quote_payment_status'=> 'payment']);
+        $deposit = $quotationModel->GetDeposit();
+        $quotePayment = 'payment';
+
+        if($deposit <= 0)
+        {
+         $quotePayment = 'wait';
         }
+
+        if($deposit >= $quotationModel->quote_grand_total)
+        {
+         $quoteStatus = 'success';
+        }else{
+         $quoteStatus = 'wait';
+        }
+        
+
+        $quotationModel->update([
+            'payment' => $deposit,
+            'quote_status' =>$quoteStatus,
+            'quote_payment_status' =>$quotePayment
+        ]);
 
         $folderPath = 'public/' . $quotationModel->customer_id . '/' . $quotationModel->quote_number;
         $absolutePath = storage_path('app/' . $folderPath);
@@ -164,6 +184,8 @@ class paymentController extends Controller
         if (!File::exists($absolutePath)) {
              File::makeDirectory($absolutePath, 0775, true);
         }
+
+
         $file = $request->file('payment_cancel_file_path');
 
         if ($file) {

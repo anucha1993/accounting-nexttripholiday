@@ -29,5 +29,6 @@ class paymentModel extends Model
         'created_by',
         'payment_cancel_note',
         'payment_cancel_file_path',
+        'payment_refund_total',
     ];
 }
