@@ -44,7 +44,7 @@
                             </td>
                             <td>
                                 @if ($item->invoice_withholding_tax > 0)
-                                <a href="#"> <i class="fa fa-file-pdf text-danger"></i> ใบหัก ณ ที่จ่าย</a>
+                                <a href="{{route('mpdf.withholding')}}"  onclick="openPdfPopup(this.href); return false;"> <i class="fa fa-file-pdf text-danger"></i> ใบหัก ณ ที่จ่าย</a>
                                 @else
                                     -
                                 @endif
@@ -102,7 +102,7 @@
                                 </td>
                                 <td>
                                     @if ($item->input_tax_withholding > 0)
-                                    <a href="#"> <i class="fa fa-file-pdf text-danger"></i> ใบหัก ณ ที่จ่าย</a>
+                                    <a href="{{route('mpdf.withholding')}}"  onclick="openPdfPopup(this.href); return false;"> <i class="fa fa-file-pdf text-danger"></i> ใบหัก ณ ที่จ่าย</a>
                                     @else
                                         -
                                     @endif
