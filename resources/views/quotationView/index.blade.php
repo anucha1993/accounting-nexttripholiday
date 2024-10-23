@@ -9,12 +9,14 @@
         body {
             font-family: 'sarabun_new', sans-serif;
             font-size: 20px;
-            margin: 50px;
+            margin: 0;
             padding: 0;
+            width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
         header, footer {
             width: 100%;
-            margin: 0 auto;
             padding: 10px 20px;
         }
         table {
@@ -22,11 +24,10 @@
             border-collapse: collapse;
             margin: 20px 0;
         }
-        td {
+        td, th {
             border: 2px solid #ffaa50;
             padding: 10px;
             background-color: #fff;
-            border-radius: 5px;
             text-align: left;
             font-size: 18px;
         }
@@ -35,19 +36,19 @@
         }
         .company-info, .quotation-header, .quotation-details {
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
         }
         .company-info img {
-            max-width: 100%;
+            max-width: 150px;
             height: auto;
         }
         .company-text {
-            flex: 1;
+            width: 55%;
         }
         .quotation-header {
             text-align: right;
+            width: 30%;
         }
         .quote-number {
             background-color: #f9c68f;
@@ -82,6 +83,13 @@
         .bank-details div {
             width: 24%;
         }
+
+        /* Fix width for all devices */
+        @media (max-width: 800px) {
+            body {
+                width: 800px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -91,7 +99,7 @@
             <div style="width: 15%;">
                 <img src="{{ asset('logo/Logo-docs.png') }}" alt="Logo">
             </div>
-            <div class="company-text" style="width: 55%;">
+            <div class="company-text">
                 <h5>บริษัท เน็กซ์ ทริป ฮอลิเดย์ จำกัด (สำนักงานใหญ่)</h5>
                 <p>222/2 โกลเด้นทาวน์ บางนา-สวนหลวง แขวงดอกไม้ เขตประเวศ กทม 10250</p>
                 <p>โทรศัพท์: 02-136-9144 อัตโนมัติ 16 คู่สาย โทรสาร(Fax): 02-136-9146</p>
@@ -99,7 +107,7 @@
                 <p>TAT License: 11/07440 , TTAA License: 1469</p>
                 <p>Website: https://www.nexttripholiday.com , Email : nexttripholiday@gmail.com</p>
             </div>
-            <div class="quotation-header" style="width: 30%;">
+            <div class="quotation-header">
                 <h5>ใบจองทัวร์ / ใบเสนอราคา</h5>
                 <h5><b>Booking / Quotation</b></h5>
                 <h5><b>สำหรับลูกค้า</b> <span style="font-size: 14px;">(ไม่ใช่ใบกำกับภาษี)</span></h5>
@@ -209,45 +217,43 @@
         </table>
 
         <div class="notes">
-            <b>หมายเหตุ : </b> <span style="">-หากไม่ชำระเงินตามกำหนดด้านล่าง ทางบริษัทฯ ขอสงวนสิทธิ์ในการตัดที่นั่งโดยไม่แจ้งให้ทราบล่วงหน้า,-หากชำระมัดจำมาแล้วท่านไม่ชำระส่วนที่เหลือ ขออนุญาตยึดเงินมัดจำตามเงื่อนไขบริษัท
-                -สำเนาพาสปอร์ตกรุณาจัดส่งให้บริษัทก่อนเดินทาง 30 วันผ่านทางไลน์หรืออีเมลล์,-ใบนัดหมายการเดินทาง จะจัดส่งให้ก่อนการเดินทางระยะเวลา 1-3 วัน</span>
+            <b>หมายเหตุ : </b> <span>-หากไม่ชำระเงินตามกำหนดด้านล่าง ทางบริษัทฯ ขอสงวนสิทธิ์ในการตัดที่นั่งโดยไม่แจ้งให้ทราบล่วงหน้า,-หากชำระมัดจำมาแล้วท่านไม่ชำระส่วนที่เหลือ ขออนุญาตยึดเงินมัดจำตามเงื่อนไขบริษัท</span>
         </div>
         <br>
 
         <div style="margin-top: -20px">
-            <table style="">
+            <table>
                 @if ($quotationModel->quote_payment_type === 'deposit')
-                <tr style="border-right: none;">
-                    <td style="width: 100px; padding: 5x; border-right: none; border-bottom: none;"><b>วันที่ชำระเงินมัดจำ</b></td>
-                    <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;" >{{ thaidate('j F Y',$quotationModel->quote_payment_date) }}</td>
-                    <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;"><b>ก่อนเวลา</b></td>
-                    <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">{{date('H:m',strtotime($quotationModel->quote_payment_date))}} น.</td>
-                    <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;"><b>จำนวนเงิน</b></td>
-                    <td style="width: 110px; border-right: none; text-align: center; border-left: none; border-bottom: none;">{{  number_format($quotationModel->quote_payment_total  , 2, '.', ',')}}</td>
-                    <td style="width: 200px; text-align: right; border-left: none; border-bottom: none;"><b>บาท</b></td>
+                <tr>
+                    <td><b>วันที่ชำระเงินมัดจำ</b></td>
+                    <td>{{ thaidate('j F Y',$quotationModel->quote_payment_date) }}</td>
+                    <td><b>ก่อนเวลา</b></td>
+                    <td>{{date('H:m',strtotime($quotationModel->quote_payment_date))}} น.</td>
+                    <td><b>จำนวนเงิน</b></td>
+                    <td>{{  number_format($quotationModel->quote_payment_total  , 2, '.', ',')}}</td>
+                    <td><b>บาท</b></td>
                 </tr>
                 @else
-                <tr style="border-right: none;">
-                <td style="width: 100px; padding: 5x; border-right: none; border-bottom: none;"><b>วันที่ชำระเงินมัดจำ</b></td>
-                <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;" >-</td>
-                <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;"><b>ก่อนเวลา</b></td>
-                <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">-น.</td>
-                <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;"><b>จำนวนเงิน</b></td>
-                <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">-</td>
-                <td style="width: 200px; text-align: right; border-left: none; border-bottom: none;"><b>บาท</b></td>
+                <tr>
+                    <td><b>วันที่ชำระเงินมัดจำ</b></td>
+                    <td>-</td>
+                    <td><b>ก่อนเวลา</b></td>
+                    <td>-น.</td>
+                    <td><b>จำนวนเงิน</b></td>
+                    <td>-</td>
+                    <td><b>บาท</b></td>
                 </tr>
                 @endif
                
-                <tr style="border-right: none;">
-                    <td style="width: 100px; padding: 5x; border-right: none; border-top: none;"><b>วันที่ชำระยอดเต็ม</b></td>
-                    <td style="width: 110px; border-right: none; border-left: none; border-top: none; " >{{ thaidate('j F Y',$quotationModel->quote_payment_date_full) }}</td>
-                    <td style="width: 100px; border-right: none; border-left: none; border-top: none;"><b>ก่อนเวลา</b></td>
-                    <td style="width: 110px; border-right: none; border-left: none; border-top: none;">{{date('H:m',strtotime($quotationModel->quote_payment_date_full))}} น.</td>
-                    <td style="width: 100px; border-right: none; border-left: none; border-top: none;"><b>จำนวนเงิน</b></td>
-                    <td style="width: 110px; border-right: none; text-align: center; border-left: none; border-top: none;">{{  number_format($quotationModel->quote_payment_total_full  , 2, '.', ',')}}</td>
-                    <td style="width: 200px; text-align: right; border-left: none; border-top: none;"><b>บาท</b></td>
+                <tr>
+                    <td><b>วันที่ชำระยอดเต็ม</b></td>
+                    <td>{{ thaidate('j F Y',$quotationModel->quote_payment_date_full) }}</td>
+                    <td><b>ก่อนเวลา</b></td>
+                    <td>{{date('H:m',strtotime($quotationModel->quote_payment_date_full))}} น.</td>
+                    <td><b>จำนวนเงิน</b></td>
+                    <td>{{  number_format($quotationModel->quote_payment_total_full  , 2, '.', ',')}}</td>
+                    <td><b>บาท</b></td>
                 </tr>
-               
             </table>
         </div>
 
