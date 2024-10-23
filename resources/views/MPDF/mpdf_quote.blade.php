@@ -201,7 +201,7 @@
                      </td>
                     
                      <td style="width: 400px; padding-left: 5px; background-color: #f9c68f;">
-                        <p><span>{{$quotationModel->quote_tour_name1}}</span></p>
+                        <p><span>{{$quotationModel->quote_tour_name1 ? $quotationModel->quote_tour_name1 : $quotationModel->quote_tour_name}}</span></p>
                      </td>
                      <td style="border: none;"></td>
                      <td style="width: 100px; padding-left: 5px">

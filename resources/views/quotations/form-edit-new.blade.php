@@ -350,6 +350,7 @@
                             <i data-feather="dollar-sign" class="feather-sm fill-white me-2 "></i>
                             แจ้งชำระเงินโฮลเซลล์
                         </a>
+                      
 
                         <a href="{{route('inputtax.createWholesale',$quotationModel->quote_id)}}"
                         class="justify-content-left w-100 btn btn-rounded btn-outline-primary d-flex align-items-center mb-3 modal-input-tax ">
@@ -357,13 +358,17 @@
                         บันทึกภาษีซื้อ , ต้นทุนอื่นๆ
                     </a>
 
-
-                        {{-- <a href="{{ route('mail.quote.formMail', $quotationModel->quote_id) }}"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 mail-quote">
-                            <i data-feather="mail" class="feather-sm fill-white me-2 text-info"></i>
-                            ส่งเมลล์ใบเสนอราคา
-                        </a> --}}
-
+                    @php
+    use Illuminate\Support\Facades\Crypt;
+    $encryptedId = Crypt::encryptString($quotationModel->quote_id);
+@endphp
+                    <a href="{{ route('quotationView.index', $encryptedId) }}"
+                        id="shareLinkButton"
+                        class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
+                         <i data-feather="link" class="feather-sm fill-white me-2 text-info"></i>
+                         Share
+                     </a>
+                   
                     </div>
                 </div>
 
@@ -473,7 +478,28 @@
 
 
 
-
+  
+      <script>
+        document.getElementById('shareLinkButton').addEventListener('click', function (event) {
+            event.preventDefault(); // ป้องกันการคลิกที่ลิงก์เพื่อให้ไม่โหลดหน้าใหม่
+    
+            // สร้าง element ชั่วคราวเพื่อเก็บ URL ที่ต้องการคัดลอก
+            const tempInput = document.createElement('input');
+            tempInput.value = this.href;
+            document.body.appendChild(tempInput);
+    
+            // เลือกและคัดลอก URL ไปยัง clipboard
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999); // สำหรับอุปกรณ์มือถือ
+            document.execCommand('copy');
+    
+            // ลบ element ชั่วคราวเมื่อเสร็จแล้ว
+            document.body.removeChild(tempInput);
+    
+            // แจ้งให้ผู้ใช้ทราบว่าลิงก์ได้ถูกคัดลอกแล้ว
+            alert('ลิงก์ถูกคัดลอกไปที่คลิปบอร์ดแล้ว');
+        });
+    </script>
 
 
 

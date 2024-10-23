@@ -37,6 +37,8 @@ use App\Http\Controllers\Invoices\InvoiceBookingController;
 use App\Http\Controllers\invoices\invoiceDashboardController;
 use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
+use App\Http\Controllers\quotations\quotationViewController;
+use App\Models\quotations\quotationModel;
 
 /*
 |--------------------------------------------------------------------------
@@ -242,4 +244,7 @@ Route::put('inputtax/create/update/{inputTaxModel}',[inputTaxController::class,'
 Route::put('inputtax/cancel/update/{inputTaxModel}',[inputTaxController::class,'updateCancel'])->name('inputtax.updateCancel');
 Route::get('inputtax/table/{quotationModel}',[inputTaxController::class,'table'])->name('inputtax.table');
 Route::POST('inputtax/store',[inputTaxController::class,'store'])->name('inputtax.store');
+
+// public View
+Route::get('quotation/view/{encryptedId}', [quotationViewController::class, 'index'])->name('quotationView.index');
 
