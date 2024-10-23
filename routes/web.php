@@ -216,7 +216,7 @@ Route::get('mpdf/invoice/{invoiceModel}',[MPDF_invoiceController::class,'generat
 Route::get('mpdf/taxreceipt/{invoiceModel}',[MPDF_taxReceiptController::class,'generatePDF'])->name('mpdf.taxreceipt');
 Route::get('mpdf/debitreceipt/{debitModel}',[MPDF_DebitReceiptController::class,'generatePDF'])->name('mpdf.debitreceipt');
 Route::get('mpdf/creditreceipt/{creditModel}',[MPDF_CreditReceiptController::class,'generatePDF'])->name('mpdf.creditreceipt');
-Route::get('mpdf/withholding',[MPDF_WithholdingController::class,'generatePDF'])->name('mpdf.withholding');
+Route::get('mpdf/withholding/{inputTaxModel}',[MPDF_WithholdingController::class,'generatePDF'])->name('mpdf.withholding');
 
 //Send Mail  Quote 
 Route::post('mpdf/mail/quote/{quotationModel}',[MPDF_QuotationController::class,'sendPdf'])->name('mpdf.quote.sendPdf');

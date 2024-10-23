@@ -16,6 +16,22 @@
             <input type="hidden" name="input_tax_quote_id" class="form-control" value="{{$quotationModel->quote_id}}" >
             <input type="hidden" name="input_tax_quote_number" class="form-control" value="{{$quotationModel->quote_number}}" >
             <input type="hidden" name="customer_id" class="form-control" value="{{$quotationModel->customer_id}}" >
+
+            <div class="col-md-12 mb-3">
+                <label for="">โฮลเซลล์ </label>
+                <select name="input_tax_wholesale" class="form-select selectpicker selectpicker-select" data-live-search="true">
+                    <option value="0">ไม่ระบุ</option>
+                    @forelse ($wholesale as $item)
+                    <option @if($item->id === $inputTaxModel->input_tax_wholesale) selected @endif value="{{$item->id}}">{{$item->wholesale_name_th}}</option>
+                    @empty
+                        
+                    @endforelse
+                </select>
+            </div>
+            <div class="col-md-12 mb-3">
+                <label for=""> วันเดือน ปีภาษี ที่จ่าย </label>
+                <input type="date" name=" input_tax_date" class="form-control" placeholder="tax number"  value="{{$inputTaxModel->input_tax_date}}">
+            </div>
             <div class="col-md-12 mb-3">
                 <label for="">เลขที่เอกสารอ้างอิง </label>
                 <input type="text" name="input_tax_ref" class="form-control" value="{{$inputTaxModel->input_tax_ref}}" >
@@ -56,6 +72,12 @@
   
 
 <script>
+      $(document).ready(function() {
+                 $('.selectpicker').selectpicker({
+                     width: '100%'
+                 });
+             });
+             
   $(document).ready(function() {
 
     $('#service-total, #vat').on('keyup', function () {

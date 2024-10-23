@@ -12,6 +12,7 @@ use App\Models\quotations\quotationModel;
 use App\Http\Controllers\uploadfiles\uploadfileQuoteController;
 use App\Models\invoices\invoiceModel;
 use App\Models\invoices\taxinvoiceModel;
+use App\Models\wholesale\wholesaleModel;
 
 class inputTaxController extends Controller
 {
@@ -19,13 +20,15 @@ class inputTaxController extends Controller
 
     public function createWholesale(quotationModel $quotationModel)
     {
-        return view('inputTax.modal-create', compact('quotationModel'));
+        $wholesale = wholesaleModel::get();
+        return view('inputTax.modal-create', compact('quotationModel','wholesale'));
     }
 
     public function editWholesale(inputTaxModel $inputTaxModel)
     {
+        $wholesale = wholesaleModel::get();
         $quotationModel = quotationModel::where('quote_id', $inputTaxModel->input_tax_quote_id)->first();
-        return view('inputTax.modal-edit', compact('inputTaxModel', 'quotationModel'));
+        return view('inputTax.modal-edit', compact('inputTaxModel', 'quotationModel','wholesale'));
     }
    
     public function cancelWholesale(inputTaxModel $inputTaxModel)
