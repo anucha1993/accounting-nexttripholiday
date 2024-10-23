@@ -95,7 +95,7 @@
                                         <tr>
                                             <td align="right" class="text-info">รหัสทัวร์ :</td>
                                             <td>&nbsp;
-                                                {{ $quotationModel->quote_booking ? $quotationModel->quote_tour : $quotationModel->quote_tour_code }}
+                                                {{ $quotationModel->quote_tour ? $quotationModel->quote_tour : $quotationModel->quote_tour_code }}
                                             </td>
                                         </tr>
 
