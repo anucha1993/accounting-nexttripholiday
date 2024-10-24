@@ -41,19 +41,17 @@
                                 <td>
 
                                     @if ($item->payment_method === 'cash')
-                                        วิธีการชำระเงิน : เงินสด </br>
+                                             เงินสด </br>
                                     @endif
                                     @if ($item->payment_method === 'transfer-money')
-                                        วิธีการชำระเงิน : โอนเงิน</br>
-                                        วันที่ : {{ date('d-m-Y : H:m', strtotime($item->payment_date_time)) }}</br>
+                                        โอนเงิน</br>
                                         เช็คธนาคาร : {{ $item->payment_bank }}
                                     @endif
                                     @if ($item->payment_method === 'check')
-                                        วิธีการชำระเงิน : เช็ค</br>
+                                        เช็ค</br>
                                         โอนเข้าบัญชี : {{ $item->payment_bank }} </br>
                                         เลขที่เช็ค : {{ $item->payment_check_number }} </br>
-                                        วันที่ :
-                                        {{ date('d-m-Y : H:m', strtotime($item->payment_check_date)) }}</br>
+                                       
                                     @endif
 
                                     @if ($item->payment_method === 'credit')
