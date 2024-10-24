@@ -18,7 +18,10 @@ class paymentWholesaleModel extends Model
         'payment_wholesale_file_path',
         'payment_wholesale_number',
         'payment_wholesale_doc_type',
-        
+        'payment_wholesale_refund_type',
+        'payment_wholesale_refund_total',
+        'payment_wholesale_refund_file_path',
+        'payment_wholesale_refund_file_name',
         'created_by',
         'updated_by',
     ];

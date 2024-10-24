@@ -202,8 +202,11 @@ Route::post('quotefile/upload',[QuoteFilesController::class,'upload'])->name('qu
 Route::get('payment/wholesales/{quotationModel}',[paymentWholesaleController::class,'index'])->name('paymentWholesale.index');
 Route::get('payment/wholesales/payment/{quotationModel}',[paymentWholesaleController::class,'payment'])->name('wholesale.payment');
 Route::get('payment/wholesale/delete/{paymentWholesaleModel}',[paymentWholesaleController::class,'delete'])->name('paymentWholesale.delete');
+Route::get('payment/wholesale/refund/{paymentWholesaleModel}',[paymentWholesaleController::class,'refund'])->name('paymentWholesale.refund');
 Route::get('payment/wholesale/edit/{paymentWholesaleModel}',[paymentWholesaleController::class,'edit'])->name('paymentWholesale.edit');
 Route::PUT('payment/wholesale/update/{paymentWholesaleModel}',[paymentWholesaleController::class,'update'])->name('paymentWholesale.update');
+Route::PUT('payment/wholesale/refund/{paymentWholesaleModel}',[paymentWholesaleController::class,'updateRefund'])->name('paymentWholesale.updateRefund');
+Route::get('payment/wholesale/edit/refund/{paymentWholesaleModel}',[paymentWholesaleController::class,'editRefund'])->name('paymentWholesale.editRefund');
 Route::get('payment/wholesales/quote/{quotationModel}',[paymentWholesaleController::class,'quote'])->name('paymentWholesale.quote');
 Route::post('payment/wholesales/store',[paymentWholesaleController::class,'store'])->name('paymentWholesale.store');
 

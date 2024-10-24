@@ -99,6 +99,10 @@ public function edit(paymentWholesaleModel $paymentWholesaleModel)
 {
     return view('paymentWholesale.modal-edit',compact('paymentWholesaleModel'));
 }
+public function editRefund(paymentWholesaleModel $paymentWholesaleModel)
+{
+    return view('paymentWholesale.modal-refund-edit',compact('paymentWholesaleModel'));
+}
 
 public function update(paymentWholesaleModel $paymentWholesaleModel, Request $request)
 {
@@ -136,6 +140,42 @@ public function update(paymentWholesaleModel $paymentWholesaleModel, Request $re
     return redirect()->back();
 }
 
+public function updateRefund(paymentWholesaleModel $paymentWholesaleModel, Request $request)
+{
+  
+    $file = $request->file('file');
+
+    $quote = quotationModel::where('quote_number', $paymentWholesaleModel->payment_wholesale_doc)->first();
+    $folderPath = 'public/' . $quote->customer_id . '/wholesalePayment/' . $quote->quote_number;
+    $absolutePath = storage_path('app/' . $folderPath);
+    if($file){
+        //ลบไฟล์เดิม
+        if (File::exists($paymentWholesaleModel->payment_wholesale_refund_file_path)) {
+            File::delete($paymentWholesaleModel->payment_wholesale_refund_file_path); // ลบไฟล์
+        }
+        //ลงไฟล์ใหม่
+
+         // สร้างชื่อไฟล์ที่ไม่ซ้ำกัน
+         $extension = $file->getClientOriginalExtension();
+         $uniqueName = $this->generateRunningCodeWS() .'REFUND'. date('Ymd') . '.' . $extension;
+ 
+         // ย้ายไฟล์ไปยังตำแหน่งที่ต้องการ
+         $file->move($absolutePath, $uniqueName);
+ 
+         // สร้างพาธสัมพันธ์เพื่อจัดเก็บไฟล์ในฐานข้อมูล
+         $filePath = 'storage/' . $quote->customer_id . '/wholesalePayment/' . $quote->quote_number . '/' . $uniqueName; 
+
+         $request->merge([
+            'payment_wholesale_refund_file_name' => $uniqueName,
+            'payment_wholesale_refund_file_path' => $filePath,
+            'created_by' => Auth::user()->name
+        ]);
+    }
+    $paymentWholesaleModel->update($request->all());
+    return redirect()->back();
+}
+
+
 public function quote(quotationModel $quotationModel)
 {
     return view('paymentWholesale.modal-quote',compact('quotationModel'));
@@ -147,5 +187,12 @@ public function payment(quotationModel $quotationModel)
 
     return View::make('paymentWholesale.wholesale-table',compact('quotationModel','paymentWholesale'))->render();
 }
+
+public function refund(paymentWholesaleModel $paymentWholesaleModel)
+{
+    return view('paymentWholesale.modal-refund',compact('paymentWholesaleModel'));
+}
+
+
 
 }
