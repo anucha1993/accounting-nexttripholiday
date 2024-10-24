@@ -30,6 +30,7 @@ class paymentController extends Controller
         
     
         $payments = paymentModel::where('payment_doc_number', $quotationModel->quote_number)
+        // ->leftjoin('bank','bank.bank_id','payments.payment_bank')
         ->where('payment_doc_type','quote')
         ->get();
         

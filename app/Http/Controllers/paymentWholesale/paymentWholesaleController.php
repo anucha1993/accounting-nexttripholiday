@@ -68,12 +68,15 @@ class paymentWholesaleController extends Controller
 
         // อัปเดตข้อมูลใน request เพื่อเก็บในฐานข้อมูล
         $request->merge([
-            'payment_wholesale_number' => $this->generateRunningCodeWS(),
             'payment_wholesale_file_name' => $uniqueName,
-            'payment_wholesale_file_path' => $filePath,
-            'created_by' => Auth::user()->name
+            'payment_wholesale_file_path' => $filePath
+          
         ]);
     }
+    $request->merge(['payment_wholesale_number' => $this->generateRunningCodeWS(),
+     'created_by' => Auth::user()->name 
+    ]);
+
         $paymentWholesale =  paymentWholesaleModel::create($request->all());
       
         return redirect()->back();
