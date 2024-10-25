@@ -67,8 +67,9 @@
                         @php
 
                         if ($item->input_tax_status === 'success') {
-                        $inputTaxTotal += $item->input_tax_withholding;
-                        $inputTaxTotal += $item->input_tax_vat;
+                        // $inputTaxTotal += $item->input_tax_withholding;
+                        // $inputTaxTotal += $item->input_tax_vat;
+                        $inputTaxTotal += $item->input_tax_grand_total;
                         }
 
                     

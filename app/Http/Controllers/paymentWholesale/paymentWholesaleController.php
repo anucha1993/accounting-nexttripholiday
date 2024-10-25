@@ -143,7 +143,7 @@ public function update(paymentWholesaleModel $paymentWholesaleModel, Request $re
 
 public function updateRefund(paymentWholesaleModel $paymentWholesaleModel, Request $request)
 {
-   dd($request);
+   //dd($request);
     $file = $request->file('file');
 
     $quote = quotationModel::where('quote_number', $paymentWholesaleModel->payment_wholesale_doc)->first();
