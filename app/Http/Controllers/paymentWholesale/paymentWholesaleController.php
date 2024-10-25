@@ -43,6 +43,7 @@ class paymentWholesaleController extends Controller
     
     public function store(Request $request)
     {
+    
     $quote = quotationModel::where('quote_number', $request->payment_wholesale_doc)->first();
         // สร้างพาธที่ถูกต้อง
     $folderPath = 'public/' . $quote->customer_id . '/wholesalePayment/' . $quote->quote_number;
@@ -139,7 +140,7 @@ public function update(paymentWholesaleModel $paymentWholesaleModel, Request $re
 
 public function updateRefund(paymentWholesaleModel $paymentWholesaleModel, Request $request)
 {
-  
+   dd($request);
     $file = $request->file('file');
 
     $quote = quotationModel::where('quote_number', $paymentWholesaleModel->payment_wholesale_doc)->first();

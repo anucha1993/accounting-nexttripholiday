@@ -88,8 +88,11 @@ $('#service-total, #vat').on('keyup', function () {
     let withholding = parseFloat($('#withholding').val()) || 0;
     let serviceTotal = parseFloat($('#service-total').val()) || 0;
     let vat = parseFloat($('#vat').val()) || 0;
-    total = withholding+vat;
+    
     withholdingTotal = serviceTotal * 0.03 || 0;
+
+    total = withholdingTotal+vat;
+    
     $('#withholding').val((withholdingTotal).toFixed(2));
     $('#total').val((total).toFixed(2));;
 });

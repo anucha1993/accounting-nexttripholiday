@@ -82,11 +82,12 @@
 
     $('#service-total, #vat').on('keyup', function () {
         let total = 0;
-        let withholding = parseFloat($('#withholding').val()) || 0;
-        let serviceTotal = parseFloat($('#service-total').val()) || 0;
-        let vat = parseFloat($('#vat').val()) || 0;
-        total = withholding+vat;
-        withholdingTotal = serviceTotal * 0.03 || 0;
+        let withholding = parseFloat($('#withholding').val());
+        let serviceTotal = parseFloat($('#service-total').val());
+        let vat = parseFloat($('#vat').val());
+        
+        withholdingTotal = serviceTotal * 0.03;
+        total = withholdingTotal+vat;
         $('#withholding').val(withholdingTotal);
         $('#total').val((total).toFixed(2));;
     });
