@@ -1135,7 +1135,7 @@
                     var quantityInput = row.find('.quantity');
 
                     // กำหนดค่าเริ่มต้นให้ quantity เป็น 1
-                    quantityInput.val(1);
+                    quantityInput.val();
 
                     // 189 ค่าทัวร์ผู้ใหญ่พักคู่ period1
                     if (productId == 189) {
