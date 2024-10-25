@@ -409,27 +409,27 @@
         </div>
 
         <footer>
-
-
+{{$payment->payment_id}}
             <div style="margin-top: -17px">
                 <b>ชำระเงินโดย / Form of payment: </b><br>
                 <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'cash') DejaVuSans; @endif">&#9745;</span> <b>เงินสด</b><br>
                
-                <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'check') DejaVuSans; @endif">&#9745;</span> <b>เช็คธนาคาร</b><br>
+                <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'check') DejaVuSans; @endif">&#9745;</span> <b>เช็คธนาคาร</b>
 
                 @if(!empty($payment->payment_method) && $payment->payment_method === 'check') 
-                {{$payment->bank_name}} เลขที่เช็ค : {{$payment->payment_check_number}}  โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_date_time) }} เวลา: {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.
+                {{$payment->bank_name}} เลขที่เช็ค : {{$payment->payment_check_number}}  โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_in_date) }} เวลา: {{ date('H:m', strtotime($quotationModel->payment_in_date)) }} น.
                 @endif
+                <br>
 
-                <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'credit') DejaVuSans; @endif">&#9745;</span> <b>บัตรเครดิต</b><br>
+                <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'credit') DejaVuSans; @endif">&#9745;</span> <b>บัตรเครดิต</b>
                 
                 @if(!empty($payment->payment_method) && $payment->payment_method === 'credit') 
                 {{$payment->bank_name}}  เลขที่สลิป : {{$payment->payment_credit_slip_number}}
                 @endif
-
+                <br>
                 <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'transfer-money') DejaVuSans; @endif">&#9745;</span> <b>โอนเงินเข้าบัญชี</b>
                 @if(!empty($payment->payment_method) && $payment->payment_method === 'transfer-money') 
-                {{$payment->bank_name}}   โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_date_time) }} เวลา: {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.
+                {{$payment->bank_name}}   โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_in_date) }} เวลา: {{ date('H:m', strtotime($quotationModel->payment_in_date)) }} น.
                 @endif
                 <br>
                 

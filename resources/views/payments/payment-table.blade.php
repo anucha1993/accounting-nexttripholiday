@@ -41,22 +41,21 @@
                                 <td>
 
                                     @if ($item->payment_method === 'cash')
-                                             เงินสด </br>
+                                        เงินสด </br>
                                     @endif
                                     @if ($item->payment_method === 'transfer-money')
                                         โอนเงิน</br>
-                                        เช็คธนาคาร : {{ $item->payment_bank }}
+                                        {{-- เช็คธนาคาร : {{ $item->bank_name }} --}}
                                     @endif
                                     @if ($item->payment_method === 'check')
                                         เช็ค</br>
-                                        โอนเข้าบัญชี : {{ $item->payment_bank }} </br>
-                                        เลขที่เช็ค : {{ $item->payment_check_number }} </br>
-                                       
+                                        {{-- โอนเข้าบัญชี : {{ $item->payment_bank }} </br>
+                                        เลขที่เช็ค : {{ $item->payment_check_number }} </br> --}}
                                     @endif
 
                                     @if ($item->payment_method === 'credit')
-                                        วิธีการชำระเงิน : บัตรเครดิต </br>
-                                        เลขที่สลิป : {{ $item->payment_credit_slip_number }} </br>
+                                        บัตรเครดิต </br>
+                                        {{-- เลขที่สลิป : {{ $item->payment_credit_slip_number }} </br> --}}
                                     @endif
 
                                 </td>
@@ -66,9 +65,9 @@
                                         0
                                     @else
                                          @php
-                                             $paymentTotal += $item->payment_total;
+                                             $paymentTotal += $item->payment_total - $item->payment_refund_total;
                                          @endphp
-                                        {{ number_format($item->payment_total, 2, '.', ',') }}
+                                        {{ number_format($item->payment_total - $item->payment_refund_total , 2, '.', ',') }}
                                     @endif
 
                                 </td>
@@ -168,25 +167,21 @@
                                 <td>{{ date('d-m-Y', strtotime($item->payment_in_date)) }}</td>
                                 <td>
                                     @if ($item->payment_method === 'cash')
-                                        วิธีการชำระเงิน : เงินสด </br>
+                                        เงินสด </br>
                                     @endif
                                     @if ($item->payment_method === 'transfer-money')
-                                        วิธีการชำระเงิน : โอนเงิน</br>
-                                        วันที่ :
-                                        {{ date('d-m-Y : H:m', strtotime($item->payment_date_time)) }}</br>
-                                        เช็คธนาคาร : {{ $item->payment_bank }}
+                                       โอนเงิน</br>
+                                        {{-- เช็คธนาคาร : {{ $item->payment_bank }} --}}
                                     @endif
                                     @if ($item->payment_method === 'check')
                                         วิธีการชำระเงิน : เช็ค</br>
-                                        โอนเข้าบัญชี : {{ $item->payment_bank }} </br>
-                                        เลขที่เช็ค : {{ $item->payment_check_number }} </br>
-                                        วันที่ :
-                                        {{ date('d-m-Y : H:m', strtotime($item->payment_check_date)) }}</br>
+                                        {{-- โอนเข้าบัญชี : {{ $item->payment_bank }} </br>
+                                        เลขที่เช็ค : {{ $item->payment_check_number }} </br> --}}
                                     @endif
 
                                     @if ($item->payment_method === 'credit')
-                                        วิธีการชำระเงิน : บัตรเครดิต </br>
-                                        เลขที่สลิป : {{ $item->payment_credit_slip_number }} </br>
+                                       บัตรเครดิต </br>
+                                        {{-- เลขที่สลิป : {{ $item->payment_credit_slip_number }} </br> --}}
                                     @endif
 
                                 </td>
@@ -286,25 +281,22 @@
                                 <td>{{ date('d-m-Y', strtotime($item->payment_in_date)) }}</td>
                                 <td>
                                     @if ($item->payment_method === 'cash')
-                                        วิธีการชำระเงิน : เงินสด </br>
+                                       เงินสด </br>
                                     @endif
                                     @if ($item->payment_method === 'transfer-money')
-                                        วิธีการชำระเงิน : โอนเงิน</br>
-                                        วันที่ :
-                                        {{ date('d-m-Y : H:m', strtotime($item->payment_date_time)) }}</br>
-                                        เช็คธนาคาร : {{ $item->payment_bank }}
+                                        โอนเงิน</br>
+                                        {{-- เช็คธนาคาร : {{ $item->payment_bank }} --}}
                                     @endif
                                     @if ($item->payment_method === 'check')
-                                        วิธีการชำระเงิน : เช็ค</br>
-                                        โอนเข้าบัญชี : {{ $item->payment_bank }} </br>
-                                        เลขที่เช็ค : {{ $item->payment_check_number }} </br>
-                                        วันที่ :
-                                        {{ date('d-m-Y : H:m', strtotime($item->payment_check_date)) }}</br>
+                                        เช็ค</br>
+                                        {{-- โอนเข้าบัญชี : {{ $item->payment_bank }} </br>
+                                        เลขที่เช็ค : {{ $item->payment_check_number }} </br> --}}
+                                       
                                     @endif
 
                                     @if ($item->payment_method === 'credit')
                                         วิธีการชำระเงิน : บัตรเครดิต </br>
-                                        เลขที่สลิป : {{ $item->payment_credit_slip_number }} </br>
+                                        {{-- เลขที่สลิป : {{ $item->payment_credit_slip_number }} </br> --}}
                                     @endif
 
                                 </td>

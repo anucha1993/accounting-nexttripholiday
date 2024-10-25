@@ -9,8 +9,8 @@
         <div class="row">
             <div class="col-md-12">
                 <label>จำนวนเงินคืน <span id="totalNewText" class="text-success"></span></label>
-                <input type="number" step="0.01" class="form-control" name="payment_refund_total" id="payment-refund" value="{{$paymentModel->payment_total}}"  placeholder="0.0">
-                <input type="hidden" step="0.01" class="form-control"  id="payment-total" value="{{$paymentModel->payment_total}}"  placeholder="0.0">
+                <input type="number" step="0.01" class="form-control" name="payment_refund_total" id="payment-refund" value="{{$paymentModel->payment_total-$paymentModel->payment_refund_total}}"  placeholder="0.0">
+                <input type="hidden" step="0.01" class="form-control"  id="payment-total" value="{{$paymentModel->payment_total-$paymentModel->payment_refund_total}}"  placeholder="0.0">
                 <input type="hidden" step="0.01" class="form-control" name="payment_total" id="payment-total-new" value="{{$paymentModel->payment_total}}"  >
             </div>
         </div>
