@@ -62,12 +62,12 @@
 
 
 <div class="modal-body">
-    <form action="{{ route('quote.update', $quotationModel->quote_id) }}" id="formQuote" method="post">
+    <form action="{{ route('quote.store') }}" id="formQuote" method="post">
         @csrf
-        @method('PUT')
+        @method('POST')
         {{-- รายละเอียดใบเสนอราคา --}}
         <fieldset class="border p-2">
-            <legend class="float-none w-auto text-danger" style="font-size: 15px"><span>รายละเอียดใบเสนอราคา</span>
+            <legend class="float-none w-auto text-danger" style="font-size: 15px"><span>รายละเอียดใบเสนอราคา (คัดลอกใบเสนอราคา)</span>
             </legend>
 
             <div class="row" style="font-size: 12px ">
@@ -103,17 +103,17 @@
 
                 <div class="col-md-2">
                     <label>เลขที่ใบจองทัวร์</label>
-                    <input type="text" name="quote_booking" value="{{ $quotationModel->quote_booking }}"
-                        class="form-control" readonly>
+                    <input type="text" value="?????"
+                        class="form-control" disabled>
                 </div>
                 <div class="col-md-2">
                     <label>รหัสทัวร์</label>
                     @if ($quotationModel->quote_tour)
-                        <input type="text" name="quote_tour" value="{{ $quotationModel->quote_tour }}"
-                            class="form-control" readonly>
+                        <input type="text" value="?????"
+                            class="form-control" disabled>
                     @else
-                        <input type="text" name="quote_tour_code_old" value="{{ $quotationModel->quote_tour_code }}"
-                            class="form-control" readonly>
+                        <input type="text" value="?????"
+                            class="form-control" disabled>
                     @endif
                 </div>
             </div>
@@ -715,7 +715,7 @@
             <a class="btn btn-sm btn-info text-left" href="{{ route('quote.editNew', $quotationModel->quote_id) }}">
                 Back</a>
             <button type="submit" class="btn btn-primary btn-sm  mx-3" form="formQuote"><i class="fa fa-save"></i>
-                Update</button>
+                สร้างใบเสนอราคา</button>
 
 
         </div>

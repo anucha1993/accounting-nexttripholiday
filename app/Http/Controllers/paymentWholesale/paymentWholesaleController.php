@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\paymentWholesale;
 
 use Illuminate\Http\Request;
+use App\Models\sales\saleModel;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
 use App\Models\payments\paymentModel;
+use App\Models\customers\customerModel;
 use App\Models\quotations\quotationModel;
 use App\Models\payments\paymentWholesaleModel;
 
@@ -193,6 +196,48 @@ public function refund(paymentWholesaleModel $paymentWholesaleModel)
 {
     return view('paymentWholesale.modal-refund',compact('paymentWholesaleModel'));
 }
+
+public function modalMailWholesale(paymentWholesaleModel $paymentWholesaleModel)
+{
+    $quotationModel = quotationModel::where('quote_number',$paymentWholesaleModel->payment_wholesale_doc)->first();
+    $customer = customerModel::where('customer_id',$quotationModel->customer_id)->first();
+    return view('paymentWholesale.modal-mail-wholesale',compact('quotationModel','customer','paymentWholesaleModel'));
+}
+
+public function sendMail(paymentWholesaleModel $paymentWholesaleModel, Request $request)
+{
+    $quotationModel = quotationModel::where('quote_number', $paymentWholesaleModel->payment_wholesale_doc)->first();
+    $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
+    $sale = saleModel::select('name', 'id', 'email')->where('id', $quotationModel->quote_sale)->first();
+
+    try {
+        $filePath = $paymentWholesaleModel->payment_wholesale_file_path;
+        $fileName = $paymentWholesaleModel->payment_wholesale_file_name;
+        $mimeType = mime_content_type($filePath);
+
+        Mail::send([], [], function ($message) use ($sale, $request, $quotationModel, $customer, $filePath, $fileName, $mimeType) {
+            $message->to($request->email)
+                    ->subject($request->subject)
+                    ->html("
+                        <h2>เรียน คุณ {$customer->customer_name}</h2>
+                        <p>ใบเสนอราคาเลขที่ #{$quotationModel->quote_number}</p>
+                        <p>ไฟล์เอกสารแนบชำระเงินโฮลเซลล์</p>
+                        <br>
+                        {$request->text_detail}
+                    ")
+                    ->attach($filePath, [
+                        'as' => $fileName,
+                        'mime' => $mimeType,
+                    ]);
+        });
+
+        return response()->json(['success' => true, 'message' => 'ส่งอีเมลพร้อมไฟล์สำเร็จ']);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => 'เกิดข้อผิดพลาดในการส่งอีเมล: ' . $e->getMessage()]);
+    }
+}
+
+
 
 
 

@@ -91,7 +91,13 @@ class inputTaxController extends Controller
     public function table(quotationModel $quotationModel)
 
     {
-        $invoiceModel = invoiceModel::where('invoice_quote_id',$quotationModel->quote_id)->get();
+    
+        $invoice = invoiceModel::where('invoice_quote_id',$quotationModel->quote_id)->first();
+        $invoiceModel = taxinvoiceModel::select('invoices.*')
+        ->where('taxinvoices.invoice_id',$invoice->invoice_id)
+        ->leftjoin('invoices','invoices.invoice_id','taxinvoices.invoice_id')
+        ->get();
+
         $inputTax = inputTaxModel::where('input_tax_quote_id', $quotationModel->quote_id)->get();
         return View::make('inputTax.inputtax-table', compact('quotationModel', 'inputTax','invoiceModel'))->render();
     }

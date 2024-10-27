@@ -7,6 +7,7 @@ use App\Models\booking\bookingModel;
 use App\Models\booking\countryModel;
 use App\Models\customers\customerModel;
 use App\Models\payments\paymentModel;
+use App\Models\payments\paymentWholesaleModel;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\wholesale\wholesaleModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -105,8 +106,29 @@ class quotationModel extends Model
 
     public function GetDeposit()
     {
-        return $this->payment()->where('payment_status', '!=', 'cancel')->sum('payment_total');
+        return $this->payment()
+            ->where('payment_status', '!=', 'cancel')
+            ->get()
+            ->sum(function ($payment) {
+                return $payment->payment_total - $payment->payment_refund_total;
+            });
     }
+
+     // // Accessor เพื่อดึงข้อมูล country public function GetDeposit()
+     public function paymentWholesale()
+     {
+         return $this->hasOne(paymentWholesaleModel::class, 'payment_wholesale_doc', 'quote_number');
+     }
+
+     public function GetDepositWholesale()
+    {
+        return $this->paymentWholesale()
+            ->get()
+            ->sum(function ($paymentWholesale) {
+                return $paymentWholesale->payment_wholesale_total - $paymentWholesale->payment_wholesale_refund_total;
+            });
+    }
+ 
 
     // public function getquoteCountriesAttribute()
     // {

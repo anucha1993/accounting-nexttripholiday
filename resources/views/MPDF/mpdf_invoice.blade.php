@@ -214,11 +214,11 @@
                     <td style="border: none;"></td>
                     <td
                         style="padding-left: 5px; border-right: none;  border-bottom: none;  border-top: none; vertical-align: top;">
-                        <h4><b>ชำระเงินมัดจำ/deposit Date:</b></h4>
+                        {{-- <h4><b>ชำระเงินมัดจำ/deposit Date:</b></h4> --}}
                     </td>
                     <td
-                        style="padding: 0; text-align: left; border-left: none;border-bottom:  none;  border-top: none; background-color: #f9c68f; vertical-align: top;">
-                        <p style="margin: 0; padding: 10px;">
+                        style="padding: 0; text-align: left; border-left: none;border-bottom:  none;  border-top: none; vertical-align: top;">
+                        {{-- <p style="margin: 0; padding: 10px;">
                             @if ($quotationModel->quote_payment_type === 'deposit')
                                 <span> {{ thaidate('j M Y', $quotationModel->quote_payment_date) }} เวลา
                                     {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.</span>
@@ -226,7 +226,7 @@
                                 - ก่อนเวลา - น.
                             @endif
 
-                        </p>
+                        </p> --}}
                     </td>
                 </tr>
                 <tr style="padding: 3px">
@@ -239,17 +239,17 @@
                     </td>
                     <td style="border: none;"></td>
                     <td style="padding-left: 5px; border-right: none;   border-top: none; vertical-align: top;">
-                        <h4><b>ชำระส่วนที่เหลือ/Full Payment Date:</b></h4>
+                        {{-- <h4><b>ชำระส่วนที่เหลือ/Full Payment Date:</b></h4> --}}
                     </td>
                     <td
-                        style="padding: 0; text-align: left; border-left: none;  ; background-color: #f9c68f; vertical-align: top;">
-                        <p style="margin: 0; padding: 10px;">
+                        style="padding: 0; text-align: left; border-left: none;  ; border-top: none; vertical-align: top;">
+                        {{-- <p style="margin: 0; padding: 10px;">
                          
                                 <span> {{ thaidate('j M Y', $quotationModel->quote_payment_date_full) }} เวลา
                                     {{ date('H:m', strtotime($quotationModel->quote_payment_date_full)) }} น.</span>
                            
 
-                        </p>
+                        </p> --}}
                     </td>
                 </tr>
                 <tr>
@@ -348,8 +348,8 @@
                     <td colspan="2" rowspan="8" style="text-align: left; vertical-align: top; padding: 10px;">
                         **(Non VAT) = ค่าบริการไม่คิดภาษีมูลค่าเพิ่ม<br><br>
                         <b>หมายเหตุ / Remark:</b><br>
-                        -<br>
-                        ภาษีหัก ณ ที่จ่าย 3%: {{ number_format($invoiceModel->invoice_vat_3, 2, '.', ',') }} บาท<br>
+                        {{$invoiceModel->invoice_note ? $invoiceModel->invoice_note : '-'}}<br>
+                        ภาษีหัก ณ ที่จ่าย 3% : จำนวนเงิน {{ number_format($invoiceModel->invoice_withholding_tax, 2, '.', ',') }} บาท<br>
                         (คำนวณจากยอดรวมก่อนภาษีมูลค่าเพิ่ม / Pre-VAT Amount)<br>
                         ข้อสังเกต: กรุณาตรวจสอบกับบริษัทเกี่ยวกับการหักภาษี ณ ที่จ่าย 3% ภายใต้เงื่อนไขที่กำหนด
                     </td>

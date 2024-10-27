@@ -323,12 +323,12 @@
                                                         ส่งเมล</a>
 
                                                         
-                                                    <a class="dropdown-item"
+                                                    {{-- <a class="dropdown-item"
                                                         href="{{ route('debit.create', $item->invoice_id) }}"><i
                                                             class="fa fa-file"></i> ออกใบเพิ่มหนี้</a>
                                                     <a class="dropdown-item"
                                                         href="{{ route('credit.create', $item->invoice_id) }}"><i
-                                                            class="fa fa-file"></i> ออกใบลดหนี้</a>
+                                                            class="fa fa-file"></i> ออกใบลดหนี้</a> --}}
 
 
                                                 </div>

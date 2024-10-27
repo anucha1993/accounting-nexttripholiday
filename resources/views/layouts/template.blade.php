@@ -21,9 +21,11 @@
     <link rel="stylesheet" type="text/css"
         href="{{ URL::asset('template/assets/extra-libs/datatables.net-bs4/css/responsive.dataTables.min.css') }}" />
 
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('template/assets/libs/select2/dist/css/select2.min.css') }}" />
+    <link rel="stylesheet" type="text/css"
+        href="{{ URL::asset('template/assets/libs/select2/dist/css/select2.min.css') }}" />
     <!-- Custom CSS -->
-    <link href="{{ URL::asset('template/assets/libs/ckeditor/samples/toolbarconfigurator/lib/codemirror/neo.css') }}" rel="stylesheet" />
+    <link href="{{ URL::asset('template/assets/libs/ckeditor/samples/toolbarconfigurator/lib/codemirror/neo.css') }}"
+        rel="stylesheet" />
 
 
     <link href="{{ URL::asset('template/assets/libs/sweetalert2/dist/sweetalert2.min.css') }}" rel="stylesheet" />
@@ -35,24 +37,23 @@
     <script src="{{ URL::asset('template/assets/libs/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    
+
 
     <!-- รวมไฟล์ jQuery และ jQuery UI -->
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 
-<!-- Bootstrap Select CSS -->
-<link rel="stylesheet"
-    href="{{ URL::asset('bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css') }}">
+    <!-- Bootstrap Select CSS -->
+    <link rel="stylesheet" href="{{ URL::asset('bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css') }}">
 
-<!-- Bootstrap JS -->
-<script src="{{ URL::asset('bootstrap-select@1.14.0-beta3/dist/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- Bootstrap JS -->
+    <script src="{{ URL::asset('bootstrap-select@1.14.0-beta3/dist/js/bootstrap.bundle.min.js') }}"></script>
 
-<script src="{{ URL::asset('bootstrap-select@1.14.0-beta3/dist/js/bootstrap.bundle.min.js') }}"></script>
-<!-- Bootstrap Select JS -->
-<script src="{{ URL::asset('bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js') }}"></script>
+    <script src="{{ URL::asset('bootstrap-select@1.14.0-beta3/dist/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- Bootstrap Select JS -->
+    <script src="{{ URL::asset('bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js') }}"></script>
 
 
 
@@ -66,6 +67,51 @@
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
             <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
+
+    <style>
+        .dot-success {
+            width: 10px;
+            /* กำหนดความกว้าง */
+            height: 10px;
+            /* กำหนดความสูง */
+            background-color: rgb(0, 203, 47);
+            /* กำหนดสีพื้นหลัง */
+            border-radius: 50%;
+            /* ทำให้เป็นวงกลม */
+            display: inline-block;
+            /* เพื่อให้สามารถวางต่อกับข้อความหรือองค์ประกอบอื่นๆ ได้ */
+            margin-right: 5px;
+            /* กำหนดระยะห่างด้านขวา (ถ้าต้องการ) */
+        }
+        .dot-danger {
+            width: 10px;
+            /* กำหนดความกว้าง */
+            height: 10px;
+            /* กำหนดความสูง */
+            background-color: rgb(214, 66, 32);
+            /* กำหนดสีพื้นหลัง */
+            border-radius: 50%;
+            /* ทำให้เป็นวงกลม */
+            display: inline-block;
+            /* เพื่อให้สามารถวางต่อกับข้อความหรือองค์ประกอบอื่นๆ ได้ */
+            margin-right: 5px;
+            /* กำหนดระยะห่างด้านขวา (ถ้าต้องการ) */
+        }
+        .dot-warning {
+            width: 10px;
+            /* กำหนดความกว้าง */
+            height: 10px;
+            /* กำหนดความสูง */
+            background-color: rgb(213, 192, 0);
+            /* กำหนดสีพื้นหลัง */
+            border-radius: 50%;
+            /* ทำให้เป็นวงกลม */
+            display: inline-block;
+            /* เพื่อให้สามารถวางต่อกับข้อความหรือองค์ประกอบอื่นๆ ได้ */
+            margin-right: 5px;
+            /* กำหนดระยะห่างด้านขวา (ถ้าต้องการ) */
+        }
+    </style>
 </head>
 
 <body>
@@ -695,7 +741,7 @@
                                 </span></a>
                             <ul aria-expanded="false" class="collapse first-level">
                                 <li class="sidebar-item">
-                                    <a href="{{route('products.index')}}" class="sidebar-link"><i
+                                    <a href="{{ route('products.index') }}" class="sidebar-link"><i
                                             class="mdi mdi-cards-variant"></i><span class="hide-menu">
                                             ค่าบริการ และส่วนลด
                                         </span></a>
@@ -1695,7 +1741,7 @@
                                     class="hide-menu">ระบบสมาชิก </span></a>
                             <ul aria-expanded="false" class="collapse first-level">
                                 <li class="sidebar-item">
-                                    <a href="{{route('users.index')}}" class="sidebar-link">
+                                    <a href="{{ route('users.index') }}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">
                                             สมาชิก</span>
@@ -1896,7 +1942,7 @@
         <!-- -------------------------------------------------------------- -->
         <!-- footer -->
         <!-- -------------------------------------------------------------- -->
-       
+
         <footer class="footer text-center">
             All Rights Reserved by Ample admin.
         </footer>
@@ -1904,7 +1950,7 @@
         <!-- End footer -->
         <!-- -------------------------------------------------------------- -->
     </div>
-    
+
     <!-- -------------------------------------------------------------- -->
     <!-- End Page wrapper  -->
     <!-- -------------------------------------------------------------- -->
@@ -2335,7 +2381,7 @@
     <script src="{{ URL::asset('template/assets/libs/select2/dist/js/select2.full.min.js') }}"></script>
     <script src="{{ URL::asset('template/assets/libs/select2/dist/js/select2.min.js') }}"></script>
     <script src="{{ URL::asset('template/dist/js/pages/forms/select2/select2.init.js') }}"></script>
-    
+
 </body>
 
 </html>

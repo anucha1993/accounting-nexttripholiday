@@ -325,11 +325,11 @@
                         </a> --}}
 
 
-                        <button type="button"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
+                        <a href="{{route('quote.modalEditCopy',$quotationModel->quote_id)}}"
+                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 modal-quote-copy"  >
                             <i data-feather="repeat" class="feather-sm fill-white me-2 text-info"></i>
                             คัดลอกใบเสนอราคา
-                        </button>
+                    </a>
 
                         <a href="{{ route('payment.quotation', $quotationModel->quote_id) }}"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 invoice-modal">
@@ -474,6 +474,15 @@
               </div>
           </div>
       </div>
+
+      <div class="modal fade bd-example-modal-sm modal-lg" id="modal-quote-copy" tabindex="-1" role="dialog"
+      aria-labelledby="mySmallModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+              ...
+          </div>
+      </div>
+  </div>
         
 
 
@@ -505,6 +514,17 @@
 
         <script>
             $(document).ready(function() {
+
+                 // modal add payment wholesale quote
+                $(".modal-quote-copy").click("click", function(e) {
+                    e.preventDefault();
+                    $("#modal-quote-copy")
+                        .modal("show")
+                        .addClass("modal-lg")
+                        .find(".modal-content")
+                        .load($(this).attr("href"));
+                });
+
 
                 // modal Payment Wholesale
                 $(".modal-input-tax").click("click", function(e) {

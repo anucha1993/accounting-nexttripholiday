@@ -35,7 +35,13 @@
                                     @endphp
 
                                     @if ($item->payment_wholesale_refund_file_name === NULL || $item->payment_wholesale_refund_file_name === '' )
-                                    {{ number_format($item->payment_wholesale_total, 2, '.', ',') }} {!! '<span class="text-danger">('.number_format($item->payment_wholesale_refund_total,2).')</span>' !!}
+                                    {{ number_format($item->payment_wholesale_total, 2, '.', ',') }} 
+                                    @if ($item->payment_wholesale_refund_type !== NULL)
+                                    {!! '<span class="text-danger">('.number_format($item->payment_wholesale_refund_total,2).')</span>' !!}
+
+                                    @endif
+
+                                    
                                     @else
                                     {{ number_format($item->payment_wholesale_total - $item->payment_wholesale_refund_total, 2, '.', ',') }}
                                     @endif
@@ -60,30 +66,36 @@
                                 <td>
                                     @if ($item->payment_wholesale_refund_file_name)
                                         @if ($item->payment_wholesale_type === 'full')
-                                            ชำระเต็มจำนวน {!! $item->payment_wholesale_refund_type === 'some'
-                                                ? '<span class="text-success">(คืนยอดบางส่วนแล้ว)</span>'
-                                                : '<span class="text-success">(คืนยอดเต็มจำนวนแล้ว)</span>' !!}
+                                            ชำระเต็มจำนวน 
                                         @else
-                                            ชำระมัดจำ {!! $item->payment_wholesale_refund_type === 'some'
+                                            ชำระมัดจำ 
+                                        @endif
+
+                                        {!! $item->payment_wholesale_refund_type === 'some'
                                                  ? '<span class="text-success">(คืนยอดบางส่วนแล้ว)</span>'
                                                  : '<span class="text-success">(คืนยอดเต็มจำนวนแล้ว)</span>' !!}
-                                        @endif
                                     @else
                                         @if ($item->payment_wholesale_type === 'full')
-                                            ชำระเต็มจำนวน {!! $item->payment_wholesale_refund_type === 'some'
-                                                ? '<span class="text-danger">(รอคืนยอดบางส่วน)</span>'
-                                                : '<span class="text-danger">(รอคืนยอดเต็มจำนวน)</span>' !!}
+                                            ชำระเต็มจำนวน 
                                         @else
-                                            ชำระมัดจำ {!! $item->payment_wholesale_refund_type === 'some'
-                                                ? '<span class="text-danger">(รอคืนยอดบางส่วน)</span>'
-                                                : '<span class="text-danger">(รอคืนยอดเต็มจำนวน)</span>' !!}
+                                            ชำระมัดจำ 
                                         @endif
+        
+                                        @if ($item->payment_wholesale_refund_type !== NULL && $item->payment_wholesale_refund_type === 'some')
+                                        <span class="text-danger">(รอคืนยอดบางส่วน)</span>
+                                        @elseif($item->payment_wholesale_refund_type !== NULL && $item->payment_wholesale_refund_type === 'full')
+                                        <span class="text-danger">(รอคืนยอดเต็มจำนวน)</span>
+                                        @endif
+                                       
                                     @endif
 
                                 </td>
                                 <td>
                                     <a href="{{ route('paymentWholesale.edit', $item->payment_wholesale_id) }}"
                                         class=" text-info payment-wholesale-edit"><i class="fa fa-edit"></i> แก้ไข</a>
+
+                                        &nbsp;
+                                        <a class="wholesale-mail" href="{{route('paymentWholesale.modalMailWholesale',$item->payment_wholesale_id)}}"><i class="fas fa-envelope text-info"></i>ส่งเมล</a>
 
                                     &nbsp;
                                     @if ($item->payment_wholesale_refund_type)
@@ -93,11 +105,13 @@
 
 
                                     @else
+
                                     <a href="{{ route('paymentWholesale.refund', $item->payment_wholesale_id) }}"
                                         class="text-primary refund"><i
                                             class="fa fas fa-reply-all"></i>ยกเลิกรอคืนยอด</a>
 
                                     @endif
+                                   
                                    
                                     &nbsp;
  
@@ -110,7 +124,9 @@
 
                         <tr>
                             <td align="right" class="text-success" colspan="8"><b>(@bathText($paymentTotal))</b></td>
-                            <td align="center" class="text-success"><b>{{ number_format($paymentTotal, 2) }}</b></td>
+                            <td align="center" class="text-success">
+                                <b>{{ number_format($quotationModel->GetDepositWholesale(), 2) }}</b>
+                            </td>
                         </tr>
 
                     </tbody>
@@ -148,8 +164,28 @@
     </div>
 </div>
 
+<div class="modal fade bd-example-modal-sm modal-lg" id="wholesale-mail" tabindex="-1" role="dialog"
+aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-xl">
+    <div class="modal-content">
+        ...
+    </div>
+</div>
+</div>
+
 <script>
     $(document).ready(function() {
+
+         // modal 
+         $(".wholesale-mail").click("click", function(e) {
+            e.preventDefault();
+            $("#wholesale-mail")
+                .modal("show")
+                .addClass("modal-lg")
+                .find(".modal-content")
+                .load($(this).attr("href"));
+        });
+
 
          // modal Payment Refund
          $(".edit-refund").click("click", function(e) {

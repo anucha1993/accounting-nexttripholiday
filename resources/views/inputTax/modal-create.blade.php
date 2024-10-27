@@ -44,7 +44,7 @@
             
             <div class="col-md-12 mb-3">
                 <label>ยอดค่าบริการ</label>
-                <input type="number" class="form-control" name="input_tax_service_total" id="service-total" placeholder="0.0" >
+                <input type="number" class="form-control" name="input_tax_service_total" id="service-total" step="0.01" placeholder="0.0" >
             </div>
 
 
@@ -81,20 +81,28 @@
                  });
              });
              
- $(document).ready(function() {
+             $(document).ready(function() {
 
 $('#service-total, #vat').on('keyup', function () {
-    let total = 0;
-    let withholding = parseFloat($('#withholding').val()) || 0;
-    let serviceTotal = parseFloat($('#service-total').val()) || 0;
-    let vat = parseFloat($('#vat').val()) || 0;
-    
-    withholdingTotal = serviceTotal * 0.03 || 0;
+let total = 0;
+let vat7 = 0;
+let withholdingTotal = 0;
 
-    total = withholdingTotal+vat;
-    
-    $('#withholding').val((withholdingTotal).toFixed(2));
-    $('#total').val((total).toFixed(2));;
+let serviceTotal = parseFloat($('#service-total').val()) || 0;
+let vat = parseFloat($('#vat').val()) || 0;
+
+// คำนวณ VAT 7%
+vat7 = serviceTotal * 0.07;
+$('#vat').val(vat7.toFixed(2));  // อัปเดตค่า VAT ในช่อง input
+
+// คำนวณภาษี ณ ที่จ่าย (3%)
+withholdingTotal = serviceTotal * 0.03;
+$('#withholding').val(withholdingTotal.toFixed(2));
+
+// คำนวณผลรวมต้นทุน (รวมค่าบริการ ภาษี ณ ที่จ่าย และ VAT)
+total = serviceTotal + withholdingTotal + vat7;
+$('#total').val(withholdingTotal.toFixed(2));
 });
+
 });
 </script>

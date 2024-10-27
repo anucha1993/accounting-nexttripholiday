@@ -164,10 +164,10 @@
                                         $incomeTotal += $quotationModel->quote_grand_total
                                     @endphp
                                     {{ number_format($quotationModel->quote_grand_total, 2, '.', ',') }}</td>
-                                <td align="center">{{ number_format($quotationModel->payment, 2, '.', ',') }}
+                                <td align="center">{{ number_format($quotationModel->GetDeposit(), 2, '.', ',') }}
                                 </td>
                                 <td align="center">
-                                    {{ number_format($quotationModel->quote_grand_total - $quotationModel->payment, 2, '.', ',') }}
+                                    {{ number_format($quotationModel->quote_grand_total - $quotationModel->GetDeposit(), 2, '.', ',') }}
                                 </td>
                                 <td align="center">
                                     @if ($item->quote_withholding_tax_status === 'Y')
@@ -340,9 +340,9 @@
                                         <a class="dropdown-item modal-invoice-edit"
                                             href="{{ route('invoice.edit', $item->invoice_id) }}">
                                             <i class="fa fa-edit text-info"></i> แก้ไข</a>
-                                        <a class="dropdown-item debit-create"
+                                        {{-- <a class="dropdown-item debit-create"
                                             href="{{ route('debit.create', $item->invoice_id) }}"><i
-                                                class="fas fa-file-alt"></i> ออกใบเพิ่มหนี้</a>
+                                                class="fas fa-file-alt"></i> ออกใบเพิ่มหนี้</a> --}}
                                     @endcan
 
 

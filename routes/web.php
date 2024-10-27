@@ -135,6 +135,7 @@ Route::get('quote/edit/new/{quotationModel}',[quoteController::class,'editNew'])
 
 Route::get('quote/ajax/new/{quotationModel}',[quoteController::class,'editQuote'])->name('quote.editAjax');
 Route::get('quote/modal/edit/{quotationModel}',[quoteController::class,'modalEdit'])->name('quote.modalEdit');
+Route::get('quote/modal/copy/edit/{quotationModel}',[quoteController::class,'modalEditCopy'])->name('quote.modalEditCopy');
 
 
 
@@ -200,6 +201,8 @@ Route::post('quotefile/upload',[QuoteFilesController::class,'upload'])->name('qu
 
 // Payment Wholesale
 Route::get('payment/wholesales/{quotationModel}',[paymentWholesaleController::class,'index'])->name('paymentWholesale.index');
+Route::get('payment/mail/wholesales/{paymentWholesaleModel}',[paymentWholesaleController::class,'modalMailWholesale'])->name('paymentWholesale.modalMailWholesale');
+Route::post('payment/send/mail/wholesales/{paymentWholesaleModel}',[paymentWholesaleController::class,'sendMail'])->name('paymentWholesale.sendMail');
 Route::get('payment/wholesales/payment/{quotationModel}',[paymentWholesaleController::class,'payment'])->name('wholesale.payment');
 Route::get('payment/wholesale/delete/{paymentWholesaleModel}',[paymentWholesaleController::class,'delete'])->name('paymentWholesale.delete');
 Route::get('payment/wholesale/refund/{paymentWholesaleModel}',[paymentWholesaleController::class,'refund'])->name('paymentWholesale.refund');

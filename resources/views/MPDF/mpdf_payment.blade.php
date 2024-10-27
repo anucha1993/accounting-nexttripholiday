@@ -130,12 +130,12 @@
                     <td style="border: none;"></td>
                     <td
                         style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <h4><b>Ref Invoice:</b></h4>
+                        <h4><b>Ref Quotation:</b></h4>
                     </td>
 
                     <td
                         style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top; ">
-                        <p><span>{{ $invoice->invoice_number }}</span></p>
+                        <p><span>{{ $quotationModel->quote_number}}</span></p>
                     </td>
                 </tr>
                 <tr>
