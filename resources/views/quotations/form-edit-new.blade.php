@@ -372,7 +372,7 @@
                     </div>
 
                     <div class="card-body">
-                        <h5 class="card-title">คำนวนดำไรขั้นต้น</h5>
+                        <h5 class="card-title">คำนวนกำไรขั้นต้น</h5>
                         <hr />
                         <small>รวมทั้งสิ้น</small>
                         <h2>
