@@ -20,29 +20,29 @@ class paymentController extends Controller
     public function index(quotationModel $quotationModel, Request $request)
     {
         //dd($quotationModel->quote_number);
-        $quotationModel = quotationModel::where('quotation.quote_number', $quotationModel->quote_number)
-        ->leftjoin('invoices','invoices.invoice_quote_number','quotation.quote_number')
+        $quotationModel = quotationModel::where('quotation.quote_id', $quotationModel->quote_id)
+        ->leftjoin('invoices','invoices.invoice_quote_id','quotation.quote_id')
         ->leftjoin('debit_note','debit_note.debit_invoice_id','invoices.invoice_id')
         ->leftjoin('credit_note','credit_note.credit_invoice_id','invoices.invoice_id')
         ->first();
 
-        $quotation = quotationModel::where('quote_number', $quotationModel->quote_number)->first();
+        $quotation = quotationModel::where('quote_id', $quotationModel->quote_id)->first();
         
     
-        $payments = paymentModel::where('payment_doc_number', $quotationModel->quote_number)
+        $payments = paymentModel::where('payment_quote_id', $quotationModel->quote_id)
         // ->leftjoin('bank','bank.bank_id','payments.payment_bank')
         ->where('payment_doc_type','quote')
         ->get();
         
-        $paymentDebit = paymentModel::where('payment_doc_number', $quotationModel->debit_number)
-        ->where('payment_doc_type','debit-note')
-        ->get();
+        // $paymentDebit = paymentModel::where('payment_quote_id', $quotationModel->debit_number)
+        // ->where('payment_doc_type','debit-note')
+        // ->get();
 
-        $paymentCredit = paymentModel::where('payment_doc_number', $quotationModel->credit_number)
-        ->where('payment_doc_type','credit-note')
-        ->get();
+        // $paymentCredit = paymentModel::where('payment_quote_id', $quotationModel->credit_number)
+        // ->where('payment_doc_type','credit-note')
+        // ->get();
         
-        return View::make('payments.payment-table',compact('payments','quotationModel','quotation','paymentDebit','paymentCredit'))->render();
+        return View::make('payments.payment-table',compact('payments','quotationModel','quotation'))->render();
     }
 
 

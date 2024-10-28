@@ -56,7 +56,7 @@ class MPDF_invoiceController extends Controller
             ->where('vat_status', 'nonvat')
             ->sum('product_sum');
 
-        $paymentDeposit = paymentModel::where('payment_doc_number', $invoiceModel->quote_number)->sum('payment_total');
+        $paymentDeposit = paymentModel::where('payment_quote_id', $invoiceModel->quote_id)->sum('payment_total');
         // ดึง HTML จาก Blade Template
         $html = view('MPDF.mpdf_invoice', compact('paymentDeposit', 'VatTotal', 'NonVat', 'quotationModel', 'invoiceModel', 'customer', 'sale', 'airline', 'booking', 'productLists'))->render();
 
@@ -116,7 +116,7 @@ class MPDF_invoiceController extends Controller
             ->where('vat_status', 'nonvat')
             ->sum('product_sum');
 
-        $paymentDeposit = paymentModel::where('payment_doc_number', $invoiceModel->quote_number)->sum('payment_total');
+        $paymentDeposit = paymentModel::where('payment_quote_id', $invoiceModel->quote_id)->sum('payment_total');
         // ดึง HTML จาก Blade Template
         $html = view('MPDF.mpdf_invoice', compact('paymentDeposit', 'VatTotal', 'NonVat', 'quotationModel', 'invoiceModel', 'customer', 'sale', 'airline', 'booking', 'productLists'))->render();
 

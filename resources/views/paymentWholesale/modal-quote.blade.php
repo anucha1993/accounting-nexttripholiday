@@ -5,6 +5,7 @@
     <form action="{{ route('paymentWholesale.store') }}" enctype="multipart/form-data" method="post" id="whosalePayment">
         @csrf
         @method('POST')
+        <input type="hidden" name="payment_wholesale_quote_id" value="{{ $quotationModel->quote_id }}">
         <input type="hidden" name="payment_wholesale_doc" value="{{ $quotationModel->quote_number }}">
         <input type="hidden" name="payment_wholesale_doc_type" value="quote">
         <div class="row">

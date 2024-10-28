@@ -101,7 +101,7 @@ class quotationModel extends Model
     // // Accessor เพื่อดึงข้อมูล country public function GetDeposit()
     public function payment()
     {
-        return $this->hasOne(paymentModel::class, 'payment_doc_number', 'quote_number');
+        return $this->hasOne(paymentModel::class, 'payment_quote_id', 'quote_id');
     }
 
     public function GetDeposit()

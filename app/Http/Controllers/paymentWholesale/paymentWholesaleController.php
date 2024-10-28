@@ -40,14 +40,14 @@ class paymentWholesaleController extends Controller
 
     public function index(quotationModel $quotationModel, Request $request)
     {
-        $paymentWholesale = paymentWholesaleModel::where('payment_wholesale_doc',$quotationModel->quote_number)->get();
+        $paymentWholesale = paymentWholesaleModel::where('payment_wholesale_quote_id',$quotationModel->quote_id)->get();
         return view('paymentWholesale.index',compact('quotationModel','paymentWholesale'));
     }
     
     public function store(Request $request)
     {
     
-    $quote = quotationModel::where('quote_number', $request->payment_wholesale_doc)->first();
+    $quote = quotationModel::where('quote_id', $request->payment_wholesale_quote_id)->first();
         // สร้างพาธที่ถูกต้อง
     $folderPath = 'public/' . $quote->customer_id . '/wholesalePayment/' . $quote->quote_number;
     $absolutePath = storage_path('app/' . $folderPath);
@@ -113,7 +113,7 @@ public function update(paymentWholesaleModel $paymentWholesaleModel, Request $re
   
     $file = $request->file('file');
 
-    $quote = quotationModel::where('quote_number', $paymentWholesaleModel->payment_wholesale_doc)->first();
+    $quote = quotationModel::where('quote_id', $paymentWholesaleModel->payment_wholesale_quote_id)->first();
     $folderPath = 'public/' . $quote->customer_id . '/wholesalePayment/' . $quote->quote_number;
     $absolutePath = storage_path('app/' . $folderPath);
     if($file){
@@ -149,7 +149,7 @@ public function updateRefund(paymentWholesaleModel $paymentWholesaleModel, Reque
    //dd($request);
     $file = $request->file('file');
 
-    $quote = quotationModel::where('quote_number', $paymentWholesaleModel->payment_wholesale_doc)->first();
+    $quote = quotationModel::where('quote_id', $paymentWholesaleModel->payment_wholesale_quote_id)->first();
     $folderPath = 'public/' . $quote->customer_id . '/wholesalePayment/' . $quote->quote_number;
     $absolutePath = storage_path('app/' . $folderPath);
     if($file){
@@ -187,7 +187,7 @@ public function quote(quotationModel $quotationModel)
 
 public function payment(quotationModel $quotationModel)
 {
-    $paymentWholesale = paymentWholesaleModel::where('payment_wholesale_doc',$quotationModel->quote_number)->get();
+    $paymentWholesale = paymentWholesaleModel::where('payment_wholesale_quote_id',$quotationModel->quote_id)->get();
 
     return View::make('paymentWholesale.wholesale-table',compact('quotationModel','paymentWholesale'))->render();
 }
@@ -199,14 +199,14 @@ public function refund(paymentWholesaleModel $paymentWholesaleModel)
 
 public function modalMailWholesale(paymentWholesaleModel $paymentWholesaleModel)
 {
-    $quotationModel = quotationModel::where('quote_number',$paymentWholesaleModel->payment_wholesale_doc)->first();
+    $quotationModel = quotationModel::where('quote_id',$paymentWholesaleModel->payment_wholesale_quote_id)->first();
     $customer = customerModel::where('customer_id',$quotationModel->customer_id)->first();
     return view('paymentWholesale.modal-mail-wholesale',compact('quotationModel','customer','paymentWholesaleModel'));
 }
 
 public function sendMail(paymentWholesaleModel $paymentWholesaleModel, Request $request)
 {
-    $quotationModel = quotationModel::where('quote_number', $paymentWholesaleModel->payment_wholesale_doc)->first();
+    $quotationModel = quotationModel::where('quote_id', $paymentWholesaleModel->payment_wholesale_quote_id)->first();
     $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
     $sale = saleModel::select('name', 'id', 'email')->where('id', $quotationModel->quote_sale)->first();
 

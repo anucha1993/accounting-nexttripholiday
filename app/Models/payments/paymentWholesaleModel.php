@@ -11,6 +11,7 @@ class paymentWholesaleModel extends Model
     protected $table = 'payment_wholesale';
     protected $primaryKey = 'payment_wholesale_id';
     protected $fillable = [
+        'payment_wholesale_quote_id',
         'payment_wholesale_doc',
         'payment_wholesale_total',
         'payment_wholesale_type',

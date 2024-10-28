@@ -30,5 +30,6 @@ class paymentModel extends Model
         'payment_cancel_note',
         'payment_cancel_file_path',
         'payment_refund_total',
+        'payment_quote_id',
     ];
 }

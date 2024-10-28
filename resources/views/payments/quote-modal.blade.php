@@ -5,6 +5,7 @@
     <div class="card-body">
         <form action="{{route('payment.payment')}}" method="post" enctype="multipart/form-data">
             @csrf
+            <input type="hidden" name="payment_quote_id" value="{{$quotationModel->quote_id}}">
             <input type="hidden" name="payment_doc_number" value="{{$quotationModel->quote_number}}">
             <input type="hidden" name="payment_doc_type" value="quote">
             <div class="row">
