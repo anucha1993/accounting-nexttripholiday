@@ -6,6 +6,7 @@ use App\Models\sales\saleModel;
 use App\Models\booking\bookingModel;
 use App\Models\booking\countryModel;
 use App\Models\customers\customerModel;
+use App\Models\inputTax\inputTaxModel;
 use App\Models\payments\paymentModel;
 use App\Models\payments\paymentWholesaleModel;
 use Illuminate\Database\Eloquent\Model;
@@ -138,6 +139,21 @@ class quotationModel extends Model
     
         return $grossProfit;
     }
+
+    public function inputtax()
+    {
+        return $this->hasOne(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
+    }
+
+    public function inputtaxTotal()
+    {
+        return $this->inputtax()
+            ->get()
+            ->sum(function ($inputtax) {
+                return $inputtax->input_tax_withholding;
+            });
+    }
+
 
 
  
