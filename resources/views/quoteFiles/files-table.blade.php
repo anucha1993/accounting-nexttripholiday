@@ -2,9 +2,13 @@
     <div class="card">
         <div class="card-header bg-danger">
             <h5 class="mb-0 text-white"><i class="fas fa-file-alt"></i>
-                ไฟล์หนังสือเดินทาง / Passport Photo </h5>
+                ไฟล์หนังสือเดินทาง / Passport Photo 
+                &nbsp; <a href="javascript:void(0)" class="text-white float-end" onclick="toggleAccordion('table-files', 'toggle-arrow-files')">
+                    <span class="fas fa-chevron-down" id="toggle-arrow-files"></span>
+                </a>
+            </h5>
         </div>
-        <div class="card-body">
+        <div class="card-body" id="table-files" style="display: block">
                <button class="btn btn-danger float-end" data-bs-toggle="modal" data-bs-target="#bs-example-modal-xlg">
                               <i class="fa fa-file"></i>  เพิ่มไฟล์เอกสาร
                             </button>
@@ -33,7 +37,7 @@
                                 </td>
                                 <td>
                                     <a href="" class="text-info py-3"><i  class="fa fa-edit mt-3"></i> แก้ไข</a> &nbsp;
-                                    <a class="mt-3" href="#"><i class="fas fa-envelope text-info"></i> ส่งเมล</a> &nbsp; &nbsp;
+                                    <a class="mt-3 modal-mail-file" href="{{route('quotefile.modalMail',$item->quote_file_id)}}"><i class="fas fa-envelope text-info"></i> ส่งเมล</a> &nbsp; &nbsp;
                                     <a href="{{ route('quotefile.delete', $item->quote_file_id) }}" onclick="return confirm('ยืนยันการลบ');" class="text-danger"><i class="fa fa-trash"></i> Delete</a>
                                     
                                 </td>
@@ -83,3 +87,28 @@
   <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+
+{{-- create form debit --}}
+<div class="modal fade bd-example-modal-sm modal-xl" id="modal-mail-file" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            ...
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready( function (){
+          // modal add payment invoice
+          $(".modal-mail-file").click("click", function(e) {
+            e.preventDefault();
+            $("#modal-mail-file")
+                .modal("show")
+                .addClass("modal-lg")
+                .find(".modal-content")
+                .load($(this).attr("href"));
+        });
+    })
+</script>

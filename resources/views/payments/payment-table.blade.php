@@ -2,9 +2,15 @@
     <div class="card">
         <div class="card-header bg-primary">
             <h5 class="mb-0 text-white"><i class="fas fa-dollar-sign"></i>
-                รายการชำระเงิน / Payment information </h5>
+                รายการชำระเงิน / Payment information 
+
+                &nbsp; <a href="javascript:void(0)" class="text-white float-end" onclick="toggleAccordion('table-payment', 'toggle-arrow-payment')">
+                    <span class="fas fa-chevron-down" id="toggle-arrow-payment"></span>
+                </a>
+            
+            </h5>
         </div>
-        <div class="card-body">
+        <div class="card-body" id="table-payment" style="display: block">
             <div class="table table-responsive">
                 <table class="table product-overview">
                     <thead>

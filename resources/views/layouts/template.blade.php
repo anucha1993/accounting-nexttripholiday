@@ -24,8 +24,8 @@
     <link rel="stylesheet" type="text/css"
         href="{{ URL::asset('template/assets/libs/select2/dist/css/select2.min.css') }}" />
     <!-- Custom CSS -->
-    <link href="{{ URL::asset('template/assets/libs/ckeditor/samples/toolbarconfigurator/lib/codemirror/neo.css') }}"
-        rel="stylesheet" />
+    <link href="{{ URL::asset('template/assets/libs/ckeditor/samples/toolbarconfigurator/lib/codemirror/neo.css') }}" rel="stylesheet" />
+    <link href="{{ URL::asset('template/assets/extra-libs/prism/prism.css') }}" rel="stylesheet" />
 
 
     <link href="{{ URL::asset('template/assets/libs/sweetalert2/dist/sweetalert2.min.css') }}" rel="stylesheet" />
@@ -36,8 +36,6 @@
     <script src="{{ URL::asset('template/assets/libs/ckeditor/samples/js/sample.js') }}"></script>
     <script src="{{ URL::asset('template/assets/libs/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
 
     <!-- รวมไฟล์ jQuery และ jQuery UI -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -2381,6 +2379,7 @@
     <script src="{{ URL::asset('template/assets/libs/select2/dist/js/select2.full.min.js') }}"></script>
     <script src="{{ URL::asset('template/assets/libs/select2/dist/js/select2.min.js') }}"></script>
     <script src="{{ URL::asset('template/dist/js/pages/forms/select2/select2.init.js') }}"></script>
+    <script src="{{ URL::asset('template/assets/extra-libs/prism/prism.js') }}"></script>
 
 </body>
 

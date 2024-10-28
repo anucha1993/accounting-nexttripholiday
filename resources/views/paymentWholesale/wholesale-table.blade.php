@@ -2,10 +2,15 @@
     <div class="card">
         <div class="card-header bg-info">
             <h5 class="mb-0 text-white"><i class="fas fa-dollar-sign"></i>
-                รายการชำระเงินโฮลเซลล์ / Payment Wholesale </h5>
+                รายการชำระเงินโฮลเซลล์ / Payment Wholesale 
+
+                &nbsp; <a href="javascript:void(0)" class="text-white float-end" onclick="toggleAccordion('table-payment-wholesale', 'toggle-arrow-payment-wholesale')">
+                    <span class="fas fa-chevron-down" id="toggle-arrow-payment-wholesale"></span>
+                </a>
+            </h5>
         </div>
         <div class="card-body">
-            <div class="table table-responsive">
+            <div class="table table-responsive" id="table-payment-wholesale" style="display: block">
                 <table class="table product-overview">
                     <thead>
                         <tr class="custom-row-height" style="line-height: -500px;">

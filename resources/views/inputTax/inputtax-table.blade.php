@@ -2,10 +2,14 @@
     <div class="card">
         <div class="card-header bg-success">
             <h5 class="mb-0 text-white"><i class="fa fa-file"></i>
-                รายการต้นทุน <span class="float-end"></span></h5>
+                รายการต้นทุน <span class="float-end"></span>
+                &nbsp; <a href="javascript:void(0)" class="text-white float-end" onclick="toggleAccordion('table-inputtax', 'toggle-arrow-inputtax')">
+                    <span class="fas fa-chevron-down" id="toggle-arrow-inputtax"></span>
+                </a>
+            </h5>
         </div>
 
-        <div class="card-body">
+        <div class="card-body" id="table-inputtax" style="display: block">
             <div class="table table-responsive">
                 <table class="table product-overview">
                     <thead>

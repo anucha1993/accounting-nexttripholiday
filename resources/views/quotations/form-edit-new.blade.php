@@ -9,7 +9,8 @@
                     <div class="card-header bg-info text-white">
                         Quotation No. : {{ $quotationModel->quote_number }}
                         <span class="float-end">วันที่ออกใบเสนอราคา :
-                            {{ thaidate('j F Y', $quotationModel->created_at) }} เวลา : {{date('H:m:s',strtotime($quotationModel->created_at))}}</span>
+                            {{ thaidate('j F Y', $quotationModel->created_at) }} เวลา :
+                            {{ date('H:m:s', strtotime($quotationModel->created_at)) }}</span>
                     </div>
                 </div>
 
@@ -325,11 +326,11 @@
                         </a> --}}
 
 
-                        <a href="{{route('quote.modalEditCopy',$quotationModel->quote_id)}}"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 modal-quote-copy"  >
+                        <a href="{{ route('quote.modalEditCopy', $quotationModel->quote_id) }}"
+                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 modal-quote-copy">
                             <i data-feather="repeat" class="feather-sm fill-white me-2 text-info"></i>
                             คัดลอกใบเสนอราคา
-                    </a>
+                        </a>
 
                         <a href="{{ route('payment.quotation', $quotationModel->quote_id) }}"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 invoice-modal">
@@ -337,7 +338,7 @@
                             แจ้งชำระเงิน
                         </a>
 
-                      
+
                         {{-- 
                         <button type="button"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
@@ -345,36 +346,54 @@
                             ยกเลิกใบเสนอราคา
                         </button> --}}
 
-                        <a href="{{route('paymentWholesale.quote',$quotationModel->quote_id)}}"
+                        <a href="{{ route('paymentWholesale.quote', $quotationModel->quote_id) }}"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 payment-wholesale">
                             <i data-feather="dollar-sign" class="feather-sm fill-white me-2 "></i>
                             แจ้งชำระเงินโฮลเซลล์
                         </a>
-                      
 
-                        <a href="{{route('inputtax.createWholesale',$quotationModel->quote_id)}}"
-                        class="justify-content-left w-100 btn btn-rounded btn-outline-primary d-flex align-items-center mb-3 modal-input-tax ">
-                        <i data-feather="file-minus" class="feather-sm fill-white me-2 "></i>
-                        บันทึกภาษีซื้อ , ต้นทุนอื่นๆ
-                    </a>
 
-                    @php
-    use Illuminate\Support\Facades\Crypt;
-    $encryptedId = Crypt::encryptString($quotationModel->quote_id);
-@endphp
-                    <a href="{{ route('quotationView.index', $encryptedId) }}"
-                        id="shareLinkButton"
-                        class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
-                         <i data-feather="link" class="feather-sm fill-white me-2 text-info"></i>
-                         Share
-                     </a>
-                   
+                        <a href="{{ route('inputtax.createWholesale', $quotationModel->quote_id) }}"
+                            class="justify-content-left w-100 btn btn-rounded btn-outline-primary d-flex align-items-center mb-3 modal-input-tax ">
+                            <i data-feather="file-minus" class="feather-sm fill-white me-2 "></i>
+                            บันทึกภาษีซื้อ , ต้นทุนอื่นๆ
+                        </a>
+
+                        @php
+                            use Illuminate\Support\Facades\Crypt;
+                            $encryptedId = Crypt::encryptString($quotationModel->quote_id);
+                        @endphp
+                        <a href="{{ route('quotationView.index', $encryptedId) }}" id="shareLinkButton"
+                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
+                            <i data-feather="link" class="feather-sm fill-white me-2 text-info"></i>
+                            Share
+                        </a>
+
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title">คำนวนดำไรขั้นต้น</h5>
+                        <hr />
+                        <small>รวมทั้งสิ้น</small>
+                        <h2>$0.00</h2>
+                        <hr />
+                        {{-- <button class="btn btn-success">Checkout</button>
+                        <button class="btn btn-secondary btn-outline">Cancel</button> --}}
                     </div>
                 </div>
-
-
             </div>
         </div>
+
+        <style>
+            .rotate {
+                transition: transform 0.3s;
+                transform: rotate(180deg);
+            }
+        </style>
+
+
+
+
 
 
         <div class="row">
@@ -397,7 +416,7 @@
 
             </div>
 
-            
+
 
         </div>
 
@@ -465,57 +484,70 @@
             </div>
         </div>
 
-          {{-- modal-input-tax  --}}
-          <div class="modal fade bd-example-modal-sm modal-lg" id="input-tax" tabindex="-1" role="dialog"
-          aria-labelledby="mySmallModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-xl">
-              <div class="modal-content">
-                  ...
-              </div>
-          </div>
-      </div>
+        {{-- modal-input-tax  --}}
+        <div class="modal fade bd-example-modal-sm modal-lg" id="input-tax" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
+            </div>
+        </div>
 
-      <div class="modal fade bd-example-modal-sm modal-lg" id="modal-quote-copy" tabindex="-1" role="dialog"
-      aria-labelledby="mySmallModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-xl">
-          <div class="modal-content">
-              ...
-          </div>
-      </div>
-  </div>
+        <div class="modal fade bd-example-modal-sm modal-lg" id="modal-quote-copy" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            function toggleAccordion(contentId, arrowId) {
+                const content = document.getElementById(contentId);
+                const arrow = document.getElementById(arrowId);
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                    arrow.classList.remove("rotate"); // หมุนลูกศรกลับ
+                } else {
+                    content.style.display = "block";
+                    arrow.classList.add("rotate"); // หมุนลูกศรลง
+                }
+            }
+            </script>
         
 
 
+        <script>
+            document.getElementById('shareLinkButton').addEventListener('click', function(event) {
+                event.preventDefault(); // ป้องกันการคลิกที่ลิงก์เพื่อให้ไม่โหลดหน้าใหม่
 
-  
-      <script>
-        document.getElementById('shareLinkButton').addEventListener('click', function (event) {
-            event.preventDefault(); // ป้องกันการคลิกที่ลิงก์เพื่อให้ไม่โหลดหน้าใหม่
-    
-            // สร้าง element ชั่วคราวเพื่อเก็บ URL ที่ต้องการคัดลอก
-            const tempInput = document.createElement('input');
-            tempInput.value = this.href;
-            document.body.appendChild(tempInput);
-    
-            // เลือกและคัดลอก URL ไปยัง clipboard
-            tempInput.select();
-            tempInput.setSelectionRange(0, 99999); // สำหรับอุปกรณ์มือถือ
-            document.execCommand('copy');
-    
-            // ลบ element ชั่วคราวเมื่อเสร็จแล้ว
-            document.body.removeChild(tempInput);
-    
-            // แจ้งให้ผู้ใช้ทราบว่าลิงก์ได้ถูกคัดลอกแล้ว
-            alert('ลิงก์ถูกคัดลอกไปที่คลิปบอร์ดแล้ว');
-        });
-    </script>
+                // สร้าง element ชั่วคราวเพื่อเก็บ URL ที่ต้องการคัดลอก
+                const tempInput = document.createElement('input');
+                tempInput.value = this.href;
+                document.body.appendChild(tempInput);
+
+                // เลือกและคัดลอก URL ไปยัง clipboard
+                tempInput.select();
+                tempInput.setSelectionRange(0, 99999); // สำหรับอุปกรณ์มือถือ
+                document.execCommand('copy');
+
+                // ลบ element ชั่วคราวเมื่อเสร็จแล้ว
+                document.body.removeChild(tempInput);
+
+                // แจ้งให้ผู้ใช้ทราบว่าลิงก์ได้ถูกคัดลอกแล้ว
+                alert('ลิงก์ถูกคัดลอกไปที่คลิปบอร์ดแล้ว');
+            });
+        </script>
 
 
 
         <script>
             $(document).ready(function() {
 
-                 // modal add payment wholesale quote
+                // modal add payment wholesale quote
                 $(".modal-quote-copy").click("click", function(e) {
                     e.preventDefault();
                     $("#modal-quote-copy")
@@ -536,8 +568,8 @@
                         .load($(this).attr("href"));
                 });
 
-                 // modal Payment Wholesale
-                 $(".payment-wholesale").click("click", function(e) {
+                // modal Payment Wholesale
+                $(".payment-wholesale").click("click", function(e) {
                     e.preventDefault();
                     $("#payment-wholesale")
                         .modal("show")
@@ -593,7 +625,7 @@
                         }
                     });
                 }
-                
+
                 paymentWholesale(quoteId);
 
 
@@ -610,7 +642,7 @@
                         }
                     });
                 }
-                
+
                 files(quoteId);
 
                 function inputtax(quoteId) {
@@ -628,7 +660,7 @@
                 }
                 inputtax(quoteId)
 
-               
+
 
                 // // modal add payment wholesale quote
                 // $(".mail-quote").click("click", function(e) {

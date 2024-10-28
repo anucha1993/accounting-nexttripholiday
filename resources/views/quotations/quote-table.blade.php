@@ -1,12 +1,25 @@
 <div class="col-md-12">
+   
+    {{-- <div class="accordion-content" id="quote-content">
+        <!-- เนื้อหาที่ต้องการแสดง/ซ่อน -->
+        <p>นี่คือเนื้อหาภายใน Accordion ของคุณ สามารถใส่ข้อมูลหรือฟอร์มที่ต้องการได้</p>
+    </div> --}}
+
     <div class="card">
-        <div class="card-header bg-success">
-            <h5 class="mb-0 text-white"><i class="fa fa-file"></i>
-                รายละเอียดใบจองใบทัวร์ <span class="float-end">Booking No. :
-                    {{ $quotationModel->quote_booking }}</span></h5>
+        <div class="card-header bg-success" >
+         
+            <h5 class="mb-0 text-white">
+                <i class="fa fa-file"></i> รายละเอียดใบจองใบทัวร์ 
+                <span class="float-end">
+                    Booking No.: {{ $quotationModel->quote_booking }}
+                    &nbsp; <a href="javascript:void(0)" class="text-white" onclick="toggleAccordion('table-quote', 'toggle-arrow')">
+                        <span class="fas fa-chevron-down" id="toggle-arrow"></span>
+                    </a>
+                </span>
+            </h5>
         </div>
 
-        <div class="card-body">
+        <div class="card-body" id="table-quote" style="display: block;">
             <div class="table table-responsive">
                 <table class="table product-overview">
                     <thead>
@@ -120,11 +133,16 @@
 
         <div class="card-header bg-dark">
             <h5 class="mb-0 text-white"><i class="fa fa-file"></i>
-                รายละเอียดใบแจ้งหนี้ <span class="float-end">invoice 
-                    {{-- {{ $invoiceModel->invoice_number }} --}}
-                </span></h5>
+                รายละเอียดใบแจ้งหนี้ 
+                <span class="float-end">
+                    invoice 
+                    &nbsp; <a href="javascript:void(0)" class="text-white" onclick="toggleAccordion('table-invoices', 'toggle-arrow-invoices')">
+                        <span class="fas fa-chevron-down" id="toggle-arrow-invoices"></span>
+                    </a>
+                </span>
+            </h5>
         </div>
-        <div class="card-body">
+        <div class="card-body" id="table-invoices"style="display: block;">
             <div class="table table-responsive">
                 <table class="table product-overview">
                     <thead>
@@ -532,6 +550,8 @@
         </div>
     </div>
 </div>
+
+
 
 
 
