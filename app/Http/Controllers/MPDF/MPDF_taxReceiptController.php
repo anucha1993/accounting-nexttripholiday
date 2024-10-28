@@ -115,8 +115,8 @@ class MPDF_taxReceiptController extends Controller
        ->where('vat_status', 'vat')
        ->sum('product_sum');
        $texreceipt = taxinvoiceModel::where('invoice_number',$invoiceModel->invoice_number)->first();
-       $paymentDeposit = paymentModel::where('payment_doc_number',$invoiceModel->quote_number)->sum('payment_total');
-       $payment = paymentModel::where('payment_doc_number',$invoiceModel->invoice_quote)
+       $paymentDeposit = paymentModel::where('payment_quote_id',$quotationModel->quote_id)->sum('payment_total');
+       $payment = paymentModel::where('payment_quote_id',$quotationModel->quote_id)
        ->leftjoin('bank','bank.bank_id','payments.payment_bank_number')
        ->latest('payments.payment_date_time')->first();
        // ดึง HTML จาก Blade Template
