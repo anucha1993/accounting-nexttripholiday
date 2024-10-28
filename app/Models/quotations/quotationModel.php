@@ -128,6 +128,18 @@ class quotationModel extends Model
                 return $paymentWholesale->payment_wholesale_total - $paymentWholesale->payment_wholesale_refund_total;
             });
     }
+
+    public function GrossProfit()
+    {
+        $quoteGrandTotal = $this->quote_grand_total; // ยอดใบเสนอราคา
+        $cost = $this->GetDepositWholesale(); // ต้นทุนโดยรวมที่ได้จากฟังก์ชัน GetDepositWholesale
+    
+        $grossProfit = $quoteGrandTotal - $cost;
+    
+        return $grossProfit;
+    }
+
+
  
 
     // public function getquoteCountriesAttribute()

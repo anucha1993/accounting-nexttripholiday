@@ -375,7 +375,13 @@
                         <h5 class="card-title">คำนวนดำไรขั้นต้น</h5>
                         <hr />
                         <small>รวมทั้งสิ้น</small>
-                        <h2>$0.00</h2>
+                        <h2>
+                            @if ($quotationModel->quote_status === 'success')
+                            {{number_format($quotationModel->GrossProfit() ,2)}}</h2>
+                            @else
+                                รอลูกค้าชำระเงิน....
+                            @endif
+                           
                         <hr />
                         {{-- <button class="btn btn-success">Checkout</button>
                         <button class="btn btn-secondary btn-outline">Cancel</button> --}}
