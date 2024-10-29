@@ -38,6 +38,7 @@ class invoiceModel extends Model
           'deposit',
           'created_by',
           'updated_by',
+          'invoice_cancel_note',
     ];
     
 

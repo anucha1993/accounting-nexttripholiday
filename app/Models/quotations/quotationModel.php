@@ -66,6 +66,7 @@ class quotationModel extends Model
         'quote_booking_create',
         'created_by',
         'updated_by',
+        'quote_cancel_note',
     ];
 
 

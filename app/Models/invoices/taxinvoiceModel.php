@@ -19,5 +19,6 @@ class taxinvoiceModel extends Model
         'created_by',
         'updated_by',
         'taxinvoice_status',
+        'taxinvoice_cancel_note',
     ];
 }

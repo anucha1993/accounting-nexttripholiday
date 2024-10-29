@@ -112,11 +112,16 @@ class taxInvoiceController extends Controller
         
     }
 
-    public function cancel(taxinvoiceModel $taxinvoiceModel)
+    public function cancel(Request $request, taxinvoiceModel $taxinvoiceModel)
     {
-        $taxinvoiceModel->update(['taxinvoice_status' => 'cancel']);
+        $taxinvoiceModel->update(['taxinvoice_cancel_note' => $request->taxinvoice_cancel_note,'taxinvoice_status' => 'cancel']);
         invoiceModel::where('invoice_id',$taxinvoiceModel->invoice_id)->update(['invoice_status' => 'wait']);
         return redirect()->back();
+    }
+
+    public function modalCancel(taxinvoiceModel $taxinvoiceModel)
+    {
+      return view('taxinvoices.modal-cancel',compact('taxinvoiceModel'));
     }
 
 

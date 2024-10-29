@@ -225,16 +225,26 @@
                                                         class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
                                             @else
                                             @endif
+
+                                           
                                         @endcan
-                                    @endif
+
+                                        @else
+                                        <span class="dot-danger"></span>ใบงานถูกยกเลิก
+
+                                        @endif
                                 </td>
 
                                 <td>
                                     @can('edit-quote')
-                                        <a class="dropdown-item"
-                                            href="{{ route('quote.cancel', $quotationModel->quote_id) }}"
-                                            onclick="return confirm('ยืนยันการยกเลิกใบเสนอราคา')"><i
-                                                class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
+                                      @if ($quotationModel->quote_status === 'cancel')
+                                      <a class="modal-quote-cancel" href="{{ route('quote.modalCancel', $quotationModel->quote_id) }}"><i
+                                        class="fas fa-minus-circle text-danger"></i> เหตุผลยกเลิกใบงาน</a>
+                                      @else
+                                      <a class="modal-quote-cancel" href="{{ route('quote.modalCancel', $quotationModel->quote_id) }}"><i
+                                        class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
+                                      @endif
+                                        
                                     @endcan
                                 </td>
                             </tr>
@@ -287,26 +297,41 @@
                                 </td> --}}
                                 <td>
                                     @can('edit-invoice')
-                                        <a class="dropdown-item modal-invoice-edit"
-                                            href="{{ route('invoice.edit', $itemInvoice->invoice_id) }}">
-                                            <i class="fa fa-edit text-info"></i> แก้ไข</a>
+                                  
 
-                                        @if ($itemInvoice->invoice_status === 'wait' && $quotationModel->quote_payment_status === 'success')
-                                            <a class="dropdown-item"
-                                                href="{{ route('invoice.taxinvoice', $itemInvoice->invoice_id) }}"
-                                                onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
-                                                    class="fas fa-file-alt"></i> ออกใบกำกับภาษี</a>
-                                        @endif
+                                    @if ($itemInvoice->invoice_status !== 'cancel')
+                                    <a class="dropdown-item modal-invoice-edit"
+                                    href="{{ route('invoice.edit', $itemInvoice->invoice_id) }}">
+                                    <i class="fa fa-edit text-info"></i> แก้ไข</a>
+
+                                @if ($itemInvoice->invoice_status === 'wait' && $quotationModel->quote_payment_status === 'success')
+                                    <a class="dropdown-item"
+                                        href="{{ route('invoice.taxinvoice', $itemInvoice->invoice_id) }}"
+                                        onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
+                                            class="fas fa-file-alt"></i> ออกใบกำกับภาษี</a>
+                                @endif
+                                    @else
+
+                                    <span class="dot-danger"></span>ใบงานถูกยกเลิก
+                                    @endif
+
+
+                                      
+
                                     @endcan
 
 
                                 </td>
                                 <td>
                                     @can('cancel-invoice')
-                                        <a class="dropdown-item"
-                                            href="{{ route('invoice.cancel', $itemInvoice->invoice_id) }}"
-                                            onclick="return confirm('ยืนยันการยกเลิกใบแจ้งหนี้')"><i
-                                                class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
+                                    @if ($itemInvoice->invoice_status === 'cancel')
+                                    <a class="modal-invoice-cancel" href="{{ route('invoice.modalCancel', $itemInvoice->invoice_id) }}"><i
+                                        class="fas fa-minus-circle text-danger"></i>เหตุผลยกเลิกใบงาน</a>
+                                    @else
+                                    <a class="modal-invoice-cancel" href="{{ route('invoice.modalCancel', $itemInvoice->invoice_id) }}"><i
+                                        class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
+                                    @endif
+                                        
                                     @endcan
                                 </td>
                             </tr>
@@ -355,22 +380,31 @@
                              </td> --}}
                                 <td>
                                     @can('edit-invoice')
-                                        <a class="dropdown-item modal-invoice-edit"
-                                            href="{{ route('invoice.edit', $item->invoice_id) }}">
-                                            <i class="fa fa-edit text-info"></i> แก้ไข</a>
-                                        {{-- <a class="dropdown-item debit-create"
-                                            href="{{ route('debit.create', $item->invoice_id) }}"><i
-                                                class="fas fa-file-alt"></i> ออกใบเพิ่มหนี้</a> --}}
+                                    @if ($item->taxinvoice_status !== 'cancel')
+                                    <a class="dropdown-item modal-invoice-edit"
+                                    href="{{ route('invoice.edit', $item->invoice_id) }}">
+                                    <i class="fa fa-edit text-info"></i> แก้ไข</a>
+                               
+                                    @else
+                                    <span class="dot-danger"></span>ใบงานถูกยกเลิก
+                                    @endif
+                                     
                                     @endcan
 
 
                                 </td>
                                 <td>
                                     @can('cancel-invoice')
-                                        <a class="dropdown-item"
-                                            href="{{ route('taxinvoice.cancel', $item->taxinvoice_id) }}"
-                                            onclick="return confirm('ยืนยันการยกเลิกใบกำกับภาษี')"><i
-                                                class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
+                                    @if ($item->taxinvoice_status === 'cancel')
+                                    <a class="modal-taxinvoice-cancel"
+                                    href="{{ route('taxinvoice.modalCancel', $item->taxinvoice_id) }}"><i
+                                        class="fas fa-minus-circle text-danger"></i> เหตุผลยกเลิกใบงาน</a>
+                                    @else
+                                    <a class="modal-taxinvoice-cancel"
+                                    href="{{ route('taxinvoice.modalCancel', $item->taxinvoice_id) }}"><i
+                                        class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
+                                    @endif
+                                       
                                     @endcan
                                 </td>
                             </tr>
@@ -379,7 +413,7 @@
 
                         {{-- Debit table --}}
 
-                        @forelse ($debits as $item)
+                        {{-- @forelse ($debits as $item)
                             <tr>
                                 <td class="text-info">ใบเพิ่มหนี้</td>
                                 <td>{{ date('d/m/Y', strtotime($item->debit_date)) }}</td>
@@ -436,20 +470,24 @@
                                 </td>
                                 <td>
                                     @can('cancel-invoice')
-                                        <a class="dropdown-item" href="{{ route('taxinvoice.cancel', $item->debit_id) }}"
-                                            onclick="return confirm('ยืนยันการยกเลิกใบกำกับภาษี')"><i
+                                    @if ()
+                                        
+                                    @else
+                                        
+                                    @endif
+                                        <a class="modal-taxinvoice" href="{{ route('taxinvoice.modalCancel', $item->debit_id) }}"><i
                                                 class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
                                     @endcan
                                 </td>
                             </tr>
                         @empty
-                        @endforelse
+                        @endforelse --}}
 
 
-                        <tr>
+                        {{-- <tr>
                             <td align="right" colspan="9"><b class="text-success">(@bathText($incomeTotal))</b></td>
                             <td align="center"><b class="text-success">{{number_format($incomeTotal,2)}}</b></td>
-                        </tr>
+                        </tr> --}}
 
                     </tbody>
                 </table>
@@ -550,6 +588,35 @@
         </div>
     </div>
 </div>
+
+{{-- quote cancel --}}
+<div class="modal fade bd-example-modal-sm modal-xl" id="modal-quote-cancel" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            ...
+        </div>
+    </div>
+</div>
+{{-- invoice cancel --}}
+<div class="modal fade bd-example-modal-sm modal-xl" id="modal-invoice-cancel" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            ...
+        </div>
+    </div>
+</div>
+{{-- taxinvoice cancel --}}
+<div class="modal fade bd-example-modal-sm modal-xl" id="modal-taxinvoice-cancel" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            ...
+        </div>
+    </div>
+</div>
+
 
 
 
@@ -684,6 +751,31 @@
         $(".credit-modal").click("click", function(e) {
             e.preventDefault();
             $("#credit-payment")
+                .modal("show")
+                .addClass("modal-lg")
+                .find(".modal-content")
+                .load($(this).attr("href"));
+        });
+
+        $(".modal-quote-cancel").click("click", function(e) {
+            e.preventDefault();
+            $("#modal-quote-cancel")
+                .modal("show")
+                .addClass("modal-lg")
+                .find(".modal-content")
+                .load($(this).attr("href"));
+        });
+        $(".modal-invoice-cancel").click("click", function(e) {
+            e.preventDefault();
+            $("#modal-invoice-cancel")
+                .modal("show")
+                .addClass("modal-lg")
+                .find(".modal-content")
+                .load($(this).attr("href"));
+        });
+        $(".modal-taxinvoice-cancel").click("click", function(e) {
+            e.preventDefault();
+            $("#modal-taxinvoice-cancel")
                 .modal("show")
                 .addClass("modal-lg")
                 .find(".modal-content")

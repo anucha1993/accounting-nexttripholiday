@@ -201,10 +201,15 @@ class invoiceController extends Controller
         
     }
 
-    public function cancel(invoiceModel $invoiceModel)
+    public function cancel(Request $request, invoiceModel $invoiceModel)
     {
-        $invoiceModel->update(['invoice_status' => 'cancel']);
+        $invoiceModel->update(['invoice_cancel_note' => $request->invoice_cancel_note,'invoice_status' => 'cancel']);
         return redirect()->back();
+    }
+
+    public function modalCancel(invoiceModel $invoiceModel)
+    {
+        return view('invoices.modal-cancel',compact('invoiceModel'));
     }
 
    

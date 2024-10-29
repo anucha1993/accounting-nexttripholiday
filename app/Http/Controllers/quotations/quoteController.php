@@ -417,10 +417,14 @@ class quoteController extends Controller
         return redirect()->route('quote.editNew',$quotationModel->quote_id)->with('success', 'Update Quotation Successfully.');
     }
 
-    public function cancel(quotationModel $quotationModel)
+    public function cancel(Request $request, quotationModel $quotationModel)
     {
-        $quotationModel->update(['quote_status' => 'cancel']);
+        $quotationModel->update(['quote_cancel_note' => $request->quote_cancel_note,'quote_status' => 'cancel']);
         return redirect()->back();
+    }
+    public function modalCancel(quotationModel $quotationModel)
+    {
+        return view('quotations.modal-cancel',compact('quotationModel'));
     }
 
     public function createNew()

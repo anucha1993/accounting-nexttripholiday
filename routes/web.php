@@ -96,6 +96,7 @@ Route::get('/booking/delete/{bookingModel}',[BookingController::class,'destroy']
 Route::get('invoice/create/{quotationModel}',[invoiceController::class,'create'])->name('invoice.create');
 Route::get('invoice/edit/{invoiceModel}',[invoiceController::class,'edit'])->name('invoice.edit');
 Route::get('invoice/cancel/{invoiceModel}',[invoiceController::class,'cancel'])->name('invoice.cancel');
+Route::get('invoice/modal/cancel/{invoiceModel}',[invoiceController::class,'modalCancel'])->name('invoice.modalCancel');
 Route::put('invoice/update/{invoiceModel}',[invoiceController::class,'update'])->name('invoice.update');
 Route::post('invoice/store',[invoiceController::class,'store'])->name('invoice.store');
 
@@ -104,6 +105,7 @@ Route::get('taxinvoice/{invoiceModel}',[taxInvoiceController::class,'store'])->n
 Route::get('taxinvoice/edit/{invoiceModel}',[taxInvoiceController::class,'edit'])->name('taxinvoice.edit');
 Route::put('taxinvoice/update/{invoiceModel}',[taxInvoiceController::class,'update'])->name('taxinvoice.update');
 Route::put('taxinvoice/cancel/{taxinvoiceModel}',[taxInvoiceController::class,'cancel'])->name('taxinvoice.cancel');
+Route::get('taxinvoice/modal/cancel/{taxinvoiceModel}',[taxInvoiceController::class,'modalCancel'])->name('taxinvoice.modalCancel');
 
 //invoice booking
 Route::get('invoice/booking',[InvoiceBookingController::class,'index'])->name('invoiceBooking.index');
@@ -128,7 +130,7 @@ Route::post('quote/store',[quoteController::class,'store'])->name('quote.store')
 Route::get('quote/edit/{quotationModel}',[quoteController::class,'edit'])->name('quote.edit');
 Route::put('quote/update/{quotationModel}',[quoteController::class,'update'])->name('quote.update');//
 Route::put('quote/update/ajax/{quotationModel}',[quoteController::class,'AjaxUpdate'])->name('quote.AjaxUpdate');//
-Route::get('quote/cancel/{quotationModel}',[quoteController::class,'cancel'])->name('quote.cancel');
+Route::put('quote/cancel/{quotationModel}',[quoteController::class,'cancel'])->name('quote.cancel');
 Route::get('quote/create/new',[quoteController::class,'createNew'])->name('quote.createNew');
 
 Route::get('quote/edit/new/{quotationModel}',[quoteController::class,'editNew'])->name('quote.editNew');
@@ -136,6 +138,7 @@ Route::get('quote/edit/new/{quotationModel}',[quoteController::class,'editNew'])
 Route::get('quote/ajax/new/{quotationModel}',[quoteController::class,'editQuote'])->name('quote.editAjax');
 Route::get('quote/modal/edit/{quotationModel}',[quoteController::class,'modalEdit'])->name('quote.modalEdit');
 Route::get('quote/modal/copy/edit/{quotationModel}',[quoteController::class,'modalEditCopy'])->name('quote.modalEditCopy');
+Route::get('quote/modal/cancel/{quotationModel}',[quoteController::class,'modalCancel'])->name('quote.modalCancel');
 
 
 
