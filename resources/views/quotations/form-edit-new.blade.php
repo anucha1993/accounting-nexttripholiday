@@ -372,16 +372,15 @@
                     </div>
 
                     <div class="card-body">
+
                         <h5 class="card-title">คำนวนกำไรขั้นต้น</h5>
-                        <hr />
-
+                        <hr/>
                         <span class="float-end"> ยอดโอนโฮลเซลล์: {{ number_format($quotationModel->GetDepositWholesale(), 2) }}</span><br>
-
                         <span class="float-end">ชำระแล้ว : {{ number_format($quotationModel->GetDeposit(), 2) }}</span><br>
                         <span class="float-end"> กำไร : {{ number_format($quotationModel->GrossProfit(), 2) }}</span><br>
                         <span class="float-end"> กำไรสุทธิ: {{ number_format($quotationModel->GrossProfit()-($quotationModel->inputtaxTotal()), 2) }} </span><br>
+                        <hr/>
 
-                        <hr />
                         {{-- <button class="btn btn-success">Checkout</button>
                         <button class="btn btn-secondary btn-outline">Cancel</button> --}}
                     </div>
