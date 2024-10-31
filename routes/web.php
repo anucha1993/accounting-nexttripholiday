@@ -263,6 +263,7 @@ Route::get('quotation/view/{encryptedId}', [quotationViewController::class, 'ind
 Route::get('quote/logs/{quotationModel}',[quoteLog::class,'index'])->name('quoteLog.index');
 // ตรวจสอบเส้นทางนี้ใน web.php หรือ api.php
 Route::post('quote-logs/update-status/{quoteId}', [quoteLog::class, 'updateLogStatus'])->name('quote.updateLogStatus');
+Route::post('quote/{quote}/upload-files', [quoteLog::class, 'uploadFiles'])->name('quote.uploadFiles');
 
 
 

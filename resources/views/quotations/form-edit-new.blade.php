@@ -195,7 +195,7 @@
                                         <tr>
                                             <td align="right" class="text-info">กำหนดชำระมัดจำ: :</td>
                                             <td>&nbsp;
-                                                @if ($quotationModel->quote_payment_total > 0)
+                                                @if ($quotationModel->quote_payment_date)
                                                     {{ thaidate('j F Y', $quotationModel->quote_payment_date) . ' ก่อนเวลา ' . date('H:m', strtotime($quotationModel->quote_payment_date)) . ' น.' }}
                                                     &nbsp;
                                                     {{ 'จำนวนเงิน :' . number_format($quotationModel->quote_payment_total, 2, '.', ',') . '.-' }}
@@ -523,6 +523,7 @@
             </div>
         </div>
     </div>
+    
 
 
         <script>
@@ -542,6 +543,7 @@
 
 
         <script>
+            
             document.getElementById('shareLinkButton').addEventListener('click', function(event) {
                 event.preventDefault(); // ป้องกันการคลิกที่ลิงก์เพื่อให้ไม่โหลดหน้าใหม่
 

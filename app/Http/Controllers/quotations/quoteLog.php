@@ -61,4 +61,39 @@ class quoteLog extends Controller
 }
 
 
+public function uploadFiles(Request $request, $quote)
+{
+    $request->validate([
+        'files.*' => 'file|mimes:pdf,jpg,png,jpeg|max:2048', // ประเภทและขนาดไฟล์ที่อนุญาต
+    ]);
+
+    $uploadedFiles = [];
+    if ($request->hasFile('files')) {
+        foreach ($request->file('files') as $file) {
+            $path = $file->store('uploads/quote_files', 'public'); // จัดเก็บไฟล์ในโฟลเดอร์ที่กำหนด
+            $uploadedFiles[] = $path;
+        }
+    }
+
+    // บันทึกสถานะการอัปโหลดในตาราง log หรืออัปเดตข้อมูลที่ต้องการ
+    $quoteLog = QuoteLog::updateOrCreate(
+        ['quote_id' => $quote],
+        [
+            'invoice_status' => 'ได้แล้ว',
+            'invoice_updated_at' => now(),
+            'invoice_created_by' => auth()->user()->name,
+        ]
+    );
+
+    return response()->json([
+        'message' => 'Files uploaded successfully',
+        'uploaded_files' => $uploadedFiles,
+        'updated_at' => now()->format('d M Y'),
+        'created_by' => auth()->user()->name,
+    ]);
+}
+
+
+
+
 }
