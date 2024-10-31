@@ -359,6 +359,8 @@
                             บันทึกภาษีซื้อ , ต้นทุนอื่นๆ
                         </a>
 
+                       
+
                         @php
                             use Illuminate\Support\Facades\Crypt;
                             $encryptedId = Crypt::encryptString($quotationModel->quote_id);
@@ -368,6 +370,12 @@
                             <i data-feather="link" class="feather-sm fill-white me-2 text-info"></i>
                             Share
                         </a>
+
+                        <a href="{{route('quoteLog.index',$quotationModel->quote_id)}}"
+                        class="justify-content-left w-100 btn btn-rounded btn-outline-success d-flex align-items-center mb-3 modal-quote-check ">
+                        <i data-feather="align-justify" class="feather-sm fill-white me-2 "></i>
+                        Check List 
+                    </a>
 
                     </div>
 
@@ -507,6 +515,15 @@
             </div>
         </div>
 
+        <div class="modal fade bd-example-modal-sm modal-lg" id="modal-quote-check" tabindex="-1" role="dialog"
+        aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                ...
+            </div>
+        </div>
+    </div>
+
 
         <script>
             function toggleAccordion(contentId, arrowId) {
@@ -550,6 +567,14 @@
 
         <script>
             $(document).ready(function() {
+                $(".modal-quote-check").click("click", function(e) {
+                    e.preventDefault();
+                    $("#modal-quote-check")
+                        .modal("show")
+                        .addClass("modal-lg")
+                        .find(".modal-content")
+                        .load($(this).attr("href"));
+                });
 
                 // modal add payment wholesale quote
                 $(".modal-quote-copy").click("click", function(e) {

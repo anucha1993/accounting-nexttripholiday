@@ -38,6 +38,7 @@ use App\Http\Controllers\invoices\invoiceDashboardController;
 use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
 use App\Http\Controllers\quotations\quotationViewController;
+use App\Http\Controllers\quotations\quoteLog;
 use App\Models\quotations\quotationModel;
 
 /*
@@ -257,4 +258,11 @@ Route::POST('inputtax/store',[inputTaxController::class,'store'])->name('inputta
 
 // public View
 Route::get('quotation/view/{encryptedId}', [quotationViewController::class, 'index'])->name('quotationView.index');
+
+
+Route::get('quote/logs/{quotationModel}',[quoteLog::class,'index'])->name('quoteLog.index');
+// ตรวจสอบเส้นทางนี้ใน web.php หรือ api.php
+Route::post('quote-logs/update-status/{quoteId}', [quoteLog::class, 'updateLogStatus'])->name('quote.updateLogStatus');
+
+
 

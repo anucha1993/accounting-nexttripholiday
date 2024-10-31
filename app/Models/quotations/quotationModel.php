@@ -2,15 +2,17 @@
 
 namespace App\Models\quotations;
 
+use App\Models\QuoteLogModel;
 use App\Models\sales\saleModel;
 use App\Models\booking\bookingModel;
 use App\Models\booking\countryModel;
-use App\Models\customers\customerModel;
-use App\Models\inputTax\inputTaxModel;
 use App\Models\payments\paymentModel;
-use App\Models\payments\paymentWholesaleModel;
+use App\Models\inputTax\inputTaxModel;
+use App\Models\customers\customerModel;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\wholesale\wholesaleModel;
+use App\Http\Controllers\quotations\quoteLog;
+use App\Models\payments\paymentWholesaleModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class quotationModel extends Model
@@ -68,6 +70,27 @@ class quotationModel extends Model
         'updated_by',
         'quote_cancel_note',
     ];
+
+    protected static function booted()
+    {
+        static::created(function ($quote) {
+            // Create a QuoteLog row for the new quote
+            \App\Models\QuoteLogModel::create([
+                'quote_id' => $quote->quote_id,
+                'booking_email_status' => 'ยังไม่ได้ส่ง',
+                'invoice_status' => 'ยังไม่ได้',
+                'slip_status' => 'ยังไม่ได้ส่ง',
+                'passport_status' => 'ยังไม่ได้ส่ง',
+                'appointment_status' => 'ยังไม่ได้ส่ง',
+            ]);
+        });
+    }
+
+    public function quoteLog()
+    {
+        return $this->hasOne(QuoteLogModel::class);
+    }
+
 
 
     // ความสัมพันธ์กับ BookingModel
