@@ -32,12 +32,12 @@
         </li>
 
         <!-- อินวอยโฮลเซลล์ -->
-        <div class="list-group-item">
+        <li class="list-group-item">
             <input type="checkbox" class="form-check-input me-2" id="invoice_status"
-                   onchange="updateOrCreateLog('invoice', this)"
-                   {{ optional($quoteLog)->invoice_status === 'ได้แล้ว' ? 'checked' : '' }}>
+                onchange="updateOrCreateLog('invoice', this)"
+                {{ optional($quoteLog)->invoice_status === 'ได้แล้ว' ? 'checked' : '' }}>
             <i data-feather="{{ optional($quoteLog)->invoice_status === 'ได้แล้ว' ? 'check-circle' : 'box' }}"
-               class="{{ optional($quoteLog)->invoice_status === 'ได้แล้ว' ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
+                class="{{ optional($quoteLog)->invoice_status === 'ได้แล้ว' ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
             อินวอยโฮลเซลล์:
             <span class="{{ optional($quoteLog)->invoice_status === 'ได้แล้ว' ? 'text-success' : 'text-muted' }}">
                 {{ optional($quoteLog)->invoice_status ?? 'ยังไม่ได้' }}
@@ -49,8 +49,26 @@
                 {{ optional($quoteLog)->invoice_updated_at ? Carbon::parse($quoteLog->invoice_updated_at)->format('d M Y') : '' }}
                 โดย {{ optional($quoteLog)->invoice_created_by ?? 'ไม่ทราบ' }}
             </small>
-        </div>
-        
+            <div id="uploaded-file-links">
+                @php
+                    $key = 0;
+                @endphp
+                @if (!empty($quoteLog->uploaded_files))
+                    @foreach (json_decode($quoteLog->uploaded_files, true) as $fileUrl)
+                        <a href="{{ $fileUrl }}" target="_blank"
+                            class="d-block">file-upload-{{ ++$key }}</a>
+
+                            <a href="#" class="text-danger ms-2"
+                   onclick="event.preventDefault(); deleteFile('{{ $fileUrl }}', this);">
+                    ลบ
+                </a>
+                    @endforeach
+                @endif
+            </div>
+        </li>
+
+
+
 
         <!-- ส่งสลิปให้โฮลเซลล์ -->
         <li class="list-group-item">
@@ -111,28 +129,28 @@
     </ul>
 
 
-   {{-- mail form quote --}}
-<div class="modal fade bd-example-modal-sm modal-lg modal-mail-quote" id="modal-mail-quote" tabindex="-1" role="dialog"
-aria-labelledby="mySmallModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-lg">
-    <div class="modal-content">
-        ...
+    {{-- mail form quote --}}
+    <div class="modal fade bd-example-modal-sm modal-lg modal-mail-quote" id="modal-mail-quote" tabindex="-1"
+        role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                ...
+            </div>
+        </div>
     </div>
-</div>
-</div>
 
 
-<script>
-$(document).ready(function() {
-    // modal add payment wholesale quote
-    $(".mail-quote").on("click", function(e) {
-        e.preventDefault();
-        // Show modal and load content
-        $(".modal-mail-quote").modal("show").find(".modal-content").load($(this).attr("href"));
-        // Hide another modal if open
-        $(".modal-quote-check").modal("hide");
-    });
-});
+    <script>
+        $(document).ready(function() {
+            // modal add payment wholesale quote
+            $(".mail-quote").on("click", function(e) {
+                e.preventDefault();
+                // Show modal and load content
+                $(".modal-mail-quote").modal("show").find(".modal-content").load($(this).attr("href"));
+                // Hide another modal if open
+                $(".modal-quote-check").modal("hide");
+            });
+        });
 
 
         function updateOrCreateLog(field, checkbox) {
@@ -171,37 +189,89 @@ $(document).ready(function() {
                 .catch(error => console.error('Error updating status:', error));
         }
 
+
         function uploadFiles(event) {
-    const files = event.target.files;
-    const formData = new FormData();
-    for (const file of files) {
-        formData.append('files[]', file);
-    }
+            const files = event.target.files;
+            const formData = new FormData();
+            for (const file of files) {
+                formData.append('files[]', file);
+            }
 
-    fetch('{{ route('quote.uploadFiles', $quotationModel->quote_id) }}', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message === 'Files uploaded successfully') {
-            document.getElementById('invoice_status').checked = true;
-            const statusElement = document.getElementById('invoice_status').nextElementSibling;
-            statusElement.className = 'text-success';
-            statusElement.innerText = 'ได้แล้ว';
+            fetch('{{ route('quote.uploadFiles', $quotationModel->quote_id) }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === 'Files uploaded successfully') {
+                        document.getElementById('invoice_status').checked = true;
+                        const statusElement = document.getElementById('invoice_status').nextElementSibling;
+                        statusElement.className = 'text-success';
+                        statusElement.innerText = 'ได้แล้ว';
 
-            const updateInfo = document.getElementById('invoice_status').parentElement.querySelector('.text-secondary');
-            updateInfo.innerText = `อัปเดตล่าสุด: ${data.updated_at} โดย ${data.created_by}`;
+                        const updateInfo = document.getElementById('invoice_status').parentElement.querySelector(
+                            '.text-secondary');
+                        updateInfo.innerText = `อัปเดตล่าสุด: ${data.updated_at} โดย ${data.created_by}`;
 
-            alert(data.message); // หรือแสดงการแจ้งเตือนอื่น
+                        // แสดงลิงก์สำหรับดูภาพที่อัปโหลดทั้งหมด
+                        const fileLinksContainer = document.getElementById('uploaded-file-links');
+                        fileLinksContainer.innerHTML = ''; // ล้างลิงก์เก่า
+                        data.uploaded_files.forEach((fileUrl, index) => {
+                            const fileContainer = document.createElement('div');
+                            fileContainer.classList.add('d-flex', 'align-items-center', 'mb-2');
+
+                            const linkElement = document.createElement('a');
+                            linkElement.href = fileUrl;
+                            linkElement.target = '_blank';
+                            linkElement.innerText = `file-upload-${(index + 1).toString().padStart(2, '0')}`;
+                            linkElement.classList.add('me-2');
+
+                            // แทน deleteButton ด้วย <a href="#">
+                            const deleteLink = document.createElement('a');
+                            deleteLink.href = '#';
+                            deleteLink.innerText = 'ลบ';
+                            deleteLink.classList.add('text-danger', 'ms-2');
+                            deleteLink.onclick = (event) => {
+                                event.preventDefault(); // ป้องกันไม่ให้ลิงก์รีเฟรชหน้า
+                                deleteFile(fileUrl, fileContainer); // เรียกใช้ฟังก์ชันลบไฟล์
+                            };
+
+                            fileContainer.appendChild(linkElement);
+                            fileContainer.appendChild(deleteLink);
+                            fileLinksContainer.appendChild(fileContainer);
+                        });
+                        alert(data.message); // หรือแสดงการแจ้งเตือนอื่น
+                    }
+                })
+                .catch(error => console.error('Error uploading files:', error));
         }
-    })
-    .catch(error => console.error('Error uploading files:', error));
-}
 
+        function deleteFile(fileUrl, fileContainer) {
+            if (!confirm('คุณต้องการลบไฟล์นี้ใช่หรือไม่?')) return;
 
+            fetch("{{ route('quote.deleteFile', $quotationModel->quote_id) }}", {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        file: fileUrl
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === 'File deleted successfully') {
+                        fileContainer.remove(); // ลบองค์ประกอบของไฟล์ออกจาก DOM
+                        alert(data.message); // แจ้งเตือนการลบสำเร็จ
+                    } else {
+                        alert('ไม่สามารถลบไฟล์ได้');
+                    }
+                })
+                .catch(error => console.error('Error deleting file:', error));
+        }
     </script>
 </div>

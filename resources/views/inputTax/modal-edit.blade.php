@@ -61,8 +61,18 @@
                 <label for="">ไฟล์เอกสารแนบ</label>
                 <input type="file" name="file">
             </div>
+
+            <div class="col-md-12">
+                <label for="">ต้องการออกใบหัก ณ ที่จ่ายหรือไม่</label>
+                <br>
+                <input type="radio" id="html" name="input_tax_withholding_status" value="Y" @if($inputTaxModel->input_tax_withholding_status === 'Y') checked @endif>
+                <label for="html">ใช่</label>
+                <input type="radio" id="css" name="input_tax_withholding_status" value="N" @if($inputTaxModel->input_tax_withholding_status === 'N') checked @endif>
+                <label for="css">ไม่ใช่</label><br>
+            </div>
             
         </div>
+       
         <br>
         <button type="submit" class="btn btn-sm btn-success">บันทึก</button>
     </form>

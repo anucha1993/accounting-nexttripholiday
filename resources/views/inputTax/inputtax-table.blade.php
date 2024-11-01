@@ -46,15 +46,7 @@
                                 {{number_format($item->invoice_pre_vat_amount,2)}}
                               
                             </td>
-                            <td>
-                                {{-- @if ($item->invoice_withholding_tax > 0)
-                                <a href="{{route('mpdf.withholding',$item->input_tax_id)}}"  onclick="openPdfPopup(this.href); return false;"> <i class="fa fa-file-pdf text-danger"></i> ใบหัก ณ ที่จ่าย</a>
-                                @else
-                                    -
-                                @endif --}}
-                                -
-                                
-                            </td>
+                           
                             <td>{{number_format($item->invoice_withholding_tax,2)}}</td>
                             <td>{{number_format($item->invoice_vat,2)}}</td>
                             <td>{{number_format($item->invoice_vat + $item->invoice_withholding_tax,2)}}</td>
@@ -107,7 +99,7 @@
                                    
                                 </td>
                                 <td>
-                                    @if ($item->input_tax_withholding > 0)
+                                    @if ($item->input_tax_withholding_status === 'Y')
                                     <a href="{{route('mpdf.withholding',$item->input_tax_id)}}"  onclick="openPdfPopup(this.href); return false;"> <i class="fa fa-file-pdf text-danger"></i> ใบหัก ณ ที่จ่าย</a>
                                     @else
                                         -

@@ -69,6 +69,16 @@
             </div>
             
         </div>
+
+        <div class="col-md-12">
+            <label for="">ต้องการออกใบหัก ณ ที่จ่ายหรือไม่</label>
+            <br>
+            <input type="radio" id="html" name="input_tax_withholding_status" value="Y">
+            <label for="html">ใช่</label>
+            <input type="radio" id="css" name="input_tax_withholding_status" value="N" checked>
+            <label for="css">ไม่ใช่</label><br>
+        </div>
+
         <br>
         <button type="submit" class="btn btn-sm btn-success">บันทึก</button>
     </form>

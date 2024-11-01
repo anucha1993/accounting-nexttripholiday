@@ -264,6 +264,9 @@ Route::get('quote/logs/{quotationModel}',[quoteLog::class,'index'])->name('quote
 // ตรวจสอบเส้นทางนี้ใน web.php หรือ api.php
 Route::post('quote-logs/update-status/{quoteId}', [quoteLog::class, 'updateLogStatus'])->name('quote.updateLogStatus');
 Route::post('quote/{quote}/upload-files', [quoteLog::class, 'uploadFiles'])->name('quote.uploadFiles');
+Route::delete('quote/{quote}/delete-file', [quoteLog::class, 'deleteFile'])->name('quote.deleteFile');
+
+
 
 
 

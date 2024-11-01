@@ -45,6 +45,7 @@ class inputTaxController extends Controller
 
     public function update(Request $request, inputTaxModel $inputTaxModel)
     {
+       // dd($request);
         $fileUploadController = new uploadfileQuoteController();
         $filePath = $fileUploadController->uploadFile($request, $request->input_tax_quote_number, $request->customer_id);
         $requestData = $request->all();

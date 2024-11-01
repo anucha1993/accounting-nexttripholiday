@@ -18,7 +18,7 @@ class QuoteLogModel extends Model
         'invoice_status', 'invoice_updated_at', 'invoice_created_by',
         'slip_status', 'slip_updated_at', 'slip_created_by',
         'passport_status', 'passport_updated_at', 'passport_created_by',
-        'appointment_status', 'appointment_updated_at', 'appointment_created_by',
+        'appointment_status', 'appointment_updated_at', 'appointment_created_by', 'uploaded_files',
     ];
 
     public function quote()

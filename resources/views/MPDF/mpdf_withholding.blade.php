@@ -21,7 +21,7 @@
             left: 680px; /* ปรับตำแหน่งแนวนอน */
             font-size: 20px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
@@ -33,7 +33,7 @@
             left: 680px; /* ปรับตำแหน่งแนวนอน */
             font-size: 20px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
@@ -44,7 +44,7 @@
             left: 497px;
             font-size: 20px;
             font-family: 'sarabun_new', sans-serif;
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline-block;
         }
         .group1 {
@@ -65,7 +65,7 @@
             left: 100px; /* ปรับตำแหน่งแนวนอน */
             font-size: 16px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
@@ -76,7 +76,7 @@
             left: 105px; /* ปรับตำแหน่งแนวนอน */
             font-size: 16px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
@@ -87,7 +87,7 @@
             left: 133px; /* ปรับตำแหน่งแนวนอน */
             font-size: 20px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
@@ -98,7 +98,7 @@
             left: 518px; /* ปรับตำแหน่งแนวนอน */
             font-size: 20px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
@@ -109,7 +109,7 @@
             left: 153px; /* ปรับตำแหน่งแนวนอน */
             font-size:18px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
@@ -121,7 +121,7 @@
             left: 453px; /* ปรับตำแหน่งแนวนอน */
             font-size:18px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
@@ -133,7 +133,7 @@
             right: 164px; /* ปรับตำแหน่งแนวนอน */
             font-size:18px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
@@ -144,7 +144,7 @@
             right: 76px; /* ปรับตำแหน่งแนวนอน */
             font-size:18px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
@@ -155,7 +155,7 @@
             right: 164px;/* ปรับตำแหน่งแนวนอน */
             font-size:18px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
@@ -166,7 +166,7 @@
             right: 76px; /* ปรับตำแหน่งแนวนอน */
             font-size:18px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
@@ -177,7 +177,7 @@
             right: 359px; /* ปรับตำแหน่งแนวนอน */
             font-size:18px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
@@ -188,7 +188,7 @@
             right: 320px; /* ปรับตำแหน่งแนวนอน */
             font-size:18px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
@@ -200,7 +200,7 @@
             right: 205px; /* ปรับตำแหน่งแนวนอน */
             font-size:18px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
@@ -212,7 +212,7 @@
             right: 270px; /* ปรับตำแหน่งแนวนอน */
             font-size:18px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
-            color: red;
+            color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
