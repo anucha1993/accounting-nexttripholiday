@@ -1114,7 +1114,7 @@
                 if (diffDays > 30) {
                     // เงื่อนไข 1: เลือกวิธีชำระเงินมัดจำ
                     $('#quote-payment-deposit').prop('checked', true);
-                    $('#quote-payment-price').prop('disabled', false); // เปิดการใช้งาน dropdown
+                   // $('#quote-payment-price').prop('disabled', false); // เปิดการใช้งาน dropdown
                     // $('#quote-payment-deposit').prop('disabled', false);
                     // $('#quote-payment-date').prop('disabled', false);
                     setPaymentDueDate();
@@ -1122,7 +1122,7 @@
                 } else {
                     // หากไม่เข้าเงื่อนไข 1: เลือกชำระเต็มจำนวน
                     $('#quote-payment-full').prop('checked', true);
-                    $('#quote-payment-deposit').prop('disabled', true);
+                   // $('#quote-payment-deposit').prop('disabled', true);
                     // $('#quote-payment-price').prop('disabled', true); // ปิดการใช้งาน dropdown
                     // $('#quote-payment-date').prop('disabled', true);
 
@@ -1191,11 +1191,11 @@
             function checkedPaymentFull() {
                 var QuoteTotalGrand = $('#quote-grand-total').val();
                 if ($('#quote-payment-full').is(':checked')) {
-                    $('#quote-payment-price').prop('disabled', true); // ปิด dropdown เรทเงินมัดจำ
+                   // $('#quote-payment-price').prop('disabled', true); // ปิด dropdown เรทเงินมัดจำ
                     $('#payment-total-full').val(QuoteTotalGrand);
                     $('.pax-total').val(0.00);
                     $('#quote-payment-price').val(0);
-                    $('#quote-payment-date').prop('disabled', true);
+                   // $('#quote-payment-date').prop('disabled', true);
                 }
             }
 
@@ -1206,8 +1206,8 @@
 
             $('#quote-payment-deposit').on('change', function() {
                 if ($(this).is(':checked')) {
-                    $('#quote-payment-price').prop('disabled', false); // เปิด dropdown เรทเงินมัดจำ
-                    $('#quote-payment-date').prop('disabled', false);
+                  //  $('#quote-payment-price').prop('disabled', false); // เปิด dropdown เรทเงินมัดจำ
+                  //  $('#quote-payment-date').prop('disabled', false);
                     $('#quote-payment-price').val(0.00);
                 }
             });
