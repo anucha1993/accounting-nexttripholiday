@@ -89,7 +89,7 @@
                                         <tr>
                                             <td align="right" class="text-info">วันที่จองทัวร์ :</td>
                                             <td>&nbsp;
-                                                {{ $customer->quotationModel ? thaidate('j F Y', $quotationModel->quote_booking_create) : thaidate('j F Y', $quotationModel->quote_date) }}
+                                                {{ $customer->quotationModel ? thaidate('j F Y', $quotationModel->quote_booking_create) : thaidate('j F Y', $quotationModel->quote_booking_create) }}
                                             </td>
                                         </tr>
 

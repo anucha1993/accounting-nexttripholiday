@@ -52,7 +52,7 @@
                             <label>วันที่สั่งซื้อ,จองแพคเกจ:</label>
                             <input type="text" id="displayDatepicker" class="form-control">
                             <input type="hidden" id="submitDatepicker" name="quote_booking_create">
-                            <input type="hidden" id="quote-date" name="quote_date">
+                            <input type="hidden" id="quote-date" name="quote_booking_create">
                         </div>
                         <div class="col-md-2">
                             <label>เลขที่ใบเสนอราคา</label>

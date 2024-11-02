@@ -32,9 +32,7 @@
                         $paymentDebitTotal = 0;
                     @endphp
                     <tbody>
-                        <tr>
-                            <td colspan="10">แจ้งชำระเงิน ใบเสนอราคา</td>
-                        </tr>
+                        
                         @forelse ($payments as $key => $item)
                             <tr>
                                 <td>{{ ++$key }}</td>
@@ -148,6 +146,8 @@
                                     @else
                                     {{$item->payment_cancel_note}}
                                     @endif
+
+                                    <a href="{{route('payment.delete',$item->payment_id)}}" onclick="return confirm('ยืนยันการลบ');"><i class="fa fa-trash text-danger"></i> ลบ</a>
 
 
 

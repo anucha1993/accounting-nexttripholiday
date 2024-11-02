@@ -4,15 +4,16 @@ namespace App\Http\Controllers\payments;
 
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Models\bank\bankCompanyModel;
 use App\Models\bank\bankModel;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\View;
+use App\Models\bank\bankCompanyModel;
 use App\Models\invoices\invoiceModel;
 use App\Models\payments\paymentModel;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use App\Models\quotations\quotationModel;
-use Illuminate\Support\Facades\View;
 
 class paymentController extends Controller
 {
@@ -89,7 +90,6 @@ class paymentController extends Controller
           return $runningCode;
       }
 
-
     public function payment(Request $request)
     {
         // ตรวจสอบข้อมูลที่รับมาจาก request
@@ -155,7 +155,7 @@ class paymentController extends Controller
         $paymentModel->update($request->all());
        
         // quote
-        $quotationModel = quotationModel::where('quote_number', $paymentModel->payment_doc_number)->first();
+        $quotationModel = quotationModel::where('quote_id', $paymentModel->payment_quote_id)->first();
 
         $deposit = $quotationModel->GetDeposit();
         $quotePayment = 'payment';
@@ -263,4 +263,63 @@ class paymentController extends Controller
 
         return redirect()->back();
     }
+
+   public function delete(paymentModel $paymentModel)
+{
+
+       // กำหนดตำแหน่งไฟล์ตามเส้นทางจริงในระบบ
+       $filePath1 = public_path('storage/' . $paymentModel->payment_cancel_file_path);
+       $filePath2 = public_path('storage/' . $paymentModel->payment_file_path);
+   
+       // ตรวจสอบและลบไฟล์จากตำแหน่งที่กำหนด
+       if (File::exists($filePath1)) {
+           File::delete($filePath1);
+       }
+   
+       if (File::exists($filePath2)) {
+           File::delete($filePath2);
+       }
+    
+    // ลบข้อมูลใน paymentModel
+    $paymentModel->delete();
+
+    // ค้นหา quotationModel ที่ตรงกับ quote_id
+    
+    $quotationModel = quotationModel::where('quote_id', $paymentModel->payment_quote_id)->first();
+    
+    $quotationModel->update([
+        'quote_id' => $paymentModel->quote_id,
+        'payment' => 0,
+        'quote_status' => 'wait',
+        'quote_payment_status' => 'wait'
+    ]);
+    // ตรวจสอบว่ามี quotationModel หรือไม่
+    if ($quotationModel) {
+        // ดึงค่า deposit 
+        $deposit = $quotationModel->GetDeposit();
+
+        // ตั้งค่าสถานะเริ่มต้น
+        $quotePaymentStatus = $deposit <= 0 ? 'wait' : 'payment';
+        $quoteStatus = $deposit >= $quotationModel->quote_grand_total ? 'success' : 'wait';
+
+        // อัปเดตข้อมูล quotationModel
+        $quotationModel->update([
+            'payment' => $deposit,
+            'quote_status' => $quoteStatus,
+            'quote_payment_status' => $quotePaymentStatus
+        ]);
+    } else {
+        // หากไม่มี quotationModel ให้สร้างใหม่พร้อมค่าเริ่มต้น
+        quotationModel::where('quote_id', $paymentModel->payment_quote_id)->update([
+            'quote_id' => $paymentModel->quote_id,
+            'payment' => 0,
+            'quote_status' => 'wait',
+            'quote_payment_status' => 'wait'
+        ]);
+    }
+
+    return redirect()->back();
+}
+
+    
 }
