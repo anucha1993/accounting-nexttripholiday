@@ -219,15 +219,14 @@
                                                     class="fa fa-edit text-info"></i> แก้ไข</a>
                                         @endcan
                                         @can('create-invoice')
-                                            @if ($quotationModel->quote_status == 'wait')
-                                                <a class="dropdown-item modal-invoice"
-                                                    href="{{ route('invoice.create', $quotationModel->quote_id) }}"><i
-                                                        class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
-                                            @else
-                                            @endif
-
-                                           
-                                        @endcan
+                                        @if (empty($invoiceModel))
+                                            <a class="dropdown-item modal-invoice"
+                                               href="{{ route('invoice.create', $quotationModel->quote_id) }}"><i
+                                               class="fas fa-file-alt"></i> ออกใบแจ้งหนี้</a>
+                                   
+                                        @endif
+                                    @endcan
+                                    
 
                                         @else
                                         <span class="dot-danger"></span>ใบงานถูกยกเลิก
