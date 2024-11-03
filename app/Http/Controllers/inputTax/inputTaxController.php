@@ -24,11 +24,24 @@ class inputTaxController extends Controller
         return view('inputTax.modal-create', compact('quotationModel','wholesale'));
     }
 
+    public function inputtaxCreateWholesale(quotationModel $quotationModel)
+    {
+        $wholesale = wholesaleModel::get();
+        return view('inputTax.modal-create-wholesale', compact('quotationModel','wholesale'));
+    }
+
     public function editWholesale(inputTaxModel $inputTaxModel)
     {
         $wholesale = wholesaleModel::get();
         $quotationModel = quotationModel::where('quote_id', $inputTaxModel->input_tax_quote_id)->first();
         return view('inputTax.modal-edit', compact('inputTaxModel', 'quotationModel','wholesale'));
+    }
+
+    public function inputtaxEditWholesale(inputTaxModel $inputTaxModel)
+    {
+        $wholesale = wholesaleModel::get();
+        $quotationModel = quotationModel::where('quote_id', $inputTaxModel->input_tax_quote_id)->first();
+        return view('inputTax.modal-edit-wholesale', compact('inputTaxModel', 'quotationModel','wholesale'));
     }
    
     public function cancelWholesale(inputTaxModel $inputTaxModel)

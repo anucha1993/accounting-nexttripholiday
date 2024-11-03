@@ -377,6 +377,12 @@
                         Check List 
                     </a>
 
+                    <a href="{{route('inputtax.inputtaxCreateWholesale',$quotationModel->quote_id)}}"
+                        class="justify-content-left w-100 btn btn-rounded btn-outline-warning d-flex align-items-center mb-3 modal-inputtax-wholesale">
+                        <i data-feather="percent" class="feather-sm fill-white me-2 "></i>
+                       ต้นทุนโฮลเซลล์
+                    </a>
+
                     </div>
 
                     <div class="card-body">
@@ -523,6 +529,15 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade bd-example-modal-sm modal-lg" id="modal-inputtax-wholesale" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            ...
+        </div>
+    </div>
+</div>
     
 
 
@@ -569,6 +584,15 @@
 
         <script>
             $(document).ready(function() {
+                $(".modal-inputtax-wholesale").click("click", function(e) {
+                    e.preventDefault();
+                    $("#modal-inputtax-wholesale")
+                        .modal("show")
+                        .addClass("modal-lg")
+                        .find(".modal-content")
+                        .load($(this).attr("href"));
+                });
+
                 $(".modal-quote-check").click("click", function(e) {
                     e.preventDefault();
                     $("#modal-quote-check")
