@@ -42,14 +42,14 @@
             <span class="{{ optional($quoteLog)->invoice_status === 'ได้แล้ว' ? 'text-success' : 'text-muted' }}">
                 {{ optional($quoteLog)->invoice_status ?? 'ยังไม่ได้' }}
             </span>
-            <input type="file" name="files[]" multiple onchange="uploadFiles(event)">
+            {{-- <input type="file" name="files[]" multiple onchange="uploadFiles(event)"> --}}
             <br>
             <small class="text-secondary">
                 อัปเดตล่าสุด:
                 {{ optional($quoteLog)->invoice_updated_at ? Carbon::parse($quoteLog->invoice_updated_at)->format('d M Y') : '' }}
                 โดย {{ optional($quoteLog)->invoice_created_by ?? 'ไม่ทราบ' }}
             </small>
-            <div id="uploaded-file-links">
+            {{-- <div id="uploaded-file-links">
                 @php
                     $key = 0;
                 @endphp
@@ -64,7 +64,7 @@
                 </a>
                     @endforeach
                 @endif
-            </div>
+            </div> --}}
         </li>
 
 

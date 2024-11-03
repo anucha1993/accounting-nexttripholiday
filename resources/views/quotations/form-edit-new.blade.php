@@ -434,6 +434,10 @@
 
             </div>
 
+            <div class="col-md-12" id="inputtax-wholesale-table">
+
+            </div>
+
 
 
         </div>
@@ -538,6 +542,8 @@
         </div>
     </div>
 </div>
+
+
     
 
 
@@ -714,6 +720,21 @@
                     });
                 }
                 inputtax(quoteId)
+
+                function inputtaxWholesale(quoteId) {
+                    // โหลดเนื้อหาของไฟล์ฟอร์มและแสดงใน DOM
+                    $.ajax({
+                        url: "{{ route('inputtax.tableWholesale', '') }}/" + quoteId, // ประกอบ URL แบบถูกต้อง
+                        type: 'GET',
+                        success: function(response) {
+                            $('#inputtax-wholesale-table').html(response); // แสดง response ใน #quote-centent
+                        },
+                        error: function(xhr) {
+                            console.log(xhr.responseText); // แสดงข้อผิดพลาดใน console
+                        }
+                    });
+                }
+                inputtaxWholesale(quoteId)
 
 
 
