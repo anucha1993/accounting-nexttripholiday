@@ -16,6 +16,7 @@
                         <tr>
                             <th style="width: 100px">ลำดับ</th>
                             <th>ประเภท</th>
+                            <th>วันที่</th>
                             <th>ไฟล์แนบ</th>
                             <th>ยอดทั้งสิ้น</th>
                             <th>Actions</th>
@@ -49,6 +50,10 @@
                                     @elseif($item->input_tax_type === 2)
                                     ต้นทุนโฮลเซลล์
                                     @endif
+                                </td>
+
+                                <td>
+                                    {{date('d-m-Y : H:m:s',strtotime($item->created_at))}}
                                 </td>
 
                                 <td>
