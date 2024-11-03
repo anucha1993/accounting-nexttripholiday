@@ -213,12 +213,12 @@
                     </td>
                     <td style="border: none;"></td>
                     <td
-                        style="padding-left: 5px; border-right: none;  border-bottom: none;  border-top: none; vertical-align: top;">
-                        <h4><b>ชำระเงินมัดจำ/deposit Date:</b></h4>
+                        style="padding-left: 5px; border-right: none;    border-top: none; vertical-align: top;">
+                        {{-- <h4><b>ชำระเงินมัดจำ/deposit Date:</b></h4> --}}
                     </td>
                     <td
-                        style="padding: 0; text-align: left; border-left: none;border-bottom:  none;  border-top: none; background-color: #bbdefb; vertical-align: top;">
-                        <p style="margin: 0; padding: 10px;">
+                        style="padding: 0; text-align: left; border-left: none;   border-top: none; background-color: #ffffff; vertical-align: top;">
+                        {{-- <p style="margin: 0; padding: 10px;">
                             @if ($quotationModel->quote_payment_type === 'deposit')
                                 <span> {{ thaidate('j M Y', $quotationModel->quote_payment_date) }} เวลา
                                     {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.</span>
@@ -226,7 +226,7 @@
                                 - ก่อนเวลา - น.
                             @endif
 
-                        </p>
+                        </p> --}}
                     </td>
                 </tr>
                 <tr style="padding: 3px">
@@ -238,11 +238,11 @@
 
                     </td>
                     <td style="border: none;"></td>
-                    <td style="padding-left: 5px; border-right: none;   border-top: none; vertical-align: top;">
+                    {{-- <td style="padding-left: 5px; border-right: none;   border-top: none; vertical-align: top;">
                         <h4><b>ชำระส่วนที่เหลือ/Full Payment Date:</b></h4>
                     </td>
                     <td
-                        style="padding: 0; text-align: left; border-left: none;  ; background-color: #bbdefb; vertical-align: top;">
+                        style="padding: 0; text-align: left; border-left: none;  ; background-color: #ffffff; vertical-align: top;">
                         <p style="margin: 0; padding: 10px;">
                             @if ($quotationModel->quote_payment_type === 'full')
                                 <span> {{ thaidate('j M Y', $quotationModel->quote_payment_date) }} เวลา
@@ -252,7 +252,7 @@
                             @endif
 
                         </p>
-                    </td>
+                    </td> --}}
                 </tr>
                 <tr>
                     <td style="border: none;"></td>
@@ -409,7 +409,7 @@
         </div>
 
         <footer>
-{{$payment->payment_id}}
+{{-- {{$payment->payment_id}} --}}
             <div style="margin-top: -17px">
                 <b>ชำระเงินโดย / Form of payment: </b><br>
                 <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'cash') DejaVuSans; @endif">&#9745;</span> <b>เงินสด</b><br>

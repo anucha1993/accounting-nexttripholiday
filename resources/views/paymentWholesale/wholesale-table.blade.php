@@ -33,7 +33,7 @@
                                 <td>{{ $key + 1 }}</td>
 
                                 <td>{{ $item->payment_wholesale_number }}</td>
-                                <td>{{ date('d-m-Y', strtotime($item->created_at)) }}</td>
+                                <td>{{ date('d-m-Y : H:m:s', strtotime($item->created_at)) }}</td>
                                 <td>
                                     @php
                                         $paymentTotal += $item->payment_wholesale_total;
