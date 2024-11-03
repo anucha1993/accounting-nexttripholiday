@@ -56,7 +56,7 @@ class quoteLog extends Controller
         'message' => 'Status updated successfully',
         'status' => $status,
         'field' => $field,
-        'updated_at' => $status === 'ยังไม่ได้ส่ง' ? null : now()->format('d M Y'),
+        'updated_at' => $status === 'ยังไม่ได้ส่ง' ? null : now()->format('d M Y : H:m:s'),
         'created_by' => $status === 'ยังไม่ได้ส่ง' ? null : $createdBy
     ]);
 }
