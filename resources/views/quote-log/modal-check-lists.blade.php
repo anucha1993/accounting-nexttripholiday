@@ -26,7 +26,7 @@
             <br>
             <small class="text-secondary">
                 อัปเดตล่าสุด:
-                {{ optional($quoteLog)->booking_email_updated_at ? Carbon::parse($quoteLog->booking_email_updated_at)->format('d M Y') : '' }}
+                {{ optional($quoteLog)->booking_email_updated_at ? Carbon::parse($quoteLog->booking_email_updated_at)->format('d-m-Y : H:m:s') : '' }}
                 โดย {{ optional($quoteLog)->booking_email_created_by ?? 'ไม่ทราบ' }}
             </small>
         </li>
@@ -46,7 +46,7 @@
             <br>
             <small class="text-secondary">
                 อัปเดตล่าสุด:
-                {{ optional($quoteLog)->invoice_updated_at ? Carbon::parse($quoteLog->invoice_updated_at)->format('d M Y') : '' }}
+                {{ optional($quoteLog)->invoice_updated_at ? Carbon::parse($quoteLog->invoice_updated_at)->format('d-m-Y : H:m:s') : '' }}
                 โดย {{ optional($quoteLog)->invoice_created_by ?? 'ไม่ทราบ' }}
             </small>
             {{-- <div id="uploaded-file-links">
@@ -84,7 +84,7 @@
             <br>
             <small class="text-secondary">
                 อัปเดตล่าสุด:
-                {{ optional($quoteLog)->slip_updated_at ? Carbon::parse($quoteLog->slip_updated_at)->format('d M Y') : '' }}
+                {{ optional($quoteLog)->slip_updated_at ? Carbon::parse($quoteLog->slip_updated_at)->format('d-m-Y : H:m:s') : '' }}
                 โดย {{ optional($quoteLog)->slip_created_by ?? 'ไม่ทราบ' }}
             </small>
         </li>
@@ -103,7 +103,7 @@
             <br>
             <small class="text-secondary">
                 อัปเดตล่าสุด:
-                {{ optional($quoteLog)->passport_updated_at ? Carbon::parse($quoteLog->passport_updated_at)->format('d M Y') : '' }}
+                {{ optional($quoteLog)->passport_updated_at ? Carbon::parse($quoteLog->passport_updated_at)->format('d-m-Y : H:m:s') : '' }}
                 โดย {{ optional($quoteLog)->passport_created_by ?? 'ไม่ทราบ' }}
             </small>
         </li>
@@ -122,7 +122,7 @@
             <br>
             <small class="text-secondary">
                 อัปเดตล่าสุด:
-                {{ optional($quoteLog)->appointment_updated_at ? Carbon::parse($quoteLog->appointment_updated_at)->format('d M Y') : '' }}
+                {{ optional($quoteLog)->appointment_updated_at ? Carbon::parse($quoteLog->appointment_updated_at)->format('d-m-Y : H:m:s') : '' }}
                 โดย {{ optional($quoteLog)->appointment_created_by ?? 'ไม่ทราบ' }}
             </small>
         </li>
