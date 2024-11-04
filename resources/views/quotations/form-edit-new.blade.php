@@ -387,12 +387,38 @@
 
                     <div class="card-body">
 
+                        @php
+                        $paymentCustomer = 0;
+                        $paymentWhosale = 0;
+                        $paymentInputtaxTotal = 0;
+                        $TotalPayment = 0;
+                        $TotalGrand = 0;
+                    
+                        // เรียกข้อมูลการฝากเงินของลูกค้า
+                        $paymentCustomer = $quotationModel->GetDeposit();
+                    
+                        // เรียกข้อมูลการฝากเงินของผู้ค้าส่ง
+                        $paymentWhosale = $quotationModel->GetDepositWholesale();
+                    
+                        // เรียกข้อมูลยอดรวมภาษีซื้อ (Input Tax)
+                        $paymentInputtaxTotal = $quotationModel->inputtaxTotal();
+    
+                        // คำนวณยอดรวม โดยหักเงินฝากของผู้ค้าส่งและภาษีออกจากเงินฝากของลูกค้า
+                        $TotalGrand = $paymentCustomer - $paymentWhosale - $paymentInputtaxTotal;
+
+                        $TotalPaymen = $paymentCustomer - $paymentWhosale;
+                    @endphp
+                    
+
                         <h5 class="card-title">คำนวนกำไรขั้นต้น</h5>
                         <hr/>
+                        <span class="float-end"> ยอดรวมต้นทุนโฮลเซลล์: {{ number_format($quotationModel->inputtaxTotalWholesale(), 2) }}</span><br>
                         <span class="float-end"> ยอดโอนโฮลเซลล์: {{ number_format($quotationModel->GetDepositWholesale(), 2) }}</span><br>
                         <span class="float-end">ชำระแล้ว : {{ number_format($quotationModel->GetDeposit(), 2) }}</span><br>
-                        <span class="float-end"> กำไร : {{ number_format($quotationModel->GrossProfit(), 2) }}</span><br>
-                        <span class="float-end"> กำไรสุทธิ: {{ number_format($quotationModel->GrossProfit()-($quotationModel->inputtaxTotal()), 2) }} </span><br>
+                        <span class="float-end"> กำไร : {{ number_format($TotalPaymen, 2) }}</span><br>
+
+                      
+                        <span class="float-end"> กำไรสุทธิ: {{ number_format($TotalGrand, 2) }} </span><br>
                         <hr/>
 
                         {{-- <button class="btn btn-success">Checkout</button>

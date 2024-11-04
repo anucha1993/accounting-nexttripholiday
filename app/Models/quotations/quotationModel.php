@@ -179,6 +179,18 @@ class quotationModel extends Model
     }
 
 
+   
+    public function inputtaxTotalWholesale()
+    {
+        return $this->inputtax()
+            ->where('input_tax_type', 2)
+            ->get()
+            ->sum(function ($inputtax) {
+                return $inputtax->input_tax_grand_total;
+            });
+    }
+
+
 
  
 

@@ -284,11 +284,28 @@
                 </tr>
 
                 <tr>
+                    <td colspan="2"  style="width: 465px; text-align: right; background-color: #ffffff;">
+                      
+                    </td>
+                    <td colspan="2"  style="width: 185px; text-align: center; background-color: #ffffff;"><h3> รวมเป็นเงิน / Amount </h3></td>
+                    <td style="width: 120px; text-align: center; background-color: #ffffff;"><h3>  <p style="margin: 0;">{{  number_format($quotationModel->quote_pre_vat_amount  , 2, '.', ',')}}</p></h3></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2"  style="width: 465px; text-align: right; background-color: #ffffff;">
+                      
+                    </td>
+                    <td colspan="2"  style="width: 185px; text-align: center; background-color: #ffffff;"><h3> ภาษีมูลค่าเพิ่ม / Vat 7%</h3></td>
+                    <td style="width: 120px; text-align: center; background-color: #ffffff;"><h3>  <p style="margin: 0;">{{  number_format($quotationModel->quote_vat  , 2, '.', ',')}}</p></h3></td>
+                </tr>
+
+
+                <tr>
                     <td colspan="2"  style="width: 465px; text-align: right; background-color: #f9c68f;">
-                       <h3> @bathText($quotationModel->quote_total)</h3>
+                       <h3> @bathText($quotationModel->quote_grand_total)</h3>
                     </td>
                     <td colspan="2"  style="width: 185px; text-align: center; background-color: #f9c68f;"><h3> ยอดรวม / Grand Total</h3></td>
-                    <td style="width: 120px; text-align: center; background-color: #f9c68f;"><h3>  <p style="margin: 0;">{{  number_format(($quotationModel->quote_vat_exempted_amount+$quotationModel->quote_pre_tax_amount) - $quotationModel->quote_discount  , 2, '.', ',')}}</p></h3></td>
+                    <td style="width: 120px; text-align: center; background-color: #f9c68f;"><h3>  <p style="margin: 0;">{{  number_format($quotationModel->quote_grand_total  , 2, '.', ',')}}</p></h3></td>
                 </tr>
 
 

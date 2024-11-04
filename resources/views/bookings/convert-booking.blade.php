@@ -1000,19 +1000,20 @@
             function setPaymentDueDate30() {
                 var bookingCreateDate = new Date($('#date-start').val());
                 var travelDate = new Date($('#date-start').val());
-                console.log(travelDate);
+                var dateNow = new Date();
+                //console.log(travelDate);
                 var bookingDate = new Date($('#booking-create-date').val());
                 // คำนวณจำนวนวันระหว่างวันจองและวันออกเดินทาง
                 var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);
-
-                if(diffDays >= 31) {
+                if(diffDays >= 30) {
                            // ลบ 31 วัน
-                    bookingCreateDate.setDate(bookingCreateDate.getDate() - 31);
+                    bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
                 }else{
                      // เพิ่ม 1 วัน
-                    bookingCreateDate.setDate(bookingCreateDate.getDate() + 1);
+                    bookingCreateDate = new Date();
+                    bookingCreateDate.setDate(dateNow.getDate() + 1);
                 }
-         
+
                 // ตั้งค่าเวลาเป็น 13:00 น.
                 bookingCreateDate.setHours(13);
                 bookingCreateDate.setMinutes(0);
@@ -1026,7 +1027,6 @@
                 var minutes = ('0' + bookingCreateDate.getMinutes()).slice(-2);
                 var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
                 // ตั้งค่าให้กับ input datetime-local
-          
 
                 $('input[name="quote_payment_date_full"]').val(formattedDate);
             }
@@ -1502,19 +1502,20 @@
                 function setPaymentDueDate30() {
                 var bookingCreateDate = new Date($('#date-start').val());
                 var travelDate = new Date($('#date-start').val());
+                var dateNow = new Date();
                 //console.log(travelDate);
                 var bookingDate = new Date($('#booking-create-date').val());
                 // คำนวณจำนวนวันระหว่างวันจองและวันออกเดินทาง
                 var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);
-                if(diffDays >= 31) {
+                if(diffDays >= 30) {
                            // ลบ 31 วัน
-                    bookingCreateDate.setDate(bookingCreateDate.getDate() - 31);
+                    bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
                 }else{
                      // เพิ่ม 1 วัน
                     bookingCreateDate = new Date();
-                    bookingCreateDate.setDate(bookingCreateDate.getDate() + 1);
+                    bookingCreateDate.setDate(dateNow.getDate() + 1);
                 }
-    
+
                 // ตั้งค่าเวลาเป็น 13:00 น.
                 bookingCreateDate.setHours(13);
                 bookingCreateDate.setMinutes(0);
