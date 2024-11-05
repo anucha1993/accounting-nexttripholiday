@@ -288,7 +288,7 @@
                       
                     </td>
                     <td colspan="2"  style="width: 185px; text-align: center; background-color: #ffffff;"><h3> รวมเป็นเงิน / Amount </h3></td>
-                    <td style="width: 120px; text-align: center; background-color: #ffffff;"><h3>  <p style="margin: 0;">{{  number_format($quotationModel->quote_pre_vat_amount  , 2, '.', ',')}}</p></h3></td>
+                    <td style="width: 120px; text-align: center; background-color: #ffffff;"><h3>  <p style="margin: 0;">{{  number_format(($quotationModel->quote_grand_total - $quotationModel->quote_vat )  , 2, '.', ',')}}</p></h3></td>
                 </tr>
 
                 <tr>
