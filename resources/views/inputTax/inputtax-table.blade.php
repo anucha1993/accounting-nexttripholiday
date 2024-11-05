@@ -40,13 +40,13 @@
                         <tr>
                             <td>{{++$key}}</td>
                             <td>ภาษีขาย</td>
-                            <td>{{$quotationModel->quote_number}}</td>
+                            <td>{{$item->invoice_number}}</td>
                             <td>-</td>
                             <td>
                                 {{number_format($item->invoice_pre_vat_amount,2)}}
                               
                             </td>
-                           
+                            <td>-</td>
                             <td>{{number_format($item->invoice_withholding_tax,2)}}</td>
                             <td>{{number_format($item->invoice_vat,2)}}</td>
                             <td>{{number_format($item->invoice_vat + $item->invoice_withholding_tax,2)}}</td>

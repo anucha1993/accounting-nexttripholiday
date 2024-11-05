@@ -12,6 +12,7 @@ use App\Models\customers\customerModel;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\wholesale\wholesaleModel;
 use App\Http\Controllers\quotations\quoteLog;
+use App\Models\invoices\invoiceModel;
 use App\Models\payments\paymentWholesaleModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -172,13 +173,13 @@ class quotationModel extends Model
     public function inputtaxTotal()
     {
         return $this->inputtax()
+            ->where('input_tax_status', 'success')
             ->get()
             ->sum(function ($inputtax) {
+                
                 return $inputtax->input_tax_withholding;
             });
     }
-
-
    
     public function inputtaxTotalWholesale()
     {
@@ -188,6 +189,26 @@ class quotationModel extends Model
             ->sum(function ($inputtax) {
                 return $inputtax->input_tax_grand_total;
             });
+    }
+
+    public function invoiceVat()
+    {
+        return $this->hasOne(invoiceModel::class, 'invoice_quote_id', 'quote_id');
+    }
+
+    public function invoicetaxTotal()
+    {
+        $invoice = $this->invoiceVat()->first(); // ใช้ first() แทน get() เนื่องจากเป็นความสัมพันธ์ HasOne
+
+        if ($invoice) {
+            $inputTaxTotal = 0;
+            $inputTaxTotal += $invoice->invoice_withholding_tax;
+            $inputTaxTotal += $invoice->invoice_vat;
+
+            return $inputTaxTotal;
+        }
+
+        return 0; // กรณีไม่มีข้อมูลใน invoiceVat
     }
 
 

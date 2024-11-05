@@ -256,7 +256,9 @@ class quoteController extends Controller
 
         $quotations = quotationModel::where('quotation.quote_id',$quotationModel->quote_id)->leftjoin('customer', 'customer.customer_id', 'quotation.customer_id')->get();
 
-        return view('quotations.form-edit-new',compact('quotationModel','customer','sale','airline','wholesale','quoteProducts','quotations'));
+        $invoiceModel =  invoiceModel::where('invoice_quote_id',$quotationModel->quote_id)->first();
+
+        return view('quotations.form-edit-new',compact('quotationModel','customer','sale','airline','wholesale','quoteProducts','quotations','invoiceModel'));
     }
 
     public function editQuote(quotationModel $quotationModel, Request $request)
