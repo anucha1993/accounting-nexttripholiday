@@ -88,7 +88,6 @@
         <div style="margin-top: -35px">
             <table style="margin-right: -35px; margin-left: -35px;">
                 <tr>
-                    
                       <td style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
                         <p><b>Customer ID:</span></p>
                      </td>
@@ -233,7 +232,7 @@
 
                 <tr>
 
-                    <td style="width: 65px; height: 300px; text-align: center; vertical-align: top;">
+                    <td style="width: 65px; height: 260px; text-align: center; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
                         <p style="margin: 0;">{{ $key+1}}</p>
                         @empty
@@ -288,7 +287,7 @@
                       
                     </td>
                     <td colspan="2"  style="width: 185px; text-align: center; background-color: #ffffff;"><h3> รวมเป็นเงิน / Amount </h3></td>
-                    <td style="width: 120px; text-align: center; background-color: #ffffff;"><h3>  <p style="margin: 0;">{{  number_format(($quotationModel->quote_grand_total - $quotationModel->quote_vat )  , 2, '.', ',')}}</p></h3></td>
+                    <td style="width: 120px; text-align: center; background-color: #ffffff;"><h3>  <p style="margin: 0;">{{  $quotationModel->quote_vat >= 0 ? number_format(($quotationModel->quote_grand_total - $quotationModel->quote_vat )  , 2, '.', ',') : number_format(($quotationModel->quote_grand_total)  , 2, '.', ',')}}</p></h3></td>
                 </tr>
 
                 <tr>
@@ -296,7 +295,7 @@
                       
                     </td>
                     <td colspan="2"  style="width: 185px; text-align: center; background-color: #ffffff;"><h3> ภาษีมูลค่าเพิ่ม / Vat 7%</h3></td>
-                    <td style="width: 120px; text-align: center; background-color: #ffffff;"><h3>  <p style="margin: 0;">{{  number_format($quotationModel->quote_vat  , 2, '.', ',')}}</p></h3></td>
+                    <td style="width: 120px; text-align: center; background-color: #ffffff;"><h3>  <p style="margin: 0;">{{ $quotationModel->quote_vat >= 0 ? number_format($quotationModel->quote_vat  , 2, '.', ',') : '-'}}</p></h3></td>
                 </tr>
 
 
