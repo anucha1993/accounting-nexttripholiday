@@ -714,8 +714,10 @@
             <input type="hidden" name="quote_withholding_tax">
             <a class="btn btn-sm btn-info text-left" href="{{ route('quote.editNew', $quotationModel->quote_id) }}">
                 Back</a>
+                @if($mode === 'edit')
             <button type="submit" class="btn btn-primary btn-sm  mx-3" form="formQuote"><i class="fa fa-save"></i>
                 Update</button>
+                @endif
 
 
         </div>

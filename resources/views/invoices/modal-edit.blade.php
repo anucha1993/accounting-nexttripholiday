@@ -741,10 +741,10 @@
 
         <div class="text-end mt-3">
           
-           
+            @if($mode === 'edit')
             <button type="submit" class="btn btn-success btn-sm  mx-3" form="formQuote"><i class="fa fa-save"></i>
                 อัพเดทใบแจ้งหนี้</button>
-
+                @endif
 
         </div>
         <br>

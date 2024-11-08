@@ -290,7 +290,7 @@ class quoteController extends Controller
         return View::make('quotations.quote-table', compact('quoteProductsDiscount','quoteProducts','quotations','quotationModel','invoices','taxinvoices','debits','invoiceModel'))->render();
     }
 
-    public function modalEdit(quotationModel $quotationModel)
+    public function modalEdit(quotationModel $quotationModel, Request $request)
     {
         $bookingModel = bookingModel::where('code', $quotationModel->quote_booking)->first();
         $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
@@ -310,8 +310,8 @@ class quoteController extends Controller
             ->where('expense_type', 'discount')
             ->get();
         $campaignSource = DB::table('campaign_source')->get();
-
-        return view('quotations.modal-edit', compact('campaignSource', 'customer', 'quoteProducts', 'quotationModel', 'sales', 'country', 'airline', 'numDays', 'wholesale', 'products', 'productDiscount', 'quoteProductsDiscount'));
+        $mode = $request->get('mode', 'view'); 
+        return view('quotations.modal-edit', compact('mode','campaignSource', 'customer', 'quoteProducts', 'quotationModel', 'sales', 'country', 'airline', 'numDays', 'wholesale', 'products', 'productDiscount', 'quoteProductsDiscount'));
     }
 
     public function modalEditCopy(quotationModel $quotationModel)

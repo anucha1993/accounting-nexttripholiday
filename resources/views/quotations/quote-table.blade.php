@@ -214,9 +214,14 @@
 
                                     @if ($quotationModel->quote_status != 'cancel')
                                         @can('edit-quote')
-                                            <a class="dropdown-item modal-quote-edit"
+                                            {{-- <a class="dropdown-item modal-quote-edit"
                                                 href="{{ route('quote.modalEdit', $quotationModel->quote_id) }}"><i
-                                                    class="fa fa-edit text-info"></i> แก้ไข</a>
+                                                    class="fa fa-edit text-info"></i> แก้ไข</a> --}}
+                                                    <a class="dropdown-item modal-quote-edit"
+                                                    href="{{ route('quote.modalEdit', ['quotationModel' => $quotationModel->quote_id, 'mode' => 'edit']) }}">
+                                                    <i class="fa fa-edit text-info"></i> แก้ไข
+                                                 </a>
+                                                    
                                         @endcan
                                         @can('create-invoice')
                                         @if (empty($invoiceModel))
@@ -226,6 +231,11 @@
                                    
                                         @endif
                                     @endcan
+
+                                    <a class="dropdown-item modal-quote-edit"
+                                    href="{{ route('quote.modalEdit', ['quotationModel' => $quotationModel->quote_id, 'mode' => 'view']) }}">
+                                    <i class="fa fa-eye text-info"></i> ดูรายละเอียด
+                                 </a>
                                     
 
                                         @else
@@ -300,7 +310,7 @@
 
                                     @if ($itemInvoice->invoice_status !== 'cancel')
                                     <a class="dropdown-item modal-invoice-edit"
-                                    href="{{ route('invoice.edit', $itemInvoice->invoice_id) }}">
+                                    href="{{ route('invoice.edit', ['invoiceModel' => $itemInvoice->invoice_id, 'mode' => 'edit']) }}">
                                     <i class="fa fa-edit text-info"></i> แก้ไข</a>
 
                                 @if ($itemInvoice->invoice_status === 'wait' && $quotationModel->quote_payment_status === 'success')
@@ -312,12 +322,15 @@
                                     @else
 
                                     <span class="dot-danger"></span>ใบงานถูกยกเลิก
-                                    @endif
+                                    @endif  
+                                     @endcan
 
 
-                                      
-
-                                    @endcan
+                                    <a class="dropdown-item modal-invoice-edit"
+                                    href="{{ route('invoice.edit', ['invoiceModel' => $itemInvoice->invoice_id, 'mode' => 'view']) }}">
+                                    <i class="fa fa-eye text-info"></i> ดูรายละเอียด
+                                 </a>
+                                    
 
 
                                 </td>
@@ -381,7 +394,7 @@
                                     @can('edit-invoice')
                                     @if ($item->taxinvoice_status !== 'cancel')
                                     <a class="dropdown-item modal-invoice-edit"
-                                    href="{{ route('invoice.edit', $item->invoice_id) }}">
+                                    href="{{ route('invoice.edit', ['invoiceModel' => $itemInvoice->invoice_id, 'mode' => 'edit']) }}">
                                     <i class="fa fa-edit text-info"></i> แก้ไข</a>
                                
                                     @else
@@ -389,7 +402,10 @@
                                     @endif
                                      
                                     @endcan
-
+                                    <a class="dropdown-item modal-invoice-edit"
+                                    href="{{ route('invoice.edit', ['invoiceModel' => $itemInvoice->invoice_id, 'mode' => 'view']) }}">
+                                    <i class="fa fa-eye text-info"></i> ดูรายละเอียด
+                                 </a>
 
                                 </td>
                                 <td>
