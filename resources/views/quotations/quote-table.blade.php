@@ -298,16 +298,9 @@
                                             class="fas fa-envelope text-info"></i>
                                         ส่งเมล</a>
                                 </td>
-                                {{-- <td>
-                                    <a class="dropdown-item"
-                                    href="{{ route('invoice.taxinvoice', $item->invoice_id) }}"
-                                    onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
-                                        class="fas fa-file-alt"></i> ออกใบกำกับภาษี</a>
-                                </td> --}}
+                              
                                 <td>
                                     @can('edit-invoice')
-                                  
-
                                     @if ($itemInvoice->invoice_status !== 'cancel')
                                     <a class="dropdown-item modal-invoice-edit"
                                     href="{{ route('invoice.edit', ['invoiceModel' => $itemInvoice->invoice_id, 'mode' => 'edit']) }}">
@@ -320,19 +313,14 @@
                                             class="fas fa-file-alt"></i> ออกใบกำกับภาษี</a>
                                 @endif
                                     @else
-
                                     <span class="dot-danger"></span>ใบงานถูกยกเลิก
                                     @endif  
                                      @endcan
-
-
                                     <a class="dropdown-item modal-invoice-edit"
                                     href="{{ route('invoice.edit', ['invoiceModel' => $itemInvoice->invoice_id, 'mode' => 'view']) }}">
                                     <i class="fa fa-eye text-info"></i> ดูรายละเอียด
                                  </a>
                                     
-
-
                                 </td>
                                 <td>
                                     @can('cancel-invoice')
