@@ -90,11 +90,75 @@
 
                                 </div>
                             </div>
+                            <div class="col-md-2">
+                                <label for="">ประเทศ</label>
+                                <select name="search_country" class="form-select select2" style="width: 100%">
+                                    <option value="all">ทั้งหมด</option>
+                                    @forelse ($country as $item)
+                                        <option value="{{ $item->id }}">
+                                            {{ $item->country_name_th }}</option>
+                                    @empty
+                                        <option value="" disabled>ไม่มีข้อมูล</option>
+                                    @endforelse
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label for="">โฮลเซลล์</label>
+                                <select name="search_wholesale" class="form-select select2" style="width: 100%">
+                                    <option value="all">ทั้งหมด</option>
+                                    @forelse ($wholesales as $item)
+                                        <option value="{{ $item->id }}">
+                                            {{ $item->wholesale_name_th }}</option>
+                                    @empty
+                                        <option value="" disabled>ไม่มีข้อมูล</option>
+                                    @endforelse
+                                </select>
+                            </div>
+
+                            
+
+                            <div class="col-md-2">
+                                <label for="">สถานะการชำระเงินโฮลเซลล์</label>
+                                <select name="search_wholesale_payment" class="form-select" style="width: 100%">
+                                    <option value="all" {{ request('search_wholesale_payment') == 'all' ? 'selected' : '' }}>ทั้งหมด</option>
+                                    <option value="NULL" {{ request('search_wholesale_payment') == 'NULL' ? 'selected' : '' }}>รอชำระเงิน</option>
+                                    <option value="deposit" {{ request('search_wholesale_payment') == 'deposit' ? 'selected' : '' }}>รอชำระเงินเต็มจำนวน</option>
+                                    <option value="full" {{ request('search_wholesale_payment') == 'full' ? 'selected' : '' }}>ชำระเงินครบแล้ว</option>
+                                </select>
+                            </div>
+                            
+                            
+                            
+                            
+                            
+                            <div class="col-md-2">
+                                <label for="">สถานะการชำระเงินลูกค้า</label>
+                                <select name="search_customer_payment" class="form-select" style="width: 100%">
+                                    <option value="all">ทั้งหมด</option>
+                                    <option value="wait">รอชำระเงิน</option>
+                                    <option value="payment">รอชำระเงินเต็มจำนวน</option>
+                                    <option value="success">ชำระเงินครบแล้ว</option>
+                                    <option value="payment-time-out">เกินกำหนดชำระเงิน</option>
+                                    
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="">สถานะการใบเสนอราคา</label>
+                                <select name="search_quote_status" class="form-select" style="width: 100%">
+                                    <option value="all">ทั้งหมด</option>
+                                    <option value="wait">รอดำเนินการ</option>
+                                    <option value="success">ดำเนินการแล้วเสร็จ</option>
+                                    
+                                </select>
+                            </div>
+                            
+                            <br>
 
 
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary float-end mx-3" type="submit">ค้นหา</button>
-                                <a href="{{ route('booking.index') }}" class="btn btn-outline-secondary float-end mx-3"
+                                <a href="{{ route('quote.index') }}" class="btn btn-outline-secondary float-end mx-3"
                                     type="submit">ล้างข้อมูล</a>
 
                             </div>
@@ -104,7 +168,7 @@
                 </div>
 
             </div>
-            @bathText(12000)
+           
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
@@ -182,15 +246,25 @@
 
                                         <td>{{ number_format($item->quote_grand_total, 2, '.', ',') }}</td>
                                         <td>
-
-                                            @if ($item->wholesale_payment_status === 'wait' || $item->wholesale_payment_status === NULL)
-                                            <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
-                                            @else
-                                            <span class="badge rounded-pill bg-success">ชำระเงินแล้ว</span>
+                                            @php
+                                                // ดึงข้อมูลการชำระเงินล่าสุดจาก paymentWholesale
+                                                $latestPayment = $item->paymentWholesale()->latest('payment_wholesale_id')->first();
+                                            @endphp
+                                        
+                                            @if (!$latestPayment || $latestPayment->payment_wholesale_type === null)
+                                                <!-- กรณีที่ไม่มีข้อมูลใน paymentWholesale หรือ payment_wholesale_type เป็น NULL -->
+                                                <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
+                                            @elseif ($latestPayment->payment_wholesale_type === 'deposit')
+                                                <!-- กรณีที่เป็น deposit -->
+                                                <span class="badge rounded-pill bg-primary">รอชำระเงินเต็มจำนวน</span>
+                                            @elseif ($latestPayment->payment_wholesale_type === 'full')
+                                                <!-- กรณีที่เป็น full -->
+                                                <span class="badge rounded-pill bg-success">ชำระเงินแล้ว</span>
                                             @endif
-                                           
-
                                         </td>
+                                        
+                                        
+                                        
 
                                         <td> {{ $item->Salename->name }}</td>
                                         <td><a href="{{ route('quote.editNew', $item->quote_id) }}"

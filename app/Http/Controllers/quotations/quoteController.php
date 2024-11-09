@@ -18,6 +18,7 @@ use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
 use App\Models\quotations\quoteProductModel;
 use App\Models\booking\bookingQuotationModel;
+use App\Models\booking\countryModel;
 use App\Models\debits\debitModel;
 use App\Models\payments\paymentModel;
 use Carbon\Carbon;
@@ -33,16 +34,94 @@ class quoteController extends Controller
         $this->middleware('permission:delete-quote', ['only' => ['destroy']]);
     }
 
-    public function index()
-    {
-        $sales = saleModel::select('name', 'id')
-            ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
-            ->get();
+    public function index(Request $request)
+{
+    $searchName = $request->input('search_name');
+    $searchDateStart = $request->input('search_tour_date_start');
+    $searchDateEnd = $request->input('search_tour_date_end');
+    $searchDateStartCreated = $request->input('search_tour_date_start_created');
+    $searchDateEndCreated = $request->input('search_tour_date_end_created');
+    $searchSale = $request->input('search_sale');
+    $searchCountry = $request->input('search_country');
+    $searchWholesale = $request->input('search_wholesale');
+    $searchPaymentWholesaleStatus = $request->input('search_wholesale_payment');
 
-        $quotations = quotationModel::with('Salename', 'quoteCustomer', 'quoteWholesale')->orderBy('quotation.created_at', 'desc')->paginate(10);
+    $sales = saleModel::select('name', 'id')
+        ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+        ->get();
 
-        return view('quotations.index', compact('sales', 'quotations'));
-    }
+    $country = countryModel::get();
+    $wholesales = wholesaleModel::get();
+
+    $quotations = quotationModel::with('Salename', 'quoteCustomer', 'quoteWholesale', 'paymentWholesale')
+        ->when($searchName, function ($query, $searchName) {
+            return $query->whereHas('quoteCustomer', function ($q) use ($searchName) {
+                $q->where('customer_name', 'LIKE', '%' . $searchName . '%');
+            });
+        })
+        ->when($searchDateStart && $searchDateEnd, function ($query) use ($searchDateStart, $searchDateEnd) {
+            return $query->where(function ($q) use ($searchDateStart, $searchDateEnd) {
+                $q->whereBetween('quote_date_start', [$searchDateStart, $searchDateEnd])
+                  ->orWhereBetween('quote_date_end', [$searchDateStart, $searchDateEnd])
+                  ->orWhere(function ($q) use ($searchDateStart, $searchDateEnd) {
+                      $q->where('quote_date_start', '<=', $searchDateStart)
+                        ->where('quote_date_end', '>=', $searchDateEnd);
+                  });
+            });
+        })
+        ->when($searchDateStartCreated && $searchDateEndCreated, function ($query) use ($searchDateStartCreated, $searchDateEndCreated) {
+            return $query->whereBetween('quote_booking_create', [$searchDateStartCreated, $searchDateEndCreated]);
+        })
+        ->when($searchSale && $searchSale != 'all', function ($query) use ($searchSale) {
+            return $query->where('quote_sale', $searchSale);
+        })
+        ->when($searchCountry && $searchCountry != 'all', function ($query) use ($searchCountry) {
+            return $query->where('quote_country', $searchCountry);
+        })
+        ->when($searchWholesale && $searchWholesale != 'all', function ($query) use ($searchWholesale) {
+            return $query->where('quote_wholesale', $searchWholesale);
+        })
+
+        ->when($searchPaymentWholesaleStatus === 'NULL', function ($query) {
+            // กรณี "รอชำระเงิน" หมายถึงไม่มีข้อมูลใน paymentWholesale เลย
+            $query->whereDoesntHave('paymentWholesale');
+        })
+        ->when($searchPaymentWholesaleStatus === 'deposit', function ($query) {
+            // กรณี "รอชำระเงินเต็มจำนวน" หมายถึงแถวล่าสุดของ paymentWholesale เป็น deposit
+            $query->whereHas('paymentWholesale', function ($q) {
+                $q->where('payment_wholesale_id', function ($subquery) {
+                    $subquery->select('payment_wholesale_id')
+                             ->from('payment_wholesale')
+                             ->whereColumn('payment_wholesale.payment_wholesale_quote_id', 'quotation.quote_id')
+                             ->orderBy('payment_wholesale_id', 'desc')
+                             ->limit(1);
+                })->where('payment_wholesale_type', 'deposit');
+            });
+        })
+        ->when($searchPaymentWholesaleStatus === 'full', function ($query) {
+            // กรณี "ชำระเงินแล้ว" หมายถึงแถวล่าสุดของ paymentWholesale เป็น full
+            $query->whereHas('paymentWholesale', function ($q) {
+                $q->where('payment_wholesale_id', function ($subquery) {
+                    $subquery->select('payment_wholesale_id')
+                             ->from('payment_wholesale')
+                             ->whereColumn('payment_wholesale.payment_wholesale_quote_id', 'quotation.quote_id')
+                             ->orderBy('payment_wholesale_id', 'desc')
+                             ->limit(1);
+                })->where('payment_wholesale_type', 'full');
+            });
+        })
+        
+        ->orderBy('created_at', 'desc')
+        ->paginate(10);
+
+    return view('quotations.index', compact('sales', 'wholesales', 'quotations', 'country'));
+}
+
+
+    
+
+
+
 
   
 
