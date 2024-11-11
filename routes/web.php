@@ -100,6 +100,8 @@ Route::get('invoice/cancel/{invoiceModel}',[invoiceController::class,'cancel'])-
 Route::get('invoice/modal/cancel/{invoiceModel}',[invoiceController::class,'modalCancel'])->name('invoice.modalCancel');
 Route::put('invoice/update/{invoiceModel}',[invoiceController::class,'update'])->name('invoice.update');
 Route::post('invoice/store',[invoiceController::class,'store'])->name('invoice.store');
+Route::post('upload-invoice-image', [InvoiceController::class, 'uploadInvoiceImage'])->name('uploadInvoiceImage');
+// Route::delete('delete-invoice-image', [InvoiceController::class, 'deleteInvoiceImage'])->name('deleteInvoiceImage');
 
 //taxtinvoice
 Route::get('taxinvoice/{invoiceModel}',[taxInvoiceController::class,'store'])->name('invoice.taxinvoice');

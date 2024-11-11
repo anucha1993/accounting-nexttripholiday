@@ -39,6 +39,7 @@ class invoiceModel extends Model
           'created_by',
           'updated_by',
           'invoice_cancel_note',
+          'invoice_image'
     ];
     
 
