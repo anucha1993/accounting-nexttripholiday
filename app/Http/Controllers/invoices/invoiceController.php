@@ -252,24 +252,33 @@ class invoiceController extends Controller
 
     
 
-    public function deleteInvoiceImage(Request $request)
-    {
+public function deleteInvoiceImage(Request $request)
+{
+    try {
+        // รับค่า invoice_id
         $invoiceId = $request->input('invoice_id');
-
-        // ค้นหาไฟล์ในฐานข้อมูล
+        
+        // ค้นหา invoice โดยใช้ invoice_id
         $invoice = InvoiceModel::find($invoiceId);
-
-        if ($invoice && $invoice->invoice_image) {
-            // ลบไฟล์จาก storage
-            Storage::delete('public/' . $invoice->invoice_image);
-
-            // ลบ path จากฐานข้อมูล
-            $invoice->invoice_image = null;
-            $invoice->save();
-
-            return response()->json(['message' => 'File deleted successfully'], 200);
+        if (!$invoice || !$invoice->invoice_image) {
+            return response()->json(['message' => 'Invoice or file not found'], 404);
         }
 
-        return response()->json(['message' => 'File not found'], 404);
+        // ลบไฟล์จาก storage
+        $filePath = 'public/' . $invoice->invoice_image;
+        if (Storage::exists($filePath)) {
+            Storage::delete($filePath);
+        }
+
+        // อัปเดตข้อมูลในฐานข้อมูล
+        $invoice->invoice_image = null;
+        $invoice->save();
+
+        return response()->json(['message' => 'File deleted successfully'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'An error occurred: ' . $e->getMessage()], 500);
     }
+}
+
+
 }

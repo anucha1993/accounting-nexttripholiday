@@ -41,6 +41,16 @@ class invoiceModel extends Model
           'invoice_cancel_note',
           'invoice_image'
     ];
+
+   
+    public function getWithholdingTaxAmountAttribute()
+    {
+        // ใช้ is_null เพื่อตรวจสอบว่า invoice_image เป็น NULL หรือไม่
+        if (!is_null($this->invoice_image)) {
+            return $this->invoice_withholding_tax;
+        }
+        return 0;
+    }
     
 
     // ความสัมพันธ์กับ BookingModel

@@ -72,6 +72,23 @@ class quotationModel extends Model
         'quote_cancel_note',
     ];
 
+    public function InputTaxVat()
+    {
+        return $this->belongsTo(inputTaxModel::class, 'quote_id', 'input_tax_quote_id');
+    }
+
+    public function getTotalInputTaxVat()
+{
+    // ดึงข้อมูลจากความสัมพันธ์ InputTaxVat และคำนวณผลรวมเฉพาะแถวที่มีค่าใน input_tax_file
+    return $this->InputTaxVat()
+                ->whereNotNull('input_tax_file')
+                ->sum('input_tax_vat');
+}
+
+
+   
+    
+
     protected static function booted()
     {
         static::created(function ($quote) {

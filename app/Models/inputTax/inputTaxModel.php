@@ -30,4 +30,6 @@ class inputTaxModel extends Model
         'input_tax_withholding_status',
        
     ];
+
+   
 }

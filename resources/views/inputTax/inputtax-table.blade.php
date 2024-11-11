@@ -50,9 +50,11 @@
                                                 onchange="uploadInvoiceImage(this)">
                                         @else
                                             <!-- กรณีมีไฟล์ ให้แสดงปุ่มดูไฟล์และลบไฟล์ -->
-                                            <button
-                                                onclick="viewInvoiceImage('{{ asset('storage/' . $item->invoice_image) }}')">เปิดดูไฟล์</button>
-                                            <button
+                                        
+                                                <a class="btn btn-sm btn-info" href="{{ asset('storage/' . $item->invoice_image) }}"
+                                                onclick="openPdfPopup(this.href); return false;">เปิดดูไฟล์</a>
+
+                                            <button class="btn btn-sm btn-danger"
                                                 onclick="deleteInvoiceImage({{ $item->invoice_id }})">ลบไฟล์</button>
                                         @endif
                                     </div>
@@ -152,9 +154,9 @@
                         <tr>
                         <tr>
 
-                            <td align="right" class="text-success" colspan="7"><b>(@bathText($inputTaxTotal))</b></td>
+                            <td align="right" class="text-success" colspan="7"><b>(@bathText($inputTaxTotal+$invoice->getWithholdingTaxAmountAttribute() - $quotationModel->getTotalInputTaxVat()))</b></td>
                             <td align="center" class="text-danger" colspan="1">
-                                <b>{{ number_format($inputTaxTotal, 2) }}</b>
+                                <b>{{ number_format($inputTaxTotal+$invoice->getWithholdingTaxAmountAttribute() - $quotationModel->getTotalInputTaxVat(), 2) }}</b>
                             </td>
                         </tr>
                         </tr>
@@ -166,6 +168,7 @@
         </div>
     </div>
 </div>
+
 
 
 {{-- modal-input-tax edit --}}
@@ -213,11 +216,7 @@ function uploadInvoiceImage(input) {
             }),
             success: function(response) {
                 alert(response.message);
-                let container = $('#invoice-file-container-' + invoiceId);
-                container.html(`
-                    <button onclick="viewInvoiceImage('${response.path}')">เปิดดูไฟล์</button>
-                    <button onclick="deleteInvoiceImage(${invoiceId})">ลบไฟล์</button>
-                `);
+                window.location.reload();
             },
             error: function(xhr, status, error) {
                 console.log("Error response:", xhr.responseText);
@@ -228,6 +227,28 @@ function uploadInvoiceImage(input) {
 
     reader.readAsDataURL(file);
 }
+
+function deleteInvoiceImage(invoiceId) {
+    $.ajax({
+        url: '{{ route("deleteInvoiceImage") }}',
+        method: 'DELETE',
+        headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+        data: JSON.stringify({ invoice_id: invoiceId }),
+        success: function(response) {
+            alert(response.message);
+            
+            window.location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.log("Error response:", xhr.responseText);
+            alert('File deletion failed');
+        }
+    });
+}
+
 
 
 

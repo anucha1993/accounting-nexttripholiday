@@ -136,7 +136,7 @@ class inputTaxController extends Controller
             $invoiceModel =[];
         }
         $inputTax = inputTaxModel::where('input_tax_quote_id', $quotationModel->quote_id)->where('input_tax.input_tax_type', '!=', 2)->get();
-        return View::make('inputTax.inputtax-table', compact('quotationModel', 'inputTax','invoiceModel'))->render();
+        return View::make('inputTax.inputtax-table', compact('quotationModel', 'inputTax','invoiceModel','invoice'))->render();
     }
 
     public function tableWholesale(quotationModel $quotationModel)
@@ -153,6 +153,6 @@ class inputTaxController extends Controller
         }
 
         $inputTax = inputTaxModel::where('input_tax_quote_id', $quotationModel->quote_id)->where('input_tax.input_tax_type', 2)->get();
-        return View::make('inputTax.inputtax-wholesale-table', compact('quotationModel', 'inputTax','invoiceModel'))->render();
+        return View::make('inputTax.inputtax-wholesale-table', compact('quotationModel', 'inputTax','invoiceModel','invoice'))->render();
     }
 }
