@@ -401,7 +401,7 @@
                         $paymentWhosale = $quotationModel->GetDepositWholesale();
                     
                         // เรียกข้อมูลยอดรวมภาษีซื้อ (Input Tax)
-                        $paymentInputtaxTotal = $quotationModel->inputtaxTotal();
+                        $paymentInputtaxTotal = $quotationModel->inputtaxTotal()+ $quotationModel->getTotalInputTaxVat()+$invoiceModel->getWithholdingTaxAmountAttribute();;
 
                         $invoiceVatAmount = $quotationModel->invoicetaxTotal() + $paymentInputtaxTotal;
                         // คำนวณยอดรวม โดยหักเงินฝากของผู้ค้าส่งและภาษีออกจากเงินฝากของลูกค้า
@@ -412,6 +412,7 @@
                         $TotalGrand = $TotalPayment - $invoiceVatAmount ;
 
                     @endphp
+                    {{$paymentInputtaxTotal}}
                   
                     
 

@@ -34,7 +34,7 @@
                     <tbody>
                         @forelse ($invoiceModel as $item)
                             @php
-                                $inputTaxTotal += $item->invoice_withholding_tax;
+                                $inputTaxTotal += $invoice->getWithholdingTaxAmountAttribute();
                                 $inputTaxTotal += $item->invoice_vat;
                             @endphp
 
@@ -65,10 +65,10 @@
                                 <td>-</td>
                                 <td>{{ number_format($item->invoice_withholding_tax, 2) }}</td>
                                 <td>{{ number_format($item->invoice_vat, 2) }}</td>
-                                <td>{{ number_format($item->invoice_vat + $item->invoice_withholding_tax, 2) }}</td>
+                                <td>{{ number_format($invoice->getWithholdingTaxAmountAttribute(), 2) }}</td>
                                 <td>-</td>
                             @empty
-                        @endforelse
+                         @endforelse
                         </tr>
 
 
@@ -121,10 +121,10 @@
 
                         </td>
 
-                        <td>{{ number_format($item->input_tax_withholding, 2) }}</td>
+                        <td>{{ number_format($item->input_tax_withholding, 2) }} </td>
                         <td>{{ number_format($item->input_tax_vat, 2) }}</td>
 
-                        <td>{{ number_format($item->input_tax_grand_total, 2) }}</td>
+                        <td>{{ number_format($quotationModel->getTotalInputTaxVat(),2) }}</td>
 
                         <td>
                             @if ($item->input_tax_status === 'success')
@@ -148,15 +148,16 @@
                         </td>
                         </tr>
                     @empty
-
                         @endforelse
-
                         <tr>
                         <tr>
-
-                            <td align="right" class="text-success" colspan="7"><b>(@bathText($inputTaxTotal+$invoice->getWithholdingTaxAmountAttribute() - $quotationModel->getTotalInputTaxVat()))</b></td>
+                            <td align="right" class="text-success" colspan="7">
+                                <b>(@bathText($invoice->getWithholdingTaxAmountAttribute() + $quotationModel->getTotalInputTaxVat()))</b>
+                            </td>
                             <td align="center" class="text-danger" colspan="1">
-                                <b>{{ number_format($inputTaxTotal+$invoice->getWithholdingTaxAmountAttribute() - $quotationModel->getTotalInputTaxVat(), 2) }}</b>
+                                <b>
+                                    {{ number_format($invoice->getWithholdingTaxAmountAttribute() + $quotationModel->getTotalInputTaxVat(), 2) }}
+                                </b>
                             </td>
                         </tr>
                         </tr>

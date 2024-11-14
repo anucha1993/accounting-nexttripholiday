@@ -78,16 +78,29 @@ class quotationModel extends Model
     }
 
     public function getTotalInputTaxVat()
-{
-    // ดึงข้อมูลจากความสัมพันธ์ InputTaxVat และคำนวณผลรวมเฉพาะแถวที่มีค่าใน input_tax_file
-    return $this->InputTaxVat()
-                ->whereNotNull('input_tax_file')
-                ->sum('input_tax_vat');
-}
-
-
-   
+    {
+        // ตรวจสอบว่ามีแถวที่ input_tax_file เป็น NULL หรือไม่
+        $total = $this->InputTaxVat()
+            ->when($this->InputTaxVat()->whereNotNull('input_tax_file')->exists(), function ($query) {
+                // กรณีที่ input_tax_file ไม่เป็น NULL ให้คำนวณผลรวมของ input_tax_withholding
+                return $query->whereNotNull('input_tax_file')->sum('input_tax_withholding');
+            }, function ($query) {
+                // กรณีที่ input_tax_file เป็น NULL ให้คำนวณผลรวมของ input_tax_vat และ input_tax_withholding
+                return $query->whereNull('input_tax_file')
+                             ->selectRaw('SUM(input_tax_vat + input_tax_withholding) as total')
+                             ->value('total');
+            });
     
+        // กรณีที่ผลรวมเป็น null ให้คืนค่า 0
+        return $total ?? 0;
+    }
+    
+    
+    
+
+
+
+
 
     protected static function booted()
     {
@@ -157,13 +170,13 @@ class quotationModel extends Model
             });
     }
 
-     // // Accessor เพื่อดึงข้อมูล country public function GetDeposit()
-     public function paymentWholesale()
-     {
-         return $this->hasOne(paymentWholesaleModel::class, 'payment_wholesale_quote_id', 'quote_id');
-     }
+    // // Accessor เพื่อดึงข้อมูล country public function GetDeposit()
+    public function paymentWholesale()
+    {
+        return $this->hasOne(paymentWholesaleModel::class, 'payment_wholesale_quote_id', 'quote_id');
+    }
 
-     public function GetDepositWholesale()
+    public function GetDepositWholesale()
     {
         return $this->paymentWholesale()
             ->get()
@@ -176,9 +189,9 @@ class quotationModel extends Model
     {
         $quoteGrandTotal = $this->quote_grand_total; // ยอดใบเสนอราคา
         $cost = $this->GetDepositWholesale(); // ต้นทุนโดยรวมที่ได้จากฟังก์ชัน GetDepositWholesale
-    
+
         $grossProfit = $quoteGrandTotal - $cost;
-    
+
         return $grossProfit;
     }
 
@@ -193,11 +206,11 @@ class quotationModel extends Model
             ->where('input_tax_status', 'success')
             ->get()
             ->sum(function ($inputtax) {
-                
+
                 return $inputtax->input_tax_withholding;
             });
     }
-   
+
     public function inputtaxTotalWholesale()
     {
         return $this->inputtax()
@@ -230,7 +243,7 @@ class quotationModel extends Model
 
 
 
- 
+
 
     // public function getquoteCountriesAttribute()
     // {
