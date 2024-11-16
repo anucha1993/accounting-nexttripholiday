@@ -152,11 +152,11 @@
                         <tr>
                         <tr>
                             <td align="right" class="text-success" colspan="7">
-                                <b>(@bathText($invoice->getWithholdingTaxAmountAttribute() + $quotationModel->getTotalInputTaxVat()))</b>
+                                <b>(@bathText($invoice->getWithholdingTaxAmountAttribute() - $quotationModel->getTotalInputTaxVat()))</b>
                             </td>
                             <td align="center" class="text-danger" colspan="1">
                                 <b>
-                                    {{ number_format($invoice->getWithholdingTaxAmountAttribute() + $quotationModel->getTotalInputTaxVat(), 2) }}
+                                    {{ number_format($invoice->getWithholdingTaxAmountAttribute() - $quotationModel->getTotalInputTaxVat(), 2) }}
                                 </b>
                             </td>
                         </tr>
@@ -165,6 +165,8 @@
 
                     </tbody>
                 </table>
+                  {{-- ภาษีขาย : {{ $invoice->getWithholdingTaxAmountAttribute()}} <br>
+                  ภาษีซื้อ : {{ $quotationModel->getTotalInputTaxVat()}} --}}
             </div>
         </div>
     </div>

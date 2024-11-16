@@ -83,7 +83,7 @@ class quotationModel extends Model
         $total = $this->InputTaxVat()
             ->when($this->InputTaxVat()->whereNotNull('input_tax_file')->exists(), function ($query) {
                 // กรณีที่ input_tax_file ไม่เป็น NULL ให้คำนวณผลรวมของ input_tax_withholding
-                return $query->whereNotNull('input_tax_file')->sum('input_tax_withholding');
+                return $query->whereNotNull('input_tax_file') ->selectRaw('SUM(input_tax_vat - input_tax_withholding) as total')->value('total');
             }, function ($query) {
                 // กรณีที่ input_tax_file เป็น NULL ให้คำนวณผลรวมของ input_tax_vat และ input_tax_withholding
                 return $query->whereNull('input_tax_file')
