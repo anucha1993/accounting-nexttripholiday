@@ -123,8 +123,15 @@
 
                         <td>{{ number_format($item->input_tax_withholding, 2) }} </td>
                         <td>{{ number_format($item->input_tax_vat, 2) }}</td>
-
-                        <td>{{ number_format($quotationModel->getTotalInputTaxVat(),2) }}</td>
+                        {{-- <td>{{number_format($item->input_tax_grand_total,2)}}</td> --}}
+                        {{-- <td>{{$quotationModel->getTotalInputTaxVat()}}</td> --}}
+                        <td>
+                            @if ($quotationModel->getTotalInputTaxVat() > 0)
+                            {{ number_format($quotationModel->getTotalInputTaxVat(),2) }}
+                            @else
+                            {{ number_format($item->input_tax_grand_total,2) }}
+                            @endif
+                          </td>
 
                         <td>
                             @if ($item->input_tax_status === 'success')
@@ -165,8 +172,8 @@
 
                     </tbody>
                 </table>
-                  {{-- ภาษีขาย : {{ $invoice->getWithholdingTaxAmountAttribute()}} <br>
-                  ภาษีซื้อ : {{ $quotationModel->getTotalInputTaxVat()}} --}}
+                  ภาษีขาย : {{ $invoice->getWithholdingTaxAmountAttribute()}} <br>
+                  ภาษีซื้อ : {{ $quotationModel->getTotalInputTaxVat()}}
             </div>
         </div>
     </div>

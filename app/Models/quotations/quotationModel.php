@@ -77,26 +77,53 @@ class quotationModel extends Model
         return $this->belongsTo(inputTaxModel::class, 'quote_id', 'input_tax_quote_id');
     }
 
-    public function getTotalInputTaxVat()
-    {
-        $query = $this->InputTaxVat(); // ดึง Query Builder จากความสัมพันธ์ InputTaxVat
-    
-        if ($query->whereNotNull('input_tax_file')->exists()) {
-            // กรณีที่ input_tax_file ไม่เป็น NULL
-            $total = $query->whereNotNull('input_tax_file')
-                           ->selectRaw('SUM(input_tax_vat - input_tax_withholding) as total')
-                           ->value('total');
-        } else {
-            // กรณีที่ input_tax_file เป็น NULL
-            $total = $query->whereNull('input_tax_file')
-                           ->selectRaw('SUM(input_tax_vat + input_tax_withholding) as total')
-                           ->value('total');
-        }
-    
-        // กรณีที่ผลรวมเป็น null ให้คืนค่า 0
-        return $total ?? 0;
+   public function getTotalInputTaxVat()
+{
+    $query = $this->InputTaxVat(); // ดึง Query Builder จากความสัมพันธ์ InputTaxVat
+
+    if ($query->whereNotNull('input_tax_file')->exists()) {
+        // กรณีที่ input_tax_file ไม่เป็น NULL
+        $total = $query->whereNotNull('input_tax_file')
+                       ->selectRaw('SUM(input_tax_vat - input_tax_withholding) as total')
+                       ->value('total');
+    } else {
+        // กรณีที่ input_tax_file เป็น NULL
+        $total = $query->whereNull('input_tax_file')
+                       ->selectRaw('SUM(input_tax_vat + input_tax_withholding) as total')
+                       ->value('total');
     }
-    
+
+    // กรณีที่ผลรวมเป็น null ให้คืนค่า 0
+     // คำนวณ $totalGrand
+   
+    return $total;
+}
+
+
+// public function getTotalInputTaxVat()
+// {
+//     $query = $this->InputTaxVat(); // ดึง Query Builder จากความสัมพันธ์ InputTaxVat
+
+//     // คำนวณ $total
+//     if ($query->whereNotNull('input_tax_file')->exists()) {
+//         // กรณี input_tax_file ไม่เป็น NULL
+//         $total = $this->InputTaxVat()
+//                       ->whereNotNull('input_tax_file')
+//                       ->sum(\DB::raw('COALESCE(input_tax_vat, 0) - COALESCE(input_tax_withholding, 0)'));
+//     } else {
+//         // กรณี input_tax_file เป็น NULL
+//         $total = $this->InputTaxVat()
+//                       ->whereNull('input_tax_file')
+//                       ->sum(\DB::raw('COALESCE(input_tax_vat, 0) + COALESCE(input_tax_withholding, 0)'));
+//     }
+
+//     // คำนวณ $totalGrand
+//     $totalGrand = $this->InputTaxVat()
+//                        ->sum('input_tax_withholding');
+
+//     // คืนค่าผลลัพธ์ที่ถูกต้อง
+//     return $total ?: $totalGrand;
+// }
     
     
     
