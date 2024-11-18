@@ -337,6 +337,8 @@ class quoteController extends Controller
 
         $invoiceModel =  invoiceModel::where('invoice_quote_id',$quotationModel->quote_id)->first();
 
+        
+
         return view('quotations.form-edit-new',compact('quotationModel','customer','sale','airline','wholesale','quoteProducts','quotations','invoiceModel'));
     }
 

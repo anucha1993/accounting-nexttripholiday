@@ -359,7 +359,7 @@
                             บันทึกภาษีซื้อ , ต้นทุนอื่นๆ
                         </a>
 
-                       
+
 
                         @php
                             use Illuminate\Support\Facades\Crypt;
@@ -371,61 +371,69 @@
                             Share
                         </a>
 
-                        <a href="{{route('quoteLog.index',$quotationModel->quote_id)}}"
-                        class="justify-content-left w-100 btn btn-rounded btn-outline-success d-flex align-items-center mb-3 modal-quote-check ">
-                        <i data-feather="align-justify" class="feather-sm fill-white me-2 "></i>
-                        Check List 
-                    </a>
+                        <a href="{{ route('quoteLog.index', $quotationModel->quote_id) }}"
+                            class="justify-content-left w-100 btn btn-rounded btn-outline-success d-flex align-items-center mb-3 modal-quote-check ">
+                            <i data-feather="align-justify" class="feather-sm fill-white me-2 "></i>
+                            Check List
+                        </a>
 
-                    <a href="{{route('inputtax.inputtaxCreateWholesale',$quotationModel->quote_id)}}"
-                        class="justify-content-left w-100 btn btn-rounded btn-outline-warning d-flex align-items-center mb-3 modal-inputtax-wholesale">
-                        <i data-feather="percent" class="feather-sm fill-white me-2 "></i>
-                       ต้นทุนโฮลเซลล์
-                    </a>
+                        <a href="{{ route('inputtax.inputtaxCreateWholesale', $quotationModel->quote_id) }}"
+                            class="justify-content-left w-100 btn btn-rounded btn-outline-warning d-flex align-items-center mb-3 modal-inputtax-wholesale">
+                            <i data-feather="percent" class="feather-sm fill-white me-2 "></i>
+                            ต้นทุนโฮลเซลล์
+                        </a>
 
                     </div>
 
                     <div class="card-body">
 
                         @php
-                        $paymentCustomer = 0;
-                        $paymentWhosale = 0;
-                        $paymentInputtaxTotal = 0;
-                        $TotalPayment = 0;
-                        $TotalGrand = 0;
-                    
-                        // เรียกข้อมูลการฝากเงินของลูกค้า
-                        $paymentCustomer = $quotationModel->GetDeposit();
-                    
-                        // เรียกข้อมูลการฝากเงินของผู้ค้าส่ง
-                        $paymentWhosale = $quotationModel->GetDepositWholesale();
-                    
-                        // เรียกข้อมูลยอดรวมภาษีซื้อ (Input Tax)
-                        $paymentInputtaxTotal = $invoiceModel->getWithholdingTaxAmountAttribute() - $quotationModel->getTotalInputTaxVat();
+                            $paymentCustomer = 0;
+                            $paymentWhosale = 0;
+                            $paymentInputtaxTotal = 0;
+                            $TotalPayment = 0;
+                            $TotalGrand = 0;
 
-                        $invoiceVatAmount = $quotationModel->invoicetaxTotal() + $paymentInputtaxTotal;
-                        // คำนวณยอดรวม โดยหักเงินฝากของผู้ค้าส่งและภาษีออกจากเงินฝากของลูกค้า
-                       
+                            // เรียกข้อมูลการฝากเงินของลูกค้า
+                            $paymentCustomer = $quotationModel->GetDeposit();
 
-                        $TotalPayment = $paymentCustomer - $paymentWhosale;
+                            // เรียกข้อมูลการฝากเงินของผู้ค้าส่ง
+                            $paymentWhosale = $quotationModel->GetDepositWholesale();
+                            $paymentInputtaxTotal = 0;
 
-                        $TotalGrand = $invoiceVatAmount - $TotalPayment ;
+                            
 
-                    @endphp
-                    {{-- {{$paymentInputtaxTotal}} --}}
-                  
-                    
+                            $withholdingTaxAmount = $invoiceModel?->getWithholdingTaxAmountAttribute() ?? 0;
+                            $getTotalInputTaxVat = $quotationModel?->getTotalInputTaxVat() ?? 0;
+
+                            // เรียกข้อมูลยอดรวมภาษีซื้อ (Input Tax)
+                            $paymentInputtaxTotal = $withholdingTaxAmount - $getTotalInputTaxVat;
+
+                            $invoiceVatAmount = $quotationModel->invoicetaxTotal() + $paymentInputtaxTotal;
+                            // คำนวณยอดรวม โดยหักเงินฝากของผู้ค้าส่งและภาษีออกจากเงินฝากของลูกค้า
+
+                            $TotalPayment = $paymentCustomer - $paymentWhosale;
+
+                            $TotalGrand = $TotalPayment - $paymentInputtaxTotal;
+
+                        @endphp
+                        {{-- {{$paymentInputtaxTotal}} --}}
+
+
 
                         <h5 class="card-title">คำนวนกำไรขั้นต้น</h5>
-                        <hr/>
-                        <span class="float-end"> ยอดรวมต้นทุนโฮลเซลล์: {{ number_format($quotationModel->inputtaxTotalWholesale(), 2) }}</span><br>
-                        <span class="float-end"> ยอดโอนโฮลเซลล์: {{ number_format($quotationModel->GetDepositWholesale(), 2) }}</span><br>
-                        <span class="float-end">ชำระแล้ว : {{ number_format($quotationModel->GetDeposit(), 2) }}</span><br>
+                        <hr />
+                        <span class="float-end"> ยอดรวมต้นทุนโฮลเซลล์:
+                            {{ number_format($quotationModel->inputtaxTotalWholesale(), 2) }}</span><br>
+                        <span class="float-end"> ชำระเงินโฮลเซลล์แล้ว:
+                            {{ number_format($quotationModel->GetDepositWholesale(), 2) }}</span><br>
+                        <span class="float-end">ลูกค้าชำระแล้ว :
+                            {{ number_format($quotationModel->GetDeposit(), 2) }}</span><br>
                         <span class="float-end"> กำไร : {{ number_format($TotalPayment, 2) }}</span><br>
 
-                      
+
                         <span class="float-end"> กำไรสุทธิ: {{ number_format($TotalGrand, 2) }} </span><br>
-                        <hr/>
+                        <hr />
                         {{-- ภาษีขาย : {{ $invoiceModel->getWithholdingTaxAmountAttribute()}} <br>
                         ภาษีซื้อ : {{ $quotationModel->getTotalInputTaxVat()}} --}}
                         {{-- <button class="btn btn-success">Checkout</button>
@@ -559,25 +567,25 @@
         </div>
 
         <div class="modal fade bd-example-modal-sm modal-lg" id="modal-quote-check" tabindex="-1" role="dialog"
-        aria-labelledby="mySmallModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                ...
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="modal fade bd-example-modal-sm modal-lg" id="modal-inputtax-wholesale" tabindex="-1" role="dialog"
-    aria-labelledby="mySmallModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            ...
+        <div class="modal fade bd-example-modal-sm modal-lg" id="modal-inputtax-wholesale" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    ...
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
 
-    
+
 
 
         <script>
@@ -597,7 +605,6 @@
 
 
         <script>
-            
             document.getElementById('shareLinkButton').addEventListener('click', function(event) {
                 event.preventDefault(); // ป้องกันการคลิกที่ลิงก์เพื่อให้ไม่โหลดหน้าใหม่
 
@@ -760,7 +767,8 @@
                         url: "{{ route('inputtax.tableWholesale', '') }}/" + quoteId, // ประกอบ URL แบบถูกต้อง
                         type: 'GET',
                         success: function(response) {
-                            $('#inputtax-wholesale-table').html(response); // แสดง response ใน #quote-centent
+                            $('#inputtax-wholesale-table').html(
+                            response); // แสดง response ใน #quote-centent
                         },
                         error: function(xhr) {
                             console.log(xhr.responseText); // แสดงข้อผิดพลาดใน console

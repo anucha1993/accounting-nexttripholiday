@@ -79,21 +79,24 @@ class quotationModel extends Model
 
     public function getTotalInputTaxVat()
     {
-        // ตรวจสอบว่ามีแถวที่ input_tax_file เป็น NULL หรือไม่
-        $total = $this->InputTaxVat()
-            ->when($this->InputTaxVat()->whereNotNull('input_tax_file')->exists(), function ($query) {
-                // กรณีที่ input_tax_file ไม่เป็น NULL ให้คำนวณผลรวมของ input_tax_withholding
-                return $query->whereNotNull('input_tax_file') ->selectRaw('SUM(input_tax_vat - input_tax_withholding) as total')->value('total');
-            }, function ($query) {
-                // กรณีที่ input_tax_file เป็น NULL ให้คำนวณผลรวมของ input_tax_vat และ input_tax_withholding
-                return $query->whereNull('input_tax_file')
-                             ->selectRaw('SUM(input_tax_vat + input_tax_withholding) as total')
-                             ->value('total');
-            });
+        $query = $this->InputTaxVat(); // ดึง Query Builder จากความสัมพันธ์ InputTaxVat
+    
+        if ($query->whereNotNull('input_tax_file')->exists()) {
+            // กรณีที่ input_tax_file ไม่เป็น NULL
+            $total = $query->whereNotNull('input_tax_file')
+                           ->selectRaw('SUM(input_tax_vat - input_tax_withholding) as total')
+                           ->value('total');
+        } else {
+            // กรณีที่ input_tax_file เป็น NULL
+            $total = $query->whereNull('input_tax_file')
+                           ->selectRaw('SUM(input_tax_vat + input_tax_withholding) as total')
+                           ->value('total');
+        }
     
         // กรณีที่ผลรวมเป็น null ให้คืนค่า 0
         return $total ?? 0;
     }
+    
     
     
     
