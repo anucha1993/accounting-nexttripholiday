@@ -24,21 +24,35 @@ class taxInvoiceController extends Controller
      // function Runnumber invoice
      public function generateRunningCodeRV()
      {
+         // ดึงข้อมูลใบกำกับภาษีล่าสุด
          $taxtinvoice = InvoicestaxinvoiceModel::select('taxinvoice_number')->latest()->first();
-         if (!empty($invoice)) {
+     
+         if (!empty($taxtinvoice)) {
+             // ใช้เลขที่ใบกำกับภาษีล่าสุด
              $taxinvoiceNumber = $taxtinvoice->taxinvoice_number;
          } else {
-             $taxinvoiceNumber = 'RV' . date('Y') . date('m') .'-'. '0000';
+             // กรณีที่ไม่มีเลขที่ใบกำกับภาษีในระบบ
+             $taxinvoiceNumber = 'RV' . date('Y') . date('m') . '-' . '0000';
          }
+     
+         // สร้างเลขใหม่
          $prefix = 'RV';
          $year = date('Y');
          $month = date('m');
+     
+         // ดึงเลข 4 หลักสุดท้ายมาแปลงเป็นจำนวนเต็ม
          $lastFourDigits = substr($taxinvoiceNumber, -4);
          $incrementedNumber = intval($lastFourDigits) + 1;
+     
+         // เติม 0 ข้างหน้าให้ครบ 4 หลัก
          $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
-         $runningCode = $prefix . $year . $month .'-'. $newNumber;
+     
+         // ประกอบรหัสเลขที่รันใหม่
+         $runningCode = $prefix . $year . $month . '-' . $newNumber;
+     
          return $runningCode;
      }
+     
 
      public function store(invoiceModel $invoiceModel, Request $request)
      {

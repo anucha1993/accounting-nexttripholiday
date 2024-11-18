@@ -39,6 +39,7 @@ use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
 use App\Http\Controllers\quotations\quotationViewController;
 use App\Http\Controllers\quotations\quoteLog;
+use App\Http\Controllers\withholding\withholdingTaxController;
 use App\Models\quotations\quotationModel;
 
 /*
@@ -278,5 +279,8 @@ Route::delete('quote/{quote}/delete-file', [quoteLog::class, 'deleteFile'])->nam
 
 
 
+// withholding
+Route::get('withholding/create',[withholdingTaxController::class,'create'])->name('withholding.create');
+Route::get('withholding/taxNumber',[withholdingTaxController::class,'taxNumber'])->name('withholding.taxNumber');
 
 
