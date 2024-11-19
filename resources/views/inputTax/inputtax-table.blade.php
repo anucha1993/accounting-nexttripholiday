@@ -50,8 +50,9 @@
                                                 onchange="uploadInvoiceImage(this)">
                                         @else
                                             <!-- กรณีมีไฟล์ ให้แสดงปุ่มดูไฟล์และลบไฟล์ -->
-                                        
-                                                <a class="btn btn-sm btn-info" href="{{ asset('storage/' . $item->invoice_image) }}"
+
+                                            <a class="btn btn-sm btn-info"
+                                                href="{{ asset('storage/' . $item->invoice_image) }}"
                                                 onclick="openPdfPopup(this.href); return false;">เปิดดูไฟล์</a>
 
                                             <button class="btn btn-sm btn-danger"
@@ -68,7 +69,7 @@
                                 <td>{{ number_format($invoice->getWithholdingTaxAmountAttribute(), 2) }}</td>
                                 <td>-</td>
                             @empty
-                         @endforelse
+                        @endforelse
                         </tr>
 
 
@@ -103,13 +104,14 @@
                         @endif
                         <td>
                             @if ($item->input_tax_file)
-                            <a href="{{ asset('storage/' . $item->input_tax_file) }}"
-                                onclick="openPdfPopup(this.href); return false;"><i class="fa fa-file text-danger"></i>
-                                ไฟล์แนบ</a>
+                                <a href="{{ asset('storage/' . $item->input_tax_file) }}"
+                                    onclick="openPdfPopup(this.href); return false;"><i
+                                        class="fa fa-file text-danger"></i>
+                                    ไฟล์แนบ</a>
                             @else
                                 ไม่มีไฟล์แนบ
                             @endif
-                           
+
                         </td>
                         <td>
                             {{ number_format($item->input_tax_service_total, 2) }}
@@ -132,11 +134,11 @@
                         {{-- <td>{{$quotationModel->getTotalInputTaxVat()}}</td> --}}
                         <td>
                             @if ($quotationModel->getTotalInputTaxVat() > 0)
-                            {{ number_format($quotationModel->getTotalInputTaxVat(),2) }}
+                                {{ number_format($quotationModel->getTotalInputTaxVat(), 2) }}
                             @else
-                            {{ number_format($item->input_tax_grand_total,2) }}
+                                {{ number_format($item->input_tax_grand_total, 2) }}
                             @endif
-                          </td>
+                        </td>
 
                         <td>
                             @if ($item->input_tax_status === 'success')
@@ -163,12 +165,28 @@
                         @endforelse
                         <tr>
                         <tr>
+
+                            @php
+                                 $withholdingTaxAmount = $invoice?->getWithholdingTaxAmountAttribute() ?? 0;
+                        $getTotalInputTaxVat = $quotationModel?->getTotalInputTaxVat() ?? 0;
+                    
+                        // ตรวจสอบว่า input_tax_file === NULL หรือไม่
+                        $hasInputTaxFile = $quotationModel->InputTaxVat()->whereNotNull('input_tax_file')->exists();
+                    
+                        if ($hasInputTaxFile) {
+                            // กรณี input_tax_file !== NULL
+                            $paymentInputtaxTotal = $withholdingTaxAmount - $getTotalInputTaxVat;
+                        } else {
+                            // กรณี input_tax_file === NULL
+                            $paymentInputtaxTotal = $withholdingTaxAmount + $getTotalInputTaxVat;
+                        }
+                            @endphp
                             <td align="right" class="text-success" colspan="7">
-                                <b>(@bathText($invoice->getWithholdingTaxAmountAttribute() - $quotationModel->getTotalInputTaxVat()))</b>
+                                <b>(@bathText($paymentInputtaxTotal))</b>
                             </td>
                             <td align="center" class="text-danger" colspan="1">
                                 <b>
-                                    {{ number_format($invoice->getWithholdingTaxAmountAttribute() - $quotationModel->getTotalInputTaxVat(), 2) }}
+                                    {{ number_format($paymentInputtaxTotal,2) }}
                                 </b>
                             </td>
                         </tr>
@@ -177,8 +195,8 @@
 
                     </tbody>
                 </table>
-                  ภาษีขาย : {{ $invoice->getWithholdingTaxAmountAttribute()}} <br>
-                  ภาษีซื้อ : {{ $quotationModel->getTotalInputTaxVat()}}
+                {{-- ภาษีขาย : {{ $invoice->getWithholdingTaxAmountAttribute() }} <br>
+                ภาษีซื้อ : {{ $quotationModel->getTotalInputTaxVat() }} --}}
             </div>
         </div>
     </div>
@@ -207,62 +225,64 @@
 </div>
 
 <script>
-function uploadInvoiceImage(input) {
-    let invoiceId = $(input).data('id');
-    let file = input.files[0];
+    function uploadInvoiceImage(input) {
+        let invoiceId = $(input).data('id');
+        let file = input.files[0];
 
-    let reader = new FileReader();
-    reader.onload = function(e) {
-        let base64File = e.target.result;
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            let base64File = e.target.result;
 
-        // ตรวจสอบข้อมูล Base64 ก่อนที่จะส่งไปยังเซิร์ฟเวอร์
-        console.log("Base64 File Data:", base64File);
+            // ตรวจสอบข้อมูล Base64 ก่อนที่จะส่งไปยังเซิร์ฟเวอร์
+            console.log("Base64 File Data:", base64File);
 
+            $.ajax({
+                url: '{{ route('uploadInvoiceImage') }}',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                data: JSON.stringify({
+                    invoice_id: invoiceId,
+                    invoice_file: base64File
+                }),
+                success: function(response) {
+                    alert(response.message);
+                    window.location.reload();
+                },
+                error: function(xhr, status, error) {
+                    console.log("Error response:", xhr.responseText);
+                    alert('File upload failed');
+                }
+            });
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+    function deleteInvoiceImage(invoiceId) {
         $.ajax({
-            url: '{{ route("uploadInvoiceImage") }}',
-            method: 'POST',
+            url: '{{ route('deleteInvoiceImage') }}',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             data: JSON.stringify({
-                invoice_id: invoiceId,
-                invoice_file: base64File
+                invoice_id: invoiceId
             }),
             success: function(response) {
                 alert(response.message);
+
                 window.location.reload();
             },
             error: function(xhr, status, error) {
                 console.log("Error response:", xhr.responseText);
-                alert('File upload failed');
+                alert('File deletion failed');
             }
         });
-    };
-
-    reader.readAsDataURL(file);
-}
-
-function deleteInvoiceImage(invoiceId) {
-    $.ajax({
-        url: '{{ route("deleteInvoiceImage") }}',
-        method: 'DELETE',
-        headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-        data: JSON.stringify({ invoice_id: invoiceId }),
-        success: function(response) {
-            alert(response.message);
-            
-            window.location.reload();
-        },
-        error: function(xhr, status, error) {
-            console.log("Error response:", xhr.responseText);
-            alert('File deletion failed');
-        }
-    });
-}
+    }
 
 
 
