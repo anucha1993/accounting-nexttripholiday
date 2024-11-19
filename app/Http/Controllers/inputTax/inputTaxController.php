@@ -57,26 +57,64 @@ class inputTaxController extends Controller
         return redirect()->back();
     }
 
+    // public function update(Request $request, inputTaxModel $inputTaxModel)
+    // {
+    //    // dd($request);
+    //     $fileUploadController = new uploadfileQuoteController();
+    //     $filePath = $fileUploadController->uploadFile($request, $request->input_tax_quote_number, $request->customer_id);
+    //     $requestData = $request->all();
+    //     if ($filePath) {
+    //         // เช็คว่าไฟล์มีอยู่หรือไม่ ถ้ามีจะลบไฟล์
+    //         if (File::exists('storage/'.$inputTaxModel->input_tax_file)) {
+    //             File::delete('storage/'.$inputTaxModel->input_tax_file); // ลบไฟล์
+    //         }
+
+    //         $requestData['input_tax_file'] = $filePath;
+    //     }
+    //     $requestData['updated_by'] = Auth::user()->name;
+    //     // สร้างข้อมูลใหม่ใน inputTaxModel
+    //     $inputTaxModel->update($requestData);
+
+    //     return redirect()->back();
+    // }
+
     public function update(Request $request, inputTaxModel $inputTaxModel)
-    {
-       // dd($request);
+{
+    $requestData = $request->all();
+
+    // ตรวจสอบว่าเลือก "ลบไฟล์แนบ" หรือไม่
+    if ($request->has('delete_file') && $request->delete_file === 'Y') {
+        // ลบไฟล์แนบถ้ามีอยู่
+        if ($inputTaxModel->input_tax_file && File::exists('storage/' . $inputTaxModel->input_tax_file)) {
+            File::delete('storage/' . $inputTaxModel->input_tax_file); // ลบไฟล์
+        }
+
+        // ตั้งค่า input_tax_file เป็น NULL
+        $requestData['input_tax_file'] = null;
+    } else {
+        // อัปโหลดไฟล์ใหม่ (ถ้ามีการอัปโหลด)
         $fileUploadController = new uploadfileQuoteController();
         $filePath = $fileUploadController->uploadFile($request, $request->input_tax_quote_number, $request->customer_id);
-        $requestData = $request->all();
+
         if ($filePath) {
-            // เช็คว่าไฟล์มีอยู่หรือไม่ ถ้ามีจะลบไฟล์
-            if (File::exists('storage/'.$inputTaxModel->input_tax_file)) {
-                File::delete('storage/'.$inputTaxModel->input_tax_file); // ลบไฟล์
+            // ลบไฟล์เก่าถ้ามีอยู่
+            if ($inputTaxModel->input_tax_file && File::exists('storage/' . $inputTaxModel->input_tax_file)) {
+                File::delete('storage/' . $inputTaxModel->input_tax_file);
             }
 
             $requestData['input_tax_file'] = $filePath;
         }
-        $requestData['updated_by'] = Auth::user()->name;
-        // สร้างข้อมูลใหม่ใน inputTaxModel
-        $inputTaxModel->update($requestData);
-
-        return redirect()->back();
     }
+
+    // อัปเดตข้อมูลเพิ่มเติม
+    $requestData['updated_by'] = Auth::user()->name;
+
+    // บันทึกการเปลี่ยนแปลงในฐานข้อมูล
+    $inputTaxModel->update($requestData);
+
+    return redirect()->back()->with('success', 'อัปเดตข้อมูลเรียบร้อยแล้ว');
+}
+
 
     public function store(Request $request)
     {

@@ -102,9 +102,14 @@
                                 -
                         @endif
                         <td>
+                            @if ($item->input_tax_file)
                             <a href="{{ asset('storage/' . $item->input_tax_file) }}"
                                 onclick="openPdfPopup(this.href); return false;"><i class="fa fa-file text-danger"></i>
                                 ไฟล์แนบ</a>
+                            @else
+                                ไม่มีไฟล์แนบ
+                            @endif
+                           
                         </td>
                         <td>
                             {{ number_format($item->input_tax_service_total, 2) }}

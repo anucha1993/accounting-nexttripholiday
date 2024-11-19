@@ -62,6 +62,23 @@
                 <input type="file" name="file">
             </div>
 
+            <div class="col-md-12 mb-3">
+                
+              
+                <br>
+                @if ( $inputTaxModel->input_tax_file)
+                <input type="checkbox" name="delete_file" value="Y">
+                <label for="">ต้องการลบไฟล์แนบ</label>
+                <a href="{{ asset('storage/' . $inputTaxModel->input_tax_file) }}"
+                    onclick="openPdfPopup(this.href); return false;"><i class="fa fa-file text-danger"></i>
+                    {{$inputTaxModel->input_tax_file}}</a>
+                @else
+                    -
+                @endif
+               
+            </div>
+
+
             <div class="col-md-12">
                 <label for="">ต้องการออกใบหัก ณ ที่จ่ายหรือไม่</label>
                 <br>

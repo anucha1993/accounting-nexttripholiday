@@ -77,27 +77,59 @@ class quotationModel extends Model
         return $this->belongsTo(inputTaxModel::class, 'quote_id', 'input_tax_quote_id');
     }
 
-   public function getTotalInputTaxVat()
-{
-    $query = $this->InputTaxVat(); // ดึง Query Builder จากความสัมพันธ์ InputTaxVat
 
-    if ($query->whereNotNull('input_tax_file')->exists()) {
+
+// funtion นี้คำนวน  กรณีที่ input_tax_file เป็น NULL ผิด จากตัวอย่าง 
+//  input_tax_withholding = 44.86
+// input_tax_vat 104.67
+// ดังนั้น กรณีที่ input_tax_file เป็น NULL จะได้ต้อง return ได้ 44.86;
+public function getTotalInputTaxVat()
+{
+    // ตรวจสอบว่ามีแถวที่ input_tax_file ไม่เป็น NULL หรือไม่
+    $hasFile = $this->InputTaxVat()->whereNotNull('input_tax_file')->exists();
+
+    if ($hasFile) {
         // กรณีที่ input_tax_file ไม่เป็น NULL
-        $total = $query->whereNotNull('input_tax_file')
-                       ->selectRaw('SUM(input_tax_vat - input_tax_withholding) as total')
-                       ->value('total');
+        $total = $this->InputTaxVat()
+                      ->whereNotNull('input_tax_file')
+                      ->sum(\DB::raw('COALESCE(input_tax_vat, 0) - COALESCE(input_tax_withholding, 0)'));
     } else {
         // กรณีที่ input_tax_file เป็น NULL
-        $total = $query->whereNull('input_tax_file')
-                       ->selectRaw('SUM(input_tax_vat + input_tax_withholding) as total')
-                       ->value('total');
+        $total = $this->InputTaxVat()
+                      ->whereNull('input_tax_file')
+                      ->sum('input_tax_withholding');
     }
 
-    // กรณีที่ผลรวมเป็น null ให้คืนค่า 0
-     // คำนวณ $totalGrand
-   
-    return $total;
+    return $total ?? 0; // คืนค่า 0 หากไม่มีผลลัพธ์
 }
+
+
+
+
+
+public function calculateNetProfit()
+{
+    $paymentCustomer = $this->GetDeposit(); // ลูกค้าชำระเงิน
+    $paymentWhosale = $this->GetDepositWholesale(); // โอนเงินโฮลเซลล์
+    $inputTaxTotal = $this->getTotalInputTaxVat(); // ภาษีซื้อ
+    $withholdingTax = $this->InputTaxVat()->sum('input_tax_withholding'); // หักโฮลเซลล์
+    $vatClaim = $inputTaxTotal - $this->InputTaxVat()->sum('input_tax_vat'); // VAT ที่เคลมได้
+
+    // เงื่อนไขที่ 1: กำไรสุทธิ
+    $profitCondition1 = $paymentCustomer - $paymentWhosale - $inputTaxTotal - $withholdingTax;
+
+    // เงื่อนไขที่ 2: กำไรสุทธิจริงหลังเคลม VAT
+    $profitCondition2 = $paymentCustomer - $paymentWhosale - ($vatClaim + $withholdingTax);
+
+    return [
+        'profitCondition1' => number_format($profitCondition1, 2),
+        'profitCondition2' => number_format($profitCondition2, 2),
+    ];
+}
+
+
+
+
 
 
 // public function getTotalInputTaxVat()

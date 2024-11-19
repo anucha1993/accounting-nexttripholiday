@@ -61,6 +61,8 @@
                 <input type="file" name="file">
             </div>
 
+           
+
             <input type="hidden" id="css" name="input_tax_withholding_status" value="N" checked>
             {{-- <div class="col-md-12">
                 <label for="">ต้องการออกใบหัก ณ ที่จ่ายหรือไม่</label>

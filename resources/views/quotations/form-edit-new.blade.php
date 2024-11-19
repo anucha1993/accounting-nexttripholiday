@@ -388,56 +388,49 @@
                     <div class="card-body">
 
                         @php
-                            $paymentCustomer = 0;
-                            $paymentWhosale = 0;
-                            $paymentInputtaxTotal = 0;
-                            $TotalPayment = 0;
-                            $TotalGrand = 0;
-
-                            // เรียกข้อมูลการฝากเงินของลูกค้า
-                            $paymentCustomer = $quotationModel->GetDeposit();
-
-                            // เรียกข้อมูลการฝากเงินของผู้ค้าส่ง
-                            $paymentWhosale = $quotationModel->GetDepositWholesale();
-                            $paymentInputtaxTotal = 0;
-
-                            
-
-                            $withholdingTaxAmount = $invoiceModel?->getWithholdingTaxAmountAttribute() ?? 0;
-                            $getTotalInputTaxVat = $quotationModel?->getTotalInputTaxVat() ?? 0;
-
-                            // เรียกข้อมูลยอดรวมภาษีซื้อ (Input Tax)
+                        $paymentCustomer = 0;
+                        $paymentWhosale = 0;
+                        $paymentInputtaxTotal = 0;
+                        $TotalPayment = 0;
+                        $TotalGrand = 0;
+                    
+                        // เรียกข้อมูลการฝากเงินของลูกค้า
+                        $paymentCustomer = $quotationModel->GetDeposit();
+                    
+                        // เรียกข้อมูลการฝากเงินของผู้ค้าส่ง
+                        $paymentWhosale = $quotationModel->GetDepositWholesale();
+                    
+                        $withholdingTaxAmount = $invoiceModel?->getWithholdingTaxAmountAttribute() ?? 0;
+                        $getTotalInputTaxVat = $quotationModel?->getTotalInputTaxVat() ?? 0;
+                    
+                        // ตรวจสอบว่า input_tax_file === NULL หรือไม่
+                        $hasInputTaxFile = $quotationModel->InputTaxVat()->whereNotNull('input_tax_file')->exists();
+                    
+                        if ($hasInputTaxFile) {
+                            // กรณี input_tax_file !== NULL
                             $paymentInputtaxTotal = $withholdingTaxAmount - $getTotalInputTaxVat;
-
-                            $invoiceVatAmount = $quotationModel->invoicetaxTotal() + $paymentInputtaxTotal;
-                            // คำนวณยอดรวม โดยหักเงินฝากของผู้ค้าส่งและภาษีออกจากเงินฝากของลูกค้า
-
-                            $TotalPayment = $paymentCustomer - $paymentWhosale;
-
-                            $TotalGrand = $TotalPayment - $paymentInputtaxTotal;
-
-                        @endphp
+                        } else {
+                            // กรณี input_tax_file === NULL
+                            $paymentInputtaxTotal = $withholdingTaxAmount + $getTotalInputTaxVat;
+                        }
+                    
+                        // คำนวณยอดรวม
+                        $invoiceVatAmount = $quotationModel->invoicetaxTotal() + $paymentInputtaxTotal;
+                        $TotalPayment = $paymentCustomer - $paymentWhosale;
+                        $TotalGrand = $TotalPayment - $paymentInputtaxTotal;
+                    @endphp
+                    
                         {{-- {{$paymentInputtaxTotal}} --}}
 
-
-
                         <h5 class="card-title">คำนวนกำไรขั้นต้น</h5>
-                        <hr />
-                        <span class="float-end"> ยอดรวมต้นทุนโฮลเซลล์:
-                            {{ number_format($quotationModel->inputtaxTotalWholesale(), 2) }}</span><br>
-                        <span class="float-end"> ชำระเงินโฮลเซลล์แล้ว:
-                            {{ number_format($quotationModel->GetDepositWholesale(), 2) }}</span><br>
-                        <span class="float-end">ลูกค้าชำระแล้ว :
-                            {{ number_format($quotationModel->GetDeposit(), 2) }}</span><br>
-                        <span class="float-end"> กำไร : {{ number_format($TotalPayment, 2) }}</span><br>
-
-
+                        <hr/>
+                        <span class="float-end"> ยอดรวมต้นทุนโฮลเซลล์: {{ number_format($quotationModel->inputtaxTotalWholesale(), 2) }}</span><br>
+                        <span class="float-end"> ชำระเงินโฮลเซลล์แล้ว: {{ number_format($quotationModel->GetDepositWholesale(), 2) }}</span><br>
+                        <span class="float-end">ลูกค้าชำระแล้ว : {{ number_format($quotationModel->GetDeposit(), 2) }} </span><br>
+                        <span class="float-end"> กำไร : {{ number_format($TotalPayment, 2) }}</span><br>               
                         <span class="float-end"> กำไรสุทธิ: {{ number_format($TotalGrand, 2) }} </span><br>
                         <hr />
-                        {{-- ภาษีขาย : {{ $invoiceModel->getWithholdingTaxAmountAttribute()}} <br>
-                        ภาษีซื้อ : {{ $quotationModel->getTotalInputTaxVat()}} --}}
-                        {{-- <button class="btn btn-success">Checkout</button>
-                        <button class="btn btn-secondary btn-outline">Cancel</button> --}}
+                      
                     </div>
                 </div>
             </div>
