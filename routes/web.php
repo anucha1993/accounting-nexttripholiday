@@ -280,7 +280,13 @@ Route::delete('quote/{quote}/delete-file', [quoteLog::class, 'deleteFile'])->nam
 
 
 // withholding
+Route::get('withholdings',[withholdingTaxController::class,'index'])->name('withholding.index');
 Route::get('withholding/create',[withholdingTaxController::class,'create'])->name('withholding.create');
+Route::get('withholding/edit/{id}',[withholdingTaxController::class,'edit'])->name('withholding.edit');
+Route::get('withholding/show/{id}',[withholdingTaxController::class,'show'])->name('withholding.show');
+Route::post('withholding/store',[withholdingTaxController::class,'store'])->name('withholding.store');
+Route::delete('withholding/delete/{id}',[withholdingTaxController::class,'destroy'])->name('withholding.destroy');
+Route::put('withholding/update/{id}',[withholdingTaxController::class,'update'])->name('withholding.update');
 Route::get('withholding/taxNumber',[withholdingTaxController::class,'taxNumber'])->name('withholding.taxNumber');
 
 

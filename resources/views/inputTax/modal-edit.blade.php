@@ -9,8 +9,8 @@
             <div class="col-md-12 mb-3">
                 <label>ประเภท</label>
                 <select name="input_tax_type" id="" class="form-select">
-                    <option @if($inputTaxModel === 0) selected @endif value="0">ภาษีซื้อ</option>
-                    <option @if($inputTaxModel === 1) selected @endif value="1">ต้นทุนอื่นๆ</option>
+                    <option @if($inputTaxModel->input_tax_type === 0) selected @endif value="0">ภาษีซื้อ</option>
+                    <option @if($inputTaxModel->input_tax_type === 1) selected @endif value="1">ต้นทุนอื่นๆ</option>
                 </select>
             </div>
             <input type="hidden" name="input_tax_quote_id" class="form-control" value="{{$quotationModel->quote_id}}" >

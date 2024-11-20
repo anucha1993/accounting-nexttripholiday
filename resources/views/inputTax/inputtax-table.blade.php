@@ -133,11 +133,12 @@
                         {{-- <td>{{number_format($item->input_tax_grand_total,2)}}</td> --}}
                         {{-- <td>{{$quotationModel->getTotalInputTaxVat()}}</td> --}}
                         <td>
-                            @if ($quotationModel->getTotalInputTaxVat() > 0)
+                            {{ number_format($item->input_tax_grand_total, 2) }}
+                            {{-- @if ($quotationModel->getTotalInputTaxVat() > 0)
                                 {{ number_format($quotationModel->getTotalInputTaxVat(), 2) }}
                             @else
                                 {{ number_format($item->input_tax_grand_total, 2) }}
-                            @endif
+                            @endif --}}
                         </td>
 
                         <td>

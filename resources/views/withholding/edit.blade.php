@@ -109,126 +109,114 @@
         </div>
         <hr>
 
-        <form action="{{ route('withholding.store') }}" method="post">
-            @csrf
-            @method('post')
-            <!-- ส่วนข้อมูลผู้จ่าย -->
-            <div class="row mb-4 ">
-                <div class="col-md-6">
-                    <label for="payerName" class="form-label">ชื่อผู้จ่ายเงิน</label>
-                    <select class="form-select" id="payerName" name="customer_id">
-                        <option value="" disabled selected>เลือกผู้จ่ายเงิน</option>
-                        @forelse ($customers as $item)
-                            <option data-address="{{ $item->customer_address }}" data-taxid="{{ $item->customer_texid }}"
-                                value="{{ $item->customer_id }}">{{ $item->customer_name }}</option>
-                        @empty
-                            <option value="">ไม่มีข้อมูลลูกค้า</option>
-                        @endforelse
-                    </select>
-                </div>
+        <form action="{{ route('withholding.update', $document->id) }}" method="post">
+               @csrf
+               @method('PUT')
+               
+               <!-- ส่วนข้อมูลผู้จ่าย -->
+               <div class="row mb-4">
+                   <div class="col-md-6">
+                       <label for="payerName" class="form-label">ชื่อผู้จ่ายเงิน</label>
+                       <select class="form-select" id="payerName" name="customer_id">
+                           @foreach ($customers as $customer)
+                              
 
-                <div class="col-md-6">
-                    <label for="documentDate" class="form-label">วันที่</label>
-                    <input type="date" class="form-control" id="documentDate" name="document_date"
-                        value="{{ date('Y-m-d') }}">
+                               <option data-address="{{ $customer->customer_address }}" data-taxid="{{ $customer->customer_texid }}" {{ $document->customer_id == $customer->customer_id ? 'selected' : '' }}
+                                             value="{{ $customer->customer_id }}">{{ $customer->customer_name }}</option>
 
-                </div>
+                           @endforeach
+                       </select>
+                   </div>
+                   <div class="col-md-6">
+                       <label for="documentDate" class="form-label">วันที่</label>
+                       <input type="date" class="form-control" id="documentDate" name="document_date" value="{{ $document->document_date }}">
+                   </div>
+               </div>
+       
+               <!-- รายละเอียด -->
+               <div class="row mb-4">
+                   <div class="col-md-6">
+                       <label for="customerAddress" class="form-label">รายละเอียด</label>
+                       <textarea class="form-control" id="customerAddress" name="details" rows="3">{{ $document->customer->customer_address }}</textarea>
+                   </div>
+                   <div class="col-md-6">
+                       <label for="refNumber" class="form-label">เลขที่เอกสาร</label>
+                       <input type="text" class="form-control" id="refNumber" name="ref_number" value="{{ $document->ref_number }}">
+                   </div>
+               </div>
 
-                <div class="col-md-6">
-
-                    <label for="customerAddress" class="form-label">รายละเอียด</label>
-                    <textarea class="form-control" id="customerAddress" name="details" rows="3"></textarea>
-                </div>
-
-                <div class="col-md-6">
-                    <label for="documentNumber" class="form-label">เลขที่เอกสาร</label>
-                    <input type="text" class="form-control" id="documentNumber" name="ref_number"
-                        placeholder="ค้นหาเลขที่เอกสาร">
-                    <div id="documentSuggestions" class="list-group position-absolute w-50"
-                        style="z-index: 1000; display: none; background-color: #FFFF"></div>
-                </div>
-
-            </div>
-
-            <!-- ที่อยู่ และ เลขประจำตัวผู้เสียภาษี -->
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <label for="customerTaxId" class="form-label">เลขประจำตัวผู้เสียภาษี</label>
-                    <input type="text" class="form-control" id="customerTaxId" placeholder="1234567890123">
-                </div>
-                <div class="col-md-6">
-                    <label for="withholdingForm" class="form-label">แบบฟอร์ม</label>
-                    <select id="withholdingForm" name="withholding_form" class="form-select">
-                        <option value="ภ.ง.ด.53">ภ.ง.ด.53</option>
-                        <option value="ภ.ง.ด.3">ภ.ง.ด.3</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- ตาราง -->
-            <div class="table-responsive mb-4">
-                <table class="table table-bordered">
-                    <thead class="table-light text-center">
-                        <tr>
-                            <th scope="col">ลำดับ</th>
-                            <th scope="col">ประเภทเงินได้</th>
-                            <th scope="col">อัตราภาษีที่หัก (%)</th>
-                            <th scope="col">จำนวนเงิน</th>
-                            <th scope="col">ภาษีหัก ณ ที่จ่าย</th>
-                            <th scope="col">ลบ</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dynamic-rows">
-                        <tr>
-                            <td class="text-center">1</td>
-                            <td><input type="text" class="form-control" name="income_type[]" value="ค่าบริการโฆษณา"></td>
-                            <td><input type="number" class="form-control tax-rate" name="tax_rate[]" value="2"></td>
-                            <td><input type="number" class="form-control amount" name="amount[]" value="50000"></td>
-                            <td><input type="number" class="form-control withholding-tax" name="withholding_tax[]"
-                                    value="1000" readonly></td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-danger remove-row">ลบ</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button id="add-row" type="button" class="btn btn-primary mt-2">+ เพิ่มแถวรายการ</button>
-            </div>
-
-            <!-- สรุปยอด -->
-            <div class="row mb-4">
-                <div class="col-md-6"></div>
-                <div class="col-md-6">
-                    <div class="d-flex justify-content-between">
-                        <span><strong>จำนวนเงินรวม (ไม่รวมภาษี):</strong></span>
-                        <span id="total-amount">50,000.00</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span><strong>ภาษีมูลค่าเพิ่ม 7%:</strong></span>
-                        <span id="vat-amount">3,500.00</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span><strong>ภาษีที่หัก:</strong></span>
-                        <span id="total-withholding-tax">1,000.00</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span><strong>ยอดชำระ:</strong></span>
-                        <span id="total-payable">52,500.00</span>
-                    </div>
-                </div>
-            </div>
-            
-
-            <!-- ปุ่มบันทึก -->
-            <div class="text-end">
-                <button type="submit" class="btn btn-success">บันทึกเอกสาร</button>
-                <button type="button" class="btn btn-secondary">ปิดหน้าต่าง</button>
-            </div>
-    </div>
-    </form>
-    <br>
-    <br>
-
+               <div class="row mb-4">
+                              <div class="col-md-6">
+                                  <label for="customerTaxId" class="form-label">เลขประจำตัวผู้เสียภาษี</label>
+                                  <input type="text" class="form-control" id="customerTaxId" placeholder="1234567890123" value="{{$document->customer->customer_texid}}">
+                              </div>
+                              <div class="col-md-6">
+                                  <label for="withholdingForm" class="form-label">แบบฟอร์ม</label>
+                                  <select id="withholdingForm" name="withholding_form" class="form-select">
+                                      <option value="ภ.ง.ด.53" {{ $document->withholding_form == 'ภ.ง.ด.53' ? 'selected' : '' }} >ภ.ง.ด.53</option>
+                                      <option value="ภ.ง.ด.3" {{ $document->withholding_form == 'ภ.ง.ด.3' ? 'selected' : '' }}>ภ.ง.ด.3</option>
+                                  </select>
+                              </div>
+                          </div>
+       
+               <!-- ตาราง -->
+               <div class="table-responsive mb-4">
+                   <table class="table table-bordered">
+                       <thead class="table-light text-center">
+                           <tr>
+                               <th>ลำดับ</th>
+                               <th>ประเภทเงินได้</th>
+                               <th>อัตราภาษีที่หัก (%)</th>
+                               <th>จำนวนเงิน</th>
+                               <th>ภาษีหัก ณ ที่จ่าย</th>
+                               <th>ลบ</th>
+                           </tr>
+                       </thead>
+                       <tbody id="dynamic-rows">
+                           @foreach ($document->items as $index => $item)
+                               <tr>
+                                   <td class="text-center">{{ $index + 1 }}</td>
+                                   <td><input type="text" class="form-control" name="income_type[]" value="{{ $item->income_type }}"></td>
+                                   <td><input type="number" class="form-control tax-rate" name="tax_rate[]" value="{{ $item->tax_rate }}"></td>
+                                   <td><input type="number" class="form-control amount" name="amount[]" value="{{ $item->amount }}"></td>
+                                   <td><input type="number" class="form-control withholding-tax" name="withholding_tax[]" value="{{ $item->withholding_tax }}" readonly></td>
+                                   <td class="text-center"><button type="button" class="btn btn-danger remove-row">ลบ</button></td>
+                               </tr>
+                           @endforeach
+                       </tbody>
+                   </table>
+                   <button id="add-row" type="button" class="btn btn-primary mt-2">+ เพิ่มแถวรายการ</button>
+               </div>
+       
+               <!-- สรุปยอด -->
+               <div class="row mb-4">
+                   <div class="col-md-6"></div>
+                   <div class="col-md-6">
+                       <div class="d-flex justify-content-between">
+                           <span><strong>จำนวนเงินรวม (ไม่รวมภาษี):</strong></span>
+                           <span id="total-amount">{{ $document->total_amount }}</span>
+                       </div>
+                       <div class="d-flex justify-content-between">
+                           <span><strong>ภาษีที่หักรวม:</strong></span>
+                           <span id="total-withholding-tax">{{ $document->total_withholding_tax }}</span>
+                       </div>
+                       <div class="d-flex justify-content-between">
+                           <span><strong>ยอดชำระ:</strong></span>
+                           <span id="total-payable">{{ $document->total_payable }}</span>
+                       </div>
+                   </div>
+               </div>
+       
+               <!-- ปุ่ม -->
+               <div class="text-end">
+                   <button type="submit" class="btn btn-success">บันทึกการแก้ไข</button>
+                   <a href="{{ route('withholding.index') }}" class="btn btn-secondary">ยกเลิก</a>
+               </div>
+           </form>
+</div>
+</form>
+<br>
+<br>
 
 
 
