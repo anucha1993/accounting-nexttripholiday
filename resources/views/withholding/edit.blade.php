@@ -100,7 +100,7 @@
     <div class="container py-4 email-app todo-box-container container-fluid" style="background-color: #ffffff">
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="mb-0">แก้ไขใบหัก ณ ที่จ่าย</h4>
+            <h4 class="mb-0">แก้ไขใบหัก ณ ที่จ่าย #{{ $document->document_number }}</h4>
             <div>
                 <button class="btn btn-outline-primary me-2">พิมพ์เอกสาร</button>
                 <button class="btn btn-outline-secondary me-2">ดาวน์โหลด</button>
@@ -127,6 +127,8 @@
                            @endforeach
                        </select>
                    </div>
+                  
+
                    <div class="col-md-6">
                        <label for="documentDate" class="form-label">วันที่</label>
                        <input type="date" class="form-control" id="documentDate" name="document_date" value="{{ $document->document_date }}">
@@ -192,7 +194,7 @@
                <div class="row mb-4">
                    <div class="col-md-6"></div>
                    <div class="col-md-6">
-                       <div class="d-flex justify-content-between">
+                       <div class="d-flex justify-content-between text-end">
                            <span><strong>จำนวนเงินรวม (ไม่รวมภาษี):</strong></span>
                            <span id="total-amount">{{ $document->total_amount }}</span>
                        </div>

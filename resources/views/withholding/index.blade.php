@@ -1,7 +1,10 @@
 @extends('layouts.template')
 
 @section('content')
-<div class="container">
+<div class="container-fluid page-content">
+    <div class="card">
+
+        <div class="card-body">
     <h1>รายการใบหัก ณ ที่จ่าย</h1>
     <a href="{{ route('withholding.create') }}" class="btn btn-primary mb-3">เพิ่มเอกสารใหม่</a>
     <table class="table table-bordered">
@@ -34,5 +37,7 @@
             @endforeach
         </tbody>
     </table>
+</div>
+    </div>
 </div>
 @endsection
