@@ -118,13 +118,6 @@ class quoteController extends Controller
 }
 
 
-    
-
-
-
-
-  
-
     public function generateRunningBooking()
     {
         $quote = quotationModel::select('quote_booking')->latest()->first();
