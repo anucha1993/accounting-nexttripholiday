@@ -18,7 +18,85 @@
                 <strong>Error - </strong>{{ session('error') }}
             </div>
         @endif
-        <div class="email-app todo-box-container">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">ใบเสนอราคา/ใบแจ้งหนี้
+                    @can('edit-quote')
+                     <a href="{{ route('quote.createNew') }}"
+                        class="btn btn-primary float-end">สร้างใบเสนอราคา</a></h4>
+                        @endcan
+                <hr>
+                <form action="">
+                    <div class="row mb-3">
+                        <div class="col-md-2">
+                            <label>คียร์เวิร์ด</label>
+                            <input type="text" class="form-control" name="search_keyword" placeholder="คียร์เวิร์ด" data-bs-toggle="tooltip" data-bs-placement="top" title="เลขที่ใบเสนอราคา,เลขที่ใบแจ้งหนี้,ชื่อลูกค้า,เลขที่ใบแจ้งทัวร์"> 
+                        </div>
+                        <div class="col-md-2">
+                            <label>Booking Date </label>
+                            <input type="date" class="form-control" name="search_booking_start" >
+                        </div>
+                        <div class="col-md-2">
+                            <label>ถึงวันที่ </label>
+                            <input type="date" class="form-control" name="search_booking_end" >
+                        </div>
+                        <div class="col-md-2">
+                            <label>ช่วงวันเดินทาง</label>
+                            <input type="date" class="form-control" name="search_period_start" >
+                        </div>
+                        <div class="col-md-2 ">
+                            <label>ถึงวันที่</label>
+                            <input type="date" class="form-control" name="search_period_end" >
+                        </div>
+
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-2">
+                            <label>ประเทศ</label>
+                            <select name="search_country" id="country" class="form-select">
+                                <option value="all">ทั้งหมด</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>โฮลเซลล์:</label>
+                            <select name="search_wholesale" class="form-select">
+                                <option value="all">ทั้งหมด</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>สถานะชำระโฮลเซลล์</label>
+                            <select name="search_payment_wholesale" class="form-select">
+                                <option value="all">ทั้งหมด</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>สถานะการชำระของลูกค้า</label>
+                            <select name="search_payment" class="form-select">
+                                <option value="all">ทั้งหมด</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>เซลล์ผู้ขาย</label>
+                            <select name="search_sale" class="form-select">
+                                <option value="all">ทั้งหมด</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                        
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-success float-end mx-3" type="submit">ค้นหา</button>
+                                <a href="{{ route('quote.index') }}" class="btn btn-outline-danger float-end mx-3"
+                                    type="submit">ล้างข้อมูล</a>
+    
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {{-- <div class="email-app todo-box-container">
 
             <div class="card">
                 <div class="card-body">
@@ -168,7 +246,7 @@
 
                 </div>
 
-            </div>
+            </div> --}}
            
             <div class="card">
                 <div class="card-body">
