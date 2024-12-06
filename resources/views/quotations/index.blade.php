@@ -31,9 +31,9 @@
                     <form action="" method="GET">
                         <div class="row">
                             <div class="col-md-2">
-                                <label>ค้นหา ชื่อ-นามสกุล</label>
+                                <label>ค้นหา ชื่อ-นามสกุล , เลขที่ใบเสนอราคา</label>
                                 <div class="input-group mb-3 pull-right">
-                                    <input type="text" class="form-control" placeholder="ค้นหา... ชื่อ-นามสกุล"
+                                    <input type="text" class="form-control" placeholder="ค้นหา... ชื่อ-นามสกุล,เลขที่ใบเสนอราคา"
                                         name="search_name" value="{{ request('search_name') }}">
 
                                 </div>
@@ -125,10 +125,9 @@
                                     <option value="NULL" {{ request('search_wholesale_payment') == 'NULL' ? 'selected' : '' }}>รอชำระเงิน</option>
                                     <option value="deposit" {{ request('search_wholesale_payment') == 'deposit' ? 'selected' : '' }}>รอชำระเงินเต็มจำนวน</option>
                                     <option value="full" {{ request('search_wholesale_payment') == 'full' ? 'selected' : '' }}>ชำระเงินครบแล้ว</option>
+                                    <option value="wait-payment-wholesale" {{ request('search_wholesale_payment') == 'wait-payment-wholesale' ? 'selected' : '' }}>รอโฮลเซลล์คืนเงิน</option>
                                 </select>
                             </div>
-                            
-                            
                             
                             
                             
@@ -140,6 +139,8 @@
                                     <option value="payment">รอชำระเงินเต็มจำนวน</option>
                                     <option value="success">ชำระเงินครบแล้ว</option>
                                     <option value="payment-time-out">เกินกำหนดชำระเงิน</option>
+                                    <option value="cancel">ยกเลิกการสั่งซื้อ</option>
+                                    <option value="wait-payment">รอคืนเงินลูกค้า</option>
                                     
                                 </select>
                             </div>

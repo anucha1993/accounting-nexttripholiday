@@ -138,7 +138,7 @@
                 {{ optional($quoteLog)->wholesale_tax_status === 'ได้รับแล้ว' ? 'checked' : '' }}>
             <i data-feather="{{ optional($quoteLog)->wholesale_tax_status === 'ได้รับแล้ว' ? 'check-circle' : 'box' }}"
                 class="{{ optional($quoteLog)->wholesale_tax_status === 'ได้รับแล้ว' ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
-                ใบแจ้งหนี้โฮลเซลล์ :
+                ใบกำกับภาษีโฮลเซลล์ :
             <span class="{{ optional($quoteLog)->wholesale_tax_status === 'ได้รับแล้ว' ? 'text-success' : 'text-muted' }}">
                 {{ optional($quoteLog)->wholesale_tax_status ?? 'ยังไม่ได้รับ' }}
             </span>
