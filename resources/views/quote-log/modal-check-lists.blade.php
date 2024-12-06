@@ -49,22 +49,7 @@
                 {{ optional($quoteLog)->invoice_updated_at ? Carbon::parse($quoteLog->invoice_updated_at)->format('d-m-Y : H:m:s') : '' }}
                 โดย {{ optional($quoteLog)->invoice_created_by ?? 'ไม่ทราบ' }}
             </small>
-            {{-- <div id="uploaded-file-links">
-                @php
-                    $key = 0;
-                @endphp
-                @if (!empty($quoteLog->uploaded_files))
-                    @foreach (json_decode($quoteLog->uploaded_files, true) as $fileUrl)
-                        <a href="{{ $fileUrl }}" target="_blank"
-                            class="d-block">file-upload-{{ ++$key }}</a>
-
-                            <a href="#" class="text-danger ms-2"
-                   onclick="event.preventDefault(); deleteFile('{{ $fileUrl }}', this);">
-                    ลบ
-                </a>
-                    @endforeach
-                @endif
-            </div> --}}
+         
         </li>
 
 
@@ -126,6 +111,46 @@
                 โดย {{ optional($quoteLog)->appointment_created_by ?? 'ไม่ทราบ' }}
             </small>
         </li>
+
+        <!-- ออกใบหักณที่จ่าย -->
+        <li class="list-group-item">
+            <input type="checkbox" class="form-check-input me-2" id="withholding_tax_status"
+                onchange="updateOrCreateLog('withholding_tax', this)"
+                {{ optional($quoteLog)->withholding_tax_status === 'ออกแล้ว' ? 'checked' : '' }}>
+            <i data-feather="{{ optional($quoteLog)->withholding_tax_status === 'ออกแล้ว' ? 'check-circle' : 'box' }}"
+                class="{{ optional($quoteLog)->withholding_tax_status === 'ออกแล้ว' ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
+                ออกใบหัก ณ ที่จ่าย:
+            <span class="{{ optional($quoteLog)->withholding_tax_status === 'ออกแล้ว' ? 'text-success' : 'text-muted' }}">
+                {{ optional($quoteLog)->withholding_tax_status ?? 'ยังไม่ได้ออก' }}
+            </span>
+            <br>
+            <small class="text-secondary">
+                อัปเดตล่าสุด:
+                {{ optional($quoteLog)->withholding_tax_updated_at ? Carbon::parse($quoteLog->withholding_tax_updated_at)->format('d-m-Y : H:m:s') : '' }}
+                โดย {{ optional($quoteLog)->withholding_tax_created_at ?? 'ไม่ทราบ' }}
+            </small>
+        </li>
+
+         <!-- ใบแจ้งหนี้โฮลเซลล์ -->
+         <li class="list-group-item">
+            <input type="checkbox" class="form-check-input me-2" id="wholesale_tax_status"
+                onchange="updateOrCreateLog('wholesale_tax', this)"
+                {{ optional($quoteLog)->wholesale_tax_status === 'ได้รับแล้ว' ? 'checked' : '' }}>
+            <i data-feather="{{ optional($quoteLog)->wholesale_tax_status === 'ได้รับแล้ว' ? 'check-circle' : 'box' }}"
+                class="{{ optional($quoteLog)->wholesale_tax_status === 'ได้รับแล้ว' ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
+                ใบแจ้งหนี้โฮลเซลล์ :
+            <span class="{{ optional($quoteLog)->wholesale_tax_status === 'ได้รับแล้ว' ? 'text-success' : 'text-muted' }}">
+                {{ optional($quoteLog)->wholesale_tax_status ?? 'ยังไม่ได้รับ' }}
+            </span>
+            <br>
+            <small class="text-secondary">
+                อัปเดตล่าสุด:
+                {{ optional($quoteLog)->wholesale_tax_updated_at ? Carbon::parse($quoteLog->wholesale_tax_updated_at)->format('d-m-Y : H:m:s') : '' }}
+                โดย {{ optional($quoteLog)->wholesale_tax_created_at ?? 'ไม่ทราบ' }}
+            </small>
+        </li>
+
+
     </ul>
 
 
@@ -154,40 +179,104 @@
 
 
         function updateOrCreateLog(field, checkbox) {
-            const status = checkbox.checked ? (field === 'invoice' ? 'ได้แล้ว' : 'ส่งแล้ว') : (field === 'invoice' ?
-                'ยังไม่ได้' : 'ยังไม่ได้ส่ง');
-
-            fetch('{{ route('quote.updateLogStatus', $quotationModel->quote_id) }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        field: field,
-                        status: status,
-                        created_by: '{{ auth()->user()->name }}'
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message === 'Status updated successfully') {
-                        const statusElement = checkbox.nextElementSibling;
-                        statusElement.className = status === 'ได้แล้ว' || status === 'ส่งแล้ว' ? 'text-success' :
-                            'text-muted';
-                        statusElement.innerText = status;
-
-                        const updateInfo = checkbox.parentElement.querySelector('.text-secondary');
-                        updateInfo.innerText = `อัปเดตล่าสุด: ${data.updated_at} โดย ${data.created_by}`;
-
-                        const toastMessage = document.getElementById('toastMessage');
-                        toastMessage.textContent = `${field} has been updated to "${status}"`;
-                        const toastElement = new bootstrap.Toast(document.getElementById('statusToast'));
-                        toastElement.show();
-                    }
-                })
-                .catch(error => console.error('Error updating status:', error));
+    const statusMapping = {
+        booking_email: {
+            true: 'ส่งแล้ว',
+            false: 'ยังไม่ได้ส่ง'
+        },
+        invoice: {
+            true: 'ได้แล้ว',
+            false: 'ยังไม่ได้'
+        },
+        slip: {
+            true: 'ส่งแล้ว',
+            false: 'ยังไม่ได้ส่ง'
+        },
+        passport: {
+            true: 'ส่งแล้ว',
+            false: 'ยังไม่ได้ส่ง'
+        },
+        appointment: {
+            true: 'ส่งแล้ว',
+            false: 'ยังไม่ได้ส่ง'
+        },
+        withholding_tax: {
+            true: 'ออกแล้ว',
+            false: 'ยังไม่ได้ออก'
+        },
+        wholesale_tax: {
+            true: 'ได้รับแล้ว',
+            false: 'ยังไม่ได้รับ'
         }
+    };
+
+    const status = checkbox.checked
+        ? statusMapping[field]?.true || 'ส่งแล้ว'
+        : statusMapping[field]?.false || 'ยังไม่ได้ส่ง';
+
+    fetch('{{ route('quote.updateLogStatus', $quotationModel->quote_id) }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            field: field,
+            status: status,
+            created_by: '{{ auth()->user()->name }}'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message === 'Status updated successfully') {
+            const statusElement = checkbox.nextElementSibling;
+            statusElement.className = status === 'ได้แล้ว' || status === 'ส่งแล้ว' || status === 'ออกแล้ว' || status === 'ได้รับแล้ว' ? 'text-success' : 'text-muted';
+            statusElement.innerText = status;
+
+            const updateInfo = checkbox.parentElement.querySelector('.text-secondary');
+            updateInfo.innerText = `อัปเดตล่าสุด: ${data.updated_at} โดย ${data.created_by}`;
+        }
+    })
+    .catch(error => console.error('Error updating status:', error));
+}
+
+
+
+        // function updateOrCreateLog(field, checkbox) {
+        //     const status = checkbox.checked ? (field === 'invoice' ? 'ได้แล้ว' : 'ส่งแล้ว') : (field === 'invoice' ?
+        //         'ยังไม่ได้' : 'ยังไม่ได้ส่ง');
+
+        //     fetch('{{ route('quote.updateLogStatus', $quotationModel->quote_id) }}', {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        //             },
+        //             body: JSON.stringify({
+        //                 field: field,
+        //                 status: status,
+        //                 created_by: '{{ auth()->user()->name }}'
+        //             })
+        //         })
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             if (data.message === 'Status updated successfully') {
+        //                 const statusElement = checkbox.nextElementSibling;
+        //                 statusElement.className = status === 'ได้แล้ว' || status === 'ส่งแล้ว' ? 'text-success' :
+        //                     'text-muted';
+        //                 statusElement.innerText = status;
+
+        //                 const updateInfo = checkbox.parentElement.querySelector('.text-secondary');
+        //                 updateInfo.innerText = `อัปเดตล่าสุด: ${data.updated_at} โดย ${data.created_by}`;
+
+        //                 const toastMessage = document.getElementById('toastMessage');
+        //                 toastMessage.textContent = `${field} has been updated to "${status}"`;
+        //                 const toastElement = new bootstrap.Toast(document.getElementById('statusToast'));
+        //                 toastElement.show();
+        //             }
+        //         })
+        //         .catch(error => console.error('Error updating status:', error));
+        // }
 
 
         function uploadFiles(event) {
