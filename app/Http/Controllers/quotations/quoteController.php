@@ -22,7 +22,7 @@ use App\Models\booking\countryModel;
 use App\Models\debits\debitModel;
 use App\Models\payments\paymentModel;
 use Carbon\Carbon;
-use function App\Helpers\getQuoteStatusPayment;
+
 
 class quoteController extends Controller
 {
@@ -182,18 +182,20 @@ class quoteController extends Controller
             ->paginate($perPage);
 
         // กรองสถานะใน PHP
-        if ($searchCustomerPayment !== 'all') {
-            $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchCustomerPayment) {
-                return strip_tags(getQuoteStatusPayment($quotation)) === $searchCustomerPayment;
-            });
+if ($searchCustomerPayment !== 'all') {
+    $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchCustomerPayment) {
+        return strip_tags(getQuoteStatusPayment($quotation)) === $searchCustomerPayment;
+    });
 
-            // กำหนด Collection ที่กรองแล้วกลับเข้าไปใน Paginator
-            $quotations->setCollection($filtered);
-        }
+    // กำหนด Collection ที่กรองแล้วกลับเข้าไปใน Paginator
+    $quotations->setCollection($filtered);
+}
 
-        $statuses = $quotations->map(function ($quotation) {
-            return strip_tags(getQuoteStatusPayment($quotation));
-        })->unique();
+// สร้างสถานะที่ไม่ซ้ำจากข้อมูลที่ยังไม่กรอง (ต้นฉบับ)
+$allStatuses = $quotations->getCollection()->map(function ($quotation) {
+    return strip_tags(getQuoteStatusPayment($quotation));
+})->unique();
+
 
         $SumPax =  $quotations->sum('quote_pax_total');
         $SumTotal =  $quotations->sum('quote_grand_total');
