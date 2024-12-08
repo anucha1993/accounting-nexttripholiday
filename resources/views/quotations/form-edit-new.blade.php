@@ -220,7 +220,8 @@
                                         <tr>
                                             <td align="right" class="text-info">สถานะการชำระเงิน :</td>
                                             <td>
-                                                @php
+                                                {!! getQuoteStatusPayment($quotationModel) !!}
+                                                {{-- @php
                                                     use Carbon\Carbon;
 
                                                     // กำหนดวันที่ปัจจุบัน
@@ -271,7 +272,7 @@
                                                     }
                                                 @endphp
 
-                                                {!! $status !!}
+                                                {!! $status !!} --}}
                                             </td>
 
                                         </tr>

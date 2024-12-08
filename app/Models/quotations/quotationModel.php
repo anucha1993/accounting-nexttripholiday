@@ -203,6 +203,12 @@ public function calculateNetProfit()
         return $this->belongsTo(customerModel::class, 'customer_id', 'customer_id');
     }
 
+      // ความสัมพันธ์กับ invoiceModel
+      public function quoteInvoice()
+      {
+          return $this->belongsTo(invoiceModel::class, 'quote_id', 'invoice_quote_id');
+      }
+
     // ความสัมพันธ์กับ WholesaleModel
     public function quoteWholesale()
     {

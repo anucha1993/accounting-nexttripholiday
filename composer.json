@@ -13,6 +13,7 @@
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.2",
         "mpdf/mpdf": "^8.2",
+        "nesbot/carbon": "^2.72",
         "phattarachai/thaidate": "^12.1",
         "spatie/laravel-permission": "^6.1"
     },
@@ -33,7 +34,8 @@
             "App\\Helpers\\": "app/Helpers/"
         },
         "files": [
-        "app/Helpers/StatusHelper.php"
+        "app/Helpers/StatusHelper.php",
+        "app/Helpers/statusPaymentHelper.php"
     ]
         
     },

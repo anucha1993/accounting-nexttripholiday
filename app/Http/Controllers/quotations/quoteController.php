@@ -36,16 +36,19 @@ class quoteController extends Controller
 
     public function index(Request $request)
 {
-    $searchName = $request->input('search_name');
-    $searchDateStart = $request->input('search_tour_date_start');
-    $searchDateEnd = $request->input('search_tour_date_end');
+    $searchKeyword = $request->input('search_keyword');
+    $searchPeriodDateStart = $request->input('search_period_start');
+    $searchPeriodDateEnd = $request->input('search_period_end');
+    $searchQuoteDateStart = $request->input('search_booking_start');
+    $searchQuoteDateEnd = $request->input('search_booking_end');
+
     $searchDateStartCreated = $request->input('search_tour_date_start_created');
     $searchDateEndCreated = $request->input('search_tour_date_end_created');
     $searchSale = $request->input('search_sale');
     $searchCountry = $request->input('search_country');
     $searchWholesale = $request->input('search_wholesale');
     $searchPaymentWholesaleStatus = $request->input('search_wholesale_payment');
-
+    $searchCustomerPayment = $request->input('search_customer_payment', 'all');
     $sales = saleModel::select('name', 'id')
         ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
         ->get();
@@ -53,22 +56,41 @@ class quoteController extends Controller
     $country = countryModel::get();
     $wholesales = wholesaleModel::get();
 
-    $quotations = quotationModel::with('Salename', 'quoteCustomer', 'quoteWholesale', 'paymentWholesale')
-        ->when($searchName, function ($query, $searchName) {
-            return $query->whereHas('quoteCustomer', function ($q) use ($searchName) {
-                $q->where('customer_name', 'LIKE', '%' . $searchName . '%');
+    $quotations = quotationModel::with('Salename', 'quoteCustomer', 'quoteWholesale', 'paymentWholesale', 'quoteInvoice')
+    // Search คียร์เวิร์ด
+    ->when($searchKeyword, function ($query, $searchKeyword) {
+        return $query->where(function ($q) use ($searchKeyword) {
+            $q->whereHas('quoteCustomer', function ($q1) use ($searchKeyword) {
+                $q1->where('customer_name', 'LIKE', '%' . $searchKeyword . '%');
+            })
+            ->orWhere('quote_number', 'LIKE', '%' . $searchKeyword . '%')
+            ->orWhere('quote_booking', 'LIKE', '%' . $searchKeyword . '%')
+            ->orWhereHas('quoteInvoice', function ($q2) use ($searchKeyword) {
+                $q2->where('invoice_number', 'LIKE', '%' . $searchKeyword . '%');
             });
-        })
-        ->when($searchDateStart && $searchDateEnd, function ($query) use ($searchDateStart, $searchDateEnd) {
-            return $query->where(function ($q) use ($searchDateStart, $searchDateEnd) {
-                $q->whereBetween('quote_date_start', [$searchDateStart, $searchDateEnd])
-                  ->orWhereBetween('quote_date_end', [$searchDateStart, $searchDateEnd])
-                  ->orWhere(function ($q) use ($searchDateStart, $searchDateEnd) {
-                      $q->where('quote_date_start', '<=', $searchDateStart)
-                        ->where('quote_date_end', '>=', $searchDateEnd);
-                  });
-            });
-        })
+        });
+    })
+    //Search Quote Date
+    ->when($searchPeriodDateStart && $searchPeriodDateEnd, function ($query) use ($searchPeriodDateStart, $searchPeriodDateEnd) {
+        return $query->where(function ($q) use ($searchPeriodDateStart, $searchPeriodDateEnd) {
+            $q->whereBetween('quote_date_start', [$searchPeriodDateStart, $searchPeriodDateEnd])
+              ->orWhereBetween('quote_date_end', [$searchPeriodDateStart, $searchPeriodDateEnd])
+              ->orWhere(function ($q) use ($searchPeriodDateStart, $searchPeriodDateEnd) {
+                  $q->where('quote_date_start', '<=', $searchPeriodDateStart)
+                    ->where('quote_date_end', '>=', $searchPeriodDateEnd);
+              });
+        });
+    })
+
+    // Searchs Quote Date 
+    ->when($searchQuoteDateStart && $searchQuoteDateEnd, function ($query) use ($searchQuoteDateStart, $searchQuoteDateEnd) {
+        return $query->whereBetween('quote_date', [$searchQuoteDateStart, $searchQuoteDateEnd]);
+    })
+
+
+
+    // Search Status Payment
+    
         ->when($searchDateStartCreated && $searchDateEndCreated, function ($query) use ($searchDateStartCreated, $searchDateEndCreated) {
             return $query->whereBetween('quote_booking_create', [$searchDateStartCreated, $searchDateEndCreated]);
         })
@@ -114,7 +136,21 @@ class quoteController extends Controller
         ->orderBy('created_at', 'desc')
         ->paginate(10);
 
-    return view('quotations.index', compact('sales', 'wholesales', 'quotations', 'country'));
+        // กรองสถานะใน PHP
+    if ($searchCustomerPayment !== 'all') {
+        $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchCustomerPayment) {
+            return strip_tags(getQuoteStatusPayment($quotation)) === $searchCustomerPayment;
+        });
+
+        // กำหนด Collection ที่กรองแล้วกลับเข้าไปใน Paginator
+        $quotations->setCollection($filtered);
+    }
+    
+        $statuses = $quotations->map(function ($quotation) {
+            return strip_tags(getQuoteStatusPayment($quotation));
+        })->unique();
+
+    return view('quotations.index', compact('sales', 'wholesales', 'quotations', 'country','request','statuses'));
 }
 
 
