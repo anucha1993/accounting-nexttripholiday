@@ -712,6 +712,7 @@
             <input type="hidden" name="quote_include_vat">
             <input type="hidden" name="quote_grand_total" id="quote-grand-total">
             <input type="hidden" name="quote_withholding_tax">
+            <input type="hidden" name="quote_pax_total" id="pax-total-update">
             <a class="btn btn-sm btn-info text-left" href="{{ route('quote.editNew', $quotationModel->quote_id) }}">
                 Back</a>
                 @if($mode === 'edit')
@@ -1233,6 +1234,7 @@
                             totalQuantity += quantity;
                         }
                         $('#pax').text('(จำนวน : ' + totalQuantity + ' ท่าน)');
+                        $('#pax-total-update').val(totalQuantity);
                         $('#quote-pax-total').val(totalQuantity);
                     });
 

@@ -29,8 +29,8 @@
                 <form action="">
                     <div class="row mb-3">
                         <div class="col-md-2">
-                            <label>คียร์เวิร์ด</label>
-                            <input type="text" class="form-control" name="search_keyword" value="{{$request->search_keyword}}" placeholder="คียร์เวิร์ด" data-bs-toggle="tooltip" data-bs-placement="top" title="เลขที่ใบเสนอราคา,เลขที่ใบแจ้งหนี้,ชื่อลูกค้า,เลขที่ใบจองทัวร์"> 
+                            <label>คีย์เวิร์ด</label>
+                            <input type="text" class="form-control" name="search_keyword" value="{{$request->search_keyword}}" placeholder="คียร์เวิร์ด" data-bs-toggle="tooltip" data-bs-placement="top" title="ชื่อแพคเกจทัวร์,เลขที่ใบเสนอราคา,เลขที่ใบแจ้งหนี้,ชื่อลูกค้า,เลขที่ใบจองทัวร์,ใบกำกับภาษีของโฮลเซลล์,เลขที่ใบหัก ณ ที่จ่ายของลูกค้า"> 
                         </div>
                         <div class="col-md-2">
                             <label>Booking Date </label>
@@ -115,18 +115,45 @@
                             </select>
 
                         </div>
+                    </div>
                         <div class="row mt-3">
                             <div class="col-md-2">
                                 <label for="">เอกสารโฮลล์</label>
-                                <select name="search_doc_wholesale" class="form-control">
+                                <select name="search_doc_wholesale" class="form-select">
                                     <option value="all">ทังหมด</option>
                                     <option value="Y">ได้รับแล้ว</option>
                                     <option value="N">ยั้งไม่ได้รับ</option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
-                                <label for=""></label>
+                            <div class="col-md-2">
+                                <label for="">AIRLINE</label>
+                               <select name="search_airline" class="form-select select2" style="width: 100%" >
+                                <option value="all">ทั้งหมด</option>
+                                @forelse ($airlines as $airline)
+                                    <option  {{ request('search_airline') == $airline->id  ? 'selected' : '' }} value="{{$airline->id}}">{{$airline->travel_name}}</option>
+                                @empty
+                                    
+                                @endforelse
+                               </select>
                             </div>
+                            <div class="col-md-2">
+                                <label>จำนวน (PAX)</label>
+                                <input type="number" class="form-control" value="{{$request->search_pax}}" name="search_pax" placeholder="ไม่ระบุ">
+                            </div>
+
+                        <div class="col-md-2">
+                            <label for="">Check List</label>
+                            <select name="Search_check_list" class="form-select" style="width: 100%">
+                                <option {{ request('Search_check_list') === 'all' ? 'selected' : '' }} value="all">ทั้งหมด</option>
+                                <option {{ request('Search_check_list') === 'booking_email_status' ? 'selected' : '' }} value="booking_email_status">ส่งใบอีเมลล์จองทัวร์ให้โฮลเซลล์</option>
+                                <option {{ request('Search_check_list') === 'invoice_status' ? 'selected' : '' }} value="invoice_status">อินวอยโฮลเซลล์</option>
+                                <option {{ request('Search_check_list') === 'slip_status' ? 'selected' : '' }} value="slip_status">ส่งสลิปให้โฮลเซลล์</option>
+                                <option {{ request('Search_check_list') === 'passport_status' ? 'selected' : '' }} value="passport_status">ส่งพาสปอตให้โฮลเซลล์</option>
+                                <option {{ request('Search_check_list') === 'appointment_status' ? 'selected' : '' }} value="appointment_status">ส่งใบนัดหมายให้ลูกค้า</option>
+                                <option {{ request('Search_check_list') === 'withholding_tax_status' ? 'selected' : '' }} value="withholding_tax_status">ออกใบหัก ณ ที่จ่าย</option>
+                                <option {{ request('Search_check_list') === 'wholesale_tax_status' ? 'selected' : '' }} value="wholesale_tax_status">ใบกำกับภาษีโฮลเซลล์</option>
+                            </select>
+                        </div>
                         </div>
                         <div class="row ">
                         
@@ -297,6 +324,16 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
+                        <form method="GET"  class="mb-3">
+                            <label for="per_page">แสดงจำนวน:</label>
+                            <select name="per_page" id="per_page" class="form-select" style="width: auto;" onchange="this.form.submit()">
+                                <option value="50" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                <option value="200" {{ request('per_page') == 200 ? 'selected' : '' }}>200</option>
+                                <option value="500" {{ request('per_page') == 500 ? 'selected' : '' }}>500</option>
+                            </select>
+                        </form>
                         <table class="table customize-table table-hover mb-0 v-middle table-striped table-bordered "
                             style="font-size: 12px">
                             <thead class="table text-white bg-info">
@@ -306,6 +343,7 @@
                                     <th>เลขที่ใบจองทัวร์</th>
                                     <th>วันที่เดินทาง</th>
                                     <th>ชื่อลูกค้า</th>
+                                    <th>Pax</th>
                                     <th>ประเทศ</th>
                                     <th>โฮลเซลล์</th>
                                     <th>การชำระของลูกค้า</th>
@@ -324,6 +362,7 @@
                                         <td>{{ date('d/m/Y', strtotime($item->quote_date_start)) . '-' . date('d/m/Y', strtotime($item->quote_date_end)) }}
                                         </td>
                                         <td>{{ $item->quotecustomer->customer_name }}</td>
+                                        <td>{{$item->quote_pax_total}}คน</td>
                                         <td>
                                             {{$item->quoteCountry->country_name_th}}
                                         </td>
@@ -360,11 +399,15 @@
                                         <td> {{ $item->Salename->name }}</td>
                                         <td><a href="{{ route('quote.editNew', $item->quote_id) }}"
                                                 class="btn btn-info btn-sm">จัดการข้อมูล</a></td>
-
                                     </tr>
+                                    
                                 @empty
                                     No data
                                 @endforelse
+                                <tr>
+                                    <td class="text-success">ข้อมูลผลรวม</td>
+                                    <td class="text-danger" colspan="12" align="right"> จำนวน {{number_format($SumPax)}} คน (PAX) | จำนวนมูลค่าใบเสนอราคา {{number_format($SumTotal,2)}} บาท </td>
+                                </tr>
 
                             </tbody>
                         </table>
