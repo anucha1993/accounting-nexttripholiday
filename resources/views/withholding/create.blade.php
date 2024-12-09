@@ -113,7 +113,7 @@
             @csrf
             @method('post')
             <!-- ส่วนข้อมูลผู้จ่าย -->
-            <div class="row mb-4 ">
+            <div class="row mb-2 ">
                 <div class="col-md-6">
                     <label for="payerName" class="form-label">ชื่อผู้จ่ายเงิน</label>
                     <select class="form-select" id="payerName" name="customer_id">
@@ -151,7 +151,7 @@
             </div>
 
             <!-- ที่อยู่ และ เลขประจำตัวผู้เสียภาษี -->
-            <div class="row mb-4">
+            <div class="row mb-2">
                 <div class="col-md-6">
                     <label for="customerTaxId" class="form-label">เลขประจำตัวผู้เสียภาษี</label>
                     <input type="text" class="form-control" id="customerTaxId" placeholder="1234567890123">
@@ -164,6 +164,13 @@
                     </select>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="">สำนักงาน/สาขาเลขที่</label>
+                    <input type="text" name="withholding_branch" class="form-control"  placeholder="สำนักงาน/สาขาเลขที่">
+                </div>
+              </div>
 
             <!-- ตาราง -->
             <div class="table-responsive mb-4">
@@ -181,7 +188,7 @@
                     <tbody id="dynamic-rows">
                         <tr>
                             <td class="text-center">1</td>
-                            <td><input type="text" class="form-control" name="income_type[]" value="ค่าบริการโฆษณา"></td>
+                            <td><input type="text" class="form-control" name="income_type[]" value="ค่าบริการ"></td>
                             <td><input type="number" class="form-control tax-rate" name="tax_rate[]" value="2"></td>
                             <td><input type="number" class="form-control amount" name="amount[]" value="50000"></td>
                             <td><input type="number" class="form-control withholding-tax" name="withholding_tax[]"
@@ -196,8 +203,13 @@
             </div>
 
             <!-- สรุปยอด -->
-            <div class="row mb-4">
-                <div class="col-md-6"></div>
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <label for="">ลายเซ็นอิเล็กทรอนิกส์ และตรายาง</label>
+                    <input type="file" name="file"><br>
+                    <label for="">บันทึกเพิ่มเติม</label>
+                    <textarea name="withholding_note" class="form-control" cols="30" rows="2" placeholder="บันทึกเพิ่มเติม"></textarea>
+                   </div>
                 <div class="col-md-6">
                     <div class="d-flex justify-content-between">
                         <span><strong>จำนวนเงินรวม (ไม่รวมภาษี):</strong></span>

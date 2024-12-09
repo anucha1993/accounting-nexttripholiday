@@ -114,10 +114,10 @@
                @method('PUT')
                
                <!-- ส่วนข้อมูลผู้จ่าย -->
-               <div class="row mb-4">
+               <div class="row mb-2">
                    <div class="col-md-6">
                        <label for="payerName" class="form-label">ชื่อผู้จ่ายเงิน</label>
-                       <select class="form-select" id="payerName" name="customer_id">
+                       <select class="form-select select2" id="payerName" name="customer_id" style="width: 100%">
                            @foreach ($customers as $customer)
                               
 
@@ -130,13 +130,13 @@
                   
 
                    <div class="col-md-6">
-                       <label for="documentDate" class="form-label">วันที่</label>
+                       <label for="documentDate" class="form-label">วัน/เดือน/ปี/ ที่จ่าย</label>
                        <input type="date" class="form-control" id="documentDate" name="document_date" value="{{ $document->document_date }}">
                    </div>
                </div>
        
                <!-- รายละเอียด -->
-               <div class="row mb-4">
+               <div class="row mb-2">
                    <div class="col-md-6">
                        <label for="customerAddress" class="form-label">รายละเอียด</label>
                        <textarea class="form-control" id="customerAddress" name="details" rows="3">{{ $document->customer->customer_address }}</textarea>
@@ -147,7 +147,7 @@
                    </div>
                </div>
 
-               <div class="row mb-4">
+               <div class="row mb-2">
                               <div class="col-md-6">
                                   <label for="customerTaxId" class="form-label">เลขประจำตัวผู้เสียภาษี</label>
                                   <input type="text" class="form-control" id="customerTaxId" placeholder="1234567890123" value="{{$document->customer->customer_texid}}">
@@ -159,6 +159,13 @@
                                       <option value="ภ.ง.ด.3" {{ $document->withholding_form == 'ภ.ง.ด.3' ? 'selected' : '' }}>ภ.ง.ด.3</option>
                                   </select>
                               </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="col-md-6">
+                                <label for="">สำนักงาน/สาขาเลขที่</label>
+                                <input type="text" name="withholding_branch" class="form-control" value="{{$document->withholding_branch}}"  placeholder="สำนักงาน/สาขาเลขที่">
+                            </div>
                           </div>
        
                <!-- ตาราง -->
@@ -192,7 +199,14 @@
        
                <!-- สรุปยอด -->
                <div class="row mb-4">
-                   <div class="col-md-6"></div>
+                   <div class="col-md-6">
+                    <label for="">ลายเซ็นอิเล็กทรอนิกส์ และตรายาง</label>
+                    <input type="file" name="file"><br>
+                    <label for="">บันทึกเพิ่มเติม</label>
+                    <textarea name="withholding_note" class="form-control" cols="30" rows="2" placeholder="บันทึกเพิ่มเติม">{{$document->withholding_note}}</textarea>
+                   </div>
+                   
+                   
                    <div class="col-md-6">
                        <div class="d-flex justify-content-between text-end">
                            <span><strong>จำนวนเงินรวม (ไม่รวมภาษี):</strong></span>
@@ -225,6 +239,10 @@
 
 
     <script>
+        $(document).ready(function() {
+            $('.select2').select2();
+        });
+
         $(document).ready(function() {
             $('#documentNumber').on('keydown', function(e) {
                 if (e.keyCode === 13) { // ตรวจสอบว่าคีย์ที่กดคือ Enter

@@ -77,12 +77,6 @@ class quotationModel extends Model
         return $this->belongsTo(inputTaxModel::class, 'quote_id', 'input_tax_quote_id');
     }
 
-
-
-// funtion นี้คำนวน  กรณีที่ input_tax_file เป็น NULL ผิด จากตัวอย่าง 
-//  input_tax_withholding = 44.86
-// input_tax_vat 104.67
-// ดังนั้น กรณีที่ input_tax_file เป็น NULL จะได้ต้อง return ได้ 44.86;
 public function getTotalInputTaxVat()
 {
     // ตรวจสอบว่ามีแถวที่ input_tax_file ไม่เป็น NULL หรือไม่
@@ -127,43 +121,6 @@ public function calculateNetProfit()
     ];
 }
 
-
-
-
-
-
-// public function getTotalInputTaxVat()
-// {
-//     $query = $this->InputTaxVat(); // ดึง Query Builder จากความสัมพันธ์ InputTaxVat
-
-//     // คำนวณ $total
-//     if ($query->whereNotNull('input_tax_file')->exists()) {
-//         // กรณี input_tax_file ไม่เป็น NULL
-//         $total = $this->InputTaxVat()
-//                       ->whereNotNull('input_tax_file')
-//                       ->sum(\DB::raw('COALESCE(input_tax_vat, 0) - COALESCE(input_tax_withholding, 0)'));
-//     } else {
-//         // กรณี input_tax_file เป็น NULL
-//         $total = $this->InputTaxVat()
-//                       ->whereNull('input_tax_file')
-//                       ->sum(\DB::raw('COALESCE(input_tax_vat, 0) + COALESCE(input_tax_withholding, 0)'));
-//     }
-
-//     // คำนวณ $totalGrand
-//     $totalGrand = $this->InputTaxVat()
-//                        ->sum('input_tax_withholding');
-
-//     // คืนค่าผลลัพธ์ที่ถูกต้อง
-//     return $total ?: $totalGrand;
-// }
-    
-    
-    
-
-
-
-
-
     protected static function booted()
     {
         static::created(function ($quote) {
@@ -183,8 +140,6 @@ public function calculateNetProfit()
     {
         return $this->hasOne(QuoteLogModel::class);
     }
-
-
 
     // ความสัมพันธ์กับ BookingModel
     public function quoteBooking()
@@ -208,6 +163,12 @@ public function calculateNetProfit()
       {
           return $this->belongsTo(invoiceModel::class, 'quote_id', 'invoice_quote_id');
       }
+
+       // ความสัมพันธ์กับ Payments
+       public function quotePayment()
+       {
+           return $this->belongsTo(paymentModel::class, 'quote_id', 'payment_quote_id');
+       }
 
        // ความสัมพันธ์กับ Quote_log
        public function quoteLogStatus()
@@ -314,23 +275,5 @@ public function calculateNetProfit()
 
         return 0; // กรณีไม่มีข้อมูลใน invoiceVat
     }
-
-
-
-
-
-    // public function getquoteCountriesAttribute()
-    // {
-    //     // แปลงค่า country_id จาก JSON string เป็น array
-    //     $countryIds = json_decode($this->attributes['country_id'], true);
-
-    //     // ตรวจสอบว่า countryIds ไม่เป็น null หรือว่างเปล่า
-    //     if (is_array($countryIds) && count($countryIds) > 0) {
-    //         // ดึงข้อมูลจาก CountryModel ตาม country_ids ที่ได้มา
-    //         return countryModel::whereIn('id', $countryIds)->get();
-    //     }
-
-    //     return collect(); // คืนค่า collection ว่างเปล่าถ้าไม่มี country_ids
-    // }
 
 }
