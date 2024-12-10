@@ -21,6 +21,8 @@ class WithholdingTaxDocument extends Model
         'total_amount',
         'total_withholding_tax',
         'total_payable',
+        'withholding_branch',
+        'withholding_note',
     ];
     public static function generateDocumentNumber()
     {
