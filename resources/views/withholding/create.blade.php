@@ -17,7 +17,7 @@
         .form-select {
             border-radius: 8px;
             border: 1px solid #ced4da;
-            padding: 10px 12px;
+            padding: 5px 5px;
         }
 
         /* สไตล์ของตาราง */
@@ -101,11 +101,11 @@
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="mb-0">แก้ไขใบหัก ณ ที่จ่าย</h4>
-            <div>
+            {{-- <div>
                 <button class="btn btn-outline-primary me-2">พิมพ์เอกสาร</button>
                 <button class="btn btn-outline-secondary me-2">ดาวน์โหลด</button>
                 <button class="btn btn-outline-danger">คัดลอกเอกสาร</button>
-            </div>
+            </div> --}}
         </div>
         <hr>
 
@@ -206,7 +206,13 @@
             <div class="row mb-2">
                 <div class="col-md-6">
                     <label for="">ลายเซ็นอิเล็กทรอนิกส์ และตรายาง</label>
-                    <input type="file" name="file"><br>
+                    <select name="image_signature_name" class="form-select">
+                        @forelse ($imageSingture as $singture)
+                            <option value="{{$singture->image_signture_id}}">{{$singture->image_signture_name}}</option>
+                        @empty
+                        @endforelse
+                    </select>
+                    <br>
                     <label for="">บันทึกเพิ่มเติม</label>
                     <textarea name="withholding_note" class="form-control" cols="30" rows="2" placeholder="บันทึกเพิ่มเติม"></textarea>
                    </div>

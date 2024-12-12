@@ -23,6 +23,7 @@ class WithholdingTaxDocument extends Model
         'total_payable',
         'withholding_branch',
         'withholding_note',
+        'image_signture_id'
     ];
     public static function generateDocumentNumber()
     {

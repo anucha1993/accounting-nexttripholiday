@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\customers\customerModel;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\invoices\taxinvoiceModel;
+use App\Models\signTures\imageSigntureModel;
 use App\Models\withholding\WithholdingTaxItem;
 use App\Models\withholding\WithholdingTaxDocument;
 
@@ -22,7 +23,8 @@ class withholdingTaxController extends Controller
     public function create()
     {
         $customers = customerModel::latest()->get();
-        return view('withholding.create', compact('customers'));
+        $imageSingture = imageSigntureModel::get();
+        return view('withholding.create', compact('customers','imageSingture'));
     }
 
     public function taxNumber(Request $request)
@@ -96,9 +98,10 @@ class withholdingTaxController extends Controller
      */
     public function edit($id)
     {
+        $imageSingture = imageSigntureModel::get();
         $document = WithholdingTaxDocument::findOrFail($id);
         $customers = customerModel::all();
-        return view('withholding.edit', compact('document', 'customers'));
+        return view('withholding.edit', compact('document', 'customers','imageSingture'));
     }
 
     /**
@@ -138,7 +141,6 @@ class withholdingTaxController extends Controller
     
         // อัปเดตข้อมูลในเอกสาร
         $document->update([
-            'document_number' => $request->document_number,
             'customer_id' => $request->customer_id,
             'document_date' => $request->document_date,
             'ref_number' => $request->ref_number,

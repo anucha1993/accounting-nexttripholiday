@@ -112,7 +112,7 @@
         <form action="{{ route('withholding.update', $document->id) }}" method="post">
                @csrf
                @method('PUT')
-               
+               {{-- <input type="hidden" name="document_number" value="{{$document->document_number}}"> --}}
                <!-- ส่วนข้อมูลผู้จ่าย -->
                <div class="row mb-2">
                    <div class="col-md-6">
@@ -201,7 +201,13 @@
                <div class="row mb-4">
                    <div class="col-md-6">
                     <label for="">ลายเซ็นอิเล็กทรอนิกส์ และตรายาง</label>
-                    <input type="file" name="file"><br>
+                    <select name="image_signture_id" class="form-select">
+                        @forelse ($imageSingture as $singture)
+                            <option {{ $singture->image_signture_id == $document->image_signture_id ? 'selected' : '' }} value="{{$singture->image_signture_id}}">{{$singture->image_signture_name}}</option>
+                        @empty
+                        @endforelse
+                    </select>
+                    <br>
                     <label for="">บันทึกเพิ่มเติม</label>
                     <textarea name="withholding_note" class="form-control" cols="30" rows="2" placeholder="บันทึกเพิ่มเติม">{{$document->withholding_note}}</textarea>
                    </div>
