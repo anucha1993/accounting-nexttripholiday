@@ -102,7 +102,7 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="mb-0">แก้ไขใบหัก ณ ที่จ่าย #{{ $document->document_number }}</h4>
             <div>
-                <button class="btn btn-outline-primary me-2">พิมพ์เอกสาร</button>
+                <a href="{{route('MPDF.withholding',$document->id)}}" class="btn btn-outline-primary me-2">พิมพ์เอกสาร</a>
                 <button class="btn btn-outline-secondary me-2">ดาวน์โหลด</button>
                 <button class="btn btn-outline-danger">คัดลอกเอกสาร</button>
             </div>

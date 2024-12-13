@@ -35,6 +35,7 @@ use App\Http\Controllers\MPDF\MPDF_WithholdingController;
 use App\Http\Controllers\payments\paymentCreditController;
 use App\Http\Controllers\Invoices\InvoiceBookingController;
 use App\Http\Controllers\invoices\invoiceDashboardController;
+use App\Http\Controllers\MPDF\MPDF_WithhodingDocumentController;
 use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
 use App\Http\Controllers\quotations\quotationViewController;
@@ -288,5 +289,7 @@ Route::post('withholding/store',[withholdingTaxController::class,'store'])->name
 Route::delete('withholding/delete/{id}',[withholdingTaxController::class,'destroy'])->name('withholding.destroy');
 Route::put('withholding/update/{id}',[withholdingTaxController::class,'update'])->name('withholding.update');
 Route::get('withholding/taxNumber',[withholdingTaxController::class,'taxNumber'])->name('withholding.taxNumber');
+// withholding MPDF
+Route::get('mpdf/withholding/doc/{WithholdingTaxDocument}',[MPDF_WithhodingDocumentController::class,'generatePDF'])->name('MPDF.withholding');
 
 
