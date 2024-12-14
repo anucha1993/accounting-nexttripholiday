@@ -18,8 +18,8 @@
         .text-overlay-no {
             position: absolute;
             top: 65px; /* ปรับตำแหน่งแนวตั้ง */
-            left: 680px; /* ปรับตำแหน่งแนวนอน */
-            font-size: 20px;
+            left: 630px; /* ปรับตำแหน่งแนวนอน */
+            font-size: 16px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
             color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
@@ -30,14 +30,43 @@
          .text-overlay-no-2 {
             position: absolute;
             top: 85px; /* ปรับตำแหน่งแนวตั้ง */
-            left: 680px; /* ปรับตำแหน่งแนวนอน */
-            font-size: 20px;
+            left: 630px; /* ปรับตำแหน่งแนวนอน */
+            font-size: 16px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
             color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
         }
+        .text-company {
+            position: absolute;
+            top: 125px;
+            left: 70px;
+            font-size: 14px;
+            font-family: 'sarabun_new', sans-serif;
+            color: rgb(0, 0, 0);
+            display: inline-block;
+        }
+        .text-company-address {
+            position: absolute;
+            top: 152px;
+            left: 77px;
+            font-size: 14px;
+            font-family: 'sarabun_new', sans-serif;
+            color: rgb(0, 0, 0);
+            display: inline-block;
+        }
+
+        .text-company-tax {
+            position: absolute;
+            top: 108px;
+            left: 453px;
+            font-size: 14px;
+            font-family: 'sarabun_new', sans-serif;
+            color: rgb(0, 0, 0);
+            display: inline-block;
+        }
+
         .text-wholesale-tax {
             position: absolute;
             top: 190px;
@@ -235,6 +264,21 @@
     <div class="text-overlay-no-2">
         <span>147 &nbsp;</span>
     </div>
+    <div class="text-company-tax">
+        <span>0 &nbsp; 1 &nbsp;1 &nbsp;5 &nbsp;5&nbsp; &nbsp;5&nbsp; 6&nbsp; 0&nbsp; 1&nbsp;3 &nbsp; 6&nbsp; 5 &nbsp; &nbsp;8</span>
+    </div>
+
+
+
+    <div class="text-company">
+        <span>บจก. เน็กซ์ ทริป ฮอลิเดย์ &nbsp;</span>
+    </div>
+    <div class="text-company-address">
+        <span>222/2 โกลเด้นทาวน์ บางนา-สวนหลวง แขวงดอกไม้ เขตประเวศ กทม 10250 &nbsp;</span>
+    </div>
+    
+ 
+
     {{-- <div class="text-wholesale">
         <span>{{$wholesale->wholesale_name_th}} &nbsp;</span>
     </div> --}}
@@ -252,9 +296,9 @@
         <span>{{$wholesale->address}} &nbsp;</span>
     </div> --}}
 
-    <div class="text-no">
+    {{-- <div class="text-no">
         <span><b>1</b>&nbsp;</span>
-    </div>
+    </div> --}}
     {{-- <div class="text-DejaVuSans">
         <span style="font-family: DejaVuSans; " class="">&#10003;</span> <!-- เครื่องหมายถูก (✔) -->
     </div>
@@ -296,5 +340,13 @@
     </div>
      --}}
 
+     <script src="{{ URL::asset('template/assets/libs/jquery/dist/jquery.min.js') }}"></script>
+     <script>
+        $(document).ready(function() {
+            // เรียกหน้าต่างพรีวิวการพิมพ์ทันทีที่โหลดหน้า
+            window.print();
+        });
+    </script>
 </body>
+
 </html>
