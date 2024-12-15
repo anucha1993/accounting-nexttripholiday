@@ -9,6 +9,8 @@ use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
 use App\Models\withholding\WithholdingTaxDocument;
 use App\Http\Controllers\quotations\quoteController;
+use App\Models\customers\customerModel;
+use App\Models\withholding\WithholdingTaxItem;
 
 class MPDF_WithhodingDocumentController extends Controller
 {
@@ -16,7 +18,9 @@ class MPDF_WithhodingDocumentController extends Controller
 
     public function generatePDF(WithholdingTaxDocument $WithholdingTaxDocument)
     {
-        return view('MPDF.mpdf_withholdingDocument');
+        $customer = customerModel::where('customer_id',$WithholdingTaxDocument->customer_id)->first();
+        $item = WithholdingTaxItem::where('document_id',$WithholdingTaxDocument->id)->first();
+        return view('MPDF.mpdf_withholdingDocument',compact('WithholdingTaxDocument','customer','item'));
     }
 
     // public function generatePDF(WithholdingTaxDocument $WithholdingTaxDocument)

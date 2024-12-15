@@ -67,11 +67,11 @@
             display: inline-block;
         }
 
-        .text-wholesale-tax {
+        .text-customer-tax {
             position: absolute;
-            top: 190px;
-            left: 497px;
-            font-size: 20px;
+            top: 188px;
+            left: 453px;
+            font-size: 14px;
             font-family: 'sarabun_new', sans-serif;
             color: rgb(0, 0, 0);
             display: inline-block;
@@ -80,30 +80,30 @@
             letter-spacing: 8px; /* ปรับระยะห่างระหว่างตัวเลขในกลุ่มแรก */
         }
         .group2 {
-            letter-spacing: 10px; /* ปรับระยะห่างในกลุ่มที่สอง */
+            letter-spacing: 8px; /* ปรับระยะห่างในกลุ่มที่สอง */
         }
         .group3 {
-            letter-spacing: 9px; /* ปรับระยะห่างในกลุ่มที่สาม */
+            letter-spacing: 7px; /* ปรับระยะห่างในกลุ่มที่สาม */
         }
         .group4 {
-            letter-spacing: 10px; /* ปรับระยะห่างในกลุ่มที่สี่ */
+            letter-spacing: 8px; /* ปรับระยะห่างในกลุ่มที่สี่ */
         }
-        .text-wholesale {
+        .text-customer {
             position: absolute;
-            top: 222px; /* ปรับตำแหน่งแนวตั้ง */
-            left: 100px; /* ปรับตำแหน่งแนวนอน */
-            font-size: 16px;
+            top: 212px; /* ปรับตำแหน่งแนวตั้ง */
+            left: 75px; /* ปรับตำแหน่งแนวนอน */
+            font-size: 14px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
             color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
         }
-        .text-wholesale-addr {
+        .text-customer-addr {
             position: absolute;
-            top: 254px; /* ปรับตำแหน่งแนวตั้ง */
-            left: 105px; /* ปรับตำแหน่งแนวนอน */
-            font-size: 16px;
+            top: 243px; /* ปรับตำแหน่งแนวตั้ง */
+            left: 78px; /* ปรับตำแหน่งแนวนอน */
+            font-size: 14px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
             color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
@@ -112,19 +112,19 @@
         }
         .text-no {
             position: absolute;
-            top: 285px; /* ปรับตำแหน่งแนวตั้ง */
+            top: 276px; /* ปรับตำแหน่งแนวตั้ง */
             left: 133px; /* ปรับตำแหน่งแนวนอน */
-            font-size: 20px;
+            font-size: 14px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
             color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
         }
-        .text-DejaVuSans {
+        .text-DejaVuSans-53 {
             position: absolute;
-            top: 307px; /* ปรับตำแหน่งแนวตั้ง */
-            left: 518px; /* ปรับตำแหน่งแนวนอน */
+            top: 295px; /* ปรับตำแหน่งแนวตั้ง */
+            left: 475px; /* ปรับตำแหน่งแนวนอน */
             font-size: 20px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
             color: rgb(0, 0, 0);
@@ -132,11 +132,24 @@
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
         }
+
+        .text-DejaVuSans-3 {
+            position: absolute;
+            top: 273px; /* ปรับตำแหน่งแนวตั้ง */
+            left: 565px; /* ปรับตำแหน่งแนวนอน */
+            font-size: 20px;
+            font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
+            color: rgb(0, 0, 0);
+            display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
+            letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
+            line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
+        }
+
         .text-no-ref {
             position: absolute;
-            top: 778px; /* ปรับตำแหน่งแนวตั้ง */
-            left: 153px; /* ปรับตำแหน่งแนวนอน */
-            font-size:18px;
+            top: 753px; /* ปรับตำแหน่งแนวตั้ง */
+            left: 130px; /* ปรับตำแหน่งแนวนอน */
+            font-size:14px;
             font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
             color: rgb(0, 0, 0);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
@@ -279,34 +292,40 @@
     
  
 
-    {{-- <div class="text-wholesale">
-        <span>{{$wholesale->wholesale_name_th}} &nbsp;</span>
-    </div> --}}
+    <div class="text-customer">
+        <span>{{$customer->customer_name}} &nbsp;</span>
+    </div>
 
-    {{-- <div class="text-wholesale-tax">
+    <div class="text-customer-tax">
         <!-- สมมติว่า $wholesale->textid = '0125558000987' -->
-        <span class="group1"><b>{{ substr($wholesale->textid, 0, 1) }}</b></span>
-        <span class="group2"><b>{{ substr($wholesale->textid, 1, 4) }}</b></span>
-        <span class="group3"><b>{{ substr($wholesale->textid, 5, 5) }}</b></span>
-        <span class="group4"><b>{{ substr($wholesale->textid, 10, 2) }}</b></span>
-        <span class="group1"><b>{{ substr($wholesale->textid, 12, 1) }}</b></span>
-    </div> --}}
+        <span class="group1"><b>{{ substr($customer->customer_texid, 0, 1) }}</b></span>
+        <span class="group2"><b>{{ substr($customer->customer_texid, 1, 4) }}</b></span>
+        <span class="group3"><b>{{ substr($customer->customer_texid, 5, 5) }}</b></span>
+        <span class="group4"><b>{{ substr($customer->customer_texid, 10, 2) }}</b></span>
+        <span class="group1"><b>{{ substr($customer->customer_texid, 12, 1) }}</b></span>
+    </div>
 
-    {{-- <div class="text-wholesale-addr">
-        <span>{{$wholesale->address}} &nbsp;</span>
-    </div> --}}
+    <div class="text-customer-addr">
+        <span>{{$customer->customer_address}} &nbsp;</span>
+    </div>
 
-    {{-- <div class="text-no">
+    <div class="text-no">
         <span><b>1</b>&nbsp;</span>
-    </div> --}}
-    {{-- <div class="text-DejaVuSans">
-        <span style="font-family: DejaVuSans; " class="">&#10003;</span> <!-- เครื่องหมายถูก (✔) -->
     </div>
-    <div class="text-no-ref">
-        <span><b>ค่าบริการ {{$inputTaxModel->input_tax_ref}}</b>&nbsp;</span>
+    <!-- เครื่องหมายถูก (✔) ภงด 53 -->
+    <div class="text-DejaVuSans-53">
+        <span style="font-family: DejaVuSans; " class="">&#10003;</span> 
+    </div>
+    <!-- เครื่องหมายถูก (✔) ภงด 53 -->
+    <div class="text-DejaVuSans-3">
+        <span style="font-family: DejaVuSans; " class="">&#10003;</span> 
     </div>
 
-    <div class="text-date">
+    <div class="text-no-ref">
+        <span><b>{{$item->income_type}}</b>&nbsp;</span>
+    </div>
+
+    {{-- <div class="text-date">
         <span><b>{{ thaidate('j M Y', $inputTaxModel->input_tax_date) }}</b>&nbsp;</span>
     </div>
 
@@ -337,8 +356,8 @@
     </div>
     <div class="year-create">
         <span><b>{{ thaidate('Y', $inputTaxModel->input_tax_date) }}</b>&nbsp;</span>
-    </div>
-     --}}
+    </div> --}}
+    
 
      <script src="{{ URL::asset('template/assets/libs/jquery/dist/jquery.min.js') }}"></script>
      <script>
