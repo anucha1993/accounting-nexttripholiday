@@ -23,7 +23,9 @@ class WithholdingTaxDocument extends Model
         'total_payable',
         'withholding_branch',
         'withholding_note',
-        'image_signture_id'
+        'image_signture_id',
+        'book_no',
+        'document_no'
     ];
     public static function generateDocumentNumber()
     {
@@ -37,6 +39,20 @@ class WithholdingTaxDocument extends Model
         }
 
         return 'WT' . date('Y') . date('m') . '-' . $newNumber;
+    }
+    //เล่มที่
+    public static function generateDocumentNumberNo()
+    {
+        $latestDocument = self::latest('id')->first();
+
+        if ($latestDocument) {
+            $lastNumber = (int) substr($latestDocument->document_no, -4);
+            $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+        } else {
+            $newNumber = '0001';
+        }
+
+        return $newNumber;
     }
 
     /**

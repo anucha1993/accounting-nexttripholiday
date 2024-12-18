@@ -206,7 +206,7 @@
             <div class="row mb-2">
                 <div class="col-md-6">
                     <label for="">ลายเซ็นอิเล็กทรอนิกส์ และตรายาง</label>
-                    <select name="image_signature_name" class="form-select">
+                    <select name="image_signature_id" class="form-select">
                         @forelse ($imageSingture as $singture)
                             <option value="{{$singture->image_signture_id}}">{{$singture->image_signture_name}}</option>
                         @empty

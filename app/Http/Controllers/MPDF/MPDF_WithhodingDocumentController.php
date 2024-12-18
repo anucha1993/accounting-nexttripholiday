@@ -4,13 +4,14 @@ namespace App\Http\Controllers\MPDF;
 
 use Mpdf\Mpdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\customers\customerModel;
 use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
+use App\Models\withholding\WithholdingTaxItem;
 use App\Models\withholding\WithholdingTaxDocument;
 use App\Http\Controllers\quotations\quoteController;
-use App\Models\customers\customerModel;
-use App\Models\withholding\WithholdingTaxItem;
 
 class MPDF_WithhodingDocumentController extends Controller
 {
@@ -18,9 +19,11 @@ class MPDF_WithhodingDocumentController extends Controller
 
     public function generatePDF(WithholdingTaxDocument $WithholdingTaxDocument)
     {
-        $customer = customerModel::where('customer_id',$WithholdingTaxDocument->customer_id)->first();
+        $customer = customerModel::where('customer_id',$WithholdingTaxDocument->customer_id)
+        ->first();
+        $imageSignature = DB::table('image_signature')->where('image_signture_id',$WithholdingTaxDocument->image_signture_id)->first();
         $item = WithholdingTaxItem::where('document_id',$WithholdingTaxDocument->id)->first();
-        return view('MPDF.mpdf_withholdingDocument',compact('WithholdingTaxDocument','customer','item'));
+        return view('MPDF.mpdf_withholdingDocument',compact('WithholdingTaxDocument','customer','item','imageSignature'));
     }
 
     // public function generatePDF(WithholdingTaxDocument $WithholdingTaxDocument)

@@ -725,8 +725,47 @@
             line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
         }
 
-    
+        .image-signature {
+            position: absolute;
+            top: 1020px; /* ปรับตำแหน่งแนวตั้ง */
+            right: 160px; /* ปรับตำแหน่งแนวนอน */
+  
+        }
+
+        .text-book {
+            position: absolute;
+            top: 80px; /* ปรับตำแหน่งแนวตั้ง */
+            right: 55px; /* ปรับตำแหน่งแนวนอน */
+            font-size:12px;
+            font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
+            color: rgb(0, 0, 0);
+            display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
+            letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
+            line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
+        }
+
+        .text-doc-no {
+            position: absolute;
+            top: 100px; /* ปรับตำแหน่งแนวตั้ง */
+            right: 75px; /* ปรับตำแหน่งแนวนอน */
+            font-size:12px;
+            font-family: 'sarabun_new', sans-serif; /* ใช้ฟอนต์อื่น */
+            color: rgb(0, 0, 0);
+            display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
+            letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
+            line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
+        }
+
+     
     </style>
+
+<div class="text-book">
+    <span><b>{{$WithholdingTaxDocument->book_no}}</b>&nbsp;</span>
+</div>
+<div class="text-doc-no">
+    <span><b>{{$WithholdingTaxDocument->document_no}}</b>&nbsp;</span>
+</div>
+
 <div class="text-company-taxid">0 &nbsp;&nbsp; 1&nbsp; &nbsp;1 &nbsp;5 &nbsp;5 &nbsp; &nbsp; 5 &nbsp;6 &nbsp;0 &nbsp; 1 &nbsp;3 &nbsp; &nbsp;6 &nbsp; 5 &nbsp; &nbsp; 8</div>
 <div class="text-company-name">บจก. เน็กซ์ ทริป ฮอลิเดย์</div>
 <div class="text-company-addr">222/2 โกลเด้นทาวน์ บางนา-สวนหลวง แขวงดอกไม้ เขตประเวศ กทม 10250</div>
@@ -804,6 +843,10 @@
 </div>
 <div class="text-total-text">
     <span><b>@bathText($WithholdingTaxDocument->total_withholding_tax)</b>&nbsp;</span>
+</div>
+
+<div class="image-signature">
+    <img src="{{URL::asset($imageSignature->image_signture_path)}}" alt="Image" class="image">
 </div>
 
 

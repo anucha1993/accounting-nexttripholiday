@@ -54,6 +54,7 @@ class withholdingTaxController extends Controller
 
         // สร้างรหัสเอกสารใหม่
         $documentNumber = WithholdingTaxDocument::generateDocumentNumber();
+        $documentNumberNo = WithholdingTaxDocument::generateDocumentNumberNo();
 
         // บันทึกเอกสาร
         $document = WithholdingTaxDocument::create([
@@ -66,6 +67,9 @@ class withholdingTaxController extends Controller
             'total_amount' => $totalAmount,
             'total_withholding_tax' => $totalWithholdingTax,
             'total_payable' => $totalPayable,
+            'image_signture_id' => $request->image_signture_id,
+            'book_no' => date('Y-m'),
+            'document_no' => $documentNumberNo
         ]);
 
         // บันทึกรายการ
@@ -148,6 +152,7 @@ class withholdingTaxController extends Controller
             'total_amount' => $totalAmount,
             'total_withholding_tax' => $totalWithholdingTax,
             'total_payable' => $totalPayable,
+            'image_signture_id' => $request->image_signture_id
         ]);
     
         // ลบรายการเก่าที่เกี่ยวข้องกับเอกสาร
