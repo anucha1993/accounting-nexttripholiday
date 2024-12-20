@@ -30,10 +30,18 @@ class withholdingTaxController extends Controller
     public function taxNumber(Request $request)
     {
         $query = $request->get('query'); // รับค่าการค้นหา
-        $documents  = taxinvoiceModel::where('taxinvoice_number', 'LIKE', "%{$query}%")
+    
+        // ดึง ref_number ทั้งหมดที่มีใน withholding_tax_documents
+        $existingRefNumbers = WithholdingTaxDocument::pluck('ref_number');
+    
+        // ค้นหา taxinvoice ที่ยังไม่มีใน ref_number
+        $documents = taxinvoiceModel::where('taxinvoice_number', 'LIKE', "%{$query}%")
+            ->whereNotIn('taxinvoice_number', $existingRefNumbers) // กรองข้อมูลที่ยังไม่มีใน ref_number
             ->get(['taxinvoice_id', 'taxinvoice_number']); // ดึงเฉพาะ ID และ tax_number
+    
         return response()->json($documents);
     }
+    
     public function store(Request $request)
     {
         
