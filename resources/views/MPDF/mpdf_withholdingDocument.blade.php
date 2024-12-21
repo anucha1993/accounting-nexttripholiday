@@ -464,58 +464,77 @@
     
     @font-face {
         font-family: AngsanaNew_9z;
-        src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSA.ttf') format('truetype');
+        /* src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSA.ttf' ) format('truetype'); */
+        src: url('{{ asset('withholding/fonts/ANGSA.ttf') }}') format('truetype');
     }
     
     @font-face {
         font-family: AngsanaUPC-Bold_9s;
-        src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/angsab.ttf') format('truetype');
+        /* src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/angsab.ttf') format('truetype'); */
+        src: url('{{ asset('withholding/fonts/angsab.ttf') }}') format('truetype');
     }
     
     @font-face {
         font-family: AngsanaUPC-Bold_a4;
-        src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSA.ttf') format('truetype');
+        /* src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSA.ttf') format('truetype'); */
+        src: url('{{ asset('withholding/fonts/ANGSA.ttf') }}') format('truetype');
+        
     }
     
     @font-face {
         font-family: AngsanaUPC-Italic_9w;
-        src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSAI.ttf') format('truetype');
+        /* src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSAI.ttf') format('truetype'); */
+        src: url('{{ asset('withholding/fonts/ANGSAI.ttf') }}') format('truetype');
+        
     }
     
     @font-face {
         font-family: AngsanaUPC-Italic_aw;
-      
-        src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSAI.ttf') format('truetype');
+        /* src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSAI.ttf') format('truetype'); */
+        src: url('{{ asset('withholding/fonts/ANGSAI.ttf') }}') format('truetype');
+        
     }
     
     @font-face {
         font-family: AngsanaUPC_a8;
-        src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSAI.ttf') format('truetype');
+        /* src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSAI.ttf') format('truetype'); */
+        src: url('{{ asset('withholding/fonts/ANGSA.ttf') }}') format('truetype');
+        
     }
     
     @font-face {
         font-family: AngsanaUPC_ac;
-        src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSA.ttf') format('truetype');
+        /* src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSA.ttf') format('truetype'); */
+        src: url('{{ asset('withholding/fonts/ANGSA.ttf') }}') format('truetype');
+        
     }
     
     @font-face {
         font-family: CordiaUPC-Italic_ao;
-        src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSAI.ttf') format('truetype');
+        /* src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSAI.ttf') format('truetype'); */
+        src: url('{{ asset('withholding/fonts/ANGSAI.ttf') }}') format('truetype');
+        
     }
     
     @font-face {
         font-family: CordiaUPC-Italic_as;
-        src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSAI.ttf') format('truetype');
+        /* src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSAI.ttf') format('truetype'); */
+        src: url('{{ asset('withholding/fonts/ANGSAI.ttf') }}') format('truetype');
+        
     }
     
     @font-face {
         font-family: CordiaUPC_ag;;
-        src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSA.ttf') format('truetype');
+        /* src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSA.ttf') format('truetype'); */
+        src: url('{{ asset('withholding/fonts/ANGSA.ttf') }}') format('truetype');
+        
     }
     
     @font-face {
         font-family: CordiaUPC_ak;
-        src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSA.ttf') format('truetype');
+        /* src: url('http://localhost/accounting-nexttripholiday/public/withholding/fonts/ANGSA.ttf') format('truetype'); */
+        src: url('{{ asset('withholding/fonts/ANGSA.ttf') }}') format('truetype');
+        
     }
     .text-company-taxid {
             position: absolute; /* กำหนดให้ text ลอยทับ */
