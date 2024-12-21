@@ -872,7 +872,7 @@
 
     <div id="pg1Overlay" style="width:100%; height:100%; position:absolute; z-index:1; background-color:rgba(0,0,0,0); -webkit-user-select: none;"></div>
     <div id="pg1" style="-webkit-user-select: none;">
-        <object width="909" height="1286" data="http://localhost/accounting-nexttripholiday/public/withholding/1/1.svg" type="image/svg+xml" id="pdf1" style="width:909px; height:1286px; z-index: 0;">
+        <object width="909" height="1286" data="{{ asset('withholding/1/1.svg') }}" type="image/svg+xml" id="pdf1" style="width:909px; height:1286px; z-index: 0;">
         </object>
     </div>
     <div class="text-container"><span id="t1_1" class="t s0">ผู้มีหน้าที่หักภาษี ณ ที่จ่าย </span><span id="t2_1" class="t s1">:- </span>
