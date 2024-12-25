@@ -31,12 +31,32 @@
                 <td>
                    
 
-                    <a href="{{route('MPDF.withholding',$document->id)}}" onclick="openPdfPopup(this.href); return false;" class="btn btn-info btn-sm">ดู</a>
-                    <a href="{{ route('withholding.edit', $document->id) }}" class="btn btn-warning btn-sm">แก้ไข</a>
+                
+
+                
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button id="btnGroupDrop1" type="button" class="btn btn-light-success text-secondary font-weight-medium dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Actions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                <a href="{{route('MPDF.withholding',$document->id)}}" onclick="openPdfPopup(this.href); return false;" class="dropdown-item text-success"> <i class="fa fa-eye"></i> ดู</a>
+                                <a href="{{ route('withholding.edit', $document->id) }}" class=" dropdown-item text-info"> <i class="fa fa-edit"></i> แก้ไข</a>
+                                <a class="dropdown-item" href="{{route('MPDF.withholding',$document->id)}}" target="_blink"><i class="fa fa-print text-danger"></i> พิมพ์</a>
+                                <a class="dropdown-item" href="{{route('MPDF.printEnvelope',$document->id)}}"><i class="fas fa-envelope text-info"></i> พิมพ์หน้าซอง</a>
+                                <a class="dropdown-item"><i class="fas fa-share-square text-info"></i> สร้างซ้ำ</a>
+                                <a class="dropdown-item"></a>
+
+                                
+                            </div>
+                        </div>
+                    </div>
+                   
                     <form action="{{ route('withholding.destroy', $document->id) }}" method="POST" style="display: inline-block;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm">ลบ</button>
+                        <button type="submit" class="btn btn-danger btn-sm"> <i class="fa fa-trash"></i> ลบ</button>
                     </form>
                 </td>
             </tr>

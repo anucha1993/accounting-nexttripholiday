@@ -103,10 +103,13 @@
             <h4 class="mb-0">แก้ไขใบหัก ณ ที่จ่าย #{{ $document->document_number }}</h4>
             <div>
                 <a href="{{route('MPDF.withholding',$document->id)}}" class="btn btn-outline-primary me-2">พิมพ์เอกสาร</a>
-                <button class="btn btn-outline-secondary me-2">ดาวน์โหลด</button>
+                <a href="{{route('MPDF.generateDownloadPDF',$document->id)}}" class="btn btn-outline-secondary me-2" onclick="printPage()">ดาวน์โหลด</a>
                 <button class="btn btn-outline-danger">คัดลอกเอกสาร</button>
             </div>
         </div>
+        <script>
+            
+        </script>
         <hr>
 
         <form action="{{ route('withholding.update', $document->id) }}" method="post">
@@ -120,7 +123,6 @@
                        <select class="form-select select2" id="payerName" name="customer_id" style="width: 100%">
                            @foreach ($customers as $customer)
                               
-
                                <option data-address="{{ $customer->customer_address }}" data-taxid="{{ $customer->customer_texid }}" {{ $document->customer_id == $customer->customer_id ? 'selected' : '' }}
                                              value="{{ $customer->customer_id }}">{{ $customer->customer_name }}</option>
 

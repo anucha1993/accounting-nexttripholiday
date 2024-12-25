@@ -291,5 +291,6 @@ Route::put('withholding/update/{id}',[withholdingTaxController::class,'update'])
 Route::get('withholding/taxNumber',[withholdingTaxController::class,'taxNumber'])->name('withholding.taxNumber');
 // withholding MPDF
 Route::get('mpdf/withholding/doc/{WithholdingTaxDocument}',[MPDF_WithhodingDocumentController::class,'generatePDF'])->name('MPDF.withholding');
+Route::get('mpdf/printEnvelope/doc/{WithholdingTaxDocument}',[MPDF_WithhodingDocumentController::class,'printEnvelope'])->name('MPDF.printEnvelope');
 
 

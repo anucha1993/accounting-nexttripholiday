@@ -1,7 +1,7 @@
 <html class=""><head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta charset="utf-8">
-   
+    <meta charset="UTF-8">
+
     <style id="__web-inspector-hide-shortcut-style__">
     .__web-inspector-hide-shortcut__, .__web-inspector-hide-shortcut__ *, .__web-inspector-hidebefore-shortcut__::before, .__web-inspector-hideafter-shortcut__::after
     {
