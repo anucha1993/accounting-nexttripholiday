@@ -292,5 +292,7 @@ Route::get('withholding/taxNumber',[withholdingTaxController::class,'taxNumber']
 // withholding MPDF
 Route::get('mpdf/withholding/doc/{WithholdingTaxDocument}',[MPDF_WithhodingDocumentController::class,'generatePDF'])->name('MPDF.withholding');
 Route::get('mpdf/printEnvelope/doc/{WithholdingTaxDocument}',[MPDF_WithhodingDocumentController::class,'printEnvelope'])->name('MPDF.printEnvelope');
+Route::get('mpdf/withholding/new/doc/{WithholdingTaxDocument}',[MPDF_WithhodingDocumentController::class,'generatePDFwithholding'])->name('MPDF.generatePDFwithholding');
+Route::get('mpdf/withholding/download/doc/{WithholdingTaxDocument}',[MPDF_WithhodingDocumentController::class,'downloadPDFwithholding'])->name('MPDF.downloadPDFwithholding');
 
 

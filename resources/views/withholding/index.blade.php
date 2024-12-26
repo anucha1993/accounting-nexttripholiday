@@ -41,9 +41,10 @@
                             Actions
                             </button>
                             <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                <a href="{{route('MPDF.withholding',$document->id)}}" onclick="openPdfPopup(this.href); return false;" class="dropdown-item text-success"> <i class="fa fa-eye"></i> ดู</a>
+                                <a href="{{route('MPDF.generatePDFwithholding',$document->id)}}" onclick="openPdfPopup(this.href); return false;" class="dropdown-item text-success"> <i class="fa fa-eye"></i> ดู</a>
                                 <a href="{{ route('withholding.edit', $document->id) }}" class=" dropdown-item text-info"> <i class="fa fa-edit"></i> แก้ไข</a>
-                                <a class="dropdown-item" href="{{route('MPDF.withholding',$document->id)}}" target="_blink"><i class="fa fa-print text-danger"></i> พิมพ์</a>
+                                <a class="dropdown-item" href="{{route('MPDF.generatePDFwithholding',$document->id)}}" target="_blink"><i class="fa fa-print text-danger"></i> พิมพ์</a>
+                                <a class="dropdown-item" href="{{route('MPDF.downloadPDFwithholding',$document->id)}}"><i class="fa fa-file-pdf text-danger"></i> ดาวน์โหลด</a>
                                 <a class="dropdown-item" href="{{route('MPDF.printEnvelope',$document->id)}}"><i class="fas fa-envelope text-info"></i> พิมพ์หน้าซอง</a>
                                 <a class="dropdown-item"><i class="fas fa-share-square text-info"></i> สร้างซ้ำ</a>
                                 <a class="dropdown-item"></a>
