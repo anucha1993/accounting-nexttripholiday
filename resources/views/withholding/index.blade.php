@@ -46,8 +46,8 @@
                                 <a class="dropdown-item" href="{{route('MPDF.generatePDFwithholding',$document->id)}}" target="_blink"><i class="fa fa-print text-danger"></i> พิมพ์</a>
                                 <a class="dropdown-item" href="{{route('MPDF.downloadPDFwithholding',$document->id)}}"><i class="fa fa-file-pdf text-danger"></i> ดาวน์โหลด</a>
                                 <a class="dropdown-item" href="{{route('MPDF.printEnvelope',$document->id)}}"><i class="fas fa-envelope text-info"></i> พิมพ์หน้าซอง</a>
-                                <a class="dropdown-item"><i class="fas fa-share-square text-info"></i> สร้างซ้ำ</a>
-                                <a class="dropdown-item"></a>
+                                <a class="dropdown-item" href="{{route('withholding.editRepear',$document->id)}}"><i class="fas fa-share-square text-info"></i> สร้างซ้ำ</a>
+                                {{-- <a class="dropdown-item"></a> --}}
 
                                 
                             </div>

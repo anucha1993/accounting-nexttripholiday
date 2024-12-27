@@ -100,23 +100,22 @@
     <div class="container py-4 email-app todo-box-container container-fluid" style="background-color: #ffffff">
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="mb-0">แก้ไขใบหัก ณ ที่จ่าย #{{ $document->document_number }}</h4>
-            <div>
+            <h4 class="mb-0">คัดลอกใบหัก ณ ที่จ่าย </h4>
+            {{-- <div>
                 <a href="{{route('MPDF.generatePDFwithholding',$document->id)}}" class="btn btn-outline-primary me-2">พิมพ์เอกสาร</a>
                 <a href="{{route('MPDF.downloadPDFwithholding',$document->id)}}" class="btn btn-outline-success me-2">ดาวน์โหลดเอกสาร</a>
                 
-                
-                <a href="{{route('withholding.editRepear',$document->id)}}" class="btn btn-outline-danger" >คัดลอกเอกสาร</a>
-            </div>
+                <button class="btn btn-outline-danger">คัดลอกเอกสาร</button>
+            </div> --}}
         </div>
         <script>
             
         </script>
         <hr>
 
-        <form action="{{ route('withholding.update', $document->id) }}" method="post">
+        <form action="{{ route('withholding.store') }}" method="post">
                @csrf
-               @method('PUT')
+               @method('POST')
                {{-- <input type="hidden" name="document_number" value="{{$document->document_number}}"> --}}
                <!-- ส่วนข้อมูลผู้จ่าย -->
                <div class="row mb-2">
@@ -235,7 +234,7 @@
        
                <!-- ปุ่ม -->
                <div class="text-end">
-                   <button type="submit" class="btn btn-success">บันทึกการแก้ไข</button>
+                   <button type="submit" class="btn btn-success">ยืนยันการสร้างซ้ำ</button>
                    <a href="{{ route('withholding.index') }}" class="btn btn-secondary">ยกเลิก</a>
                </div>
            </form>

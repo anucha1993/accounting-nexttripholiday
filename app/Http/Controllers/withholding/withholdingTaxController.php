@@ -116,6 +116,14 @@ class withholdingTaxController extends Controller
         return view('withholding.edit', compact('document', 'customers','imageSingture'));
     }
 
+    public function editRepear($id)
+    {
+        $imageSingture = imageSigntureModel::get();
+        $document = WithholdingTaxDocument::findOrFail($id);
+        $customers = customerModel::all();
+        return view('withholding.create_repear', compact('document', 'customers','imageSingture'));
+    }
+
     /**
      * อัปเดตเอกสาร
      */
