@@ -5,8 +5,10 @@ namespace App\Http\Controllers\withholding;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\customers\customerModel;
+use App\Models\invoices\invoiceModel;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\invoices\taxinvoiceModel;
+use App\Models\quotations\quotationModel;
 use App\Models\signTures\imageSigntureModel;
 use App\Models\withholding\WithholdingTaxItem;
 use App\Models\withholding\WithholdingTaxDocument;
@@ -27,6 +29,18 @@ class withholdingTaxController extends Controller
         return view('withholding.create', compact('customers','imageSingture'));
     }
 
+    public function createModal(quotationModel $quotationModel)
+    {
+        $customers = customerModel::latest()->get();
+        $imageSingture = imageSigntureModel::get();
+        $customer = customerModel::where('customer_id',$quotationModel->customer_id)->first();
+        $invoice = invoiceModel::where('invoice_quote_id',$quotationModel->quote_id)->first();
+        $taxinvoice = taxinvoiceModel::where('invoice_id',$invoice->invoice_id)->first();
+        return view('withholding.quote-withholding', compact('customers','imageSingture','quotationModel','customer','taxinvoice'));
+    }
+    
+
+  
     public function taxNumber(Request $request)
     {
         $query = $request->get('query'); // รับค่าการค้นหา

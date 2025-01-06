@@ -384,6 +384,12 @@
                             ต้นทุนโฮลเซลล์
                         </a>
 
+                        <a href="{{ route('withholding.createModal',$quotationModel->quote_id) }}"
+                            class="justify-content-left w-100 btn btn-rounded btn-outline-danger d-flex align-items-center mb-3 modal-inputtax-wholesale">
+                            <i  class="fas fa-book fill-white me-2 "></i>
+                            ออกใบหัก ณ ที่จ่าย
+                        </a>
+
                     </div>
 
                     <div class="card-body">
