@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers\quotations;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
+use App\Models\debits\debitModel;
 use App\Models\mumday\numDayModel;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\booking\bookingModel;
+use App\Models\booking\countryModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use App\Models\invoices\invoiceModel;
+use App\Models\payments\paymentModel;
 use App\Models\products\productModel;
 use App\Models\customers\customerModel;
 use App\Models\invoices\taxinvoiceModel;
@@ -18,10 +22,7 @@ use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
 use App\Models\quotations\quoteProductModel;
 use App\Models\booking\bookingQuotationModel;
-use App\Models\booking\countryModel;
-use App\Models\debits\debitModel;
-use App\Models\payments\paymentModel;
-use Carbon\Carbon;
+use App\Models\withholding\WithholdingTaxDocument;
 require_once app_path('Helpers/statusPaymentHelper.php');
 
 
@@ -445,8 +446,8 @@ class quoteController extends Controller
             ->leftJoin('products', 'products.id', '=', 'quote_product.product_id')
             ->where('expense_type', 'discount')
             ->get();
-
-        return View::make('quotations.quote-table', compact('quoteProductsDiscount', 'quoteProducts', 'quotations', 'quotationModel', 'invoices', 'taxinvoices', 'debits', 'invoiceModel'))->render();
+        $document = WithholdingTaxDocument::where('quote_id',$quotationModel->quote_id)->first();
+        return View::make('quotations.quote-table', compact('document','quoteProductsDiscount', 'quoteProducts', 'quotations', 'quotationModel', 'invoices', 'taxinvoices', 'debits', 'invoiceModel'))->render();
     }
 
     public function modalEdit(quotationModel $quotationModel, Request $request)

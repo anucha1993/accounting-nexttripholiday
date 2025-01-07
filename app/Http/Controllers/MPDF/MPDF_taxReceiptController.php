@@ -31,7 +31,7 @@ class MPDF_taxReceiptController extends Controller
 
         $quotationModel = quotationModel::where('quote_id',$invoiceModel->invoice_quote_id)->first();
         
-        $customer = customerModel::where('customer_id',$invoiceModel->customer_id)->first();
+        $customer = customerModel::where('customer_id',$quotationModel->customer_id)->first();
         $sale = saleModel::where('id',$invoiceModel->invoice_sale)->first();
         $tour = DB::connection('mysql2')
         ->table('tb_tour')

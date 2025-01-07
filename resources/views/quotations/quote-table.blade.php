@@ -356,7 +356,8 @@
                                 </td>
                                 <td align="center">
                                     @if ($item->invoice_withholding_tax_status === 'Y')
-                                        {{ number_format($item->invoice_withholding_tax, 2, '.', ',') }}
+                                        {{ number_format($item->invoice_withholding_tax, 2, '.', ',') }} <br>
+                                        <a href="{{ route('withholding.edit', $document->id) }}" > <i class="fa fa-file text-danger"></i> แก้ไขใบหัก ณ ที่จ่าย</a>
                                     @else
                                         N/A
                                     @endif
@@ -366,6 +367,11 @@
                                         href="{{ route('mpdf.taxreceipt', $item->invoice_id) }}"><i
                                             class="fa fa-print text-danger"></i>
                                         พิมพ์ใบกำกับภาษี</a>
+
+                                        <a class="dropdown-item" onclick="openPdfPopup(this.href); return false;"
+                                        href="{{route('MPDF.generatePDFwithholding',$document->id)}}"><i
+                                            class="fa fa-print text-danger"></i>
+                                        พิมพ์ใบหัก ณ ที่จ่าย</a>
 
                                     <a class="dropdown-item mail-quote"
                                         href="{{ route('mail.taxreceipt.formMail', $item->invoice_id) }}"><i

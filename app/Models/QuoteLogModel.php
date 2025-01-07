@@ -19,7 +19,7 @@ class QuoteLogModel extends Model
         'slip_status', 'slip_updated_at', 'slip_created_by',
         'passport_status', 'passport_updated_at', 'passport_created_by',
         'appointment_status', 'appointment_updated_at', 'appointment_created_by', 'uploaded_files',
-        'withholding_tax_status','withholding_tax_updated_at','withholding_tax_created_at',
+        'withholding_tax_status','withholding_tax_updated_at','withholding_tax_created_by',
         'wholesale_tax_status','wholesale_tax_updated_at','wholesale_tax_created_at'
     ];
 

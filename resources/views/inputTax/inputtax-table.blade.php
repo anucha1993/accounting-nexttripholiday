@@ -118,14 +118,14 @@
 
                         </td>
                         <td>
-                            @if ($item->input_tax_withholding_status === 'Y')
+                            {{-- @if ($item->input_tax_withholding_status === 'Y')
                                 <a href="{{ route('mpdf.withholding', $item->input_tax_id) }}"
                                     onclick="openPdfPopup(this.href); return false;"> <i
                                         class="fa fa-file-pdf text-danger"></i> ใบหัก ณ ที่จ่าย</a>
                             @else
                                 -
-                            @endif
-
+                            @endif --}}
+                            -
                         </td>
 
                         <td>{{ number_format($item->input_tax_withholding, 2) }} </td>

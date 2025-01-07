@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\withholding;
 
 use Illuminate\Http\Request;
+use App\Models\QuoteLogModel;
 use App\Http\Controllers\Controller;
-use App\Models\customers\customerModel;
+use Illuminate\Support\Facades\Auth;
 use App\Models\invoices\invoiceModel;
+use App\Models\customers\customerModel;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\invoices\taxinvoiceModel;
 use App\Models\quotations\quotationModel;
@@ -80,7 +82,10 @@ class withholdingTaxController extends Controller
 
         // บันทึกเอกสาร
         $document = WithholdingTaxDocument::create([
+            'quote_id' => $request->quote_id, // เพิ่มฟิลด์นี้
             'document_number' => $documentNumber, // เพิ่มฟิลด์นี้
+            'withholding_branch' => $request->withholding_branch, // เพิ่มฟิลด์นี้
+            'withholding_note' => $request->withholding_note, // เพิ่มฟิลด์นี้
             'customer_id' => $request->customer_id,
             'document_date' => $request->document_date,
             'ref_number' => $request->ref_number,
@@ -105,7 +110,31 @@ class withholdingTaxController extends Controller
             ]);
         }
 
+        // บันทึก Check List 
+        $QuoteLog = QuoteLogModel::where('quote_id',$request->quote_id)->first();
+        if($QuoteLog){
+            $QuoteLog->update([
+                "withholding_tax_status" => 'ออกแล้ว',
+                "withholding_tax_updated_at" => now(),
+                "withholding_tax_created_by" => Auth::user()->name
+            ]);
+        }else{
+            $checkList = QuoteLogModel::create([
+                'quote_id' => $request->quote_id,
+                "withholding_tax_status" => 'ออกแล้ว',
+                "withholding_tax_updated_at" => now(),
+                "withholding_tax_created_by" => Auth::user()->name
+            ]);
+        }
+
+        if($request->form_name === 'quote'){
+            return redirect()->back();
+        }else{
         return redirect()->route('withholding.index')->with('success', 'เอกสารถูกบันทึกเรียบร้อยแล้ว');
+        }
+        
+
+        
     }
 
 
@@ -143,18 +172,6 @@ class withholdingTaxController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // ตรวจสอบความถูกต้องของข้อมูล
-        // $request->validate([
-        //     'document_number' => 'required|unique:withholding_tax_documents,document_number,' . $id,
-        //     'customer_id' => 'required|exists:customers,id',
-        //     'document_date' => 'required|date',
-        //     'withholding_form' => 'required',
-        //     'income_type.*' => 'required|string',
-        //     'tax_rate.*' => 'required|numeric',
-        //     'amount.*' => 'required|numeric',
-        //     'withholding_tax.*' => 'required|numeric',
-        // ]);
-    
         // คำนวณยอดรวมและภาษี
         $totalAmount = 0;
         $totalWithholdingTax = 0;

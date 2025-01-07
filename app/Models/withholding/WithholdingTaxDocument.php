@@ -13,6 +13,7 @@ class WithholdingTaxDocument extends Model
     protected $table = 'withholding_tax_documents'; // ชื่อตารางในฐานข้อมูล
 
     protected $fillable = [
+        'quote_id',
         'document_number',
         'ref_number',
         'customer_id',

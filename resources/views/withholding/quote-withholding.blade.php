@@ -110,11 +110,13 @@
         <form action="{{ route('withholding.store') }}" method="post">
             @csrf
             @method('post')
+
+            <input type="hidden" name="form_name" value="quote">
             <!-- ส่วนข้อมูลผู้จ่าย -->
             <div class="row mb-2 ">
                 <div class="col-md-6">
                     <label for="payerName" class="form-label">ชื่อผู้จ่ายเงิน</label>
-                    <select class="form-select" id="payerName" name="customer_id">
+                    <select class="form-select" id="payerName" name="customer_id"  >
                         <option value="" disabled selected>เลือกผู้จ่ายเงิน</option> 
                         @forelse ($customers as $item)
                             <option  data-address="{{ $item->customer_address }}" data-taxid="{{ $item->customer_texid }}" {{ $customer->customer_id == $item->customer_id ? 'selected' : '' }}
@@ -124,6 +126,7 @@
                         @endforelse
                     </select>
                 </div>
+                <input type="hidden" name="quote_id" value="{{$quotationModel->quote_id}}">
 
                 <div class="col-md-6">
                     <label for="documentDate" class="form-label">วันที่</label>
@@ -135,7 +138,7 @@
                 <div class="col-md-6">
 
                     <label for="customerAddress" class="form-label">รายละเอียด</label>
-                    <textarea class="form-control" id="customerAddress" name="details" rows="3">{{$customer->customer_address}}</textarea>
+                    <textarea class="form-control" id="customerAddress" name="details" rows="3" readonly>{{$customer->customer_address}}</textarea>
                 </div>
 
                 <div class="col-md-6">
@@ -204,7 +207,7 @@
             <div class="row mb-2">
                 <div class="col-md-6">
                     <label for="">ลายเซ็นอิเล็กทรอนิกส์ และตรายาง</label>
-                    <select name="image_signature_id" class="form-select">
+                    <select name="image_signture_id" class="form-select">
                         @forelse ($imageSingture as $singture)
                             <option value="{{$singture->image_signture_id}}">{{$singture->image_signture_name}}</option>
                         @empty
@@ -244,11 +247,6 @@
     </form>
     <br>
     <br>
-
-
-
-
-
 
     <script>
         $(document).ready(function() {
@@ -357,8 +355,8 @@
                 <td class="text-center">
                     <button type="button" class="btn btn-danger remove-row">ลบ</button>
                 </td>
-            </tr>
-        `;
+            </tr>`;
+
                 $('#dynamic-rows').append(newRow);
                 updateRowNumbers();
             });
