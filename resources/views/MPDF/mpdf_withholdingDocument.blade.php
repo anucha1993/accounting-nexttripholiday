@@ -815,7 +815,7 @@
 @endif
 
 @if ($WithholdingTaxDocument->withholding_form === 'ภ.ง.ด.3')
-    <!-- เครื่องหมายถูก (✔) ภงด 53 -->
+    <!-- เครื่องหมายถูก (✔) ภงด 3 -->
 <div class="text-DejaVuSans-3">
     <span style="font-family: DejaVuSans; " class="">&#10003;</span> 
 </div>

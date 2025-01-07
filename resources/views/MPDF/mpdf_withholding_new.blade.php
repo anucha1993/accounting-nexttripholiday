@@ -354,13 +354,18 @@
         <span><b>1</b>&nbsp;</span>
     </div> --}}
     <!-- เครื่องหมายถูก (✔) ภงด 53 -->
+    @if ($WithholdingTaxDocument->withholding_form === 'ภ.ง.ด.53')
     <div class="text-DejaVuSans-53">
         <span style="font-family: DejaVuSans; " class="">&#10003;</span> 
     </div>
-    <!-- เครื่องหมายถูก (✔) ภงด 53 -->
+    @endif
+    @if ($WithholdingTaxDocument->withholding_form === 'ภ.ง.ด.3')
+    <!-- เครื่องหมายถูก (✔) ภงด 3 -->
     <div class="text-DejaVuSans-3">
         <span style="font-family: DejaVuSans; " class="">&#10003;</span> 
     </div>
+    @endif
+
 
 
      <div class="text-DejaVuSans">

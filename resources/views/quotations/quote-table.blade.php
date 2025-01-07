@@ -354,14 +354,16 @@
                                 <td align="center">
                                     N/A
                                 </td>
+                                
                                 <td align="center">
                                     @if ($item->invoice_withholding_tax_status === 'Y')
                                         {{ number_format($item->invoice_withholding_tax, 2, '.', ',') }} <br>
-                                        <a href="{{ route('withholding.edit', $document->id) }}" > <i class="fa fa-file text-danger"></i> แก้ไขใบหัก ณ ที่จ่าย</a>
+                                        {{-- <a href="{{ route('withholding.edit', $document->id) }}" > <i class="fa fa-file text-danger"></i> แก้ไขใบหัก ณ ที่จ่าย</a> --}}
                                     @else
                                         N/A
                                     @endif
                                 </td>
+
                                 <td>
                                     <a class="dropdown-item" onclick="openPdfPopup(this.href); return false;"
                                         href="{{ route('mpdf.taxreceipt', $item->invoice_id) }}"><i
@@ -378,6 +380,7 @@
                                             class="fas fa-envelope text-info"></i>
                                         ส่งเมล</a>
                                 </td>
+
                                 {{-- <td>
                                  <a class="dropdown-item"
                                  href="{{ route('invoice.taxinvoice', $item->invoice_id) }}"

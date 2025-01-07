@@ -24,7 +24,9 @@ class inputTaxController extends Controller
     public function createWholesale(quotationModel $quotationModel)
     {
         $wholesale = wholesaleModel::get();
-        return view('inputTax.modal-create', compact('quotationModel', 'wholesale'));
+        $invoice = invoiceModel::where('invoice_quote_id',$quotationModel->quote_id)->first();
+        $taxinvoice = taxinvoiceModel::where('invoice_id',$invoice->invoice_id)->first();
+        return view('inputTax.modal-create', compact('quotationModel', 'wholesale','taxinvoice'));
     }
 
     public function inputtaxCreateWholesale(quotationModel $quotationModel)
@@ -35,6 +37,7 @@ class inputTaxController extends Controller
 
     public function editWholesale(inputTaxModel $inputTaxModel)
     {
+       
         $wholesale = wholesaleModel::get();
         $quotationModel = quotationModel::where('quote_id', $inputTaxModel->input_tax_quote_id)->first();
         return view('inputTax.modal-edit', compact('inputTaxModel', 'quotationModel', 'wholesale'));
@@ -59,26 +62,6 @@ class inputTaxController extends Controller
         return redirect()->back();
     }
 
-    // public function update(Request $request, inputTaxModel $inputTaxModel)
-    // {
-    //    // dd($request);
-    //     $fileUploadController = new uploadfileQuoteController();
-    //     $filePath = $fileUploadController->uploadFile($request, $request->input_tax_quote_number, $request->customer_id);
-    //     $requestData = $request->all();
-    //     if ($filePath) {
-    //         // เช็คว่าไฟล์มีอยู่หรือไม่ ถ้ามีจะลบไฟล์
-    //         if (File::exists('storage/'.$inputTaxModel->input_tax_file)) {
-    //             File::delete('storage/'.$inputTaxModel->input_tax_file); // ลบไฟล์
-    //         }
-
-    //         $requestData['input_tax_file'] = $filePath;
-    //     }
-    //     $requestData['updated_by'] = Auth::user()->name;
-    //     // สร้างข้อมูลใหม่ใน inputTaxModel
-    //     $inputTaxModel->update($requestData);
-
-    //     return redirect()->back();
-    // }
 
     public function update(Request $request, inputTaxModel $inputTaxModel)
     {
@@ -118,53 +101,154 @@ class inputTaxController extends Controller
     }
 
 
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'customer_id' => 'required|exists:customers,id',
+    //         'document_date' => 'required|date',
+    //         'withholding_form' => 'required',
+    //         'total_amount' => 'required|numeric',
+    //         'total_withholding_tax' => 'required|numeric',
+    //         'total_payable' => 'required|numeric',
+    //         'income_type.*' => 'required|string',
+    //         'tax_rate.*' => 'required|numeric',
+    //         'amount.*' => 'required|numeric',
+    //         'withholding_tax.*' => 'required|numeric',
+    //     ]);
+
+    //     // สร้างรหัสเอกสารใหม่
+    //     $documentNumber = WithholdingTaxDocument::generateDocumentNumber();
+
+    //     // บันทึกเอกสาร
+    //     $document = WithholdingTaxDocument::create([
+    //         'document_number' => $documentNumber,
+    //         'customer_id' => $request->customer_id,
+    //         'document_date' => $request->document_date,
+    //         'withholding_form' => $request->withholding_form,
+    //         'total_amount' => $request->total_amount,
+    //         'total_withholding_tax' => $request->total_withholding_tax,
+    //         'total_payable' => $request->total_payable,
+    //     ]);
+
+    //     // บันทึกรายการ
+    //     foreach ($request->income_type as $index => $incomeType) {
+    //         WithholdingTaxItem::create([
+    //             'document_id' => $document->id,
+    //             'income_type' => $incomeType,
+    //             'tax_rate' => $request->tax_rate[$index],
+    //             'amount' => $request->amount[$index],
+    //             'withholding_tax' => $request->withholding_tax[$index],
+    //         ]);
+    //     }
+
+    //     return redirect()->route('withholding.index')->with('success', 'เอกสารถูกบันทึกเรียบร้อยแล้ว');
+    // }
+
+
     public function store(Request $request)
     {
-        $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'document_date' => 'required|date',
-            'withholding_form' => 'required',
-            'total_amount' => 'required|numeric',
-            'total_withholding_tax' => 'required|numeric',
-            'total_payable' => 'required|numeric',
-            'income_type.*' => 'required|string',
-            'tax_rate.*' => 'required|numeric',
-            'amount.*' => 'required|numeric',
-            'withholding_tax.*' => 'required|numeric',
-        ]);
+        //dd($request);
+        // เรียกใช้งาน uploadFile จาก uploadfileQuoteController
+        $fileUploadController = new uploadfileQuoteController();
+        // อัปโหลดไฟล์โดยเรียกใช้งานฟังก์ชัน uploadFile
+        $filePath = $fileUploadController->uploadFile($request, $request->input_tax_quote_number, $request->customer_id);
+        // รวมข้อมูลเพิ่มเติมเข้ากับ request
+        $requestData = $request->all();
+        if ($filePath) {
+            // ถ้ามีไฟล์อัปโหลด ให้เพิ่มพาธไฟล์เข้าไปในข้อมูล
+            $requestData['input_tax_file'] = $filePath;
+        }
+        // เพิ่มข้อมูลผู้สร้าง
+        $requestData['created_by'] = Auth::user()->name;
+        // สร้างข้อมูลใหม่ใน inputTaxModel
+       $inputTaxModel =  inputTaxModel::create($requestData);
 
+       $quoteLog = QuoteLogModel::where('quote_id', $request->input_tax_quote_id)->first();
+
+       if ($request->input_tax_type === '2') {
+           if (!$quoteLog) {
+               // Create a new record if no existing record is found
+               $quoteLog = QuoteLogModel::create([
+                   'quote_id' => $request->input_tax_quote_id,
+                   'invoice_status' => 'ได้แล้ว',
+                   'invoice_updated_at' => now(),
+                   'invoice_created_by' => Auth::user()->name,
+               ]);
+           } else {
+               // Update the existing record
+               $quoteLog->update([
+                   'invoice_status' => 'ได้แล้ว',
+                   'invoice_updated_at' => now(),
+                   'invoice_created_by' => Auth::user()->name,
+               ]);
+           }
+       }
+
+       if($request->input_tax_withholding_status === 'Y'){
+
+        $serviceTotal = 0;
+        $withholdingTotal = 0;
+
+        $serviceTotal = $request->input_tax_service_total * 0.03;
+        $withholdingTotal = $request->input_tax_service_total -  $serviceTotal;
         // สร้างรหัสเอกสารใหม่
         $documentNumber = WithholdingTaxDocument::generateDocumentNumber();
+        $documentNumberNo = WithholdingTaxDocument::generateDocumentNumberNo();
 
         // บันทึกเอกสาร
         $document = WithholdingTaxDocument::create([
-            'document_number' => $documentNumber,
+            'quote_id' => $request->input_tax_quote_id, // เพิ่มฟิลด์นี้
+            'document_number' => $documentNumber, // เพิ่มฟิลด์นี้
+            'withholding_branch' => 'สำนักงานใหญ่', // เพิ่มฟิลด์นี้
+            // 'withholding_note' => $request->withholding_note, // เพิ่มฟิลด์นี้
             'customer_id' => $request->customer_id,
-            'document_date' => $request->document_date,
-            'withholding_form' => $request->withholding_form,
-            'total_amount' => $request->total_amount,
-            'total_withholding_tax' => $request->total_withholding_tax,
-            'total_payable' => $request->total_payable,
+            'document_date' => date('Y-m-d'),
+            'ref_number' => $request->input_tax_ref,
+            'withholding_form' => 'ภ.ง.ด.53',
+            // ค่าที่คำนวณได้
+            'total_amount' => $request->input_tax_service_total,
+            'total_withholding_tax' => $request->input_tax_withholding,
+            'total_payable' => $withholdingTotal,
+            'image_signture_id' => 1,
+            'book_no' => date('Y-m'),
+            'document_no' => $documentNumberNo
         ]);
 
-        // บันทึกรายการ
-        foreach ($request->income_type as $index => $incomeType) {
-            WithholdingTaxItem::create([
-                'document_id' => $document->id,
-                'income_type' => $incomeType,
-                'tax_rate' => $request->tax_rate[$index],
-                'amount' => $request->amount[$index],
-                'withholding_tax' => $request->withholding_tax[$index],
+        WithholdingTaxItem::create([
+            'document_id' => $document->id,
+            'income_type' => 'ค่าบริการ',
+            'tax_rate' => 3.00,
+            'amount' => $withholdingTotal,
+            'withholding_tax' => $serviceTotal,
+        ]);
+
+
+        // บันทึก Check List 
+        $QuoteLog = QuoteLogModel::where('quote_id',$request->input_tax_quote_id)->first();
+        if($QuoteLog){
+            $QuoteLog->update([
+                "withholding_tax_status" => 'ออกแล้ว',
+                "withholding_tax_updated_at" => now(),
+                "withholding_tax_created_by" => Auth::user()->name
+            ]);
+        }else{
+            $checkList = QuoteLogModel::create([
+                'quote_id' => $request->input_tax_quote_id,
+                "withholding_tax_status" => 'ออกแล้ว',
+                "withholding_tax_updated_at" => now(),
+                "withholding_tax_created_by" => Auth::user()->name
             ]);
         }
 
-        return redirect()->route('withholding.index')->with('success', 'เอกสารถูกบันทึกเรียบร้อยแล้ว');
+       }
+       
+        return redirect()->back()->with('success', 'ข้อมูลถูกบันทึกเรียบร้อยแล้ว');
     }
 
     public function table(quotationModel $quotationModel)
 
     {
-
+        $document = WithholdingTaxDocument::where('quote_id',$quotationModel->quote_id)->first();
         $invoice = invoiceModel::where('invoice_quote_id', $quotationModel->quote_id)->first();
         if ($invoice) {
             $invoiceModel = taxinvoiceModel::select('invoices.*')
@@ -175,7 +259,7 @@ class inputTaxController extends Controller
             $invoiceModel = [];
         }
         $inputTax = inputTaxModel::where('input_tax_quote_id', $quotationModel->quote_id)->where('input_tax.input_tax_type', '!=', 2)->get();
-        return View::make('inputTax.inputtax-table', compact('quotationModel', 'inputTax', 'invoiceModel', 'invoice'))->render();
+        return View::make('inputTax.inputtax-table', compact('quotationModel', 'inputTax', 'invoiceModel', 'invoice','document'))->render();
     }
 
     public function tableWholesale(quotationModel $quotationModel)

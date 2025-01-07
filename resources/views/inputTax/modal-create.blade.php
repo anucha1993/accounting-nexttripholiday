@@ -13,12 +13,12 @@
                     <option value="1">ต้นทุนอื่นๆ</option>
                 </select>
             </div>
+            
             <input type="hidden" name="input_tax_quote_id" class="form-control" value="{{$quotationModel->quote_id}}" >
             <input type="hidden" name="input_tax_quote_number" class="form-control" value="{{$quotationModel->quote_number}}" >
             <input type="hidden" name="customer_id" class="form-control" value="{{$quotationModel->customer_id}}" >
             <input type="hidden" name="input_tax_wholesale" class="form-control" value="{{$quotationModel->quote_wholesale}}" >
-
-
+               
             {{-- <div class="col-md-12 mb-3">
                 <label for="">โฮลเซลล์ </label>
                 <select name="input_tax_wholesale" class="form-select selectpicker selectpicker-select" data-live-search="true">
@@ -38,7 +38,7 @@
 
             <div class="col-md-12 mb-3">
                 <label for="">เลขที่เอกสารอ้างอิง </label>
-                <input type="text" name="input_tax_ref" class="form-control" placeholder="tax number" >
+                <input type="text" name="input_tax_ref" class="form-control" placeholder="tax number"  value="{{$taxinvoice->taxinvoice_number ? $taxinvoice->taxinvoice_number : '' }}">
             </div>
 
             

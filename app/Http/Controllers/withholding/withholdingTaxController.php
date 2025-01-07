@@ -131,14 +131,8 @@ class withholdingTaxController extends Controller
             return redirect()->back();
         }else{
         return redirect()->route('withholding.index')->with('success', 'เอกสารถูกบันทึกเรียบร้อยแล้ว');
-        }
-        
-
-        
+        } 
     }
-
-
-
     /**
      * แสดงรายละเอียดเอกสาร
      */

@@ -116,16 +116,16 @@
                         <td>
                             {{ number_format($item->input_tax_service_total, 2) }}
 
-                        </td>
+                        </td> 
                         <td>
-                            {{-- @if ($item->input_tax_withholding_status === 'Y')
-                                <a href="{{ route('mpdf.withholding', $item->input_tax_id) }}"
+                            @if ($item->input_tax_withholding_status === 'Y')
+                                <a href="{{ route('MPDF.generatePDFwithholding', $document->id) }}"
                                     onclick="openPdfPopup(this.href); return false;"> <i
-                                        class="fa fa-file-pdf text-danger"></i> ใบหัก ณ ที่จ่าย</a>
+                                        class="fa fa-file-pdf text-danger"></i> แก้ไขใบหัก ณ ที่จ่าย</a>
                             @else
                                 -
-                            @endif --}}
-                            -
+                            @endif
+                            
                         </td>
 
                         <td>{{ number_format($item->input_tax_withholding, 2) }} </td>
@@ -142,10 +142,19 @@
                         </td>
 
                         <td>
+                            @if ($item->input_tax_withholding_status === 'Y')
+                            <a href="{{ route('withholding.edit', $document->id) }}"> <i
+                                    class="fa fa-edit text-info"></i>แก้ไขใบหัก ณ ที่จ่าย</a>
+                        @else
+                            -
+                        @endif
+                        <br>
                             @if ($item->input_tax_status === 'success')
                                 @if ($item->input_tax_type === 2)
                                     <a href="{{ route('inputtax.inputtaxEditWholesale', $item->input_tax_id) }}"
                                         class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
+
+                                        
                                     <a href="{{ route('inputtax.cancelWholesale', $item->input_tax_id) }}"
                                         class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle">
                                             ยกเลิก</i></a>
