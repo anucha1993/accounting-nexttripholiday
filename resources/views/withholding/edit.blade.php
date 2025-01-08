@@ -119,18 +119,30 @@
                @method('PUT')
                {{-- <input type="hidden" name="document_number" value="{{$document->document_number}}"> --}}
                <!-- ส่วนข้อมูลผู้จ่าย -->
+             
                <div class="row mb-2">
-                   <div class="col-md-6">
-                       <label for="payerName" class="form-label">ชื่อผู้จ่ายเงิน</label>
-                       <select class="form-select select2" id="payerName" name="customer_id" style="width: 100%">
-                           @foreach ($customers as $customer)
-                              
-                               <option data-address="{{ $customer->customer_address }}" data-taxid="{{ $customer->customer_texid }}" {{ $document->customer_id == $customer->customer_id ? 'selected' : '' }}
-                                             value="{{ $customer->customer_id }}">{{ $customer->customer_name }}</option>
+                @if($document->customer)
+                <div class="col-md-6">
+                    <label for="payerName" class="form-label">ชื่อผู้จ่ายเงิน</label>
+                    <select class="form-select select2" id="payerName" name="customer_id" style="width: 100%">
+                        @foreach ($customers as $customer)
+                           
+                            <option data-address="{{ $customer->customer_address }}" data-taxid="{{ $customer->customer_texid }}" {{ $document->customer_id == $customer->customer_id ? 'selected' : '' }}
+                                          value="{{ $customer->customer_id }}">{{ $customer->customer_name }}</option>
 
-                           @endforeach
-                       </select>
-                   </div>
+                        @endforeach
+                    </select>
+                </div>
+                @else
+                <div class="col-md-6">
+                    <label for="payerName" class="form-label">ชื่อผู้จ่ายเงิน</label>
+                <select class="form-select select2" id="payerName" name="wholesale_id" style="width: 100%" disabled>
+                    <option value="{{$document->wholesale->id}}" selected>{{$document->wholesale->wholesale_name_th}}</option>
+                </select>
+                </div>
+                @endif
+
+                  
                   
 
                    <div class="col-md-6">
@@ -143,7 +155,7 @@
                <div class="row mb-2">
                    <div class="col-md-6">
                        <label for="customerAddress" class="form-label">รายละเอียด</label>
-                       <textarea class="form-control" id="customerAddress" name="details" rows="3">{{ $document->customer->customer_address }}</textarea>
+                       <textarea class="form-control" id="customerAddress" name="details" {{$document->wholesale ? 'disabled' : ''}} rows="3">{{$document->customer ? $document->customer->customer_address : $document->wholesale->address}}</textarea>
                    </div>
                    <div class="col-md-6">
                        <label for="refNumber" class="form-label">เลขที่เอกสาร</label>
@@ -154,7 +166,7 @@
                <div class="row mb-2">
                               <div class="col-md-6">
                                   <label for="customerTaxId" class="form-label">เลขประจำตัวผู้เสียภาษี</label>
-                                  <input type="text" class="form-control" id="customerTaxId" placeholder="1234567890123" value="{{$document->customer->customer_texid}}">
+                                  <input type="text" class="form-control" id="customerTaxId" placeholder="1234567890123" value="{{$document->customer ? $document->customer->customer_texid : $document->wholesale->textid }}">
                               </div>
                               <div class="col-md-6">
                                   <label for="withholdingForm" class="form-label">แบบฟอร์ม</label>

@@ -261,6 +261,7 @@ Route::get('inputtax/inputtax/create/wholesale/{quotationModel}',[inputTaxContro
 Route::get('inputtax/create/edit/{inputTaxModel}',[inputTaxController::class,'editWholesale'])->name('inputtax.editWholesale');
 Route::get('inputtax/wholesale/edit/{inputTaxModel}',[inputTaxController::class,'inputtaxEditWholesale'])->name('inputtax.inputtaxEditWholesale');
 
+
 Route::get('inputtax/cancel/{inputTaxModel}',[inputTaxController::class,'cancelWholesale'])->name('inputtax.cancelWholesale');
 Route::put('inputtax/create/update/{inputTaxModel}',[inputTaxController::class,'update'])->name('inputtax.update');
 Route::put('inputtax/cancel/update/{inputTaxModel}',[inputTaxController::class,'updateCancel'])->name('inputtax.updateCancel');
@@ -285,6 +286,7 @@ Route::get('withholdings',[withholdingTaxController::class,'index'])->name('with
 Route::get('withholding/create',[withholdingTaxController::class,'create'])->name('withholding.create');
 Route::get('withholding/create/modal/{quotationModel}',[withholdingTaxController::class,'createModal'])->name('withholding.createModal');
 Route::get('withholding/edit/{id}',[withholdingTaxController::class,'edit'])->name('withholding.edit');
+Route::get('withholding/modal/edit/{id}',[withholdingTaxController::class,'modalEdit'])->name('withholding.modalEdit');
 Route::get('withholding/editRepear/{id}',[withholdingTaxController::class,'editRepear'])->name('withholding.editRepear');
 Route::get('withholding/show/{id}',[withholdingTaxController::class,'show'])->name('withholding.show');
 Route::post('withholding/store',[withholdingTaxController::class,'store'])->name('withholding.store');

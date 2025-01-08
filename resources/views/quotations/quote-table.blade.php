@@ -370,10 +370,7 @@
                                             class="fa fa-print text-danger"></i>
                                         พิมพ์ใบกำกับภาษี</a>
 
-                                        <a class="dropdown-item" onclick="openPdfPopup(this.href); return false;"
-                                        href="{{route('MPDF.generatePDFwithholding',$document->id)}}"><i
-                                            class="fa fa-print text-danger"></i>
-                                        พิมพ์ใบหัก ณ ที่จ่าย</a>
+                                       
 
                                     <a class="dropdown-item mail-quote"
                                         href="{{ route('mail.taxreceipt.formMail', $item->invoice_id) }}"><i

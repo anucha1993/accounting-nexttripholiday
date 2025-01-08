@@ -3,6 +3,7 @@
 namespace App\Models\withholding;
 
 use App\Models\customers\customerModel;
+use App\Models\wholesale\wholesaleModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -26,7 +27,9 @@ class WithholdingTaxDocument extends Model
         'withholding_note',
         'image_signture_id',
         'book_no',
-        'document_no'
+        'document_no',
+        'wholesale_id',
+        'ref_input_tax',
     ];
     public static function generateDocumentNumber()
     {
@@ -62,6 +65,11 @@ class WithholdingTaxDocument extends Model
     public function customer()
     {
         return $this->belongsTo(customerModel::class, 'customer_id');
+    }
+
+    public function wholesale()
+    {
+        return $this->belongsTo(wholesaleModel::class, 'wholesale_id', 'id');
     }
 
     public function items()

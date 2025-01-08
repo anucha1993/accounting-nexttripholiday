@@ -118,10 +118,10 @@
 
                         </td> 
                         <td>
-                            @if ($item->input_tax_withholding_status === 'Y')
+                            @if ($document->ref_input_tax === $item->input_tax_id )
                                 <a href="{{ route('MPDF.generatePDFwithholding', $document->id) }}"
                                     onclick="openPdfPopup(this.href); return false;"> <i
-                                        class="fa fa-file-pdf text-danger"></i> แก้ไขใบหัก ณ ที่จ่าย</a>
+                                        class="fa fa-file-pdf text-danger"></i>ปริ้นใบหัก ณ ที่จ่าย</a>
                             @else
                                 -
                             @endif
@@ -142,9 +142,9 @@
                         </td>
 
                         <td>
-                            @if ($item->input_tax_withholding_status === 'Y')
-                            <a href="{{ route('withholding.edit', $document->id) }}"> <i
-                                    class="fa fa-edit text-info"></i>แก้ไขใบหัก ณ ที่จ่าย</a>
+                            @if ($document->ref_input_tax === $item->input_tax_id )
+                            <a href="{{ route('withholding.modalEdit', $document->id) }}" class="input-tax-edit"> <i
+                                    class="fa fa-edit text-info "></i>แก้ไขใบหัก ณ ที่จ่าย</a>
                         @else
                             -
                         @endif

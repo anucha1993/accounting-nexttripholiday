@@ -86,7 +86,7 @@ class withholdingTaxController extends Controller
             'document_number' => $documentNumber, // เพิ่มฟิลด์นี้
             'withholding_branch' => $request->withholding_branch, // เพิ่มฟิลด์นี้
             'withholding_note' => $request->withholding_note, // เพิ่มฟิลด์นี้
-            'customer_id' => $request->customer_id,
+            // 'customer_id' => $request->customer_id,
             'document_date' => $request->document_date,
             'ref_number' => $request->ref_number,
             'withholding_form' => $request->withholding_form,
@@ -151,6 +151,13 @@ class withholdingTaxController extends Controller
         $document = WithholdingTaxDocument::findOrFail($id);
         $customers = customerModel::all();
         return view('withholding.edit', compact('document', 'customers','imageSingture'));
+    }
+    public function modalEdit($id)
+    {
+        $imageSingture = imageSigntureModel::get();
+        $document = WithholdingTaxDocument::findOrFail($id);
+        $customers = customerModel::all();
+        return view('withholding.modal-edit', compact('document', 'customers','imageSingture'));
     }
 
     public function editRepear($id)

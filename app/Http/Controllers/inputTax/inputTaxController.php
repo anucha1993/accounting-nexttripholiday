@@ -26,7 +26,8 @@ class inputTaxController extends Controller
         $wholesale = wholesaleModel::get();
         $invoice = invoiceModel::where('invoice_quote_id',$quotationModel->quote_id)->first();
         $taxinvoice = taxinvoiceModel::where('invoice_id',$invoice->invoice_id)->first();
-        return view('inputTax.modal-create', compact('quotationModel', 'wholesale','taxinvoice'));
+        $document = WithholdingTaxDocument::where('quote_id',$quotationModel->quote_id)->first();
+        return view('inputTax.modal-create', compact('quotationModel', 'wholesale','taxinvoice','document'));
     }
 
     public function inputtaxCreateWholesale(quotationModel $quotationModel)
@@ -40,8 +41,10 @@ class inputTaxController extends Controller
        
         $wholesale = wholesaleModel::get();
         $quotationModel = quotationModel::where('quote_id', $inputTaxModel->input_tax_quote_id)->first();
-        return view('inputTax.modal-edit', compact('inputTaxModel', 'quotationModel', 'wholesale'));
+        $document = WithholdingTaxDocument::where('quote_id',$quotationModel->quote_id)->first();
+        return view('inputTax.modal-edit', compact('inputTaxModel', 'quotationModel', 'wholesale','document'));
     }
+    
 
     public function inputtaxEditWholesale(inputTaxModel $inputTaxModel)
     {
@@ -101,48 +104,6 @@ class inputTaxController extends Controller
     }
 
 
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'customer_id' => 'required|exists:customers,id',
-    //         'document_date' => 'required|date',
-    //         'withholding_form' => 'required',
-    //         'total_amount' => 'required|numeric',
-    //         'total_withholding_tax' => 'required|numeric',
-    //         'total_payable' => 'required|numeric',
-    //         'income_type.*' => 'required|string',
-    //         'tax_rate.*' => 'required|numeric',
-    //         'amount.*' => 'required|numeric',
-    //         'withholding_tax.*' => 'required|numeric',
-    //     ]);
-
-    //     // สร้างรหัสเอกสารใหม่
-    //     $documentNumber = WithholdingTaxDocument::generateDocumentNumber();
-
-    //     // บันทึกเอกสาร
-    //     $document = WithholdingTaxDocument::create([
-    //         'document_number' => $documentNumber,
-    //         'customer_id' => $request->customer_id,
-    //         'document_date' => $request->document_date,
-    //         'withholding_form' => $request->withholding_form,
-    //         'total_amount' => $request->total_amount,
-    //         'total_withholding_tax' => $request->total_withholding_tax,
-    //         'total_payable' => $request->total_payable,
-    //     ]);
-
-    //     // บันทึกรายการ
-    //     foreach ($request->income_type as $index => $incomeType) {
-    //         WithholdingTaxItem::create([
-    //             'document_id' => $document->id,
-    //             'income_type' => $incomeType,
-    //             'tax_rate' => $request->tax_rate[$index],
-    //             'amount' => $request->amount[$index],
-    //             'withholding_tax' => $request->withholding_tax[$index],
-    //         ]);
-    //     }
-
-    //     return redirect()->route('withholding.index')->with('success', 'เอกสารถูกบันทึกเรียบร้อยแล้ว');
-    // }
 
 
     public function store(Request $request)
@@ -198,10 +159,12 @@ class inputTaxController extends Controller
         // บันทึกเอกสาร
         $document = WithholdingTaxDocument::create([
             'quote_id' => $request->input_tax_quote_id, // เพิ่มฟิลด์นี้
+            'wholesale_id' => $request->input_tax_wholesale,
             'document_number' => $documentNumber, // เพิ่มฟิลด์นี้
             'withholding_branch' => 'สำนักงานใหญ่', // เพิ่มฟิลด์นี้
+            'ref_input_tax' => $inputTaxModel->input_tax_id,
             // 'withholding_note' => $request->withholding_note, // เพิ่มฟิลด์นี้
-            'customer_id' => $request->customer_id,
+            // 'customer_id' => $request->customer_id,
             'document_date' => date('Y-m-d'),
             'ref_number' => $request->input_tax_ref,
             'withholding_form' => 'ภ.ง.ด.53',
@@ -218,7 +181,7 @@ class inputTaxController extends Controller
             'document_id' => $document->id,
             'income_type' => 'ค่าบริการ',
             'tax_rate' => 3.00,
-            'amount' => $withholdingTotal,
+            'amount' => $request->input_tax_service_total,
             'withholding_tax' => $serviceTotal,
         ]);
 

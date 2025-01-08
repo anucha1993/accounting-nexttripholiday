@@ -334,20 +334,20 @@
  
 
     <div class="text-customer">
-        <span><b>{{$customer->customer_name}}</b> &nbsp;</span>
+        <span><b>{{$WithholdingTaxDocument->customer ? $WithholdingTaxDocument->customer->customer_name : $WithholdingTaxDocument->wholesale->wholesale_name_th}}</b> &nbsp;</span>
     </div>
 
     <div class="text-customer-tax">
         <!-- สมมติว่า $wholesale->textid = '0125558000987' -->
-        <span class="group1"><b>{{ substr($customer->customer_texid, 0, 1) }}</b></span>
-        <span class="group2"><b>{{ substr($customer->customer_texid, 1, 4) }}</b></span>
-        <span class="group3"><b>{{ substr($customer->customer_texid, 5, 5) }}</b></span>
-        <span class="group4"><b>{{ substr($customer->customer_texid, 10, 2) }}</b></span>
-        <span class="group1"><b>{{ substr($customer->customer_texid, 12, 1) }}</b></span>
+        <span class="group1"><b>{{ substr($WithholdingTaxDocument->customer ? $WithholdingTaxDocument->customer->customer_texid : $WithholdingTaxDocument->wholesale->textid, 0, 1) }}</b></span>
+        <span class="group2"><b>{{ substr($WithholdingTaxDocument->customer ? $WithholdingTaxDocument->customer->customer_texid : $WithholdingTaxDocument->wholesale->textid, 1, 4) }}</b></span>
+        <span class="group3"><b>{{ substr($WithholdingTaxDocument->customer ? $WithholdingTaxDocument->customer->customer_texid : $WithholdingTaxDocument->wholesale->textid, 5, 5) }}</b></span>
+        <span class="group4"><b>{{ substr($WithholdingTaxDocument->customer ? $WithholdingTaxDocument->customer->customer_texid : $WithholdingTaxDocument->wholesale->textid, 10, 2) }}</b></span>
+        <span class="group1"><b>{{ substr($WithholdingTaxDocument->customer ? $WithholdingTaxDocument->customer->customer_texid : $WithholdingTaxDocument->wholesale->textid, 12, 1) }}</b></span>
     </div>
 
     <div class="text-customer-addr">
-        <span><b>{{$customer->customer_address}}</b> &nbsp;</span>
+        <span><b>{{$WithholdingTaxDocument->customer ? $WithholdingTaxDocument->customer->customer_address : $WithholdingTaxDocument->wholesale->address}}</b> &nbsp;</span>
     </div>
 
     {{-- <div class="text-no">
