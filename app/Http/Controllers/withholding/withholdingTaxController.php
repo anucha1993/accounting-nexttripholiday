@@ -86,7 +86,7 @@ class withholdingTaxController extends Controller
             'document_number' => $documentNumber, // เพิ่มฟิลด์นี้
             'withholding_branch' => $request->withholding_branch, // เพิ่มฟิลด์นี้
             'withholding_note' => $request->withholding_note, // เพิ่มฟิลด์นี้
-            // 'customer_id' => $request->customer_id,
+            'customer_id' => $request->customer_id,
             'document_date' => $request->document_date,
             'ref_number' => $request->ref_number,
             'withholding_form' => $request->withholding_form,
@@ -112,19 +112,22 @@ class withholdingTaxController extends Controller
 
         // บันทึก Check List 
         $QuoteLog = QuoteLogModel::where('quote_id',$request->quote_id)->first();
-        if($QuoteLog){
+        if($QuoteLog ){
             $QuoteLog->update([
                 "withholding_tax_status" => 'ออกแล้ว',
                 "withholding_tax_updated_at" => now(),
                 "withholding_tax_created_by" => Auth::user()->name
             ]);
         }else{
-            $checkList = QuoteLogModel::create([
-                'quote_id' => $request->quote_id,
-                "withholding_tax_status" => 'ออกแล้ว',
-                "withholding_tax_updated_at" => now(),
-                "withholding_tax_created_by" => Auth::user()->name
-            ]);
+            if($request->quote_id){
+                $checkList = QuoteLogModel::create([
+                    'quote_id' => $request->quote_id,
+                    "withholding_tax_status" => 'ออกแล้ว',
+                    "withholding_tax_updated_at" => now(),
+                    "withholding_tax_created_by" => Auth::user()->name
+                ]);
+            }
+          
         }
 
         if($request->form_name === 'quote'){
