@@ -13,9 +13,11 @@
                 <th>No.</th>
                 <th>เลขที่เอกสาร</th>
                 <th>Ref. Number</th>
+                <th>Quote.Ref</th>
                 <th>ชื่อลูกค้า</th>
-                <th>วันที่</th>
+                <th>วันที่ออกเอกสาร</th>
                 <th>ยอดชำระ</th>
+                <th>ยอดหัก</th>
                 <th>การจัดการ</th>
             </tr>
         </thead>
@@ -25,12 +27,12 @@
                 <td>{{ $key+1 }}</td>
                 <td>{{ $document->document_number }}</td>
                 <td>{{ $document->ref_number }}</td>
+                <td>{{ $document->quote->quote_number ?? '-' }}</td>
                 <td>{{ $document->customer ? $document->customer->customer_name : $document->wholesale->wholesale_name_th }}</td>
                 <td>{{ date('d/m/Y',strtotime($document->document_date)) }}</td>
                 <td>{{ number_format($document->total_payable,2) }}</td>
+                <td>{{ number_format($document->total_withholding_tax,2) }}</td>
                 <td>
-                   
-
                 
 
                 

@@ -69,6 +69,7 @@ class inputTaxController extends Controller
     public function update(Request $request, inputTaxModel $inputTaxModel)
     {
         $requestData = $request->all();
+        //dd($requestData);
 
         // ตรวจสอบว่าเลือก "ลบไฟล์แนบ" หรือไม่
         if ($request->has('delete_file') && $request->delete_file === 'Y') {
@@ -99,6 +100,24 @@ class inputTaxController extends Controller
 
         // บันทึกการเปลี่ยนแปลงในฐานข้อมูล
         $inputTaxModel->update($requestData);
+        
+        $serviceTotal = 0;
+        $serviceTotal = $request->input_tax_service_total * 0.03;
+
+        if($request->document_id){
+            WithholdingTaxItem::where('document_id',$request->document_id)->delete();
+            WithholdingTaxItem::create([
+                'document_id' => $request->document_id,
+                'income_type' => 'ค่าบริการ',
+                'tax_rate' => 3.00,
+                'amount' => $request->input_tax_service_total,
+                'withholding_tax' => $serviceTotal,
+            ]);
+
+        }
+
+       
+
 
         return redirect()->back()->with('success', 'อัปเดตข้อมูลเรียบร้อยแล้ว');
     }

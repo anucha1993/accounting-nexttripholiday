@@ -57,10 +57,10 @@ class MPDF_WithhodingDocumentController extends Controller
                 ],
             ],
             'default_font' => 'ANGSA', 
-               'margin_top' => 0,  // ปรับระยะขอบด้านบน
+               'margin_top' => 0,    // ปรับระยะขอบด้านบน
                'margin_bottom' => 0, // ปรับระยะขอบด้านล่าง
-               'margin_left' => 0, // ปรับระยะขอบด้านซ้าย
-               'margin_right' => 0, // ปรับระยะขอบด้านขวา
+               'margin_left' => 0,   // ปรับระยะขอบด้านซ้าย
+               'margin_right' => 0,  // ปรับระยะขอบด้านขวา
            ]);
            
            $mpdf->SetMargins(0, 0, 3, 0); // ซ้าย, ขวา, บน, ล่าง (หน่วยเป็นมิลลิเมตร)

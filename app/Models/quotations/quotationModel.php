@@ -86,6 +86,7 @@ public function getTotalInputTaxVat()
         // กรณีที่ input_tax_file ไม่เป็น NULL
         $total = $this->InputTaxVat()
                       ->whereNotNull('input_tax_file')
+                      ->where('input_tax_status','success')
                       ->sum(\DB::raw('COALESCE(input_tax_vat, 0) - COALESCE(input_tax_withholding, 0)'));
     } else {
         // กรณีที่ input_tax_file เป็น NULL

@@ -136,12 +136,12 @@
 
                 <div class="col-md-6">
 
-                    <label for="customerAddress" class="form-label">รายละเอียด</label>
+                    <label for="customerAddress" class="form-label">ที่อยู่</label>
                     <textarea class="form-control" id="customerAddress" name="details" rows="3"></textarea>
                 </div>
 
                 <div class="col-md-6">
-                    <label for="documentNumber" class="form-label">เลขที่เอกสาร</label>
+                    <label for="documentNumber" class="form-label">เลขที่เอกสารอ้างอิง</label>
                     <input type="text" class="form-control" id="documentNumber" name="ref_number"
                         placeholder="ค้นหาเลขที่เอกสาร">
                     <div id="documentSuggestions" class="list-group position-absolute w-50"
@@ -190,8 +190,8 @@
                             <td class="text-center">1</td>
                             <td><input type="text" class="form-control" name="income_type[]" value="ค่าบริการ"></td>
                             <td><input type="number" class="form-control tax-rate" name="tax_rate[]" value="2"></td>
-                            <td><input type="number" class="form-control amount" name="amount[]" value="50000"></td>
-                            <td><input type="number" class="form-control withholding-tax" name="withholding_tax[]"
+                            <td><input type="number" class="form-control amount" name="amount[]" value="50000" step="0.01"></td>
+                            <td><input type="number" class="form-control withholding-tax" name="withholding_tax[]" step="0.01"
                                     value="1000" readonly></td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-danger remove-row">ลบ</button>
@@ -337,13 +337,16 @@
                 const totalPayable = totalAmount - totalWithholdingTax;
 
                 $('#total-amount').text(totalAmount.toLocaleString('en-US', {
-                    minimumFractionDigits: 2
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
                 }));
                 $('#total-withholding-tax').text(totalWithholdingTax.toLocaleString('en-US', {
-                    minimumFractionDigits: 2
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
                 }));
                 $('#total-payable').text(totalPayable.toLocaleString('en-US', {
-                    minimumFractionDigits: 2
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
                 }));
             }
 

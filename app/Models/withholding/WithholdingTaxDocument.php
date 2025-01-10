@@ -3,6 +3,7 @@
 namespace App\Models\withholding;
 
 use App\Models\customers\customerModel;
+use App\Models\quotations\quotationModel;
 use App\Models\wholesale\wholesaleModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -65,6 +66,10 @@ class WithholdingTaxDocument extends Model
     public function customer()
     {
         return $this->belongsTo(customerModel::class, 'customer_id');
+    }
+    public function quote()
+    {
+        return $this->belongsTo(quotationModel::class, 'quote_id');
     }
 
     public function wholesale()

@@ -154,16 +154,18 @@
                <!-- รายละเอียด -->
                <div class="row mb-2">
                    <div class="col-md-6">
-                       <label for="customerAddress" class="form-label">รายละเอียด</label>
+                       <label for="customerAddress" class="form-label">ที่อยู่</label>
                        <textarea class="form-control" id="customerAddress" name="details" {{$document->wholesale ? 'disabled' : ''}} rows="3">{{$document->customer ? $document->customer->customer_address : $document->wholesale->address}}</textarea>
                    </div>
                    <div class="col-md-6">
-                       <label for="refNumber" class="form-label">เลขที่เอกสาร</label>
+                       <label for="refNumber" class="form-label">เลขที่เอกสารอ้างอิง | Ref.Quote : {{ $document->quote->quote_number ?? '-' }}</label>
                        <input type="text" class="form-control" id="refNumber" name="ref_number" value="{{ $document->ref_number }}">
                    </div>
+                   
                </div>
 
                <div class="row mb-2">
+                
                               <div class="col-md-6">
                                   <label for="customerTaxId" class="form-label">เลขประจำตัวผู้เสียภาษี</label>
                                   <input type="text" class="form-control" id="customerTaxId" placeholder="1234567890123" value="{{$document->customer ? $document->customer->customer_texid : $document->wholesale->textid }}">
@@ -176,6 +178,7 @@
                                   </select>
                               </div>
                           </div>
+                          
 
                           <div class="row">
                             <div class="col-md-6">
@@ -203,8 +206,8 @@
                                    <td class="text-center">{{ $index + 1 }}</td>
                                    <td><input type="text" class="form-control" name="income_type[]" value="{{ $item->income_type }}"></td>
                                    <td><input type="number" class="form-control tax-rate" name="tax_rate[]" value="{{ $item->tax_rate }}"></td>
-                                   <td><input type="number" class="form-control amount" name="amount[]" value="{{ $item->amount }}"></td>
-                                   <td><input type="number" class="form-control withholding-tax" name="withholding_tax[]" value="{{ $item->withholding_tax }}" readonly></td>
+                                   <td><input type="number" class="form-control amount" name="amount[]" value="{{ $item->amount }}" step="0.01"></td>
+                                   <td><input type="number" class="form-control withholding-tax" name="withholding_tax[]" value="{{ $item->withholding_tax }}" step="0.01" readonly></td>
                                    <td class="text-center"><button type="button" class="btn btn-danger remove-row">ลบ</button></td>
                                </tr>
                            @endforeach
@@ -349,13 +352,16 @@
                 const totalPayable = totalAmount - totalWithholdingTax;
 
                 $('#total-amount').text(totalAmount.toLocaleString('en-US', {
-                    minimumFractionDigits: 2
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
                 }));
                 $('#total-withholding-tax').text(totalWithholdingTax.toLocaleString('en-US', {
-                    minimumFractionDigits: 2
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
                 }));
                 $('#total-payable').text(totalPayable.toLocaleString('en-US', {
-                    minimumFractionDigits: 2
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
                 }));
             }
 

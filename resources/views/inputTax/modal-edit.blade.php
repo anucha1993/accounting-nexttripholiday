@@ -5,6 +5,7 @@
     <form action="{{route('inputtax.update',$inputTaxModel->input_tax_id)}}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
+        <input type="text" name="document_id" value="{{$document->id}}">
         <div class="row">
             <div class="col-md-12 mb-3">
                 <label>ประเภท</label>
@@ -73,19 +74,21 @@
                     onclick="openPdfPopup(this.href); return false;"><i class="fa fa-file text-danger"></i>
                     {{$inputTaxModel->input_tax_file}}</a>
                 @else
-                    -
+                    
                 @endif
                
             </div>
 
 
             <div class="col-md-12">
+                @if (!$document)
                 <label for="">ต้องการออกใบหัก ณ ที่จ่ายหรือไม่</label>
                 <br>
                 <input type="radio" id="html" name="input_tax_withholding_status" value="Y" @if($inputTaxModel->input_tax_withholding_status === 'Y') checked @endif>
                 <label for="html">ใช่</label>
                 <input type="radio" id="css" name="input_tax_withholding_status" value="N" @if($inputTaxModel->input_tax_withholding_status === 'N') checked @endif>
                 <label for="css">ไม่ใช่</label><br>
+                @endif
             </div>
             
         </div>
