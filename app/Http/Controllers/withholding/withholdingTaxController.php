@@ -4,6 +4,7 @@ namespace App\Http\Controllers\withholding;
 
 use Illuminate\Http\Request;
 use App\Models\QuoteLogModel;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\invoices\invoiceModel;
@@ -28,7 +29,8 @@ class withholdingTaxController extends Controller
     {
         $customers = customerModel::latest()->get();
         $imageSingture = imageSigntureModel::get();
-        return view('withholding.create', compact('customers','imageSingture'));
+        $campaignSource = DB::table('campaign_source')->get();
+        return view('withholding.create', compact('customers','imageSingture','campaignSource'));
     }
 
     public function createModal(quotationModel $quotationModel)

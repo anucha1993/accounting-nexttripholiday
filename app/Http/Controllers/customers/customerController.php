@@ -32,4 +32,35 @@ class customerController extends Controller
 
         return response()->json($customer);
     }
+
+
+    public function generateRunningCodeCUS()
+    {
+        $customer = customerModel::select('customer_number')->latest()->first();
+        if (!empty($customer)) {
+            $CusNumber = $customer->customer_number;
+        } else {
+            $CusNumber = 'CUS-' . date('y') . date('m') . '0000';
+        }
+        $prefix = 'CUS-';
+        $year = date('y');
+        $month = date('m');
+        $lastFourDigits = substr($CusNumber, -4);
+        $incrementedNumber = intval($lastFourDigits) + 1;
+        $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
+        $runningCode = $prefix . $year . $month . $newNumber;
+        return $runningCode;
+    }
+
+
+    // api create
+    public function store(Request $request)
+    {
+        $runningCodeCus = $this->generateRunningCodeCUS();
+        $request->merge(['customer_number' => $runningCodeCus]);
+        
+        $customer = customerModel::create($request->all());
+        return response()->json($customer, 201);
+    }
+
 }

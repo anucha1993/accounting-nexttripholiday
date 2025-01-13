@@ -100,7 +100,7 @@
     <div class="container py-4 email-app todo-box-container container-fluid" style="background-color: #ffffff">
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="mb-0">แก้ไขใบหัก ณ ที่จ่าย</h4>
+            <h4 class="mb-0">สร้างใบหัก ณ ที่จ่าย</h4>
             {{-- <div>
                 <button class="btn btn-outline-primary me-2">พิมพ์เอกสาร</button>
                 <button class="btn btn-outline-secondary me-2">ดาวน์โหลด</button>
@@ -109,15 +109,18 @@
         </div>
         <hr>
 
-        <form action="{{ route('withholding.store') }}" method="post">
+        <form action="{{ route('withholding.store') }}" method="post" id="submit-form">
             @csrf
             @method('post')
             <!-- ส่วนข้อมูลผู้จ่าย -->
             <div class="row mb-2 ">
                 <div class="col-md-6">
-                    <label for="payerName" class="form-label">ชื่อผู้จ่ายเงิน</label>
-                    <select class="form-select" id="payerName" name="customer_id">
-                        <option value="" disabled selected>เลือกผู้จ่ายเงิน</option>
+                    <label for="payerName" class="form-label">ชื่อผู้จ่ายเงิน 
+                        <a class=" btn btn-sm px-4fs-4 btn-dark" data-bs-toggle="modal" data-bs-target="#bs-example-modal-xlg"> เพิ่มข้อมูลลูกค้าใหม่
+                        </a>
+                    </label>
+                    <select class="form-select select2" id="payerName" name="customer_id" style="width: 100%">
+                        {{-- <option value="" disabled selected>เลือกผู้จ่ายเงิน</option> --}}
                         @forelse ($customers as $item)
                             <option data-address="{{ $item->customer_address }}" data-taxid="{{ $item->customer_texid }}"
                                 value="{{ $item->customer_id }}">{{ $item->customer_name }}</option>
@@ -128,7 +131,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label for="documentDate" class="form-label">วันที่</label>
+                    <label for="documentDate" class="form-label">วัน/เดือน/ปี ที่จ่าย</label>
                     <input type="date" class="form-control" id="documentDate" name="document_date"
                         value="{{ date('Y-m-d') }}">
 
@@ -168,9 +171,9 @@
             <div class="row">
                 <div class="col-md-6">
                     <label for="">สำนักงาน/สาขาเลขที่</label>
-                    <input type="text" name="withholding_branch" class="form-control"  placeholder="สำนักงาน/สาขาเลขที่">
+                    <input type="text" name="withholding_branch" class="form-control" placeholder="สำนักงาน/สาขาเลขที่">
                 </div>
-              </div>
+            </div>
 
             <!-- ตาราง -->
             <div class="table-responsive mb-4">
@@ -190,9 +193,10 @@
                             <td class="text-center">1</td>
                             <td><input type="text" class="form-control" name="income_type[]" value="ค่าบริการ"></td>
                             <td><input type="number" class="form-control tax-rate" name="tax_rate[]" value="2"></td>
-                            <td><input type="number" class="form-control amount" name="amount[]" value="50000" step="0.01"></td>
-                            <td><input type="number" class="form-control withholding-tax" name="withholding_tax[]" step="0.01"
-                                    value="1000" readonly></td>
+                            <td><input type="number" class="form-control amount" name="amount[]" value="50000"
+                                    step="0.01"></td>
+                            <td><input type="number" class="form-control withholding-tax" name="withholding_tax[]"
+                                    step="0.01" value="1000" readonly></td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-danger remove-row">ลบ</button>
                             </td>
@@ -208,14 +212,15 @@
                     <label for="">ลายเซ็นอิเล็กทรอนิกส์ และตรายาง</label>
                     <select name="image_signture_id" class="form-select">
                         @forelse ($imageSingture as $singture)
-                            <option value="{{$singture->image_signture_id}}">{{$singture->image_signture_name}}</option>
+                            <option value="{{ $singture->image_signture_id }}">{{ $singture->image_signture_name }}
+                            </option>
                         @empty
                         @endforelse
                     </select>
                     <br>
                     <label for="">บันทึกเพิ่มเติม</label>
                     <textarea name="withholding_note" class="form-control" cols="30" rows="2" placeholder="บันทึกเพิ่มเติม"></textarea>
-                   </div>
+                </div>
                 <div class="col-md-6">
                     <div class="d-flex justify-content-between">
                         <span><strong>จำนวนเงินรวม (ไม่รวมภาษี):</strong></span>
@@ -235,11 +240,11 @@
                     </div>
                 </div>
             </div>
-            
+
 
             <!-- ปุ่มบันทึก -->
             <div class="text-end">
-                <button type="submit" class="btn btn-success">บันทึกเอกสาร</button>
+                <button type="submit" form="submit-form" class="btn btn-success">บันทึกเอกสาร</button>
                 <button type="button" class="btn btn-secondary">ปิดหน้าต่าง</button>
             </div>
     </div>
@@ -250,9 +255,109 @@
 
 
 
+    <div>
+        <!-- ------------------------------------------ -->
+        <!-- Extra Large -->
+        <!-- ------------------------------------------ -->
+
+        <!-- sample modal content -->
+        <div class="modal fade" id="bs-example-modal-xlg" tabindex="-1" aria-labelledby="bs-example-modal-lg"
+            aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header d-flex align-items-center">
+                        <h4 class="modal-title" id="myLargeModalLabel">
+                            เพิ่มข้อมูลลูกค้า
+                        </h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <form id="create-form-customer" method="post">
+                        @csrf
+                        @method('POST')
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label for="">ชื่อลูกค้า: </label>
+                                <input type="text" id="customer_name" class="form-control" placeholder="ชื่อลูกค้า" required>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="">เลขประจำตัวผู้เสียภาษี: </label>
+                                <input type="text" id="customer_texid" class="form-control" placeholder="เลขประจำตัวผู้เสียภาษี">
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="">อีเมล์:</label>
+                                <input type="email" id="customer_email" class="form-control" placeholder="Email">
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="">เบอร์โทรศัพท์: </label>
+                                <input type="text" id="customer_tel" class="form-control" placeholder="+66">
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="">เบอร์โทรสาร: </label>
+                                <input type="text" id="customer_fax" class="form-control" placeholder="+66">
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <label for="">ลูกค้าจาก : </label>
+                                <select id="customer_campaign_source" class="form-select">
+                                    @forelse ($campaignSource as $item)
+                                        <option value="{{ $item->campaign_source_id }}">
+                                            {{ $item->campaign_source_name }}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <label for="">Social id : </label>
+                                <input type="text" id="customer_social_id" class="form-control" placeholder="+66">
+                            </div>
+                            <div class="col-md-12 mb-2">
+                                <label for="">Social id : </label>
+                                <textarea id="customer_address" class="form-control" cols="30" rows="2" placeholder="ที่อยู่ลูกค้า"></textarea>
+                            </div>
+                        </div>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" form="create-form-customer" class="btn btn-success text-dark font-weight-medium waves-effect text-start" data-bs-dismiss="modal">
+                            บันทึก
+                        </button>
+                        <button type="button" class="btn btn-light-danger text-danger font-weight-medium waves-effect text-start" data-bs-dismiss="modal">
+                            ยกเลิก
+                        </button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+    </div>
+
 
 
     <script>
+         const API_URL = '{{route("apicustomer.store")}}';
+
+        // Create Customer name
+        $('#create-form-customer').submit(function(e) {
+            e.preventDefault();
+            const customer_name = $('#customer_name').val();
+            const customer_texid = $('#customer_texid').val();
+            const customer_email = $('#customer_email').val();
+            const customer_tel = $('#customer_tel').val();
+            const customer_fax = $('#customer_fax').val();
+            const customer_social_id = $('#customer_social_id').val();
+            const customer_campaign_source = $('#customer_campaign_source').val();
+            const customer_address = $('#customer_address').val();
+            $.post(API_URL, { customer_name, customer_texid,customer_email,customer_tel,customer_fax,customer_campaign_source,customer_social_id,customer_address}, function() {
+                location.reload();
+            });
+
+        });
+
+        
+
+
         $(document).ready(function() {
             $('#documentNumber').on('keydown', function(e) {
                 if (e.keyCode === 13) { // ตรวจสอบว่าคีย์ที่กดคือ Enter
@@ -302,21 +407,29 @@
 
 
         $(document).ready(function() {
-            $('#payerName').on('change', function(e) {
+    // เช็คเมื่อโหลดหน้าแล้วให้ดึงข้อมูลจากค่าเริ่มต้นใน <select>
+    var selectedOption = $('#payerName').find(':selected');
+    var address = selectedOption.data('address'); // ดึงค่า data-address
+    var taxId = selectedOption.data('taxid'); // ดึงค่า data-taxid
 
-                var customerId = $(this).val();
-                var selectedOption = $(this).find(':selected');
-                var address = selectedOption.data('address'); // ดึงค่า data-address
-                var taxId = selectedOption.data('taxid'); // ดึงค่า data-taxid
+    // ถ้ามีค่า ให้แสดงในฟิลด์
+    $('#customerAddress').val(address); // แสดงที่ input address
+    $('#customerTaxId').val(taxId); // แสดงที่ input tax ID
 
-                // แสดงข้อมูลใน Alert (หรือจะนำไปแสดงในฟิลด์ก็ได้)
-                //  alert("Customer ID: " + customerId + "\nAddress: " + address + "\nTax ID: " + taxId);
+    // เพิ่มการทำงานเมื่อมีการเปลี่ยนแปลงใน <select>
+    $('#payerName').on('change', function(e) {
+        var customerId = $(this).val();
+        var selectedOption = $(this).find(':selected');
+        var address = selectedOption.data('address'); // ดึงค่า data-address
+        var taxId = selectedOption.data('taxid'); // ดึงค่า data-taxid
 
-                // ตัวอย่าง: การนำข้อมูลไปแสดงในฟิลด์
-                $('#customerAddress').val(address); // แสดงที่ input address
-                $('#customerTaxId').val(taxId); // แสดงที่ input tax ID
-            });
-        });
+        // แสดงข้อมูลในฟิลด์
+        $('#customerAddress').val(address); // แสดงที่ input address
+        $('#customerTaxId').val(taxId); // แสดงที่ input tax ID
+    });
+});
+
+
 
         $(document).ready(function() {
             function recalculate() {

@@ -246,7 +246,7 @@ class quoteController extends Controller
     {
         $customer = customerModel::select('customer_number')->latest()->first();
         if (!empty($customer)) {
-            $CusNumber = $customer->quote_number;
+            $CusNumber = $customer->customer_number;
         } else {
             $CusNumber = 'CUS-' . date('y') . date('m') . '0000';
         }
