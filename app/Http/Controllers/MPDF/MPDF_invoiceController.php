@@ -31,7 +31,7 @@ class MPDF_invoiceController extends Controller
 
         $quotationModel = quotationModel::where('quote_id', $invoiceModel->invoice_quote_id)->first();
 
-        $customer = customerModel::where('customer_id', $invoiceModel->customer_id)->first();
+        $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
         $sale = saleModel::where('id', $invoiceModel->invoice_sale)->first();
         $tour = DB::connection('mysql2')
             ->table('tb_tour')
@@ -58,7 +58,8 @@ class MPDF_invoiceController extends Controller
 
         $paymentDeposit = paymentModel::where('payment_quote_id', $invoiceModel->quote_id)->sum('payment_total');
         // ดึง HTML จาก Blade Template
-        $html = view('MPDF.mpdf_invoice', compact('paymentDeposit', 'VatTotal', 'NonVat', 'quotationModel', 'invoiceModel', 'customer', 'sale', 'airline', 'booking', 'productLists'))->render();
+        $htmlPage1 = view('MPDF.mpdf_invoice', compact('paymentDeposit', 'VatTotal', 'NonVat', 'quotationModel', 'invoiceModel', 'customer', 'sale', 'airline', 'booking', 'productLists'))->render();
+        $htmlPage2 = view('MPDF.mpdf_invoice_copy', compact('paymentDeposit', 'VatTotal', 'NonVat', 'quotationModel', 'invoiceModel', 'customer', 'sale', 'airline', 'booking', 'productLists'))->render();
 
         // กำหนดค่าเริ่มต้นของ mPDF และเพิ่มฟอนต์ภาษาไทย
         $mpdf = new \Mpdf\Mpdf([
@@ -74,7 +75,10 @@ class MPDF_invoiceController extends Controller
         ]);
         $mpdf->SetMargins(0, 0, 3, 0); // ซ้าย, ขวา, บน, ล่าง (หน่วยเป็นมิลลิเมตร)
         // เขียน HTML ลงใน PDF
-        $mpdf->WriteHTML($html);
+        $mpdf->WriteHTML($htmlPage1);
+          // เพิ่มหน้า Copy
+        $mpdf->AddPage();
+        $mpdf->WriteHTML($htmlPage2);
 
         // ส่งออกไฟล์ PDF ไปยังเบราว์เซอร์เพื่อดาวน์โหลด
         return $mpdf->Output('document.pdf', 'I'); // 'I' เพื่อแสดงในเบราว์เซอร์

@@ -47,9 +47,13 @@ class MPDF_QuotationController extends Controller
         $airline = DB::connection('mysql2')->table('tb_travel_type')->where('id',$quotationModel->quote_airline)->first();
         $productLists = quoteProductModel::where('quote_id',$quotationModel->quote_id)->get();
 
+       
+//         $html = '<div style="position: absolute; bottom: 0; right: 0; rotate: -90deg; text-align: center; width: 250mm; height: 50mm;"> 
+//     TextTextTextTextTextTextTextText
+// </div>';
 
-        // ดึง HTML จาก Blade Template
         $html = view('MPDF.mpdf_quote',compact('quotationModel','customer','sale','airline','productLists'))->render();
+        
     
         // กำหนดค่าเริ่มต้นของ mPDF และเพิ่มฟอนต์ภาษาไทย
         $mpdf = new \Mpdf\Mpdf([
@@ -65,6 +69,7 @@ class MPDF_QuotationController extends Controller
         ]);
         $mpdf->SetMargins(-2.64, -2.64, 3, 0); // ซ้าย, ขวา, บน, ล่าง (หน่วยเป็นมิลลิเมตร)
         // เขียน HTML ลงใน PDF
+        
         $mpdf->WriteHTML($html);
     
         // ส่งออกไฟล์ PDF ไปยังเบราว์เซอร์เพื่อดาวน์โหลด

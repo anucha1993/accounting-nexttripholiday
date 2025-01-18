@@ -108,7 +108,7 @@ class MPDF_WithhodingDocumentController extends Controller
            $mpdf->WriteHTML($html);
        
            // ส่งออกไฟล์ PDF ไปยังเบราว์เซอร์เพื่อดาวน์โหลด
-           return $mpdf->Output('ใบหัก_ณ_ที่จ่าย_'.$WithholdingTaxDocument->document_number.'_'.$customer->customer_name.'.pdf', 'D'); // 'I' เพื่อแสดงในเบราว์เซอร์
+           return $mpdf->Output('ใบหัก_ณ_ที่จ่าย_'.$WithholdingTaxDocument->document_number.'.pdf', 'D'); // 'I' เพื่อแสดงในเบราว์เซอร์
     }
 
 

@@ -147,6 +147,7 @@ Route::get('quote/modal/edit/{quotationModel}', [quoteController::class, 'modalE
 
 Route::get('quote/modal/copy/edit/{quotationModel}',[quoteController::class,'modalEditCopy'])->name('quote.modalEditCopy');
 Route::get('quote/modal/cancel/{quotationModel}',[quoteController::class,'modalCancel'])->name('quote.modalCancel');
+Route::get('quote/recancel/{quotationModel}',[quoteController::class,'Recancel'])->name('quote.recancel');
 
 
 

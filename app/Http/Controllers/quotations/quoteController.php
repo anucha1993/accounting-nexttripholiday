@@ -25,7 +25,6 @@ use App\Models\booking\bookingQuotationModel;
 use App\Models\withholding\WithholdingTaxDocument;
 require_once app_path('Helpers/statusPaymentHelper.php');
 
-
 class quoteController extends Controller
 {
     public function __construct()
@@ -86,13 +85,12 @@ class quoteController extends Controller
                     $q->whereBetween('quote_date_start', [$searchPeriodDateStart, $searchPeriodDateEnd])
                         ->orWhereBetween('quote_date_end', [$searchPeriodDateStart, $searchPeriodDateEnd])
                         ->orWhere(function ($q) use ($searchPeriodDateStart, $searchPeriodDateEnd) {
-                            $q->where('quote_date_start', '<=', $searchPeriodDateStart)
-                                ->where('quote_date_end', '>=', $searchPeriodDateEnd);
+                            $q->where('quote_date_start', '<=', $searchPeriodDateStart)->where('quote_date_end', '>=', $searchPeriodDateEnd);
                         });
                 });
             })
 
-            // Searchs Quote Date 
+            // Searchs Quote Date
             ->when($searchQuoteDateStart && $searchQuoteDateEnd, function ($query) use ($searchQuoteDateStart, $searchQuoteDateEnd) {
                 return $query->whereBetween('quote_date', [$searchQuoteDateStart, $searchQuoteDateEnd]);
             })
@@ -102,7 +100,7 @@ class quoteController extends Controller
                 return $query->where('quote_airline', $searchAirline);
             })
             // Search Pax
-            ->when($searchPax && $searchPax != NULL, function ($query) use ($searchPax) {
+            ->when($searchPax && $searchPax != null, function ($query) use ($searchPax) {
                 return $query->where('quote_pax_total', $searchPax);
             })
             // Search Quote Log Status
@@ -134,10 +132,6 @@ class quoteController extends Controller
                 });
             })
 
-
-
-
-
             ->when($searchDateStartCreated && $searchDateEndCreated, function ($query) use ($searchDateStartCreated, $searchDateEndCreated) {
                 return $query->whereBetween('quote_booking_create', [$searchDateStartCreated, $searchDateEndCreated]);
             })
@@ -159,11 +153,7 @@ class quoteController extends Controller
                 // กรณี "รอชำระเงินเต็มจำนวน" หมายถึงแถวล่าสุดของ paymentWholesale เป็น deposit
                 $query->whereHas('paymentWholesale', function ($q) {
                     $q->where('payment_wholesale_id', function ($subquery) {
-                        $subquery->select('payment_wholesale_id')
-                            ->from('payment_wholesale')
-                            ->whereColumn('payment_wholesale.payment_wholesale_quote_id', 'quotation.quote_id')
-                            ->orderBy('payment_wholesale_id', 'desc')
-                            ->limit(1);
+                        $subquery->select('payment_wholesale_id')->from('payment_wholesale')->whereColumn('payment_wholesale.payment_wholesale_quote_id', 'quotation.quote_id')->orderBy('payment_wholesale_id', 'desc')->limit(1);
                     })->where('payment_wholesale_type', 'deposit');
                 });
             })
@@ -171,11 +161,7 @@ class quoteController extends Controller
                 // กรณี "ชำระเงินแล้ว" หมายถึงแถวล่าสุดของ paymentWholesale เป็น full
                 $query->whereHas('paymentWholesale', function ($q) {
                     $q->where('payment_wholesale_id', function ($subquery) {
-                        $subquery->select('payment_wholesale_id')
-                            ->from('payment_wholesale')
-                            ->whereColumn('payment_wholesale.payment_wholesale_quote_id', 'quotation.quote_id')
-                            ->orderBy('payment_wholesale_id', 'desc')
-                            ->limit(1);
+                        $subquery->select('payment_wholesale_id')->from('payment_wholesale')->whereColumn('payment_wholesale.payment_wholesale_quote_id', 'quotation.quote_id')->orderBy('payment_wholesale_id', 'desc')->limit(1);
                     })->where('payment_wholesale_type', 'full');
                 });
             })
@@ -193,16 +179,17 @@ class quoteController extends Controller
             $quotations->setCollection($filtered);
         }
 
-        $statuses = $quotations->map(function ($quotation) {
-            return strip_tags(getQuoteStatusPayment($quotation));
-        })->unique();
+        $statuses = $quotations
+            ->map(function ($quotation) {
+                return strip_tags(getQuoteStatusPayment($quotation));
+            })
+            ->unique();
 
-        $SumPax =  $quotations->sum('quote_pax_total');
-        $SumTotal =  $quotations->sum('quote_grand_total');
+        $SumPax = $quotations->sum('quote_pax_total');
+        $SumTotal = $quotations->sum('quote_grand_total');
 
-        return view('quotations.index', compact('SumTotal','SumPax','airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'statuses'));
+        return view('quotations.index', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'statuses'));
     }
-
 
     public function generateRunningBooking()
     {
@@ -289,20 +276,19 @@ class quoteController extends Controller
         if (!empty($quote)) {
             $quoteCode = $tourcodeOld;
         } else {
-            $quoteCode =  $code . $prefix . date('dmy', strtotime($dateStart)) . '0000';
+            $quoteCode = $code . $prefix . date('dmy', strtotime($dateStart)) . '0000';
         }
 
         $dateStart = date('dmy', strtotime($dateStart));
         $lastFourDigits = substr($quoteCode, -4);
         $incrementedNumber = intval($lastFourDigits);
         $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
-        $runningCode =  $code . $prefix . $dateStart . $newNumber;
+        $runningCode = $code . $prefix . $dateStart . $newNumber;
         return $runningCode;
     }
 
     public function store(Request $request)
     {
-
         $runningBooking = $this->generateRunningBooking();
 
         if (empty($request->quote_bookin)) {
@@ -404,34 +390,45 @@ class quoteController extends Controller
     public function editNew(quotationModel $quotationModel, Request $request)
     {
         $sale = saleModel::where('id', $quotationModel->quote_sale)->first();
-        $customer = customerModel::where('customer_id', $quotationModel->customer_id)->leftjoin('campaign_source', 'campaign_source.campaign_source_id', 'customer.customer_campaign_source')->first();
-        $tour = DB::connection('mysql2')->table('tb_tour')->where('id', $quotationModel->tour_id)->first();
-        $airline = DB::connection('mysql2')->table('tb_travel_type')->select('travel_name')->where('id', $quotationModel->quote_airline)->first();
+        $customer = customerModel::where('customer_id', $quotationModel->customer_id)
+            ->leftjoin('campaign_source', 'campaign_source.campaign_source_id', 'customer.customer_campaign_source')
+            ->first();
+        $tour = DB::connection('mysql2')
+            ->table('tb_tour')
+            ->where('id', $quotationModel->tour_id)
+            ->first();
+        $airline = DB::connection('mysql2')
+            ->table('tb_travel_type')
+            ->select('travel_name')
+            ->where('id', $quotationModel->quote_airline)
+            ->first();
         $wholesale = wholesaleModel::where('id', $quotationModel->quote_wholesale)->first();
         $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)
             ->select('quote_product.*', 'products.product_pax')
-            ->leftjoin('products', 'products.id', 'quote_product.product_id')->get();
+            ->leftjoin('products', 'products.id', 'quote_product.product_id')
+            ->get();
 
-        $quotations = quotationModel::where('quotation.quote_id', $quotationModel->quote_id)->leftjoin('customer', 'customer.customer_id', 'quotation.customer_id')->get();
+        $quotations = quotationModel::where('quotation.quote_id', $quotationModel->quote_id)
+            ->leftjoin('customer', 'customer.customer_id', 'quotation.customer_id')
+            ->get();
 
-        $invoiceModel =  invoiceModel::where('invoice_quote_id', $quotationModel->quote_id)->first();
-
-
+        $invoiceModel = invoiceModel::where('invoice_quote_id', $quotationModel->quote_id)->first();
 
         return view('quotations.form-edit-new', compact('quotationModel', 'customer', 'sale', 'airline', 'wholesale', 'quoteProducts', 'quotations', 'invoiceModel'));
     }
 
     public function editQuote(quotationModel $quotationModel, Request $request)
     {
-        $quotations = quotationModel::where('quotation.quote_id', $quotationModel->quote_id)->leftjoin('customer', 'customer.customer_id', 'quotation.customer_id')->get();
-        $invoices = invoiceModel::where('invoices.invoice_quote_id', $quotationModel->quote_id)->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')->get();
-        $invoicesIds = $invoices->pluck('invoice_id');
-        $taxinvoices = taxinvoiceModel::whereIn('taxinvoices.invoice_id', $invoicesIds)
-            ->leftjoin('invoices', 'invoices.invoice_number', 'taxinvoices.invoice_number')
+        $quotations = quotationModel::where('quotation.quote_id', $quotationModel->quote_id)
+            ->leftjoin('customer', 'customer.customer_id', 'quotation.customer_id')
+            ->get();
+        $invoices = invoiceModel::where('invoices.invoice_quote_id', $quotationModel->quote_id)
             ->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')
             ->get();
+        $invoicesIds = $invoices->pluck('invoice_id');
+        $taxinvoices = taxinvoiceModel::whereIn('taxinvoices.invoice_id', $invoicesIds)->leftjoin('invoices', 'invoices.invoice_number', 'taxinvoices.invoice_number')->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')->get();
 
-        $invoiceModel =  $invoices->first();
+        $invoiceModel = $invoices->first();
 
         $taxinvoiceIds = $taxinvoices->pluck('taxinvoice_number');
         $debits = debitModel::whereIn('debit_taxinvoice_number', $taxinvoiceIds)->get();
@@ -446,8 +443,8 @@ class quoteController extends Controller
             ->leftJoin('products', 'products.id', '=', 'quote_product.product_id')
             ->where('expense_type', 'discount')
             ->get();
-        $document = WithholdingTaxDocument::where('quote_id',$quotationModel->quote_id)->first();
-        return View::make('quotations.quote-table', compact('document','quoteProductsDiscount', 'quoteProducts', 'quotations', 'quotationModel', 'invoices', 'taxinvoices', 'debits', 'invoiceModel'))->render();
+        $document = WithholdingTaxDocument::where('quote_id', $quotationModel->quote_id)->first();
+        return View::make('quotations.quote-table', compact('document', 'quoteProductsDiscount', 'quoteProducts', 'quotations', 'quotationModel', 'invoices', 'taxinvoices', 'debits', 'invoiceModel'))->render();
     }
 
     public function modalEdit(quotationModel $quotationModel, Request $request)
@@ -498,14 +495,6 @@ class quoteController extends Controller
         return view('quotations.modal-copy', compact('campaignSource', 'customer', 'quoteProducts', 'quotationModel', 'sales', 'country', 'airline', 'numDays', 'wholesale', 'products', 'productDiscount', 'quoteProductsDiscount'));
     }
 
-
-
-
-
-
-
-
-
     public function update(quotationModel $quotationModel, Request $request)
     {
         //dd($request);
@@ -524,7 +513,9 @@ class quoteController extends Controller
 
         //dd($runningCodeTourUpdate);
 
-        $checkPaymentTotal = paymentModel::where('payment_quote_id', $quotationModel->quote_id)->where('payment_status', 'success')->sum('payment_total');
+        $checkPaymentTotal = paymentModel::where('payment_quote_id', $quotationModel->quote_id)
+            ->where('payment_status', 'success')
+            ->sum('payment_total');
         $quotePaymentStatus = 'wait';
         if ($checkPaymentTotal >= $quotationModel->quote_grand_total) {
             $quotePaymentStatus = 'success';
@@ -538,9 +529,9 @@ class quoteController extends Controller
 
         $request->merge([
             'quote_withholding_tax_status' => isset($request->quote_withholding_tax_status) ? 'Y' : 'N',
-            'quote_payment_status' =>  $paymentStatus,
-            'quote_status' =>  $quotePaymentStatus,
-            'payment' =>  $checkPaymentTotal,
+            'quote_payment_status' => $paymentStatus,
+            'quote_status' => $quotePaymentStatus,
+            'payment' => $checkPaymentTotal,
         ]);
 
         customerModel::where('customer_id', $request->customer_id)->update([
@@ -576,14 +567,60 @@ class quoteController extends Controller
             }
         }
 
-        return redirect()->route('quote.editNew', $quotationModel->quote_id)->with('success', 'Update Quotation Successfully.');
+        return redirect()
+            ->route('quote.editNew', $quotationModel->quote_id)
+            ->with('success', 'Update Quotation Successfully.');
     }
 
     public function cancel(Request $request, quotationModel $quotationModel)
     {
         $quotationModel->update(['quote_cancel_note' => $request->quote_cancel_note, 'quote_status' => 'cancel']);
+        $invoice = invoiceModel::where('invoice_quote_id', $quotationModel->quote_id)->update(['invoice_status' => 'cancel']);
+        $checkInvioce = invoiceModel::select('invoice_id')
+            ->where('invoice_quote_id', $quotationModel->quote_id)
+            ->first();
+        if ($invoice) {
+            taxinvoiceModel::where('invoice_id', $checkInvioce->invoice_id)->update(['taxinvoice_status' => 'cancel']);
+        }
+
         return redirect()->back();
     }
+
+    public function Recancel(Request $request, quotationModel $quotationModel)
+    {
+        // ตรวจสอบสถานะการชำระเงินก่อน คืนสถานะ
+        $deposit = $quotationModel->GetDeposit();
+        $quotePaymentStatus = $deposit <= 0 ? 'wait' : 'payment';
+        $quoteStatus = $deposit >= $quotationModel->quote_grand_total ? 'success' : 'wait';
+        // อัปเดตข้อมูล quotationModel
+        $quotationModel->update([
+            'payment' => $deposit,
+            'quote_status' => $quoteStatus,
+            'quote_payment_status' => $quotePaymentStatus,
+        ]);
+        //ตรวจสอบว่ามีการเปิดใบแจ้งหนี้หรือยัง
+        $checkInvoice = invoiceModel::select('invoice_id')
+            ->where('invoice_quote_id', $quotationModel->quote_id)
+            ->first();
+        if ($checkInvoice) {
+            // Update สถานะ ใบแจ้งหนี้
+            $checkTaxinvoice = taxinvoiceModel::select('invoice_id')
+                ->where('invoice_id', $checkInvoice->invoice_id)
+                ->first();
+            // Update สถานะ กรณีมีการออกกำกับแล้ว
+            if ($checkTaxinvoice) {
+                taxinvoiceModel::where('invoice_id', $checkInvoice->invoice_id)->update(['taxinvoice_status' => 'success']);
+            }
+        }
+        if ($checkTaxinvoice) {
+            $checkInvoice->update(['invoice_status' => 'success']);
+        } else {
+            $checkInvoice->update(['invoice_status' => 'wait']);
+        }
+
+        return redirect()->back();
+    }
+
     public function modalCancel(quotationModel $quotationModel)
     {
         return view('quotations.modal-cancel', compact('quotationModel'));
@@ -616,7 +653,6 @@ class quoteController extends Controller
         $runningCodeTourUpdate = $this->generateRunningCodeTourUpdate($country->iso2, $request->quote_tour_code_old, $request->quote_date_start, $request->quote_wholesale);
         $request->merge(['quote_tour_code' => $runningCodeTourUpdate]);
         $request->merge(['quote_withholding_tax_status' => isset($request->quote_withholding_tax_status) ? 'Y' : 'N']);
-
 
         customerModel::where('customer_id', $request->customer_id)->update([
             'customer_name' => $request->customer_name,

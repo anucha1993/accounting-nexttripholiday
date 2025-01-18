@@ -58,7 +58,8 @@ class MPDF_taxReceiptController extends Controller
         ->leftjoin('bank','bank.bank_id','payments.payment_bank_number')
         ->latest('payments.payment_id')->first();
         // ดึง HTML จาก Blade Template
-        $html = view('MPDF.mpdf_taxReceipt',compact('texreceipt','payment','paymentDeposit','VatTotal','NonVat','quotationModel','invoiceModel','customer','sale','airline','booking','productLists'))->render();
+        $html1 = view('MPDF.mpdf_taxReceipt',compact('texreceipt','payment','paymentDeposit','VatTotal','NonVat','quotationModel','invoiceModel','customer','sale','airline','booking','productLists'))->render();
+        $html2 = view('MPDF.mpdf_taxReceipt_copy',compact('texreceipt','payment','paymentDeposit','VatTotal','NonVat','quotationModel','invoiceModel','customer','sale','airline','booking','productLists'))->render();
     
         // กำหนดค่าเริ่มต้นของ mPDF และเพิ่มฟอนต์ภาษาไทย
         $mpdf = new \Mpdf\Mpdf([
@@ -74,7 +75,9 @@ class MPDF_taxReceiptController extends Controller
         ]);
         $mpdf->SetMargins(0, 0, 3, 0); // ซ้าย, ขวา, บน, ล่าง (หน่วยเป็นมิลลิเมตร)
         // เขียน HTML ลงใน PDF
-        $mpdf->WriteHTML($html);
+        $mpdf->WriteHTML($html1);
+        $mpdf->AddPage();
+        $mpdf->WriteHTML($html2);
     
         // ส่งออกไฟล์ PDF ไปยังเบราว์เซอร์เพื่อดาวน์โหลด
         return $mpdf->Output('TexReceipt.pdf', 'I'); // 'I' เพื่อแสดงในเบราว์เซอร์

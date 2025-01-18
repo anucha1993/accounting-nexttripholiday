@@ -15,6 +15,7 @@
                 <th>Ref. Number</th>
                 <th>Quote.Ref</th>
                 <th>ชื่อลูกค้า</th>
+                <th>ชื่อโฮลเซล</th>
                 <th>วันที่ออกเอกสาร</th>
                 <th>ยอดชำระ</th>
                 <th>ยอดหัก</th>
@@ -29,6 +30,7 @@
                 <td>{{ $document->ref_number }}</td>
                 <td>{{ $document->quote->quote_number ?? '-' }}</td>
                 <td>{{ $document->customer->customer_name ?? '-' }}</td>
+                <td>{{ $document->wholesale->wholesale_name_th ?? '-' }}</td>
                 <td>{{ date('d/m/Y',strtotime($document->document_date)) }}</td>
                 <td>{{ number_format($document->total_payable,2) }}</td>
                 <td>{{ number_format($document->total_withholding_tax,2) }}</td>

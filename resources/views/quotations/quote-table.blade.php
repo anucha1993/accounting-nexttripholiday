@@ -170,7 +170,7 @@
                     <tbody>
 
                         @forelse ($quotations as $item)
-                            <tr>
+                            <tr {!!$quotationModel->quote_status === 'cancel' ? 'style="background-color: rgb(167, 167, 167)"' : '' !!} >
                                 <td>ใบเสนอราคา</td>
                                 <td>{{ date('d/m/Y', strtotime($quotationModel->created_at)) }}</td>
                                 <td><span class="badge bg-dark">{{ $quotationModel->quote_number }} </span>
@@ -210,7 +210,7 @@
                                 </td>
 
 
-                                <td align="left">
+                                <td align="left" >
 
                                     @if ($quotationModel->quote_status != 'cancel')
                                         @can('edit-quote')
@@ -249,6 +249,8 @@
                                       @if ($quotationModel->quote_status === 'cancel')
                                       <a class="modal-quote-cancel" href="{{ route('quote.modalCancel', $quotationModel->quote_id) }}"><i
                                         class="fas fa-minus-circle text-danger"></i> เหตุผลยกเลิกใบงาน</a>
+                                        <br>
+                                        <a href="{{route('quote.recancel',$quotationModel->quote_id)}}" class="text-white" onclick="return confirm('คุณต้องการนำใบเสนอราคากลับมาใช้ใหม่ใช่ไหม!');" > <i class=" far fa-share-square"></i> นำกลับมาใช้ใหม่</a>
                                       @else
                                       <a class="modal-quote-cancel" href="{{ route('quote.modalCancel', $quotationModel->quote_id) }}"><i
                                         class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
@@ -265,7 +267,7 @@
                         {{-- Invoice table --}}
 
                         @forelse ($invoices as $itemInvoice)
-                            <tr>
+                            <tr {!!$quotationModel->quote_status === 'cancel' ? 'style="background-color: rgb(167, 167, 167)"' : '' !!} >
                                 <td class="text-success">ใบแจ้งหนี้</td>
                                 <td>{{ date('d/m/Y', strtotime($itemInvoice->invoice_date)) }}</td>
                                 <td><span class="badge bg-dark">{{ $itemInvoice->invoice_number }}</span>
@@ -327,9 +329,13 @@
                                     @if ($itemInvoice->invoice_status === 'cancel')
                                     <a class="modal-invoice-cancel" href="{{ route('invoice.modalCancel', $itemInvoice->invoice_id) }}"><i
                                         class="fas fa-minus-circle text-danger"></i>เหตุผลยกเลิกใบงาน</a>
-                                    @else
-                                    <a class="modal-invoice-cancel" href="{{ route('invoice.modalCancel', $itemInvoice->invoice_id) }}"><i
-                                        class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
+                                        <br>
+                                        <a href="{{route('quote.recancel',$quotationModel->quote_id)}}" class="text-white" onclick="return confirm('คุณต้องการนำใบเสนอราคากลับมาใช้ใหม่ใช่ไหม!');" > <i class=" far fa-share-square"></i> นำกลับมาใช้ใหม่</a>
+                                      @else
+                                    {{-- <a class="modal-invoice-cancel" href="{{ route('invoice.modalCancel', $itemInvoice->invoice_id) }}"><i
+                                        class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a> --}}
+                                        <a class="modal-quote-cancel" href="{{ route('quote.modalCancel', $quotationModel->quote_id) }}"><i
+                                            class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
                                     @endif
                                         
                                     @endcan
@@ -341,7 +347,7 @@
                         {{-- taxinvoices table --}}
 
                         @forelse ($taxinvoices as $item)
-                            <tr>
+                            <tr {!!$quotationModel->quote_status === 'cancel' ? 'style="background-color: rgb(167, 167, 167)"' : '' !!} >
                                 <td class="text-primary">ใบกำกับภาษี</td>
                                 <td>{{ date('d/m/Y', strtotime($item->taxinvoice_date)) }}</td>
                                 <td><span class="badge bg-dark">{{ $item->taxinvoice_number }}</span>
@@ -408,10 +414,14 @@
                                     <a class="modal-taxinvoice-cancel"
                                     href="{{ route('taxinvoice.modalCancel', $item->taxinvoice_id) }}"><i
                                         class="fas fa-minus-circle text-danger"></i> เหตุผลยกเลิกใบงาน</a>
-                                    @else
-                                    <a class="modal-taxinvoice-cancel"
+                                        <br>
+                                        <a href="{{route('quote.recancel',$quotationModel->quote_id)}}" class="text-white" onclick="return confirm('คุณต้องการนำใบเสนอราคากลับมาใช้ใหม่ใช่ไหม!');" > <i class=" far fa-share-square"></i> นำกลับมาใช้ใหม่</a>
+                                      @else
+                                    {{-- <a class="modal-taxinvoice-cancel"
                                     href="{{ route('taxinvoice.modalCancel', $item->taxinvoice_id) }}"><i
-                                        class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
+                                        class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a> --}}
+                                        <a class="modal-quote-cancel" href="{{ route('quote.modalCancel', $quotationModel->quote_id) }}"><i
+                                            class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
                                     @endif
                                        
                                     @endcan
