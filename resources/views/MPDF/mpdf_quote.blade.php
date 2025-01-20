@@ -38,9 +38,9 @@
         .text-cancel {
             transform: rotate(45); /* ปรับมุมองศาตามต้องการ */
             position: absolute;
-            top: 400px; /* ปรับตำแหน่งแนวตั้ง */
+            top: 470px; /* ปรับตำแหน่งแนวตั้ง */
             right: auto; /* ปรับตำแหน่งแนวนอน */
-            font-size:90px;
+            font-size:50px;
             color: rgba(255, 0, 0, 0.007);
             display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
             letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
@@ -50,10 +50,12 @@
 </head>
 
 <body style="margin-top: 0px; padding-top: 0;">
-
+    @if ($quotationModel->quote_status === 'cancel')
     <div class="text-cancel">
-       <b>ยกเลิก {{$quotationModel->quote_cancel_note}}</b>
-    </div>
+        <b>ยกเลิก {{$quotationModel->quote_cancel_note}}</b>
+     </div>
+    @endif
+  
 
     {{-- <div style="width: 120%; float: left; padding: 10px;  position: absolute;  top: 300px; right: -375px">
         <img src="{{ asset('logo/text-cancel.png') }}" alt="">

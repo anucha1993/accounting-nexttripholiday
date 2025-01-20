@@ -40,8 +40,17 @@
 
             
         }
-        
-       
+        .text-cancel {
+            transform: rotate(45); /* ปรับมุมองศาตามต้องการ */
+            position: absolute;
+            top: 400px; /* ปรับตำแหน่งแนวตั้ง */
+            right: auto; /* ปรับตำแหน่งแนวนอน */
+            font-size:50px;
+            color: rgba(255, 0, 0, 0.007);
+            display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
+            letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
+            line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
+        } 
        
    
 
@@ -50,6 +59,12 @@
 </head>
 
 <body style="margin-top: 0px; padding-top: 0;">
+    @if ($quotationModel->quote_status === 'cancel')
+    <div class="text-cancel">
+        <b>ยกเลิก {{$quotationModel->quote_cancel_note}}</b>
+     </div>
+    @endif
+
     <header class="content">
         <div style="width: 15%; float: left; padding: 10px;">
             <img src="{{ asset('logo/Logo-docs.png') }}" alt="">
