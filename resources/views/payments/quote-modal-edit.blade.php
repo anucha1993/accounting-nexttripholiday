@@ -21,6 +21,7 @@
                     <select name="payment_type" id="payment-type" class="form-select">
                         <option @if($paymentModel->payment_type === 'deposit') selected @endif value="deposit">ชำระเงินมัดจำ</option>
                         <option @if($paymentModel->payment_type === 'full') selected @endif value="full">ชำระเงินเต็มจำนวน</option>
+                        <option @if($paymentModel->payment_type === 'refund') selected @endif value="refund">คืนเงิน</option>
                     </select>
 
                 </div>

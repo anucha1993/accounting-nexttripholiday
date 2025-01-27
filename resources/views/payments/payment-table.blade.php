@@ -34,7 +34,7 @@
                     <tbody>
                         
                         @forelse ($payments as $key => $item)
-                            <tr>
+                            <tr style="{{$item->payment_type === 'refund' ? "background-color: rgb(250, 163, 163)" :'' }}">
                                 <td>{{ ++$key }}</td>
                                 <td>
                                     {{ $item->payment_number }}
@@ -69,6 +69,7 @@
                                         0
                                     @else
                                          @php
+                                         
                                              $paymentTotal += $item->payment_total - $item->payment_refund_total;
                                          @endphp
                                         {{ number_format($item->payment_total - $item->payment_refund_total , 2, '.', ',') }}
@@ -101,32 +102,49 @@
                                     @else
                                         @if ($item->payment_type === 'deposit')
                                             ชำระมัดจำ
-                                        @else
+                                        @elseif($item->payment_type === 'full')
                                             ชำระเงินเต็มจำนวน
+                                        @elseif($item->payment_type === 'refund')
+                                             คืนเงิน
                                         @endif
                                     @endif
 
 
                                 </td>
                                 <td>
+                                    @if ($item->payment_type !== 'refund')
                                     <a href="{{ route('mpdf.payment', $item->payment_id) }}" onclick="openPdfPopup(this.href); return false;"><i
-                                            class="fa fa-print text-danger"></i> พิมพ์</a>
-
-                                            <a class="dropdown-item " 
-                                            href=""><i
-                                                class="fas fa-envelope text-info"></i>
-                                            ส่งเมล</a>
+                                        class="fa fa-print text-danger"></i> พิมพ์</a>
+                                    @endif
+                                    <a class="dropdown-item " href=""><i class="fas fa-envelope text-info"></i>ส่งเมล</a>
                                 </td>
                                 <td>
-                                    @if ($item->payment_status === 'success')
+
+                                    @if ($item->payment_type === 'refund')
+
+                                    @if ($item->payment_file_path !== NULL)
+                                      <span class="badge rounded-pill bg-success">คืนเงินแล้ว</span>
+                                    @else
+                                    <span class="badge rounded-pill bg-warning">รอคืนเงิน</span>
+   
+                                    @endif
+                                    @endif
+
+
+
+                                    @if ($item->payment_status === 'success' && $item->payment_type !== 'refund')
+                                        
                                         <span class="badge rounded-pill bg-success">Success</span>
                                     @endif
+
+
+
                                     @if ($item->payment_status === 'cancel')
                                         <span class="badge rounded-pill bg-danger">Cancel</span>
                                     @endif
-                                    @if ($item->payment_status === 'refund')
+                                    {{-- @if ($item->payment_status === 'refund')
                                     <span class="badge rounded-pill bg-warning text-dark">คืนเงินลูกค้า</span>
-                                @endif
+                                @endif --}}
 
                                     @if ($item->payment_status === null)
                                         <span class="badge rounded-pill bg-warning">NULL</span>
@@ -141,8 +159,8 @@
 
                                          
 
-                                            <a class="dropdown-item text-primary payment-modal-cancel" href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
-                                                class="fas fa-redo-alt"></i> คืนเงินลูกค้า</a>
+                                            {{-- <a class="dropdown-item text-primary payment-modal-cancel" href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
+                                                class="fas fa-redo-alt"></i> คืนเงินลูกค้า</a> --}}
                                     @else
                                     {{$item->payment_cancel_note}}
                                     @endif
@@ -160,10 +178,11 @@
 
                     
                         <tr>
- 
-                            <td align="right" class="text-success" colspan="7"><b>(@bathText($paymentTotal))</b></td>
-                            <td align="center" class="text-success" ><b>{{number_format($paymentTotal,2)}}</b></td>
-                            <td align="center" class="text-danger" colspan="2"><b>( ยอดค้างชำระ : {{ number_format($quotation->quote_grand_total - $paymentTotal , 2, '.', ',') }} )</b></td>
+                             {{-- {{$quotation->GetDeposit()}} --}}
+
+                            <td align="right" class="text-success" colspan="7"><b>(@bathText($quotation->GetDeposit()- $quotation->Refund()))</b></td>
+                            <td align="center" class="text-success" ><b>{{number_format($quotation->GetDeposit()-$quotation->Refund(),2)}}</b></td>
+                            <td align="center" class="text-danger" colspan="2"><b>( ยอดค้างชำระ : {{ number_format($quotation->quote_grand_total - $quotation->GetDeposit()+$quotation->Refund() , 2, '.', ',') }} )</b></td>
                         </tr>
 
 

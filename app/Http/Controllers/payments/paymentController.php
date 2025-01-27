@@ -34,16 +34,10 @@ class paymentController extends Controller
         // ->leftjoin('bank','bank.bank_id','payments.payment_bank')
         ->where('payment_doc_type','quote')
         ->get();
-        
-        // $paymentDebit = paymentModel::where('payment_quote_id', $quotationModel->debit_number)
-        // ->where('payment_doc_type','debit-note')
-        // ->get();
 
-        // $paymentCredit = paymentModel::where('payment_quote_id', $quotationModel->credit_number)
-        // ->where('payment_doc_type','credit-note')
-        // ->get();
-        
-        return View::make('payments.payment-table',compact('payments','quotationModel','quotation'))->render();
+        $paymentModel = paymentModel::where('payment_quote_id', $quotationModel->quote_id)->first();
+     
+        return View::make('payments.payment-table',compact('payments','quotationModel','quotation','paymentModel'))->render();
     }
 
 

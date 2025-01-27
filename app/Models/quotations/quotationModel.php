@@ -196,14 +196,32 @@ public function calculateNetProfit()
         return $this->hasOne(paymentModel::class, 'payment_quote_id', 'quote_id');
     }
 
+    // public function GetDeposit()
+    // {
+    //     return $this->payment()
+    //         ->where('payment_status', '!=', 'cancel')
+    //         ->get()
+    //         ->sum(function ($payment) {
+    //             return $payment->payment_total - $payment->payment_refund_total;
+    //         });
+    // }
+
     public function GetDeposit()
     {
         return $this->payment()
             ->where('payment_status', '!=', 'cancel')
             ->get()
-            ->sum(function ($payment) {
-                return $payment->payment_total - $payment->payment_refund_total;
-            });
+            ->sum('payment_total');
+    }
+
+    public function Refund()
+    {
+        return $this->payment()
+            ->where('payment_status', '!=', 'cancel')
+            ->where('payment_type', '=', 'refund')
+            ->where('payment_file_path', '!=', NULL)
+            ->get()
+            ->sum('payment_total');
     }
 
     // // Accessor เพื่อดึงข้อมูล country public function GetDeposit()

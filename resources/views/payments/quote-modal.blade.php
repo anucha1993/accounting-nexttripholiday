@@ -19,6 +19,7 @@
                     <select name="payment_type" id="payment-type" class="form-select">
                         <option {{$paymentType === 'deposit' ? 'selected' : '' }} value="deposit">ชำระเงินมัดจำ</option>
                         <option {{$paymentType === 'full' ? 'selected' : '' }} value="full">ชำระเงินเต็มจำนวน</option>
+                        <option {{$paymentType === 'refund' ? 'selected' : '' }} value="refund">คืนเงิน</option>
                     </select>
                 </div>
                 <div class="col-md-3 mt-3">
