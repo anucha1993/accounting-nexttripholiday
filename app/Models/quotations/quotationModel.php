@@ -210,6 +210,7 @@ public function calculateNetProfit()
     {
         return $this->payment()
             ->where('payment_status', '!=', 'cancel')
+            ->where('payment_type', '!=', 'refund')
             ->get()
             ->sum('payment_total');
     }

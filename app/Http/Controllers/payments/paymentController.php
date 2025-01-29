@@ -132,7 +132,16 @@ class paymentController extends Controller
 
     public function cancelModal(paymentModel $paymentModel)
     {
-        return view('payments.camcel-payment',compact('paymentModel'));
+        return view('payments.cancel-payment',compact('paymentModel'));
+    }
+
+
+    public function RefreshCancel(paymentModel $paymentModel)
+    {
+       
+    
+        $paymentModel->update(['payment_status'=>'success']);
+        return redirect()->back();
     }
 
     public function cancel(paymentModel $paymentModel, Request $request)

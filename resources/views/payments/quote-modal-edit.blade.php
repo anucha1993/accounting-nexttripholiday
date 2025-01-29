@@ -17,13 +17,11 @@
 
                 <div class="col-md-3 mt-3">
                     <label>การชำระเงิน </label>
-
                     <select name="payment_type" id="payment-type" class="form-select">
                         <option @if($paymentModel->payment_type === 'deposit') selected @endif value="deposit">ชำระเงินมัดจำ</option>
                         <option @if($paymentModel->payment_type === 'full') selected @endif value="full">ชำระเงินเต็มจำนวน</option>
                         <option @if($paymentModel->payment_type === 'refund') selected @endif value="refund">คืนเงิน</option>
                     </select>
-
                 </div>
 
                 <div class="col-md-3 mt-3">
@@ -35,8 +33,8 @@
                         <option  @if($paymentModel->payment_method === 'check') selected @endif value="check">เช็คธนาคาร</option>
                         <option  @if($paymentModel->payment_method === 'credit') selected @endif value="credit">บัตรเครดิต</option>
                     </select>
-                    
-                </div>
+                </div> 
+
                 <div class="col-md-3 mt-3">
                     <label>วันที่ชำะเงิน</label>
                     <input type="datetime-local" name="payment_in_date" class="form-control" value="{{$paymentModel->payment_in_date}}">
@@ -45,7 +43,7 @@
             </div>
             {{-- โอนเงินเข้าบัญชี  transfer-money --}}
             <div class="row mt-3" id="transfer-money" style="display: none">
-                <div class="col-md-3 mt-3">
+                <div class="col-md-3">
                     <label>ธนาคาร</label>
                     <select name="payment_bank_number" id="bank-number" class="form-select">
                         <option value="">--กรุณาเลือก--</option>
@@ -58,16 +56,29 @@
                        
                     </select>
                 </div>
-                {{-- <div class="col-md-3 mt-3">
-                    <label for="">วันที่โอนเงิน</label>
-                    <input type="datetime-local" name="payment_date_time" class="form-control" value="{{$paymentModel->payment_date_time}}">
-                </div> --}}
+
+                <div class="col-md-3" id="payment-account">
+                    <label>เลขบัญชีลูกค้า</label>
+                    <input type="text" class="form-control" name="payment_bank_customer_number" placeholder="เลขบัญชีลูกค้า" value="{{$paymentModel->payment_bank_customer_number}}">
+                </div>
+
             </div>
+
+
+            {{-- <div class="row mt-2" style="display: none" id="payment-account">
+                <div class="col-md-3">
+                    <label>เลขบัญชีลูกค้า</label>
+                    <input type="text" class="form-control" name="payment_bank_customer_number" placeholder="เลขบัญชีลูกค้า" value="{{$paymentModel->payment_bank_customer_number}}">
+                </div>
+            </div> --}}
+
+         
+
 
             {{-- เช็คธนาคาร check --}}
             <div class="row mt-3" id="check" style="display: none">
                <div class="col-md-3">
-                <label for="">ธนาคารs</label>
+                <label for="">ธนาคาร</label>
                 <select name="payment_bank" id="bank" class="form-select">
                     <option value="">--กรุณาเลือก--</option>
                         @forelse ($bank as $item)
@@ -95,19 +106,28 @@
                 </div>
             </div>
             <br>
+
             <label for="">แนบไฟล์เอกสาร</label></br>
-          
+            @if ($paymentModel->payment_file_path)
             <a href="{{ asset('storage/' . $paymentModel->payment_file_path) }}"  onclick="openPdfPopup(this.href); return false;"><i
                 class="fa fa-file text-danger"></i> {{$paymentModel->payment_file_path}}</a>
-
-                <a href="#"></a>
+            @else
+                ไม่มีไฟล์แนบ
+            @endif
         
+                
+    
             <div class="row mt-3">
                 <div class="col-md-3">
                     <label for="">แนบไฟล์ใหม่</label></br>
                     <input type="file" name="payment_file">
                 </div>
+
+                
             </div>
+
+            
+            
             
     
             <div class="row">
@@ -141,6 +161,24 @@
 
     $('#payment-method').on('change', function() {
         payment() 
+    });
+});
+
+$(document).ready(function () {
+    paymentAccount()
+  function paymentAccount() {
+     var paymentType = $('#payment-type').val();
+     if(paymentType === 'refund') {
+        $('#payment-account').show();
+     }else{
+        $('#payment-account').hide();
+     }
+     
+     
+  }
+
+  $('#payment-type').on('change', function() {
+    paymentAccount()
     });
 });
 

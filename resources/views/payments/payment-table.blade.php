@@ -119,35 +119,22 @@
                                     <a class="dropdown-item " href=""><i class="fas fa-envelope text-info"></i>ส่งเมล</a>
                                 </td>
                                 <td>
-
+                                    @if ($item->payment_status === 'cancel')
+                                    <span class="badge rounded-pill bg-danger">Cancel</span>
+                                    @else
+                                    @if ($item->payment_status === 'success' && $item->payment_type !== 'refund')
+                                        <span class="badge rounded-pill bg-success">Success</span>
+                                    @endif
                                     @if ($item->payment_type === 'refund')
-
                                     @if ($item->payment_file_path !== NULL)
                                       <span class="badge rounded-pill bg-success">คืนเงินแล้ว</span>
                                     @else
                                     <span class="badge rounded-pill bg-warning">รอคืนเงิน</span>
-   
                                     @endif
                                     @endif
-
-
-
-                                    @if ($item->payment_status === 'success' && $item->payment_type !== 'refund')
-                                        
-                                        <span class="badge rounded-pill bg-success">Success</span>
-                                    @endif
-
-
-
-                                    @if ($item->payment_status === 'cancel')
-                                        <span class="badge rounded-pill bg-danger">Cancel</span>
-                                    @endif
-                                    {{-- @if ($item->payment_status === 'refund')
-                                    <span class="badge rounded-pill bg-warning text-dark">คืนเงินลูกค้า</span>
-                                @endif --}}
-
                                     @if ($item->payment_status === null)
                                         <span class="badge rounded-pill bg-warning">NULL</span>
+                                    @endif
                                     @endif
                                 </td>
                                 <td>
@@ -159,10 +146,16 @@
 
                                          
 
-                                            {{-- <a class="dropdown-item text-primary payment-modal-cancel" href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
-                                                class="fas fa-redo-alt"></i> คืนเงินลูกค้า</a> --}}
+                                     <a class="dropdown-item text-danger payment-modal-cancel" href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
+                                                class=" fas fa-minus-circle"></i> ยกเลิก</a>
+
+                                     
+                                                
+
                                     @else
                                     {{$item->payment_cancel_note}}
+
+                                    <a href="{{route('payment.RefreshCancel',$item->payment_id)}}" class="dropdown-item text-primary" onclick="return confirm('ยืนยันการคืนสถานะ');"> <i class="fas fa-recycle"></i> นำกลับมาใช้ใหม่ </a>
                                     @endif
 
                                     <a href="{{route('payment.delete',$item->payment_id)}}" onclick="return confirm('ยืนยันการลบ');"><i class="fa fa-trash text-danger"></i> ลบ</a>
@@ -178,10 +171,11 @@
 
                     
                         <tr>
-                             {{-- {{$quotation->GetDeposit()}} --}}
+                             {{-- {{$quotation->GetDeposit()}}
+                             {{$quotation->Refund()}} --}}
 
                             <td align="right" class="text-success" colspan="7"><b>(@bathText($quotation->GetDeposit()- $quotation->Refund()))</b></td>
-                            <td align="center" class="text-success" ><b>{{number_format($quotation->GetDeposit()-$quotation->Refund(),2)}}</b></td>
+                            <td align="center" class="text-success" ><b>{{number_format($quotation->GetDeposit()- $quotation->Refund(),2)}}</b></td>
                             <td align="center" class="text-danger" colspan="2"><b>( ยอดค้างชำระ : {{ number_format($quotation->quote_grand_total - $quotation->GetDeposit()+$quotation->Refund() , 2, '.', ',') }} )</b></td>
                         </tr>
 

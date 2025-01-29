@@ -41,7 +41,7 @@
             </div>
             {{-- โอนเงินเข้าบัญชี  transfer-money --}}
             <div class="row mt-3" id="transfer-money" style="display: none">
-                <div class="col-md-3 mt-3">
+                <div class="col-md-3 ">
                     <label>ธนาคาร</label>
                     <select name="payment_bank_number" id="bank-number" class="form-select">
                         <option value="">--กรุณาเลือก--</option>
@@ -52,11 +52,25 @@
                         @endforelse
                     </select>
                 </div>
-                {{-- <div class="col-md-3 mt-3">
-                    <label for="">วันที่โอนเงิน</label>
-                    <input type="datetime-local" name="payment_date_time" class="form-control">
-                </div> --}}
+
+                <div class="col-md-3" id="payment-account">
+                    <label>เลขบัญชีลูกค้า</label>
+                    <input type="text" class="form-control" name="payment_bank_customer_number" placeholder="เลขบัญชีลูกค้า">
+                </div>
+
+            
             </div>
+
+
+            {{-- <div class="row mt-2" style="display: none" id="payment-account">
+               
+                <div class="col-md-3">
+                    <label>เลขบัญชีลูกค้า</label>
+                    <input type="text" class="form-control" name="payment_bank_customer_number" placeholder="เลขบัญชีลูกค้า">
+                </div>
+
+            </div> --}}
+
 
             {{-- เช็คธนาคาร check --}}
             <div class="row mt-3" id="check" style="display: none">
@@ -123,6 +137,25 @@
         }
     });
 });
+
+$(document).ready(function () {
+    paymentAccount()
+  function paymentAccount() {
+     var paymentType = $('#payment-type').val();
+     if(paymentType === 'refund') {
+        $('#payment-account').show();
+     }else{
+        $('#payment-account').hide();
+     }
+     
+     
+  }
+
+  $('#payment-type').on('change', function() {
+    paymentAccount()
+    });
+});
+
 
 
 

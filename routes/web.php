@@ -187,6 +187,7 @@ Route::get('payments/edit/{paymentModel}',[paymentController::class,'edit'])->na
 Route::put('payments/update/{paymentModel}',[paymentController::class,'update'])->name('payment.update');
 Route::get('payments/cancelModal/{paymentModel}',[paymentController::class,'cancelModal'])->name('payment.cancelModal');
 Route::get('payments/delete/{paymentModel}',[paymentController::class,'delete'])->name('payment.delete');
+Route::get('payments/refresh/cancel/{paymentModel}',[paymentController::class,'RefreshCancel'])->name('payment.RefreshCancel');
 
 Route::get('payment/quotation/{quotationModel}',[paymentController::class,'quotation'])->name('payment.quotation');
 Route::put('payment/cancel/{paymentModel}',[paymentController::class,'cancel'])->name('payment.cancel');
