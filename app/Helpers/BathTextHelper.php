@@ -23,33 +23,73 @@ class BathTextHelper
                               return $bahtText;
                }
 
-               private static function readNumber($number)
-               {
-                              $units = ['', 'หนึ่ง', 'สอง', 'สาม', 'สี่', 'ห้า', 'หก', 'เจ็ด', 'แปด', 'เก้า'];
-                              $levels = ['', 'สิบ', 'ร้อย', 'พัน', 'หมื่น', 'แสน', 'ล้าน'];
+            //    private static function readNumber($number)
+            //    {
+            //                   $units = ['', 'หนึ่ง', 'สอง', 'สาม', 'สี่', 'ห้า', 'หก', 'เจ็ด', 'แปด', 'เก้า'];
+            //                   $levels = ['', 'สิบ', 'ร้อย', 'พัน', 'หมื่น', 'แสน', 'ล้าน'];
 
-                              $number = strval(intval($number));
-                              $bahtText = '';
-                              $numberLength = strlen($number);
+            //                   $number = strval(intval($number));
+            //                   $bahtText = '';
+            //                   $numberLength = strlen($number);
 
-                              for ($i = 0; $i < $numberLength; $i++) {
-                                             $digit = $number[$numberLength - $i - 1];
-                                             $unit = $units[$digit];
-                                             $level = $levels[$i % 6];
+            //                   for ($i = 0; $i < $numberLength; $i++) {
+            //                                  $digit = $number[$numberLength - $i - 1];
+            //                                  $unit = $units[$digit];
+            //                                  $level = $levels[$i % 6];
 
-                                             if ($digit == 1 && $i % 6 == 1) {
-                                                            $unit = 'สิบ';
-                                             } elseif ($digit == 2 && $i % 6 == 1) {
-                                                            $unit = 'ยี่สิบ';
-                                             } elseif ($digit == 1 && $i % 6 == 0 && $i > 0) {
-                                                            $unit = 'เอ็ด';
-                                             }
+            //                                  if ($digit == 1 && $i % 6 == 1) {
+            //                                                 $unit = 'สิบ';
+            //                                  } elseif ($digit == 2 && $i % 6 == 1) {
+            //                                                 $unit = 'ยี่สิบ';
+            //                                  } elseif ($digit == 1 && $i % 6 == 0 && $i > 0) {
+            //                                                 $unit = 'เอ็ด';
+            //                                  }
 
-                                             if ($unit !== '') {
-                                                            $bahtText = $unit . $level . $bahtText;
-                                             }
-                              }
+            //                                  if ($unit !== '') {
+            //                                                 $bahtText = $unit . $level . $bahtText;
+            //                                  }
+            //                   }
 
-                              return $bahtText;
-               }
+            //                   return $bahtText;
+            //    }
+
+            private static function readNumber($number)
+{
+    $units = ['', 'หนึ่ง', 'สอง', 'สาม', 'สี่', 'ห้า', 'หก', 'เจ็ด', 'แปด', 'เก้า'];
+    $levels = ['', 'สิบ', 'ร้อย', 'พัน', 'หมื่น', 'แสน', 'ล้าน'];
+
+    $isNegative = false;
+    if (substr($number, 0, 1) === '-') {
+        $isNegative = true;
+        $number = substr($number, 1);
+    }
+
+    $number = strval(intval($number));
+    $bahtText = '';
+    $numberLength = strlen($number);
+
+    for ($i = 0; $i < $numberLength; $i++) {
+        $digit = $number[$numberLength - $i - 1];
+        $unit = $units[$digit];
+        $level = $levels[$i % 6];
+
+        if ($digit == 1 && $i % 6 == 1) {
+            $unit = 'สิบ';
+        } elseif ($digit == 2 && $i % 6 == 1) {
+            $unit = 'ยี่สิบ';
+        } elseif ($digit == 1 && $i % 6 == 0 && $i > 0) {
+            $unit = 'เอ็ด';
+        }
+
+        if ($unit !== '') {
+            $bahtText = $unit . $level . $bahtText;
+        }
+    }
+
+    if ($isNegative) {
+        $bahtText = 'ลบ' . $bahtText;
+    }
+
+    return $bahtText;
+}
 }

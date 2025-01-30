@@ -185,7 +185,7 @@
                                         <tr>
                                             <td align="right" class="text-info">ราคารวมสุทธิ :</td>
                                             <td align="align-center" style="font-size: 28px">&nbsp; <b
-                                                    class="text-danger">{{number_format($quotationModel->GetDeposit(), 2, '.', ',') }}
+                                                    class="text-danger">{{number_format($quotationModel->quote_grand_total, 2, '.', ',') }}
                                                     .-</b></td>
                                         </tr>
                                         <tr>

@@ -138,7 +138,6 @@ class paymentController extends Controller
 
     public function RefreshCancel(paymentModel $paymentModel)
     {
-       
     
         $paymentModel->update(['payment_status'=>'success']);
         return redirect()->back();

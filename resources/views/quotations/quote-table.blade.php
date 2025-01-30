@@ -182,10 +182,10 @@
                                         $incomeTotal += $quotationModel->quote_grand_total
                                     @endphp
                                     {{ number_format($quotationModel->quote_grand_total, 2, '.', ',') }}</td>
-                                <td align="center">{{ number_format($quotationModel->GetDeposit(), 2, '.', ',') }}
+                                <td align="center">{{ number_format($quotationModel->GetDeposit()- $quotationModel->Refund(), 2, '.', ',') }}
                                 </td>
                                 <td align="center">
-                                    {{ number_format($quotationModel->quote_grand_total - $quotationModel->GetDeposit(), 2, '.', ',') }}
+                                    {{ number_format($quotationModel->quote_grand_total - $quotationModel->GetDeposit()+$quotationModel->Refund() , 2, '.', ',') }}
                                 </td>
                                 <td align="center">
                                     @if ($item->quote_withholding_tax_status === 'Y')
