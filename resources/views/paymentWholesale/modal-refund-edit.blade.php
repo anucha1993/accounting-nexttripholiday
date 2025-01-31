@@ -22,6 +22,9 @@
             <div class="col-md-3">
                 <label>หลักฐานการคืนยอด</label>
                 <input type="file" name="file">
+                <input type="file" name="file1">
+                <input type="file" name="file2">
+
             </div>
         </div>
    

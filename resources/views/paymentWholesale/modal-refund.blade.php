@@ -7,12 +7,6 @@
         @csrf
         @method('PUT')
 
-        {{-- <div class="row">
-           <div class="col">
-            <label>สาเหตุระบุ :</label>
-            <textarea name="payment_wholesale_refund_note" class="form-control" cols="30" rows="3">{{$paymentWholesaleModel->payment_wholesale_refund_note}}</textarea>
-           </div>
-        </div> --}}
 
         <div class="row">
             <div class="col-md-3">
