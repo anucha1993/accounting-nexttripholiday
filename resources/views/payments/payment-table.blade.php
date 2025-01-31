@@ -85,14 +85,14 @@
                                         -
                                     @endif
 
-                                    @if ($item->payment_status === 'cancel' || $item->payment_status === 'refund')
+                                    {{-- @if ($item->payment_status === 'cancel' || $item->payment_status === 'refund')
 
                                     <a href="{{ asset('storage/' . $item->payment_cancel_file_path) }}" class="dropdown-item"
                                         onclick="openPdfPopup(this.href); return false;"><i
                                             class="fa fa-file text-danger"></i> สลิปคืนเงิน</a>
                                     @else
 
-                                    @endif
+                                    @endif --}}
 
                                 </td>
                                 <td>
@@ -144,14 +144,7 @@
                                                 class="fa fa-edit text-info"></i>
                                             แก้ไข</a>
 
-                                         
-
-                                     <a class="dropdown-item text-danger payment-modal-cancel" href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
-                                                class=" fas fa-minus-circle"></i> ยกเลิก</a>
-
-                                     
-                                                
-
+                                     <a class="dropdown-item text-danger payment-modal-cancel" href="{{ route('payment.cancelModal', $item->payment_id) }}"><i class=" fas fa-minus-circle"></i> ยกเลิก</a>
                                     @else
                                     {{$item->payment_cancel_note}}
 
