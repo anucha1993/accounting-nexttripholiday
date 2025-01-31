@@ -33,7 +33,7 @@
                     </select>
                     
                 </div>
-                <div class="col-md-3 mt-3">
+                <div class="col-md-3 mt-3" id="payment-in-date">
                     <label>วันที่ชำะเงิน</label>
                     <input type="datetime-local" name="payment_in_date" class="form-control">
                 </div>
@@ -60,16 +60,6 @@
 
             
             </div>
-
-
-            {{-- <div class="row mt-2" style="display: none" id="payment-account">
-               
-                <div class="col-md-3">
-                    <label>เลขบัญชีลูกค้า</label>
-                    <input type="text" class="form-control" name="payment_bank_customer_number" placeholder="เลขบัญชีลูกค้า">
-                </div>
-
-            </div> --}}
 
 
             {{-- เช็คธนาคาร check --}}
@@ -101,7 +91,7 @@
                 </div>
             </div>
 
-            <div class="row mt-3">
+            <div class="row mt-3" id="payment-file">
                 <div class="col-md-3">
                     <label for="">แนบไฟล์เอกสาร</label>
                     <input type="file" name="payment_file">
@@ -144,8 +134,12 @@ $(document).ready(function () {
      var paymentType = $('#payment-type').val();
      if(paymentType === 'refund') {
         $('#payment-account').show();
+        $('#payment-in-date').hide();
+        $('#payment-file').hide();
      }else{
         $('#payment-account').hide();
+        $('#payment-in-date').show();
+        $('#payment-file').show();
      }
      
      

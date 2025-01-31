@@ -221,84 +221,9 @@
                                             <td align="right" class="text-info">สถานะการชำระเงิน :</td>
                                             <td>
                                                 {!! getQuoteStatusPayment($quotationModel) !!}
-                                                {{-- @php
-                                                    use Carbon\Carbon;
-
-                                                    // กำหนดวันที่ปัจจุบัน
-                                                    $now = Carbon::now();
-
-                                                    // กำหนดสถานะเริ่มต้น
-                                                    $status = '';
-
-                                                    // ตรวจสอบสถานะการสั่งซื้อ
-                                                    if ($quotationModel->quote_status === 'cancel') {
-                                                        $status =
-                                                            '<span class="badge rounded-pill bg-danger">ยกเลิกการสั่งซื้อ</span>';
-                                                    } elseif ($quotationModel->quote_status === 'success') {
-                                                        $status =
-                                                            '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>';
-                                                    } elseif ($quotationModel->payment > 0) {
-                                                        // หากมีการชำระเงินมัดจำแล้ว
-                                                        $status =
-                                                            '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
-                                                    } elseif ($quotationModel->quote_payment_type === 'deposit') {
-                                                        // ตรวจสอบกำหนดชำระเงินมัดจำ
-                                                        if (
-                                                            $now->gt(Carbon::parse($quotationModel->quote_payment_date))
-                                                        ) {
-                                                            $status =
-                                                                '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
-                                                        } else {
-                                                            $status =
-                                                                '<span class="badge rounded-pill bg-warning text-dark"">รอชำระเงินมัดจำ</span>';
-                                                        }
-                                                    } elseif ($quotationModel->quote_payment_type === 'full') {
-                                                        // ตรวจสอบกำหนดชำระเงินเต็มจำนวน
-                                                        if (
-                                                            $now->gt(
-                                                                Carbon::parse($quotationModel->quote_payment_date_full),
-                                                            )
-                                                        ) {
-                                                            $status =
-                                                                '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
-                                                        } else {
-                                                            $status =
-                                                                '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
-                                                        }
-                                                    } else {
-                                                        // กรณีที่ไม่ตรงเงื่อนไขใดๆ
-                                                        $status =
-                                                            '<span class="badge rounded-pill bg-secondary">สถานะไม่ระบุ</span>';
-                                                    }
-                                                @endphp
-
-                                                {!! $status !!} --}}
+                                                
                                             </td>
-
                                         </tr>
-
-                                        {{-- <tr>
-                                            <td align="right" class="text-info">สถานะการชำระเงิน :</td>
-                                            <td>&nbsp;
-                                                @if ($quotationModel->quote_payment_status === null)
-                                                <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
-                                            @endif
-                                                @if ($quotationModel->quote_payment_status === 'wait')
-                                                    <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
-                                                @endif
-                                                @if ($quotationModel->quote_payment_status === 'success')
-                                                    <span class="badge rounded-pill bg-success">ชำระเงินครบจำนวนแล้ว</span>
-                                                @endif
-                                                @if ($quotationModel->quote_payment_status === 'cancel')
-                                                    <span class="badge rounded-pill bg-danger">ยกเลิก</span>
-                                                @endif
-                                                @if ($quotationModel->quote_payment_status === 'payment')
-                                                    <span class="badge rounded-pill bg-warning">ชำระมัดจำแล้ว</span>
-                                                @endif
-
-                                            </td>
-                                        </tr> --}}
-
                                     </tbody>
                                 </table>
                             </div>
@@ -312,56 +237,26 @@
             <div class="col-md-3">
                 <div class="card">
                     <div class="card-body">
-
-                        {{-- <a href="{{ route('mpdf.quote', $quotationModel->quote_id) }}"
-                            onclick="openPdfPopup(this.href); return false;"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 quote-table">
-                            <i data-feather="printer" class="feather-sm fill-white me-2 text-danger"></i>
-                            พิมพ์ใบเสนอราคา
-                        </a>
-
-                        <a href="{{ route('invoice.create', $quotationModel->quote_id) }}"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 modal-invoice">
-                            <i data-feather="folder-plus" class="feather-sm fill-white me-2 text-success"></i>
-                            ออกใบแจ้งหนี้
-                        </a> --}}
-
-
                         <a href="{{ route('quote.modalEditCopy', $quotationModel->quote_id) }}"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 modal-quote-copy">
                             <i data-feather="repeat" class="feather-sm fill-white me-2 text-info"></i>
                             คัดลอกใบเสนอราคา
                         </a>
-
                         <a href="{{ route('payment.quotation', $quotationModel->quote_id) }}"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 invoice-modal">
                             <i data-feather="dollar-sign" class="feather-sm fill-white me-2 text-success"></i>
                             แจ้งชำระเงิน
                         </a>
-
-
-                        {{-- 
-                        <button type="button"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
-                            <i data-feather="file" class="feather-sm fill-white me-2 text-info"></i>
-                            ยกเลิกใบเสนอราคา
-                        </button> --}}
-
                         <a href="{{ route('paymentWholesale.quote', $quotationModel->quote_id) }}"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 payment-wholesale">
                             <i data-feather="dollar-sign" class="feather-sm fill-white me-2 "></i>
                             แจ้งชำระเงินโฮลเซลล์
                         </a>
-
-
                         <a href="{{ route('inputtax.createWholesale', $quotationModel->quote_id) }}"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-primary d-flex align-items-center mb-3 modal-input-tax ">
                             <i data-feather="file-minus" class="feather-sm fill-white me-2 "></i>
                             บันทึกภาษีซื้อ , ต้นทุนอื่นๆ
                         </a>
-
-
-
                         @php
                             use Illuminate\Support\Facades\Crypt;
                             $encryptedId = Crypt::encryptString($quotationModel->quote_id);
@@ -371,48 +266,32 @@
                             <i data-feather="link" class="feather-sm fill-white me-2 text-info"></i>
                             Share
                         </a>
-
                         <a href="{{ route('quoteLog.index', $quotationModel->quote_id) }}"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-success d-flex align-items-center mb-3 modal-quote-check ">
                             <i data-feather="align-justify" class="feather-sm fill-white me-2 "></i>
                             Check List
                         </a>
-
                         <a href="{{ route('inputtax.inputtaxCreateWholesale', $quotationModel->quote_id) }}"
                             class="justify-content-left w-100 btn btn-rounded btn-outline-warning d-flex align-items-center mb-3 modal-inputtax-wholesale">
                             <i data-feather="percent" class="feather-sm fill-white me-2 "></i>
                             ต้นทุนโฮลเซลล์
                         </a>
-
-                        {{-- <a href="{{ route('withholding.createModal',$quotationModel->quote_id) }}"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-danger d-flex align-items-center mb-3 modal-inputtax-wholesale">
-                            <i  class="fas fa-book fill-white me-2 "></i>
-                            ออกใบหัก ณ ที่จ่าย
-                        </a> --}}
-
                     </div>
-
                     <div class="card-body">
-
                         @php
                         $paymentCustomer = 0;
                         $paymentWhosale = 0;
                         $paymentInputtaxTotal = 0;
                         $TotalPayment = 0;
                         $TotalGrand = 0;
-                    
                         // เรียกข้อมูลการฝากเงินของลูกค้า
                         $paymentCustomer = $quotationModel->GetDeposit();
-                    
                         // เรียกข้อมูลการฝากเงินของผู้ค้าส่ง
                         $paymentWhosale = $quotationModel->GetDepositWholesale();
-                    
                         $withholdingTaxAmount = $invoiceModel?->getWithholdingTaxAmountAttribute() ?? 0;
                         $getTotalInputTaxVat = $quotationModel?->getTotalInputTaxVat() ?? 0;
-                    
                         // ตรวจสอบว่า input_tax_file === NULL หรือไม่
                         $hasInputTaxFile = $quotationModel->InputTaxVat()->whereNotNull('input_tax_file')->exists();
-                    
                         if ($hasInputTaxFile) {
                             // กรณี input_tax_file !== NULL
                             $paymentInputtaxTotal = $withholdingTaxAmount - $getTotalInputTaxVat;
@@ -420,15 +299,12 @@
                             // กรณี input_tax_file === NULL
                             $paymentInputtaxTotal = $withholdingTaxAmount + $getTotalInputTaxVat;
                         }
-                    
                         // คำนวณยอดรวม
                         $invoiceVatAmount = $quotationModel->invoicetaxTotal() + $paymentInputtaxTotal;
                         $TotalPayment = $paymentCustomer - $paymentWhosale;
                         $TotalGrand = $TotalPayment - $paymentInputtaxTotal;
                     @endphp
-                    
                         {{-- {{$paymentInputtaxTotal}} --}}
-
                         <h5 class="card-title">คำนวนกำไรขั้นต้น</h5>
                         <hr/>
                         <span class="float-end"> ยอดรวมต้นทุนโฮลเซลล์: {{ number_format($quotationModel->inputtaxTotalWholesale(), 2) }}</span><br>
@@ -437,7 +313,6 @@
                         <span class="float-end"> กำไร : {{ number_format($TotalPayment, 2) }}</span><br>               
                         <span class="float-end"> กำไรสุทธิ: {{ number_format($TotalGrand, 2) }} </span><br>
                         <hr />
-                      
                     </div>
                 </div>
             </div>

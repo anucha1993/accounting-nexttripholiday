@@ -44,7 +44,6 @@ class paymentController extends Controller
     public function quotation(quotationModel $quotationModel, Request $request)
     {
         $bank = bankModel::where('bank_status','active')->get();
-
         $bankCompany = bankCompanyModel::where('bank_company_status','active')->get();
         $totaPayment = 0 ;
         $paymentType = '';
@@ -60,11 +59,8 @@ class paymentController extends Controller
             $totaPayment = $quotationModel->quote_grand_total - $quotationModel->payment;
             $paymentType = 'full';
         }
-        
         return view('payments.quote-modal', compact('quotationModel','bank','bankCompany','totaPayment','paymentType'));
     }
-
-
       // function Runnumber Payment
       public function generateRunningCodePM()
       {
@@ -88,11 +84,9 @@ class paymentController extends Controller
     {
         // ตรวจสอบข้อมูลที่รับมาจาก request
         $quote = quotationModel::where('quote_number', $request->payment_doc_number)->first();
-
         $request->merge([
             'payment_number' => $this->generateRunningCodePM(),
         ]);
-
         $paymentModel = paymentModel::create($request->all());
         // สร้างพาธที่ถูกต้อง
         $folderPath = 'public/' . $quote->customer_id . '/' . $quote->quote_number;
@@ -102,7 +96,6 @@ class paymentController extends Controller
              File::makeDirectory($absolutePath, 0775, true);
         }
         $file = $request->file('payment_file');
-
         if ($file) {
             $extension = $file->getClientOriginalExtension(); // นามสกุลไฟล์
             $uniqueName = $paymentModel->payment_id . '_' . $paymentModel->payment_doc_number . '_' . date('Ymd') . '.' . $extension;
@@ -110,23 +103,52 @@ class paymentController extends Controller
 
             // ย้ายไฟล์ไปยังตำแหน่งที่ต้องการ
             $file->move($absolutePath, $uniqueName);
-
             // อัปเดตพาธไฟล์ในฐานข้อมูล
             $paymentModel->update(['payment_file_path' => $filePath]);
         }
-
         // การจัดการการชำระเงิน
         $totalOld = $quote->payment !== NULL ? $quote->payment : 0;
         $total = $totalOld + $request->payment_total;
         quotationModel::where('quote_number', $request->payment_doc_number)->update(['payment' => $total]);
-
         // การอัปเดตสถานะของใบเสนอราคา
         if ($total >= $quote->quote_grand_total) {
             quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_status' => 'success','quote_payment_status' => 'success']);
         } else {
             quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_payment_status' => 'payment']);
         }
+        //check Status Payment Quotations
+        $paymentStatus = 'refund';
+        if($request->payment_total <= 0){
+            $paymentStatus = 'cancel';
+        }
+        $request->merge([
+            'payment_status' => $paymentStatus,
+        ]);
+        $paymentModel->update($request->all());
+        // quote
+        $quotationModel = quotationModel::where('quote_id', $paymentModel->payment_quote_id)->first();
+        $deposit = $quotationModel->GetDeposit()- $quotationModel->Refund();
+        $quotePayment = 'payment';
 
+        if($deposit <= 0)
+        {
+         $quotePayment = 'wait';
+        }
+
+        if($deposit >= $quotationModel->quote_grand_total)
+        {
+         $quoteStatus = 'success';
+        }else{
+         $quoteStatus = 'wait';
+        }
+    
+        $quotationModel->update([
+            'payment' => $deposit,
+            'quote_status' =>$quoteStatus,
+            'quote_payment_status' =>$quotePayment
+        ]);
+
+        
         return redirect()->back()->with('success', 'Payment processed successfully.');
     }
 
@@ -145,7 +167,6 @@ class paymentController extends Controller
 
     public function cancel(paymentModel $paymentModel, Request $request)
     {
-;
         $paymentStatus = 'refund';
         if($request->payment_total <= 0){
             $paymentStatus = 'cancel';
@@ -153,13 +174,10 @@ class paymentController extends Controller
         $request->merge([
             'payment_status' => $paymentStatus,
         ]);
-        
         $paymentModel->update($request->all());
-       
         // quote
         $quotationModel = quotationModel::where('quote_id', $paymentModel->payment_quote_id)->first();
-
-        $deposit = $quotationModel->GetDeposit();
+        $deposit = $quotationModel->GetDeposit()- $quotationModel->Refund();
         $quotePayment = 'payment';
 
         if($deposit <= 0)
@@ -173,8 +191,7 @@ class paymentController extends Controller
         }else{
          $quoteStatus = 'wait';
         }
-        
-
+    
         $quotationModel->update([
             'payment' => $deposit,
             'quote_status' =>$quoteStatus,
@@ -187,8 +204,6 @@ class paymentController extends Controller
         if (!File::exists($absolutePath)) {
              File::makeDirectory($absolutePath, 0775, true);
         }
-
-
         $file = $request->file('payment_cancel_file_path');
 
         if ($file) {
@@ -260,6 +275,39 @@ class paymentController extends Controller
             // อัปเดตพาธไฟล์ในฐานข้อมูล
             $paymentModel->update(['payment_file_path' => $filePath]);
         }
+
+        //check Status
+        $paymentStatus = 'refund';
+        if($request->payment_total <= 0){
+            $paymentStatus = 'cancel';
+        }
+        $request->merge([
+            'payment_status' => $paymentStatus,
+        ]);
+        $paymentModel->update($request->all());
+        // quote
+        $quotationModel = quotationModel::where('quote_id', $paymentModel->payment_quote_id)->first();
+        $deposit = $quotationModel->GetDeposit()- $quotationModel->Refund();
+        $quotePayment = 'payment';
+
+        if($deposit <= 0)
+        {
+         $quotePayment = 'wait';
+        }
+
+        if($deposit >= $quotationModel->quote_grand_total)
+        {
+         $quoteStatus = 'success';
+        }else{
+         $quoteStatus = 'wait';
+        }
+    
+        $quotationModel->update([
+            'payment' => $deposit,
+            'quote_status' =>$quoteStatus,
+            'quote_payment_status' =>$quotePayment
+        ]);
+
 
         return redirect()->back();
     }

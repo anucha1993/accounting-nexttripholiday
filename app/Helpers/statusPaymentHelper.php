@@ -7,9 +7,9 @@ if (!function_exists('getQuoteStatusPayment')) {
     {
         $now = Carbon::now();
         $status = '';
-
         // ตรวจสอบ payment_status ผ่านความสัมพันธ์ quotePayment
         if ($quotationModel->quotePayment && $quotationModel->quotePayment->payment_status === 'refund') {
+
             $status = '<span class="badge rounded-pill bg-warning text-dark">รอคืนเงิน</span>';
         } elseif ($quotationModel->quote_status === 'cancel') {
             $status = '<span class="badge rounded-pill bg-danger">ยกเลิกการสั่งซื้อ</span>';
@@ -32,7 +32,6 @@ if (!function_exists('getQuoteStatusPayment')) {
         } else {
             $status = '<span class="badge rounded-pill bg-secondary">รอชำระเงิน</span>';
         }
-
         return $status;
     }
 }
