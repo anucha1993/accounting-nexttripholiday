@@ -58,6 +58,11 @@
                     <input type="text" class="form-control" name="payment_bank_customer_number" placeholder="เลขบัญชีลูกค้า">
                 </div>
 
+                <div class="col-md-3" style="display: none" id="payment-refund-note">
+                    <label>ระบุเหตุผล : </label>
+                   <textarea name="payment_cancel_note" class="form-control" cols="30" rows="2" placeholder="ระบุเหตุผล"></textarea>
+                </div>
+
             
             </div>
 
@@ -134,10 +139,12 @@ $(document).ready(function () {
      var paymentType = $('#payment-type').val();
      if(paymentType === 'refund') {
         $('#payment-account').show();
+        $('#payment-refund-note').show();
         $('#payment-in-date').hide();
         $('#payment-file').hide();
      }else{
         $('#payment-account').hide();
+        $('#payment-refund-note').hide();
         $('#payment-in-date').show();
         $('#payment-file').show();
      }

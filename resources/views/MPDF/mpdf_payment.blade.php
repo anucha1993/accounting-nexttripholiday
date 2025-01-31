@@ -286,7 +286,7 @@
                         @endif
                         @if ($paymentModel->payment_method === 'transfer-money')
                             โอนเงินผ่านธนาคาร<br>
-                            วันที่โอน : {{ thaidate('j F Y', $paymentModel->payment_date_time) .' เวลา : '.date('H:m', strtotime($paymentModel->payment_date_time)) }} น.<br>
+                            วันที่โอน : @if ($paymentModel->payment_date_time) {{ thaidate('j F Y', $paymentModel->payment_date_time) .' เวลา : '.date('H:m', strtotime($paymentModel->payment_date_time)) }} น. @else - @endif <br>
                             เช็คธนาคาร : {{ $bank->bank_name}}
                         @endif
                         @if ($paymentModel->payment_method === 'check')
