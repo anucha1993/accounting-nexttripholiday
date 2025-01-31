@@ -86,12 +86,10 @@
                                     @endif
 
                                     {{-- @if ($item->payment_status === 'cancel' || $item->payment_status === 'refund')
-
                                     <a href="{{ asset('storage/' . $item->payment_cancel_file_path) }}" class="dropdown-item"
                                         onclick="openPdfPopup(this.href); return false;"><i
                                             class="fa fa-file text-danger"></i> สลิปคืนเงิน</a>
                                     @else
-
                                     @endif --}}
 
                                 </td>

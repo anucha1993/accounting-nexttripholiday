@@ -129,26 +129,21 @@ class paymentController extends Controller
         $quotationModel = quotationModel::where('quote_id', $paymentModel->payment_quote_id)->first();
         $deposit = $quotationModel->GetDeposit()- $quotationModel->Refund();
         $quotePayment = 'payment';
-
         if($deposit <= 0)
         {
          $quotePayment = 'wait';
         }
-
         if($deposit >= $quotationModel->quote_grand_total)
         {
          $quoteStatus = 'success';
         }else{
          $quoteStatus = 'wait';
         }
-    
         $quotationModel->update([
             'payment' => $deposit,
             'quote_status' =>$quoteStatus,
             'quote_payment_status' =>$quotePayment
         ]);
-
-        
         return redirect()->back()->with('success', 'Payment processed successfully.');
     }
 

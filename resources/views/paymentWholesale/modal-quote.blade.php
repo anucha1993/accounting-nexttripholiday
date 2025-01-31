@@ -21,10 +21,10 @@
                     <option value="full">ชำระเงินเต็มจำนวน</option>
                 </select>
             </div>
-            <div class="col-md-3">
+            {{-- <div class="col-md-3">
                 <label>หลักฐานการชำระเงิน</label>
                 <input type="file" name="file">
-            </div>
+            </div> --}}
         </div>
    
 </div>

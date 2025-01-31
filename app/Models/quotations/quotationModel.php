@@ -188,24 +188,11 @@ public function calculateNetProfit()
         return $this->belongsTo(countryModel::class, 'quote_country', 'id');
     }
 
-
-
     // // Accessor เพื่อดึงข้อมูล country public function GetDeposit()
     public function payment()
     {
         return $this->hasOne(paymentModel::class, 'payment_quote_id', 'quote_id');
     }
-
-    // public function GetDeposit()
-    // {
-    //     return $this->payment()
-    //         ->where('payment_status', '!=', 'cancel')
-    //         ->get()
-    //         ->sum(function ($payment) {
-    //             return $payment->payment_total - $payment->payment_refund_total;
-    //         });
-    // }
-
     public function GetDeposit()
     {
         return $this->payment()
@@ -214,7 +201,6 @@ public function calculateNetProfit()
             ->get()
             ->sum('payment_total');
     }
-
     public function Refund()
     {
         return $this->payment()
@@ -234,9 +220,20 @@ public function calculateNetProfit()
     public function GetDepositWholesale()
     {
         return $this->paymentWholesale()
+            ->where('payment_wholesale_file_name','!=','')
             ->get()
             ->sum(function ($paymentWholesale) {
-                return $paymentWholesale->payment_wholesale_total - $paymentWholesale->payment_wholesale_refund_total;
+                return $paymentWholesale->payment_wholesale_total;
+            });
+    }
+
+    public function GetDepositWholesaleRefund()
+    {
+        return $this->paymentWholesale()
+            ->where('payment_wholesale_refund_file_name','!=','')
+            ->get()
+            ->sum(function ($paymentWholesale) {
+                return $paymentWholesale->payment_wholesale_refund_total;
             });
     }
 

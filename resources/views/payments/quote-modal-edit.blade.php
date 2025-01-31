@@ -62,26 +62,11 @@
                     <input type="text" class="form-control" name="payment_bank_customer_number" placeholder="เลขบัญชีลูกค้า" value="{{$paymentModel->payment_bank_customer_number}}">
                 </div>
 
-
                 <div class="col-md-3" style="display: none" id="payment-refund-note">
                     <label>ระบุเหตุผล : </label>
                    <textarea name="payment_cancel_note" class="form-control" cols="30" rows="2" placeholder="ระบุเหตุผล">{{$paymentModel->payment_cancel_note}}</textarea>
                 </div>
-
-
-
             </div>
-
-
-            {{-- <div class="row mt-2" style="display: none" id="payment-account">
-                <div class="col-md-3">
-                    <label>เลขบัญชีลูกค้า</label>
-                    <input type="text" class="form-control" name="payment_bank_customer_number" placeholder="เลขบัญชีลูกค้า" value="{{$paymentModel->payment_bank_customer_number}}">
-                </div>
-            </div> --}}
-
-         
-
 
             {{-- เช็คธนาคาร check --}}
             <div class="row mt-3" id="check" style="display: none">
@@ -123,8 +108,6 @@
                 ไม่มีไฟล์แนบ
             @endif
         
-                
-    
             <div class="row mt-3">
                 <div class="col-md-3">
                     <label for="">แนบไฟล์ใหม่</label></br>
@@ -134,10 +117,6 @@
                 
             </div>
 
-            
-            
-            
-    
             <div class="row">
                 <div class="col-md-12">
                     <button type="submit" class="btn btn-success float-end"> อัพเดทข้อมูล</button>

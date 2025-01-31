@@ -143,6 +143,10 @@ public function update(paymentWholesaleModel $paymentWholesaleModel, Request $re
     $paymentWholesaleModel->update($request->all());
     return redirect()->back();
 }
+// public function RefundRenew(paymentWholesaleModel $paymentWholesaleModel, Request $request)
+// {
+
+// }
 
 public function updateRefund(paymentWholesaleModel $paymentWholesaleModel, Request $request)
 {

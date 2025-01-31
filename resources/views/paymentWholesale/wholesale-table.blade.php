@@ -38,29 +38,24 @@
                                     @php
                                         $paymentTotal += $item->payment_wholesale_total;
                                     @endphp
-
                                     @if ($item->payment_wholesale_refund_file_name === NULL || $item->payment_wholesale_refund_file_name === '' )
                                     {{ number_format($item->payment_wholesale_total, 2, '.', ',') }} 
                                     @if ($item->payment_wholesale_refund_type !== NULL)
                                     {!! '<span class="text-danger">('.number_format($item->payment_wholesale_refund_total,2).')</span>' !!}
-
                                     @endif
-
-                                    
                                     @else
                                     {{ number_format($item->payment_wholesale_total - $item->payment_wholesale_refund_total, 2, '.', ',') }}
                                     @endif
-                                    
                                 </td>
                                 <td>
-                                    @if ($item->payment_wholesale_file_path !== NULL || $item->payment_wholesale_file_path !== '' )
+                                    @if ($item->payment_wholesale_file_path !== NULL )
                                         สลิปชำระ :  <a onclick="openPdfPopup(this.href); return false;"
                                         href="{{ asset($item->payment_wholesale_file_path) }}">{{ $item->payment_wholesale_file_name }}</a>
                                     @else
-                                        -
+                                    <span class="text-info">รอยืนยันการชำระเงิน</span>
                                     @endif
                                     <br>
-                                    @if ($item->payment_wholesale_refund_file_name !== NULL || $item->payment_wholesale_refund_file_name !== '' )
+                                    @if ($item->payment_wholesale_refund_file_name !== NULL )
                                         สลิปคืนยอด :  <a onclick="openPdfPopup(this.href); return false;" class="text-danger"
                                         href="{{ asset($item->payment_wholesale_refund_file_path) }}">{{ $item->payment_wholesale_refund_file_name }}</a>
                                     @else
@@ -79,6 +74,7 @@
                                         {!! $item->payment_wholesale_refund_type === 'some'
                                                  ? '<span class="text-success">(คืนยอดบางส่วนแล้ว)</span>'
                                                  : '<span class="text-success">(คืนยอดเต็มจำนวนแล้ว)</span>' !!}
+                                                 {{$item->payment_wholesale_refund_file_name ? $item->payment_wholesale_refund_total : ''}}
                                     @else
                                         @if ($item->payment_wholesale_type === 'full')
                                             ชำระเต็มจำนวน 
@@ -98,30 +94,24 @@
                                 <td>
                                     <a href="{{ route('paymentWholesale.edit', $item->payment_wholesale_id) }}"
                                         class=" text-info payment-wholesale-edit"><i class="fa fa-edit"></i> แก้ไข</a>
-
                                         &nbsp;
                                         <a class="wholesale-mail" href="{{route('paymentWholesale.modalMailWholesale',$item->payment_wholesale_id)}}"><i class="fas fa-envelope text-info"></i>ส่งเมล</a>
-
                                     &nbsp;
-                                    @if ($item->payment_wholesale_refund_type)
+                                  
                                     <a href="{{ route('paymentWholesale.editRefund', $item->payment_wholesale_id) }}"
                                         class="text-primary edit-refund"><i
-                                            class="fa fas fa-reply-all"></i>แก้ไขยอดคืน</a>
+                                            class="fa fas fa-edit"></i>การคืนยอด</a>
+                                  
 
-
-                                    @else
-
+                                    {{-- @if ($item->payment_wholesale_refund_file_name)
                                     <a href="{{ route('paymentWholesale.refund', $item->payment_wholesale_id) }}"
                                         class="text-primary refund"><i
                                             class="fa fas fa-reply-all"></i>ยกเลิกรอคืนยอด</a>
-
-                                    @endif
-                                   
-                                   
+                                    @endif --}}
                                     &nbsp;
  
                                     <a href="{{ route('paymentWholesale.delete', $item->payment_wholesale_id) }}"
-                                        onclick="return confirm('คุฯต้องการลบข้อมูลใช่ไหม');" class="text-danger"><i
+                                        onclick="return confirm('คุณต้องการลบข้อมูลใช่ไหม');" class="text-danger"><i
                                             class="fa fas fa-trash"></i> ลบ</a>
                                 </td>
                             </tr>
@@ -130,7 +120,7 @@
                         <tr>
                             <td align="right" class="text-success" colspan="8"><b>(@bathText($paymentTotal))</b></td>
                             <td align="center" class="text-success">
-                                <b>{{ number_format($quotationModel->GetDepositWholesale(), 2) }}</b>
+                                <b>{{ number_format($quotationModel->GetDepositWholesale() - $quotationModel->GetDepositWholesaleRefund(), 2) }}</b>
                             </td>
                         </tr>
 
