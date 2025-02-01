@@ -12,6 +12,10 @@
                     {{-- <option value="0">ภาษีซื้อ</option>
                     <option value="1">ต้นทุนอื่นๆ</option> --}}
                     <option value="2" selected>ต้นทุนโฮลเซลล์</option>
+                    <option value="4" selected>ค่าทัวร์รวมทั้งหมด</option>
+                    <option value="5" selected>ค่าอาหาร</option>
+                    <option value="6" selected>ค่าตั๋วเครื่องบิน</option>
+                    <option value="7" selected>อื่นๆ</option>
                 </select>
             </div>
             <input type="hidden" name="input_tax_quote_id" class="form-control" value="{{$quotationModel->quote_id}}" >

@@ -9,47 +9,18 @@
             <div class="col-md-12 mb-3">
                 <label>ประเภท</label>
                 <select name="input_tax_type" id="" class="form-select">
-                    <option selected  value="2">ต้นทุนโฮลเซลล์</option>
+                    <option {{$inputTaxModel->input_tax_type === 2 ? 'selected' : '' }}   value="2">ต้นทุนโฮลเซลล์</option>
+                    <option {{$inputTaxModel->input_tax_type === 4 ? 'selected' : '' }}   value="4">ค่าทัวร์รวมทั้งหมด</option>
+                    <option {{$inputTaxModel->input_tax_type === 5 ? 'selected' : '' }}   value="5">ค่าอาหาร</option>
+                    <option {{$inputTaxModel->input_tax_type === 6 ? 'selected' : '' }}   value="6">ค่าตั๋วเครื่องบิน</option>
+                    <option {{$inputTaxModel->input_tax_type === 7 ? 'selected' : '' }}   value="7">อื่นๆ</option>
                 </select>
             </div>
             <input type="hidden" name="input_tax_quote_id" class="form-control" value="{{$quotationModel->quote_id}}" >
             <input type="hidden" name="input_tax_quote_number" class="form-control" value="{{$quotationModel->quote_number}}" >
             <input type="hidden" name="customer_id" class="form-control" value="{{$quotationModel->customer_id}}" >
 
-            {{-- <div class="col-md-12 mb-3">
-                <label for="">โฮลเซลล์ </label>
-                <select name="input_tax_wholesale" class="form-select selectpicker selectpicker-select" data-live-search="true">
-                    <option value="0">ไม่ระบุ</option>
-                    @forelse ($wholesale as $item)
-                    <option @if($item->id === $inputTaxModel->input_tax_wholesale) selected @endif value="{{$item->id}}">{{$item->wholesale_name_th}}</option>
-                    @empty
-                        
-                    @endforelse
-                </select>
-            </div> --}}
-            {{-- <div class="col-md-12 mb-3">
-                <label for=""> วันเดือน ปีภาษี ที่จ่าย </label>
-                <input type="date" name=" input_tax_date" class="form-control" placeholder="tax number"  value="{{$inputTaxModel->input_tax_date}}">
-            </div>
-            <div class="col-md-12 mb-3">
-                <label for="">เลขที่เอกสารอ้างอิง </label>
-                <input type="text" name="input_tax_ref" class="form-control" value="{{$inputTaxModel->input_tax_ref}}" >
-            </div>
-
-            <div class="col-md-12 mb-3">
-                <label>ยอดค่าบริการ</label>
-                <input type="number" class="form-control" name="input_tax_service_total" id="service-total" step="0.01" placeholder="0.0" value="{{$inputTaxModel->input_tax_service_total}}">
-            </div>
-
-            <div class="col-md-12 mb-3">
-                <label for="">ภาษี ณ ที่จ่าย </label>
-                <input type="number" name="input_tax_withholding" step="0.01" value="{{$inputTaxModel->input_tax_withholding}}" class="form-control" placeholder="0.0" id="withholding" readonly style="background-color: antiquewhite">
-            </div>
-
-            <div class="col-md-12 mb-3">
-                <label for="">ภาษี 7%</label>
-                <input type="number" name="input_tax_vat" step="0.01" value="{{$inputTaxModel->input_tax_vat}}" class="form-control" placeholder="0.0" id="vat">
-            </div> --}}
+           
 
             <div class="col-md-12 mb-3">
                 <label for="">ผลรวมต้นทุน</label>

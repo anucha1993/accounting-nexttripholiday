@@ -230,7 +230,7 @@ public function calculateNetProfit()
     public function GetDepositWholesaleRefund()
     {
         return $this->paymentWholesale()
-            ->where('payment_wholesale_refund_file_name','!=','')
+            ->where('payment_wholesale_refund_status','=','success')
             ->get()
             ->sum(function ($paymentWholesale) {
                 return $paymentWholesale->payment_wholesale_refund_total;

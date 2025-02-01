@@ -11,6 +11,7 @@
                 <select name="input_tax_type" id="input_tax_type" class="form-select">
                     <option value="0">ภาษีซื้อ</option>
                     <option value="1">ต้นทุนอื่นๆ</option>
+                    <option value="3">ค่าธรรมเนียมรูดบัตร</option>
                 </select>
             </div>
             
@@ -71,17 +72,17 @@
         </div>
 
         <div class="col-md-12">
-            @if ($document)
+            {{-- @if ($document)
             <a href="{{ route('withholding.edit', $document->id) }}">ออกใบหัก ณ ที่จ่ายแล้ว <i
                 class="fa fa-edit text-info"></i> {{$document->document_number}}</a>
-            @else
+            @else --}}
             <label for="">ต้องการออกใบหัก ณ ที่จ่ายหรือไม่</label>
             <br>
             <input type="radio" id="input_tax_withholding_status1" name="input_tax_withholding_status" value="Y">
             <label for="html">ใช่</label>
             <input type="radio" id="input_tax_withholding_status2" name="input_tax_withholding_status" value="N" checked>
             <label for="css">ไม่ใช่</label><br>
-            @endif
+            {{-- @endif --}}
            
         </div>
 

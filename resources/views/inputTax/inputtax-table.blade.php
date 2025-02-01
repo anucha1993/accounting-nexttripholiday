@@ -2,7 +2,7 @@
     <div class="card">
         <div class="card-header bg-success">
             <h5 class="mb-0 text-white"><i class="fa fa-file"></i>
-                รายการต้นทุน <span class="float-end"></span>
+                รายการต้นทุน<span class="float-end"></span>
                 &nbsp; <a href="javascript:void(0)" class="text-white float-end"
                     onclick="toggleAccordion('table-inputtax', 'toggle-arrow-inputtax')">
                     <span class="fas fa-chevron-down" id="toggle-arrow-inputtax"></span>
@@ -93,6 +93,8 @@
                                         ต้นทุนอื่นๆ
                                     @elseif($item->input_tax_type === 2)
                                         ต้นทุนโฮลเซลล์
+                                        @elseif($item->input_tax_type === 3)
+                                        ค่าธรรมเนียมรูดบัตร
                                     @endif
                                 </td>
                                 <td>
@@ -130,15 +132,14 @@
 
                         <td>{{ number_format($item->input_tax_withholding, 2) }} </td>
                         <td>{{ number_format($item->input_tax_vat, 2) }}</td>
-                        {{-- <td>{{number_format($item->input_tax_grand_total,2)}}</td> --}}
-                        {{-- <td>{{$quotationModel->getTotalInputTaxVat()}}</td> --}}
+                      
                         <td>
+                            @if ($item->input_tax_withholding_status === 'Y') 
                             {{ number_format($item->input_tax_grand_total, 2) }}
-                            {{-- @if ($quotationModel->getTotalInputTaxVat() > 0)
-                                {{ number_format($quotationModel->getTotalInputTaxVat(), 2) }}
                             @else
-                                {{ number_format($item->input_tax_grand_total, 2) }}
-                            @endif --}}
+                            {{ number_format(0, 2) }}
+                            @endif
+                            
                         </td>
 
                         <td>

@@ -18,6 +18,8 @@
                             <th>Payment No.</th>
                             <th>วันที่ชำระเงิน</th>
                             <th>จำนวนเงิน</th>
+                            <th>ยอดคืน</th>
+                            <th>สถานะการคืน</th>
                             <th>ไฟล์แนบ</th>
                             <th>ประเภทการชำระเงิน</th>
                             <th>Action</th>
@@ -35,18 +37,33 @@
                                 <td>{{ $item->payment_wholesale_number }}</td>
                                 <td>{{ date('d-m-Y : H:m:s', strtotime($item->created_at)) }}</td>
                                 <td>
-                                    @php
-                                        $paymentTotal += $item->payment_wholesale_total;
-                                    @endphp
-                                    @if ($item->payment_wholesale_refund_file_name === NULL || $item->payment_wholesale_refund_file_name === '' )
+                                   
                                     {{ number_format($item->payment_wholesale_total, 2, '.', ',') }} 
+                                    
+                                </td>
+                                <td>
                                     @if ($item->payment_wholesale_refund_type !== NULL)
-                                    {!! '<span class="text-danger">('.number_format($item->payment_wholesale_refund_total,2).')</span>' !!}
-                                    @endif
+                                    {!! '<span class="text-danger">'.number_format($item->payment_wholesale_refund_total,2).'</span>' !!}
                                     @else
                                     {{ number_format($item->payment_wholesale_total - $item->payment_wholesale_refund_total, 2, '.', ',') }}
                                     @endif
                                 </td>
+                                <td>
+                                    @if ($item->payment_wholesale_refund_status === 'success')
+                                            @if ($item->payment_wholesale_refund_type !== NULL && $item->payment_wholesale_refund_type === 'some')
+                                            <span class="text-success">(คืนยอดบางส่วนแล้ว)</span>
+                                            @elseif($item->payment_wholesale_refund_type !== NULL && $item->payment_wholesale_refund_type === 'full')
+                                            <span class="text-success">(คืนยอดเต็มจำนวนแล้ว)</span>
+                                            @endif
+                                    @else
+                                           @if ($item->payment_wholesale_refund_type !== NULL && $item->payment_wholesale_refund_type === 'some')
+                                           <span class="text-danger">(รอคืนยอดบางส่วน)</span>
+                                           @elseif($item->payment_wholesale_refund_type !== NULL && $item->payment_wholesale_refund_type === 'full')
+                                           <span class="text-danger">(รอคืนยอดเต็มจำนวน)</span>
+                                           @endif
+                                    @endif
+                                </td>
+
                                 <td>
                                     @if ($item->payment_wholesale_file_path !== NULL )
                                         สลิปชำระ :  <a onclick="openPdfPopup(this.href); return false;"
@@ -56,12 +73,13 @@
                                     @endif
                                     <br>
                                     @if ($item->payment_wholesale_refund_file_name !== NULL )
-                                        สลิปคืนยอด :  <a onclick="openPdfPopup(this.href); return false;" class="text-danger"
-                                        href="{{ asset($item->payment_wholesale_refund_file_path) }}">{{ $item->payment_wholesale_refund_file_name }}</a>
+                                        สลิปคืนยอด :  
+                                        <a onclick="openPdfPopup(this.href); return false;" class="text-danger" href="{{ asset($item->payment_wholesale_refund_file_path) }}">{{ $item->payment_wholesale_refund_file_name }}</a><br>
+                                        <a onclick="openPdfPopup(this.href); return false;" class="text-danger" href="{{ asset($item->payment_wholesale_refund_file_path1) }}">{{ $item->payment_wholesale_refund_file_name1 }}</a><br>
+                                        <a onclick="openPdfPopup(this.href); return false;" class="text-danger" href="{{ asset($item->payment_wholesale_refund_file_path2) }}">{{ $item->payment_wholesale_refund_file_name2 }}</a>
                                     @else
                                         -
                                     @endif
-                                    
                                 </td>
                                 <td>
                                     @if ($item->payment_wholesale_refund_file_name)
@@ -70,27 +88,15 @@
                                         @else
                                             ชำระมัดจำ 
                                         @endif
-
-                                        {!! $item->payment_wholesale_refund_type === 'some'
-                                                 ? '<span class="text-success">(คืนยอดบางส่วนแล้ว)</span>'
-                                                 : '<span class="text-success">(คืนยอดเต็มจำนวนแล้ว)</span>' !!}
-                                                 {{$item->payment_wholesale_refund_file_name ? $item->payment_wholesale_refund_total : ''}}
                                     @else
                                         @if ($item->payment_wholesale_type === 'full')
                                             ชำระเต็มจำนวน 
                                         @else
                                             ชำระมัดจำ 
                                         @endif
-        
-                                        @if ($item->payment_wholesale_refund_type !== NULL && $item->payment_wholesale_refund_type === 'some')
-                                        <span class="text-danger">(รอคืนยอดบางส่วน)</span>
-                                        @elseif($item->payment_wholesale_refund_type !== NULL && $item->payment_wholesale_refund_type === 'full')
-                                        <span class="text-danger">(รอคืนยอดเต็มจำนวน)</span>
-                                        @endif
-                                       
                                     @endif
-
                                 </td>
+
                                 <td>
                                     <a href="{{ route('paymentWholesale.edit', $item->payment_wholesale_id) }}"
                                         class=" text-info payment-wholesale-edit"><i class="fa fa-edit"></i> แก้ไข</a>
@@ -101,7 +107,7 @@
                                     <a href="{{ route('paymentWholesale.editRefund', $item->payment_wholesale_id) }}"
                                         class="text-primary edit-refund"><i
                                             class="fa fas fa-edit"></i>การคืนยอด</a>
-                                  
+                                
 
                                     {{-- @if ($item->payment_wholesale_refund_file_name)
                                     <a href="{{ route('paymentWholesale.refund', $item->payment_wholesale_id) }}"
@@ -118,7 +124,7 @@
                         @endforeach
 
                         <tr>
-                            <td align="right" class="text-success" colspan="8"><b>(@bathText($paymentTotal))</b></td>
+                            <td align="right" class="text-success" colspan="8"><b>(@bathText($quotationModel->GetDepositWholesale() - $quotationModel->GetDepositWholesaleRefund()))</b></td>
                             <td align="center" class="text-success">
                                 <b>{{ number_format($quotationModel->GetDepositWholesale() - $quotationModel->GetDepositWholesaleRefund(), 2) }}</b>
                             </td>

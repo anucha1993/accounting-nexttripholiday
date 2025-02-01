@@ -5,13 +5,14 @@
     <form action="{{route('inputtax.update',$inputTaxModel->input_tax_id)}}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
-        <input type="text" name="document_id" value="{{$document->id}}">
+        {{-- <input type="text" name="document_id" value="{{$document->id}}"> --}}
         <div class="row">
             <div class="col-md-12 mb-3">
                 <label>ประเภท</label>
                 <select name="input_tax_type" id="" class="form-select">
                     <option @if($inputTaxModel->input_tax_type === 0) selected @endif value="0">ภาษีซื้อ</option>
                     <option @if($inputTaxModel->input_tax_type === 1) selected @endif value="1">ต้นทุนอื่นๆ</option>
+                    <option @if($inputTaxModel->input_tax_type === 3) selected @endif value="1">ค่าธรรมเนียมรูดบัตร</option>
                 </select>
             </div>
             <input type="hidden" name="input_tax_quote_id" class="form-control" value="{{$quotationModel->quote_id}}" >

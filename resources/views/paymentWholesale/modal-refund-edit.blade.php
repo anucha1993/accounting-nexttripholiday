@@ -1,6 +1,6 @@
 <div class="modal-body">
     <div class="header">
-        <h5>ยกเลิก คืนยอดเงินโฮลเซลล์ # {{$paymentWholesaleModel->payment_wholesale_number}}</h5>
+        <h5>ยกเลิก คืนยอดเงินโฮลเซลล์s # {{$paymentWholesaleModel->payment_wholesale_number}}</h5>
     </div>
     <form action="{{ route('paymentWholesale.updateRefund',$paymentWholesaleModel->payment_wholesale_id) }}" enctype="multipart/form-data" method="post" id="whosalePayment">
         @csrf
@@ -21,9 +21,31 @@
             </div>
             <div class="col-md-3">
                 <label>หลักฐานการคืนยอด</label>
+                {{-- File1 --}}
+                @if ($paymentWholesaleModel->payment_wholesale_refund_file_name)
                 <input type="file" name="file">
-                <input type="file" name="file1">
-                <input type="file" name="file2">
+                <a onclick="openPdfPopup(this.href); return false;" href="{{ asset($paymentWholesaleModel->payment_wholesale_refund_file_path) }}">{{ $paymentWholesaleModel->payment_wholesale_refund_file_name1 }}</a>
+                @else
+                <input type="file" name="file">
+                @endif
+
+                 {{-- File1 --}}
+                 @if ($paymentWholesaleModel->payment_wholesale_refund_file_name1)
+                 <input type="file" name="file1">
+                 <a onclick="openPdfPopup(this.href); return false;" href="{{ asset($paymentWholesaleModel->payment_wholesale_refund_file_path1) }}">{{ $paymentWholesaleModel->payment_wholesale_refund_file_name1 }}</a>
+                 @else
+                 <input type="file" name="file1">
+                 @endif
+
+                 {{-- File2 --}}
+                 @if ($paymentWholesaleModel->payment_wholesale_refund_file_name2)
+                 <input type="file" name="file2">
+                 <a onclick="openPdfPopup(this.href); return false;" href="{{ asset($paymentWholesaleModel->payment_wholesale_refund_file_path2) }}">{{ $paymentWholesaleModel->payment_wholesale_refund_file_name2 }}</a>
+                 @else
+                 <input type="file" name="file2">
+                 @endif
+    
+
 
             </div>
         </div>
