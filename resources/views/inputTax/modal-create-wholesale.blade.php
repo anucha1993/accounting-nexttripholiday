@@ -12,10 +12,10 @@
                     {{-- <option value="0">ภาษีซื้อ</option>
                     <option value="1">ต้นทุนอื่นๆ</option> --}}
                     <option value="2" selected>ต้นทุนโฮลเซลล์</option>
-                    <option value="4" selected>ค่าทัวร์รวมทั้งหมด</option>
-                    <option value="5" selected>ค่าอาหาร</option>
-                    <option value="6" selected>ค่าตั๋วเครื่องบิน</option>
-                    <option value="7" selected>อื่นๆ</option>
+                    <option value="4">ค่าทัวร์รวมทั้งหมด</option>
+                    <option value="5">ค่าอาหาร</option>
+                    <option value="6">ค่าตั๋วเครื่องบิน</option>
+                    <option value="7">อื่นๆ</option>
                 </select>
             </div>
             <input type="hidden" name="input_tax_quote_id" class="form-control" value="{{$quotationModel->quote_id}}" >
@@ -23,36 +23,11 @@
             <input type="hidden" name="customer_id" class="form-control" value="{{$quotationModel->customer_id}}" >
             <input type="hidden" name="input_tax_wholesale" class="form-control" value="{{$quotationModel->quote_wholesale}}" >
 
-
-        
-          
             <div class="col-md-12 mb-3">
                 <label for=""> วันเดือน ที่จ่าย </label>
                 <input type="date-local" name="" class="form-control" placeholder="tax number" value="{{date('d-m-Y : H:m:s')}}" disabled >
             </div>
-
-            {{-- <div class="col-md-12 mb-3">
-                <label for="">เลขที่เอกสารอ้างอิง </label>
-                <input type="text" name="input_tax_ref" class="form-control" placeholder="tax number" >
-            </div> --}}
-
-            
-            {{-- <div class="col-md-12 mb-3">
-                <label>ยอดค่าบริการ</label>
-                <input type="number" class="form-control" name="input_tax_service_total" id="service-total" step="0.01" placeholder="0.0" >
-            </div>
-
-
-            <div class="col-md-12 mb-3">
-                <label for="">ภาษี ณ ที่จ่าย </label>
-                <input type="number" name="input_tax_withholding" step="0.01" class="form-control" placeholder="0.0" id="withholding"  readonly style="background-color: antiquewhite">
-            </div>
-
-            <div class="col-md-12 mb-3">
-                <label for="">ภาษีซื้อ</label>
-                <input type="number" name="input_tax_vat" step="0.01" class="form-control" placeholder="0.0" id="vat">
-            </div> --}}
-
+      
             <div class="col-md-12 mb-3">
                 <label for="">ผลรวมต้นทุน</label>
                 <input type="number" name="input_tax_grand_total" step="0.01" class="form-control" placeholder="0.0" id="total" >

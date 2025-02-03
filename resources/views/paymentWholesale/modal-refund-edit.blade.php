@@ -25,7 +25,7 @@
                 @if ($paymentWholesaleModel->payment_wholesale_refund_file_name)
                 <input type="file" name="file">
                 <a onclick="openPdfPopup(this.href); return false;" href="{{ asset($paymentWholesaleModel->payment_wholesale_refund_file_path) }}">{{ $paymentWholesaleModel->payment_wholesale_refund_file_name1 }}</a>
-                @else
+                @elseif($paymentWholesaleModel->payment_wholesale_refund_total > 0)
                 <input type="file" name="file">
                 @endif
 
@@ -33,7 +33,7 @@
                  @if ($paymentWholesaleModel->payment_wholesale_refund_file_name1)
                  <input type="file" name="file1">
                  <a onclick="openPdfPopup(this.href); return false;" href="{{ asset($paymentWholesaleModel->payment_wholesale_refund_file_path1) }}">{{ $paymentWholesaleModel->payment_wholesale_refund_file_name1 }}</a>
-                 @else
+                 @elseif($paymentWholesaleModel->payment_wholesale_refund_total > 0)
                  <input type="file" name="file1">
                  @endif
 
@@ -41,13 +41,15 @@
                  @if ($paymentWholesaleModel->payment_wholesale_refund_file_name2)
                  <input type="file" name="file2">
                  <a onclick="openPdfPopup(this.href); return false;" href="{{ asset($paymentWholesaleModel->payment_wholesale_refund_file_path2) }}">{{ $paymentWholesaleModel->payment_wholesale_refund_file_name2 }}</a>
-                 @else
+                 @elseif($paymentWholesaleModel->payment_wholesale_refund_total > 0)
                  <input type="file" name="file2">
                  @endif
-    
-
-
             </div>
+              <div class="col-md-6">
+                <label>เหตุผลการคืนเงิน :</label>
+                <textarea name="payment_wholesale_refund_note" class="form-control" cols="30" rows="2">{{$paymentWholesaleModel->payment_wholesale_refund_note}}</textarea>
+              </div>
+
         </div>
    
 </div>

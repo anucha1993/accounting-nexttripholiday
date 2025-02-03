@@ -21,7 +21,12 @@
             </div>
             <div class="col-md-3">
                 <label>หลักฐานการชำระเงิน</label>
-                <input type="file" name="file">
+                 {{-- File1 --}}
+                 @if ($paymentWholesaleModel->payment_wholesale_refund_file_name)
+                 <input type="file" name="file">
+                 <a onclick="openPdfPopup(this.href); return false;" href="{{ asset($paymentWholesaleModel->payment_wholesale_refund_file_path) }}">{{ $paymentWholesaleModel->payment_wholesale_refund_file_name }}</a>
+               
+                 @endif
             </div>
         </div>
    

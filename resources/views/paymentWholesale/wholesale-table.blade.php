@@ -16,7 +16,7 @@
                         <tr class="custom-row-height" style="line-height: -500px;">
                             <th>ลำดับ</th>
                             <th>Payment No.</th>
-                            <th>วันที่ชำระเงิน</th>
+                            <th>วันที่ทำรายการ</th>
                             <th>จำนวนเงิน</th>
                             <th>ยอดคืน</th>
                             <th>สถานะการคืน</th>
@@ -37,18 +37,18 @@
                                 <td>{{ $item->payment_wholesale_number }}</td>
                                 <td>{{ date('d-m-Y : H:m:s', strtotime($item->created_at)) }}</td>
                                 <td>
-                                   
                                     {{ number_format($item->payment_wholesale_total, 2, '.', ',') }} 
-                                    
                                 </td>
                                 <td>
                                     @if ($item->payment_wholesale_refund_type !== NULL)
                                     {!! '<span class="text-danger">'.number_format($item->payment_wholesale_refund_total,2).'</span>' !!}
                                     @else
-                                    {{ number_format($item->payment_wholesale_total - $item->payment_wholesale_refund_total, 2, '.', ',') }}
+                                    {{-- {{ number_format($item->payment_wholesale_total - $item->payment_wholesale_refund_total, 2, '.', ',') }} --}}
                                     @endif
                                 </td>
                                 <td>
+                                    @if ($item->payment_wholesale_refund_total > 0)
+
                                     @if ($item->payment_wholesale_refund_status === 'success')
                                             @if ($item->payment_wholesale_refund_type !== NULL && $item->payment_wholesale_refund_type === 'some')
                                             <span class="text-success">(คืนยอดบางส่วนแล้ว)</span>
@@ -61,6 +61,8 @@
                                            @elseif($item->payment_wholesale_refund_type !== NULL && $item->payment_wholesale_refund_type === 'full')
                                            <span class="text-danger">(รอคืนยอดเต็มจำนวน)</span>
                                            @endif
+                                    @endif
+
                                     @endif
                                 </td>
 
@@ -107,13 +109,6 @@
                                     <a href="{{ route('paymentWholesale.editRefund', $item->payment_wholesale_id) }}"
                                         class="text-primary edit-refund"><i
                                             class="fa fas fa-edit"></i>การคืนยอด</a>
-                                
-
-                                    {{-- @if ($item->payment_wholesale_refund_file_name)
-                                    <a href="{{ route('paymentWholesale.refund', $item->payment_wholesale_id) }}"
-                                        class="text-primary refund"><i
-                                            class="fa fas fa-reply-all"></i>ยกเลิกรอคืนยอด</a>
-                                    @endif --}}
                                     &nbsp;
  
                                     <a href="{{ route('paymentWholesale.delete', $item->payment_wholesale_id) }}"
