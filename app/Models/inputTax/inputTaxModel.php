@@ -28,7 +28,7 @@ class inputTaxModel extends Model
         'created_by',
         'upated_by',
         'input_tax_withholding_status',
-       
+        'input_tax_wholesale_type',
     ];
 
    

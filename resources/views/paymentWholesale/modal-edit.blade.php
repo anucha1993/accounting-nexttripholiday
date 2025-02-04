@@ -20,13 +20,18 @@
                 </select>
             </div>
             <div class="col-md-3">
+                <label for="">วันที่ชำระ</label>
+                <input type="date" name="payment_wholesale_date" class="form-control" value="{{$paymentWholesaleModel->payment_wholesale_date}}">
+            </div>
+
+            <div class="col-md-3">
                 <label>หลักฐานการชำระเงิน</label>
                  {{-- File1 --}}
-                 @if ($paymentWholesaleModel->payment_wholesale_refund_file_name)
+
                  <input type="file" name="file">
-                 <a onclick="openPdfPopup(this.href); return false;" href="{{ asset($paymentWholesaleModel->payment_wholesale_refund_file_path) }}">{{ $paymentWholesaleModel->payment_wholesale_refund_file_name }}</a>
-               
-                 @endif
+                 <a onclick="openPdfPopup(this.href); return false;" href="{{ asset($paymentWholesaleModel->payment_wholesale_file_path) }}">{{ $paymentWholesaleModel->payment_wholesale_file_name }}</a>
+
+     
             </div>
         </div>
    

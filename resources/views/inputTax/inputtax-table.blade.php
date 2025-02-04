@@ -93,9 +93,19 @@
                                         ต้นทุนอื่นๆ
                                     @elseif($item->input_tax_type === 2)
                                         ต้นทุนโฮลเซลล์
-                                        @elseif($item->input_tax_type === 3)
+                                    @elseif($item->input_tax_type === 3)
                                         ค่าธรรมเนียมรูดบัตร
+                                    @elseif($item->input_tax_type === 4)
+                                        ค่าทัวร์รวมทั้งหมด
+                                    @elseif($item->input_tax_type === 5)
+                                        ค่าอาหาร
+                                    @elseif($item->input_tax_type === 6)
+                                        ค่าตั๋วเครื่องบิน 
+                                     @elseif($item->input_tax_type === 7)
+                                        อื่นๆ 
                                     @endif
+
+
                                 </td>
                                 <td>
                                     @if ($item->input_tax_ref)
@@ -136,9 +146,12 @@
                         <td>
                             @if ($item->input_tax_withholding_status === 'Y') 
                             {{ number_format($item->input_tax_grand_total, 2) }}
+                            @elseif($item->input_tax_wholesale_type === 'Y' )
+                            {{ number_format($item->input_tax_grand_total, 2) }}
                             @else
                             {{ number_format(0, 2) }}
                             @endif
+                            
                             
                         </td>
 
@@ -151,7 +164,7 @@
                         @endif
                         <br>
                             @if ($item->input_tax_status === 'success')
-                                @if ($item->input_tax_type === 2)
+                                @if ($item->input_tax_wholesale_type === 'Y')
                                     <a href="{{ route('inputtax.inputtaxEditWholesale', $item->input_tax_id) }}"
                                         class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
 

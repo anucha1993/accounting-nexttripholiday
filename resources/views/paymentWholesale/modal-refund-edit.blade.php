@@ -20,7 +20,9 @@
                 </select>
             </div>
             <div class="col-md-3">
+                @if ($paymentWholesaleModel->payment_wholesale_refund_file_name)
                 <label>หลักฐานการคืนยอด</label>
+                @endif
                 {{-- File1 --}}
                 @if ($paymentWholesaleModel->payment_wholesale_refund_file_name)
                 <input type="file" name="file">
@@ -44,6 +46,7 @@
                  @elseif($paymentWholesaleModel->payment_wholesale_refund_total > 0)
                  <input type="file" name="file2">
                  @endif
+
             </div>
               <div class="col-md-6">
                 <label>เหตุผลการคืนเงิน :</label>

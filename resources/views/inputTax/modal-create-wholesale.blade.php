@@ -22,6 +22,7 @@
             <input type="hidden" name="input_tax_quote_number" class="form-control" value="{{$quotationModel->quote_number}}" >
             <input type="hidden" name="customer_id" class="form-control" value="{{$quotationModel->customer_id}}" >
             <input type="hidden" name="input_tax_wholesale" class="form-control" value="{{$quotationModel->quote_wholesale}}" >
+            <input type="hidden" name="input_tax_wholesale_type" class="form-control" value="Y" >
 
             <div class="col-md-12 mb-3">
                 <label for=""> วันเดือน ที่จ่าย </label>
