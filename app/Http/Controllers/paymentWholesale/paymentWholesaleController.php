@@ -16,8 +16,6 @@ use App\Models\payments\paymentWholesaleModel;
 
 class paymentWholesaleController extends Controller
 {
-    //
-
     // function Runnumber paymentWholesale
     public function generateRunningCodeWS()
     {
@@ -49,14 +47,11 @@ class paymentWholesaleController extends Controller
         // สร้างพาธที่ถูกต้อง
         $folderPath = 'public/' . $quote->customer_id . '/wholesalePayment/' . $quote->quote_number;
         $absolutePath = storage_path('app/' . $folderPath);
-
         // เช็คว่าไดเร็กทอรีมีอยู่แล้วหรือไม่ หากไม่มีให้สร้างขึ้นมา
         if (!File::exists($absolutePath)) {
             File::makeDirectory($absolutePath, 0775, true);
         }
-
         $file = $request->file('file');
-
         if ($file) {
             // สร้างชื่อไฟล์ที่ไม่ซ้ำกัน
             $extension = $file->getClientOriginalExtension();
@@ -75,9 +70,7 @@ class paymentWholesaleController extends Controller
             ]);
         }
         $request->merge(['payment_wholesale_number' => $this->generateRunningCodeWS(), 'created_by' => Auth::user()->name]);
-
         $paymentWholesale = paymentWholesaleModel::create($request->all());
-
         return redirect()->back();
     }
 
@@ -136,10 +129,6 @@ class paymentWholesaleController extends Controller
         $paymentWholesaleModel->update($request->all());
         return redirect()->back();
     }
-    // public function RefundRenew(paymentWholesaleModel $paymentWholesaleModel, Request $request)
-    // {
-
-    // }
 
     public function updateRefund(paymentWholesaleModel $paymentWholesaleModel, Request $request)
     {
@@ -174,79 +163,6 @@ class paymentWholesaleController extends Controller
             }
         }
         $request->merge(['payment_wholesale_refund_status' => $status]);
-        // $file = $request->file('file');
-        // $file1 = $request->file('file1');
-        // $file2 = $request->file('file2');
-        // if($file){
-        //     //ลบไฟล์เดิม
-        //     if (File::exists($paymentWholesaleModel->payment_wholesale_refund_file_path)) {
-        //         File::delete($paymentWholesaleModel->payment_wholesale_refund_file_path); // ลบไฟล์
-        //     }
-        //     //ลงไฟล์ใหม่
-
-        //      // สร้างชื่อไฟล์ที่ไม่ซ้ำกัน
-        //      $extension = $file->getClientOriginalExtension();
-        //      $uniqueName = $this->generateRunningCodeWS() .'REFUND'. date('Ymd') . '.' . $extension;
-
-        //      // ย้ายไฟล์ไปยังตำแหน่งที่ต้องการ
-        //      $file->move($absolutePath, $uniqueName);
-
-        //      // สร้างพาธสัมพันธ์เพื่อจัดเก็บไฟล์ในฐานข้อมูล
-        //      $filePath = 'storage/' . $quote->customer_id . '/wholesalePayment/' . $quote->quote_number . '/' . $uniqueName;
-
-        //      $request->merge([
-        //         'payment_wholesale_refund_file_name' => $uniqueName,
-        //         'payment_wholesale_refund_file_path' => $filePath,
-        //         'created_by' => Auth::user()->name
-        //     ]);
-        // }
-        // if($file1){
-        //     //ลบไฟล์เดิม
-        //     if (File::exists($paymentWholesaleModel->payment_wholesale_refund_file_path)) {
-        //         File::delete($paymentWholesaleModel->payment_wholesale_refund_file_path); // ลบไฟล์
-        //     }
-        //     //ลงไฟล์ใหม่
-
-        //      // สร้างชื่อไฟล์ที่ไม่ซ้ำกัน
-        //      $extension = $file1->getClientOriginalExtension();
-        //      $uniqueName = $this->generateRunningCodeWS() .'REFUND'. date('Ymd') . '.' . $extension;
-
-        //      // ย้ายไฟล์ไปยังตำแหน่งที่ต้องการ
-        //      $file1->move($absolutePath, $uniqueName);
-
-        //      // สร้างพาธสัมพันธ์เพื่อจัดเก็บไฟล์ในฐานข้อมูล
-        //      $filePath1 = 'storage/' . $quote->customer_id . '/wholesalePayment/' . $quote->quote_number . '/' . $uniqueName;
-
-        //      $request->merge([
-        //         'payment_wholesale_refund_file_name1' => $uniqueName,
-        //         'payment_wholesale_refund_file_path1' => $filePath1,
-        //         'created_by' => Auth::user()->name
-        //     ]);
-        // }
-        // if($file2){
-        //     //ลบไฟล์เดิม
-        //     if (File::exists($paymentWholesaleModel->payment_wholesale_refund_file_path)) {
-        //         File::delete($paymentWholesaleModel->payment_wholesale_refund_file_path); // ลบไฟล์
-        //     }
-        //     //ลงไฟล์ใหม่
-
-        //      // สร้างชื่อไฟล์ที่ไม่ซ้ำกัน
-        //      $extension = $file2->getClientOriginalExtension();
-        //      $uniqueName = $this->generateRunningCodeWS() .'REFUND'. date('Ymd') . '.' . $extension;
-
-        //      // ย้ายไฟล์ไปยังตำแหน่งที่ต้องการ
-        //      $file2->move($absolutePath, $uniqueName);
-
-        //      // สร้างพาธสัมพันธ์เพื่อจัดเก็บไฟล์ในฐานข้อมูล
-        //      $filePath2 = 'storage/' . $quote->customer_id . '/wholesalePayment/' . $quote->quote_number . '/' . $uniqueName;
-
-        //      $request->merge([
-        //         'payment_wholesale_refund_file_name2' => $uniqueName,
-        //         'payment_wholesale_refund_file_path2' => $filePath2,
-        //         'created_by' => Auth::user()->name
-        //     ]);
-        // }
-       
         $paymentWholesaleModel->update($request->all());
         return redirect()->back();
     }
@@ -259,7 +175,6 @@ class paymentWholesaleController extends Controller
     public function payment(quotationModel $quotationModel)
     {
         $paymentWholesale = paymentWholesaleModel::where('payment_wholesale_quote_id', $quotationModel->quote_id)->get();
-
         return View::make('paymentWholesale.wholesale-table', compact('quotationModel', 'paymentWholesale'))->render();
     }
 

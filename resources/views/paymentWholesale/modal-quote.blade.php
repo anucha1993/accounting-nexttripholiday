@@ -21,6 +21,7 @@
                     <option value="full">ชำระเงินเต็มจำนวน</option>
                 </select>
             </div>
+            
             <div class="col-md-3">
                 <label for="">วันที่ชำระ</label>
                 <input type="date" name="payment_wholesale_date" class="form-control" value="{{date('Y-m-d')}}">

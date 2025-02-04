@@ -94,10 +94,8 @@ class inputTaxController extends Controller
                 $requestData['input_tax_file'] = $filePath;
             }
         }
-
         // อัปเดตข้อมูลเพิ่มเติม
         $requestData['updated_by'] = Auth::user()->name;
-
         // บันทึกการเปลี่ยนแปลงในฐานข้อมูล
         $inputTaxModel->update($requestData);
         
@@ -115,10 +113,6 @@ class inputTaxController extends Controller
             ]);
 
         }
-
-       
-
-
         return redirect()->back()->with('success', 'อัปเดตข้อมูลเรียบร้อยแล้ว');
     }
 
@@ -240,24 +234,14 @@ class inputTaxController extends Controller
         } else {
             $invoiceModel = [];
         }
-        $inputTax = inputTaxModel::where('input_tax_quote_id', $quotationModel->quote_id)->where('input_tax.input_tax_type', '!=', 2)->get();
+        $inputTax = inputTaxModel::where('input_tax_quote_id', $quotationModel->quote_id)->where('input_tax_wholesale_type','N')->get();
         return View::make('inputTax.inputtax-table', compact('quotationModel', 'inputTax', 'invoiceModel', 'invoice','document'))->render();
     }
 
     public function tableWholesale(quotationModel $quotationModel)
-
     {
-        $invoice = invoiceModel::where('invoice_quote_id', $quotationModel->quote_id)->first();
-        if ($invoice) {
-            $invoiceModel = taxinvoiceModel::select('invoices.*')
-                ->where('taxinvoices.invoice_id', $invoice->invoice_id)
-                ->leftjoin('invoices', 'invoices.invoice_id', 'taxinvoices.invoice_id')
-                ->get();
-        } else {
-            $invoiceModel = [];
-        }
-
-        $inputTax = inputTaxModel::where('input_tax_quote_id', $quotationModel->quote_id)->where('input_tax.input_tax_type', 2)->get();
-        return View::make('inputTax.inputtax-wholesale-table', compact('quotationModel', 'inputTax', 'invoiceModel', 'invoice'))->render();
+       
+        $inputTax = inputTaxModel::where('input_tax_quote_id', $quotationModel->quote_id)->where('input_tax.input_tax_wholesale_type', 'Y')->get();
+        return View::make('inputTax.inputtax-wholesale-table', compact('inputTax','quotationModel'))->render();
     }
 }

@@ -27,18 +27,11 @@
                         $inputTaxTotal = 0;
                     @endphp
                     <tbody>
-                       
                         @forelse ($inputTax as $item)
-
                         @php
-
                         if ($item->input_tax_status === 'success') {
-                        // $inputTaxTotal += $item->input_tax_withholding;
-                        // $inputTaxTotal += $item->input_tax_vat;
                         $inputTaxTotal += $item->input_tax_grand_total;
                         }
-
-                    
                         @endphp
                             <tr class="@if($item->input_tax_status === 'cancel') text-danger @endif">
                                 <td>{{++$key}}</td>
@@ -59,8 +52,6 @@
                                     อื่นๆ
                                     @endif
                                 </td>
-
-
                                 <td>
                                     {{date('d-m-Y : H:m:s',strtotime($item->created_at))}}
                                 </td>
@@ -85,7 +76,7 @@
                                     <a href="{{route('inputtax.cancelWholesale',$item->input_tax_id)}}" class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle"> ยกเลิก</i></a>
                             
                                     @else
-                                    <a href="{{route('inputtax.editWholesale',$item->input_tax_id)}}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
+                                    <a href="{{route('inputtax.inputtaxEditWholesale',$item->input_tax_id)}}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
                                     <a href="{{route('inputtax.cancelWholesale',$item->input_tax_id)}}" class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle"> ยกเลิก</i></a>
                                     @endif
                                    
@@ -95,6 +86,7 @@
                                     
                                 </td>
                             </tr>
+                            
                         @empty
                             
                         @endforelse
