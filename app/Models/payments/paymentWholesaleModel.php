@@ -29,6 +29,7 @@ class paymentWholesaleModel extends Model
         'payment_wholesale_refund_file_name2',
         'payment_wholesale_refund_note',
         'payment_wholesale_refund_status',
+        'payment_wholesale_date',
         'created_by',
         'updated_by',
     ];

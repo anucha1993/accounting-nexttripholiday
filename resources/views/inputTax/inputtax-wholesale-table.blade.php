@@ -94,8 +94,8 @@
                         <tr>
                             <tr>
  
-                                <td align="right" class="text-success"  colspan="7"><b>(@bathText($quotationModel->inputtaxTotalWholesale()))</b></td>
-                                <td align="center" class="text-danger" colspan="1"><b>{{number_format($quotationModel->inputtaxTotalWholesale(),2)}}</b></td>
+                                <td align="right" class="text-success"  colspan="5"><b>(@bathText($quotationModel->inputtaxTotalWholesale()))</b></td>
+                                <td align="left" class="text-danger" colspan="1"><b>{{number_format($quotationModel->inputtaxTotalWholesale(),2)}}</b></td>
                             </tr>
                         </tr>
 

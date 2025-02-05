@@ -17,6 +17,7 @@
                             <th>ลำดับ</th>
                             <th>Payment No.</th>
                             <th>วันที่ทำรายการ</th>
+                            <th>วันที่ชำระ</th>
                             <th>จำนวนเงิน</th>
                             <th>ยอดคืน</th>
                             <th>สถานะการคืน</th>
@@ -35,7 +36,14 @@
                                 <td>{{ $key + 1 }}</td>
 
                                 <td>{{ $item->payment_wholesale_number }}</td>
-                                <td>{{ date('d-m-Y : H:m:s', strtotime($item->created_at)) }}</td>
+                                <td>{{ date('d/m/Y : H:m:s', strtotime($item->created_at)) }}</td>
+                                <td>
+                                    @if ($item->payment_wholesale_date)
+                                    {{ date('d/m/Y ', strtotime($item->payment_wholesale_date)) }}
+                                    @else
+                                        N/A
+                                    @endif
+                                </td>
                                 <td>
                                     {{ number_format($item->payment_wholesale_total, 2, '.', ',') }} 
                                 </td>

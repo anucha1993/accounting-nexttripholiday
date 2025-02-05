@@ -27,10 +27,10 @@
             <tr>
                 <td>{{ $key+1 }}</td>
                 <td>{{ $document->document_number }}</td>
-                <td>{{ $document->ref_number }}</td>
-                <td>{{ $document->quote->quote_number ?? '-' }}</td>
-                <td>{{ $document->customer->customer_name ?? '-' }}</td>
-                <td>{{ $document->wholesale->wholesale_name_th ?? '-' }}</td>
+                <td>{{ $document->ref_number ?? 'N/A' }}</td>
+                <td>{{ $document->quote->quote_number ?? 'N/A' }}</td>
+                <td>{{ $document->customer->customer_name ?? 'N/A' }}</td>
+                <td>{{ $document->wholesale->wholesale_name_th ?? 'N/A' }}</td>
                 <td>{{ date('d/m/Y',strtotime($document->document_date)) }}</td>
                 <td>{{ number_format($document->total_payable,2) }}</td>
                 <td>{{ number_format($document->total_withholding_tax,2) }}</td>

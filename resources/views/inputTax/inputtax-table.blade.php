@@ -63,7 +63,7 @@
                                 <td>
                                     {{ number_format($item->invoice_pre_vat_amount, 2) }}
                                 </td>
-                                <td>-</td>
+                                <td>N/A</td>
                                 <td>{{ number_format($item->invoice_withholding_tax, 2) }}</td>
                                 <td>{{ number_format($item->invoice_vat, 2) }}</td>
                                 <td>{{ number_format($invoice->getWithholdingTaxAmountAttribute(), 2) }}</td>
@@ -100,9 +100,9 @@
                                     @elseif($item->input_tax_type === 5)
                                         ค่าอาหาร
                                     @elseif($item->input_tax_type === 6)
-                                        ค่าตั๋วเครื่องบิน 
-                                     @elseif($item->input_tax_type === 7)
-                                        อื่นๆ 
+                                        ค่าตั๋วเครื่องบิน
+                                    @elseif($item->input_tax_type === 7)
+                                        อื่นๆ
                                     @endif
 
 
@@ -112,72 +112,88 @@
                                         {{ $item->input_tax_ref }}
                                 </td>
                             @else
-                                -
+                                N/A
                         @endif
                         <td>
-                            @if ($item->input_tax_file)
-                                <a href="{{ asset('storage/' . $item->input_tax_file) }}"
-                                    onclick="openPdfPopup(this.href); return false;"><i
-                                        class="fa fa-file text-danger"></i>
-                                    ไฟล์แนบ</a>
+                          @if ($item->input_tax_file)
+                            <a href="{{ asset('storage/' . $item->input_tax_file) }}" class="btn btn-info btn-sm" onclick="openPdfPopup(this.href); return false;">
+                             เปิดดูไฟล์</a>
+
+                             <a href="{{route('inputtax.deletefile',$item->input_tax_id)}}" class="btn btn-danger btn-sm" onclick="return confirm('Do you want to delete file?');"> ลบไฟล์</a>
                             @else
-                                ไม่มีไฟล์แนบ
-                            @endif
+
+                            <form action="{{route('inputtax.update',$item->input_tax_id)}}" method="POST" enctype="multipart/form-data"  id="upload-file-{{$item->input_tax_id}}">
+                                @csrf
+                                @method('PUT')
+                                <input type="file" name="file" id="input-file-{{$item->input_tax_id}}">
+                            </form>
+                        
+                            <script>
+                                $(document).ready(function() {
+                                    $("#input-file-{{$item->input_tax_id}}").change(function() {
+                                        $(this).closest("form").submit();
+                                    });
+                                });
+                            </script>
+                            @endif 
+                           
+
+
 
                         </td>
                         <td>
                             {{ number_format($item->input_tax_service_total, 2) }}
 
-                        </td> 
+                        </td>
                         <td>
-                            @if ($document->ref_input_tax === $item->input_tax_id )
+                            @if ($item->input_tax_withholding_status === 'Y')
                                 <a href="{{ route('MPDF.generatePDFwithholding', $document->id) }}"
                                     onclick="openPdfPopup(this.href); return false;"> <i
-                                        class="fa fa-file-pdf text-danger"></i>ปริ้นใบหัก ณ ที่จ่าย</a>
+                                        class="fa fa-file-pdf text-danger"></i> ปริ้นใบหัก ณ ที่จ่าย</a>
                             @else
-                                -
+                                N/A
                             @endif
-                            
+
                         </td>
 
                         <td>{{ number_format($item->input_tax_withholding, 2) }} </td>
                         <td>{{ number_format($item->input_tax_vat, 2) }}</td>
-                      
+
                         <td>
-                            @if ($item->input_tax_withholding_status === 'Y') 
+                            {{-- @if ($item->input_tax_withholding_status === 'Y') 
                             {{ number_format($item->input_tax_grand_total, 2) }}
                             @elseif($item->input_tax_wholesale_type === 'Y' )
                             {{ number_format($item->input_tax_grand_total, 2) }}
                             @else
                             {{ number_format(0, 2) }}
-                            @endif
-                            
-                            
+                            @endif --}}
+                            {{ $item->input_tax_grand_total }}
                         </td>
 
                         <td>
-                            @if ($document->ref_input_tax === $item->input_tax_id )
-                            <a href="{{ route('withholding.modalEdit', $document->id) }}" class="input-tax-edit"> <i
-                                    class="fa fa-edit text-info "></i>แก้ไขใบหัก ณ ที่จ่าย</a>
-                        @else
-                            -
-                        @endif
-                        <br>
+                            @if ($item->input_tax_withholding_status === 'Y')
+                                <a href="{{ route('withholding.modalEdit', $document->id) }}" class="input-tax-edit">
+                                    <i class="fa fa-edit text-info "></i>แก้ไขใบหัก ณ ที่จ่าย</a>
+                            @else
+                                -
+                            @endif
+                            <br>
                             @if ($item->input_tax_status === 'success')
                                 @if ($item->input_tax_wholesale_type === 'Y')
                                     <a href="{{ route('inputtax.inputtaxEditWholesale', $item->input_tax_id) }}"
                                         class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
 
-                                        
+
                                     <a href="{{ route('inputtax.cancelWholesale', $item->input_tax_id) }}"
                                         class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle">
                                             ยกเลิก</i></a>
                                 @else
                                     <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}"
                                         class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
-                                    <a href="{{ route('inputtax.cancelWholesale', $item->input_tax_id) }}"
-                                        class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle">
-                                            ยกเลิก</i></a>
+
+                                    <a href="{{ route('inputtax.delete', $item->input_tax_id) }}" class="text-danger"
+                                        onclick="return confirm('Do you want to delete?');"> <i class="fa fa-trash"></i>
+                                        ลบ</a>
                                 @endif
                             @else
                                 {{ $item->input_tax_cancel }}
@@ -191,26 +207,29 @@
                         <tr>
 
                             @php
-                                 $withholdingTaxAmount = $invoice?->getWithholdingTaxAmountAttribute() ?? 0;
-                        $getTotalInputTaxVat = $quotationModel?->getTotalInputTaxVat() ?? 0;
-                    
-                        // ตรวจสอบว่า input_tax_file === NULL หรือไม่
-                        $hasInputTaxFile = $quotationModel->InputTaxVat()->whereNotNull('input_tax_file')->exists();
-                    
-                        if ($hasInputTaxFile) {
-                            // กรณี input_tax_file !== NULL
-                            $paymentInputtaxTotal = $withholdingTaxAmount - $getTotalInputTaxVat;
-                        } else {
-                            // กรณี input_tax_file === NULL
-                            $paymentInputtaxTotal = $withholdingTaxAmount + $getTotalInputTaxVat;
-                        }
+                                $withholdingTaxAmount = $invoice?->getWithholdingTaxAmountAttribute() ?? 0;
+                                $getTotalInputTaxVat = $quotationModel?->getTotalInputTaxVat() ?? 0;
+
+                                // ตรวจสอบว่า input_tax_file === NULL หรือไม่
+                                $hasInputTaxFile = $quotationModel
+                                    ->InputTaxVat()
+                                    ->whereNotNull('input_tax_file')
+                                    ->exists();
+
+                                if ($hasInputTaxFile) {
+                                    // กรณี input_tax_file !== NULL
+                                    $paymentInputtaxTotal = $withholdingTaxAmount - $getTotalInputTaxVat;
+                                } else {
+                                    // กรณี input_tax_file === NULL
+                                    $paymentInputtaxTotal = $withholdingTaxAmount + $getTotalInputTaxVat;
+                                }
                             @endphp
                             <td align="right" class="text-success" colspan="7">
                                 <b>(@bathText($paymentInputtaxTotal))</b>
                             </td>
                             <td align="center" class="text-danger" colspan="1">
                                 <b>
-                                    {{ number_format($paymentInputtaxTotal,2) }}
+                                    {{ number_format($paymentInputtaxTotal, 2) }}
                                 </b>
                             </td>
                         </tr>
@@ -307,13 +326,6 @@
             }
         });
     }
-
-
-
-
-
-
-
 
     $(".input-tax-edit").click("click", function(e) {
         e.preventDefault();

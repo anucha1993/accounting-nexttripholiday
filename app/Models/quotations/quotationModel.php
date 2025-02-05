@@ -266,7 +266,7 @@ public function calculateNetProfit()
     public function inputtaxTotalWholesale()
     {
         return $this->inputtax()
-            ->where('input_tax_type', 2)
+            ->whereIn('input_tax_type', [2,4,5,6,7])
             ->get()
             ->sum(function ($inputtax) {
                 return $inputtax->input_tax_grand_total;

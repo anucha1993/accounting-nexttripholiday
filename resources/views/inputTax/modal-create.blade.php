@@ -20,17 +20,7 @@
             <input type="hidden" name="customer_id" class="form-control" value="{{$quotationModel->customer_id}}" >
             <input type="hidden" name="input_tax_wholesale" class="form-control" value="{{$quotationModel->quote_wholesale}}" >
                
-            {{-- <div class="col-md-12 mb-3">
-                <label for="">โฮลเซลล์ </label>
-                <select name="input_tax_wholesale" class="form-select selectpicker selectpicker-select" data-live-search="true">
-                    <option value="0">ไม่ระบุ</option>
-                    @forelse ($wholesale as $item)
-                    <option value="{{$item->id}}">{{$item->wholesale_name_th}}</option>
-                    @empty
-                        
-                    @endforelse
-                </select>
-            </div> --}}
+    
           
             <div class="col-md-12 mb-3">
                 <label for=""> วันเดือน ปีภาษี ที่จ่าย </label>
@@ -39,7 +29,7 @@
 
             <div class="col-md-12 mb-3">
                 <label for="">เลขที่เอกสารอ้างอิง </label>
-                <input type="text" name="input_tax_ref" class="form-control" placeholder="tax number"  value="{{$taxinvoice->taxinvoice_number ? $taxinvoice->taxinvoice_number : '' }}">
+                <input type="text" name="input_tax_ref" class="form-control" placeholder="tax number" >
             </div>
 
             
@@ -64,10 +54,10 @@
                 <input type="number" name="input_tax_grand_total" step="0.01" class="form-control" placeholder="0.0" id="total" >
             </div>
 
-            <div class="col-md-12 mb-3">
+            {{-- <div class="col-md-12 mb-3">
                 <label for="">ไฟล์เอกสารแนบ</label>
                 <input type="file" name="file">
-            </div>
+            </div> --}}
             
         </div>
 
@@ -97,14 +87,16 @@
     $('#input_tax_type').change(function() {
         var inputTaxType = $(this).val(); // รับค่าจาก input_tax_type
 
-        if (inputTaxType === '1') {
+        //alert(inputTaxType);
+
+        if (inputTaxType === '0') {
             // ถ้า input_tax_type === 1 ให้ disable input_tax_withholding_status
-            $('#input_tax_withholding_status1').prop('disabled', true);
-            $('#input_tax_withholding_status2').prop('disabled', true);
-        } else {
-            // ถ้า input_tax_type ไม่ใช่ 1 ให้ enable input_tax_withholding_status
             $('#input_tax_withholding_status1').prop('disabled', false);
             $('#input_tax_withholding_status2').prop('disabled', false);
+        } else {
+            // ถ้า input_tax_type ไม่ใช่ 1 ให้ enable input_tax_withholding_status
+            $('#input_tax_withholding_status1').prop('disabled', true);
+            $('#input_tax_withholding_status2').prop('disabled', true);
         }
     });
 

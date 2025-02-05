@@ -65,6 +65,16 @@ class inputTaxController extends Controller
         return redirect()->back();
     }
 
+    public function deletefile(Request $request, inputTaxModel $inputTaxModel)
+    {
+        if ($inputTaxModel->input_tax_file && File::exists('storage/' . $inputTaxModel->input_tax_file)) {
+            File::delete('storage/' . $inputTaxModel->input_tax_file); // ลบไฟล์
+            $inputTaxModel->update(['input_tax_file' => NULL]);
+        }
+
+        return redirect()->back();
+    }
+
 
     public function update(Request $request, inputTaxModel $inputTaxModel)
     {
@@ -221,6 +231,12 @@ class inputTaxController extends Controller
         return redirect()->back()->with('success', 'ข้อมูลถูกบันทึกเรียบร้อยแล้ว');
     }
 
+
+    // public function uploadfile()
+    // {
+
+    // }
+
     public function table(quotationModel $quotationModel)
 
     {
@@ -243,5 +259,11 @@ class inputTaxController extends Controller
        
         $inputTax = inputTaxModel::where('input_tax_quote_id', $quotationModel->quote_id)->where('input_tax.input_tax_wholesale_type', 'Y')->get();
         return View::make('inputTax.inputtax-wholesale-table', compact('inputTax','quotationModel'))->render();
+    }
+
+    public function delete(inputTaxModel $inputTaxModel)
+    {
+        $inputTaxModel->delete();
+        return redirect()->back();
     }
 }
