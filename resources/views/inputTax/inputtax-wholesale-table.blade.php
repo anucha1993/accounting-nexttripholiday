@@ -36,24 +36,25 @@
                             <tr class="@if($item->input_tax_status === 'cancel') text-danger @endif">
                                 <td>{{++$key}}</td>
                                 <td>
+                                    
                                     @if ($item->input_tax_type === 0)
                                     ภาษีซื้อ
                                     @elseif($item->input_tax_type === 1)
                                     ต้นทุนอื่นๆ
                                     @elseif($item->input_tax_type === 2)
                                     ต้นทุนโฮลเซลล์
-                                    @elseif($item->input_tax_type === 3)
-                                    ค่าทัวร์รวมทั้งหมด
-                                    @elseif($item->input_tax_type === 4)
-                                    ค่าอาหาร
+                                   
                                     @elseif($item->input_tax_type === 5)
-                                    ค่าตั๋วเครื่องบิน
+                                    ค่าอาหาร
                                     @elseif($item->input_tax_type === 6)
+                                    ค่าตั๋วเครื่องบิน
+                                    @elseif($item->input_tax_type === 7)
                                     อื่นๆ
                                     @endif
+                                   
                                 </td>
                                 <td>
-                                    {{date('d-m-Y : H:m:s',strtotime($item->created_at))}}
+                                    {{date('d/m/Y : H:m:s',strtotime($item->created_at))}}
                                 </td>
 
                                 <td>
