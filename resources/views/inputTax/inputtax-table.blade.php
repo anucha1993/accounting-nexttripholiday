@@ -67,7 +67,7 @@
                                 <td>{{ number_format($item->invoice_withholding_tax, 2) }}</td>
                                 <td>{{ number_format($item->invoice_vat, 2) }}</td>
                                 <td>{{ number_format($invoice->getWithholdingTaxAmountAttribute(), 2) }}</td>
-                                <td>-</td>
+                                <td>N/A</td>
                             @empty
                         @endforelse
                         </tr>
@@ -172,10 +172,10 @@
 
                         <td>
                             @if ($item->input_tax_withholding_status === 'Y')
-                                <a href="{{ route('withholding.modalEdit', $document->id) }}" class="input-tax-edit">
-                                    <i class="fa fa-edit text-info "></i>แก้ไขใบหัก ณ ที่จ่าย</a>
+                                <a href="{{ route('withholding.modalEdit', $document->id) }}" class="input-tax-edit text-primary">
+                                    <i class="fa fa-edit text-primary "></i>แก้ไขใบหัก ณ ที่จ่าย</a>
                             @else
-                                -
+                                
                             @endif
                             <br>
                             @if ($item->input_tax_status === 'success')
@@ -190,10 +190,11 @@
                                 @else
                                     <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}"
                                         class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
-
+                                    @if ($item->input_tax_withholding_status !== 'Y')
                                     <a href="{{ route('inputtax.delete', $item->input_tax_id) }}" class="text-danger"
                                         onclick="return confirm('Do you want to delete?');"> <i class="fa fa-trash"></i>
                                         ลบ</a>
+                                       @endif
                                 @endif
                             @else
                                 {{ $item->input_tax_cancel }}

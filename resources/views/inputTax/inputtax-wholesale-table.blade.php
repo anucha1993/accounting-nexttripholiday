@@ -73,13 +73,13 @@
                                     @if ($item->input_tax_status === 'success')
                                     @if ($item->input_tax_type === 2)
                                     <a href="{{route('inputtax.inputtaxEditWholesale',$item->input_tax_id)}}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
-                                    <a href="{{route('inputtax.cancelWholesale',$item->input_tax_id)}}" class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle"> ยกเลิก</i></a>
-                            
+                                    {{-- <a href="{{route('inputtax.cancelWholesale',$item->input_tax_id)}}" class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle"> ยกเลิก</i></a> --}}
+                                    <a href="{{route('inputtax.delete',$item->input_tax_id)}}" class="text-danger input-tax-cancel" onclick="return confirm('Do you want to delete?');"> <i class="fa fa-trash"> ลบ</i></a>
                                     @else
-                                    <a href="{{route('inputtax.inputtaxEditWholesale',$item->input_tax_id)}}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
-                                    <a href="{{route('inputtax.cancelWholesale',$item->input_tax_id)}}" class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle"> ยกเลิก</i></a>
+                                    <a href="{{route('inputtax.inputtaxEditWholesale',$item->input_tax_id)}}" class="input-tax-edit" > <i class="fa fa-edit"> แก้ไข</i></a>
+                                    {{-- <a href="{{route('inputtax.cancelWholesale',$item->input_tax_id)}}" class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle"> ยกเลิก</i></a> --}}
+                                    <a href="{{route('inputtax.delete',$item->input_tax_id)}}" class="text-danger input-tax-cancel" onclick="return confirm('Do you want to delete?');"> <i class="fa fa-trash"> ลบ</i></a>
                                     @endif
-                                   
                                     @else
                                         {{$item->input_tax_cancel}}
                                     @endif
