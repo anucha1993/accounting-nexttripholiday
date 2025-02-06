@@ -270,7 +270,7 @@ Route::put('inputtax/cancel/update/{inputTaxModel}',[inputTaxController::class,'
 Route::get('inputtax/table/{quotationModel}',[inputTaxController::class,'table'])->name('inputtax.table');
 Route::get('inputtax/wholesale/table/{quotationModel}',[inputTaxController::class,'tableWholesale'])->name('inputtax.tableWholesale');
 Route::POST('inputtax/store',[inputTaxController::class,'store'])->name('inputtax.store');
-Route::get('inputtax/delete',[inputTaxController::class,'delete'])->name('inputtax.delete');
+Route::get('inputtax/delete/{inputTaxModel}',[inputTaxController::class,'delete'])->name('inputtax.delete');
 Route::get('inputtax/delete/file/{inputTaxModel}',[inputTaxController::class,'deletefile'])->name('inputtax.deletefile');
 
 // public View

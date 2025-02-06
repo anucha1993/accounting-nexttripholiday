@@ -2,7 +2,7 @@
     <div class="header">
         <h5>บันทึกต้นทุน</h5>
     </div>
-    <form action="{{route('inputtax.store')}}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('inputtax.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('POST')
         <div class="row">
@@ -14,51 +14,59 @@
                     <option value="3">ค่าธรรมเนียมรูดบัตร</option>
                 </select>
             </div>
-            
-            <input type="hidden" name="input_tax_quote_id" class="form-control" value="{{$quotationModel->quote_id}}" >
-            <input type="hidden" name="input_tax_quote_number" class="form-control" value="{{$quotationModel->quote_number}}" >
-            <input type="hidden" name="customer_id" class="form-control" value="{{$quotationModel->customer_id}}" >
-            <input type="hidden" name="input_tax_wholesale" class="form-control" value="{{$quotationModel->quote_wholesale}}" >
-               
-    
-          
+
+            <input type="hidden" name="input_tax_quote_id" class="form-control"
+                value="{{ $quotationModel->quote_id }}">
+            <input type="hidden" name="input_tax_quote_number" class="form-control"
+                value="{{ $quotationModel->quote_number }}">
+            <input type="hidden" name="customer_id" class="form-control" value="{{ $quotationModel->customer_id }}">
+            <input type="hidden" name="input_tax_wholesale" class="form-control"
+                value="{{ $quotationModel->quote_wholesale }}">
+
+
+
             <div class="col-md-12 mb-3">
                 <label for=""> วันเดือน ปีภาษี ที่จ่าย </label>
-                <input type="date" name=" input_tax_date" class="form-control" placeholder="tax number" value="{{date('Y-m-d')}}" >
+                <input type="date" name=" input_tax_date" class="form-control" placeholder="tax number"
+                    value="{{ date('Y-m-d') }}">
             </div>
 
             <div class="col-md-12 mb-3">
                 <label for="">เลขที่เอกสารอ้างอิง </label>
-                <input type="text" name="input_tax_ref" class="form-control" placeholder="tax number" >
+                <input type="text" name="input_tax_ref" class="form-control" placeholder="tax number">
             </div>
 
-            
+
             <div class="col-md-12 mb-3">
                 <label>ยอดค่าบริการ</label>
-                <input type="number" class="form-control" name="input_tax_service_total" id="service-total" step="0.01" placeholder="0.0" >
+                <input type="number" class="form-control" name="input_tax_service_total" id="service-total"
+                    step="0.01" placeholder="0.0">
             </div>
 
 
             <div class="col-md-12 mb-3">
                 <label for="">ภาษี ณ ที่จ่าย </label>
-                <input type="number" name="input_tax_withholding" step="0.01" class="form-control" placeholder="0.0" id="withholding"  readonly style="background-color: antiquewhite">
+                <input type="number" name="input_tax_withholding" step="0.01" class="form-control" placeholder="0.0"
+                    id="withholding" readonly style="background-color: antiquewhite">
             </div>
 
             <div class="col-md-12 mb-3">
                 <label for="">ภาษีซื้อ</label>
-                <input type="number" name="input_tax_vat" step="0.01" class="form-control" placeholder="0.0" id="vat">
+                <input type="number" name="input_tax_vat" step="0.01" class="form-control" placeholder="0.0"
+                    id="vat">
             </div>
 
             <div class="col-md-12 mb-3">
                 <label for="">ผลรวมต้นทุน</label>
-                <input type="number" name="input_tax_grand_total" step="0.01" class="form-control" placeholder="0.0" id="total" >
+                <input type="number" name="input_tax_grand_total" step="0.01" class="form-control" placeholder="0.0"
+                    id="total">
             </div>
 
             {{-- <div class="col-md-12 mb-3">
                 <label for="">ไฟล์เอกสารแนบ</label>
                 <input type="file" name="file">
             </div> --}}
-            
+
         </div>
 
         <div class="col-md-12">
@@ -70,10 +78,11 @@
             <br>
             <input type="radio" id="input_tax_withholding_status1" name="input_tax_withholding_status" value="Y">
             <label for="html">ใช่</label>
-            <input type="radio" id="input_tax_withholding_status2" name="input_tax_withholding_status" value="N" checked>
+            <input type="radio" id="input_tax_withholding_status2" name="input_tax_withholding_status" value="N"
+                checked>
             <label for="css">ไม่ใช่</label><br>
             {{-- @endif --}}
-           
+
         </div>
 
         <br>
@@ -82,56 +91,71 @@
 </div>
 
 <script>
- $(document).ready(function() {
-    // เมื่อค่า input_tax_type มีการเปลี่ยนแปลง
-    $('#input_tax_type').change(function() {
-        var inputTaxType = $(this).val(); // รับค่าจาก input_tax_type
+    $(document).ready(function() {
+        // เมื่อค่า input_tax_type มีการเปลี่ยนแปลง
+        $('#input_tax_type').change(function() {
+            var inputTaxType = $(this).val(); // รับค่าจาก input_tax_type
 
-        //alert(inputTaxType);
+            //alert(inputTaxType);
 
-        if (inputTaxType === '0') {
-            // ถ้า input_tax_type === 1 ให้ disable input_tax_withholding_status
-            $('#input_tax_withholding_status1').prop('disabled', false);
-            $('#input_tax_withholding_status2').prop('disabled', false);
-        } else {
-            // ถ้า input_tax_type ไม่ใช่ 1 ให้ enable input_tax_withholding_status
-            $('#input_tax_withholding_status1').prop('disabled', true);
-            $('#input_tax_withholding_status2').prop('disabled', true);
-        }
+            if (inputTaxType === '0') {
+                // ถ้า input_tax_type === 1 ให้ disable input_tax_withholding_status
+                $('#input_tax_withholding_status1').prop('disabled', false);
+                $('#input_tax_withholding_status2').prop('disabled', false);
+
+
+                
+            } else {
+                // ถ้า input_tax_type ไม่ใช่ 1 ให้ enable input_tax_withholding_status
+                $('#input_tax_withholding_status1').prop('disabled', true);
+                $('#input_tax_withholding_status2').prop('disabled', true);
+            }
+        });
+
+        // เรียกใช้งานทันทีเพื่อให้รองรับค่าเริ่มต้น
+        $('#input_tax_type').trigger('change');
     });
 
-    // เรียกใช้งานทันทีเพื่อให้รองรับค่าเริ่มต้น
-    $('#input_tax_type').trigger('change');
-});
+    $(document).ready(function() {
+        $('.selectpicker').selectpicker({
+            width: '100%'
+        });
+    });
 
-      $(document).ready(function() {
-                 $('.selectpicker').selectpicker({
-                     width: '100%'
-                 });
-             });
-             
-             $(document).ready(function() {
+    
 
-$('#service-total, #vat').on('keyup', function () {
-let total = 0;
-let vat7 = 0;
-let withholdingTotal = 0;
+    $(document).ready(function() {
 
-let serviceTotal = parseFloat($('#service-total').val()) || 0;
-let vat = parseFloat($('#vat').val()) || 0;
+        $('#service-total, #vat').on('keyup', function() {
+            var inputTaxType = $('#input_tax_type').val();
 
-// คำนวณ VAT 7%
-vat7 = serviceTotal * 0.07;
-$('#vat').val(vat7.toFixed(2));  // อัปเดตค่า VAT ในช่อง input
+            let total = 0;
+            let vat7 = 0;
+            let withholdingTotal = 0;
 
-// คำนวณภาษี ณ ที่จ่าย (3%)
-withholdingTotal = serviceTotal * 0.03;
-$('#withholding').val(withholdingTotal.toFixed(2));
+            let serviceTotal = parseFloat($('#service-total').val()) || 0;
+            let vat = parseFloat($('#vat').val()) || 0;
 
-// คำนวณผลรวมต้นทุน (รวมค่าบริการ ภาษี ณ ที่จ่าย และ VAT)
-total = serviceTotal + withholdingTotal + vat7;
-$('#total').val(withholdingTotal.toFixed(2));
-});
 
-});
+            if (inputTaxType === '1' | inputTaxType === '3') {
+
+                $('#total').val(serviceTotal.toFixed(2));
+            } else {
+                // คำนวณ VAT 7%
+                vat7 = serviceTotal * 0.07;
+                $('#vat').val(vat7.toFixed(2)); // อัปเดตค่า VAT ในช่อง input
+
+                // คำนวณภาษี ณ ที่จ่าย (3%)
+                withholdingTotal = serviceTotal * 0.03;
+                $('#withholding').val(withholdingTotal.toFixed(2));
+
+                // คำนวณผลรวมต้นทุน (รวมค่าบริการ ภาษี ณ ที่จ่าย และ VAT)
+                total = serviceTotal + withholdingTotal + vat7;
+                $('#total').val(withholdingTotal.toFixed(2));
+            }
+
+
+        });
+
+    });
 </script>

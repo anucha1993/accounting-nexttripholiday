@@ -174,6 +174,10 @@
                             @if ($item->input_tax_withholding_status === 'Y')
                                 <a href="{{ route('withholding.modalEdit', $document->id) }}" class="input-tax-edit text-primary">
                                     <i class="fa fa-edit text-primary "></i>แก้ไขใบหัก ณ ที่จ่าย</a>
+
+                                    <a href="{{ route('inputtax.cancelWholesale', $item->input_tax_id) }}"
+                                        class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle">
+                                            ยกเลิก</i></a>
                             @else
                                 
                             @endif
@@ -210,6 +214,8 @@
                             @php
                                 $withholdingTaxAmount = $invoice?->getWithholdingTaxAmountAttribute() ?? 0;
                                 $getTotalInputTaxVat = $quotationModel?->getTotalInputTaxVat() ?? 0;
+                                // echo $withholdingTaxAmount."</br>";
+                                // echo $getTotalInputTaxVat."</br>";
 
                                 // ตรวจสอบว่า input_tax_file === NULL หรือไม่
                                 $hasInputTaxFile = $quotationModel
@@ -226,11 +232,11 @@
                                 }
                             @endphp
                             <td align="right" class="text-success" colspan="7">
-                                <b>(@bathText($paymentInputtaxTotal))</b>
+                                <b>(@bathText($paymentInputtaxTotal+$quotationModel->getTotalInputTaxVatType()))</b>
                             </td>
                             <td align="center" class="text-danger" colspan="1">
                                 <b>
-                                    {{ number_format($paymentInputtaxTotal, 2) }}
+                                    {{ number_format($paymentInputtaxTotal+$quotationModel->getTotalInputTaxVatType(), 2) }}
                                 </b>
                             </td>
                         </tr>

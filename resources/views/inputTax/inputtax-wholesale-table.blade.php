@@ -43,6 +43,8 @@
                                     ต้นทุนอื่นๆ
                                     @elseif($item->input_tax_type === 2)
                                     ต้นทุนโฮลเซลล์
+                                    @elseif($item->input_tax_type === 4)
+                                    ค่าทัวร์รวมทั้งหมด
                                    
                                     @elseif($item->input_tax_type === 5)
                                     ค่าอาหาร
