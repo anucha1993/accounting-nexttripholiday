@@ -182,9 +182,9 @@
                                         class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle">
                                             ยกเลิก</i></a> --}}
 
-                                            <a href="{{ route('inputtax.delete', $item->input_tax_id) }}" class="text-danger"
+                                            {{-- <a href="{{ route('inputtax.delete', $item->input_tax_id) }}" class="text-danger"
                                                 onclick="return confirm('Do you want to delete?');"> <i class="fa fa-trash"></i>
-                                                ลบ</a>
+                                                ลบ</a> --}}
                                               
                             @else
                                 
@@ -196,17 +196,22 @@
                                         class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
 
 
-                                    <a href="{{ route('inputtax.cancelWholesale', $item->input_tax_id) }}"
+                                    {{-- <a href="{{ route('inputtax.cancelWholesale', $item->input_tax_id) }}"
                                         class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle">
-                                            ยกเลิก</i></a>
+                                            ยกเลิก</i></a> --}}
                                 @else
                                     <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}"
                                         class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
-                                    @if ($item->input_tax_withholding_status !== 'Y')
+
+                                        <a href="{{ route('inputtax.delete', $item->input_tax_id) }}" class="text-danger"
+                                            onclick="return confirm('Do you want to delete?');"> <i class="fa fa-trash"></i>
+                                            ลบ</a>
+
+                                    {{-- @if ($item->input_tax_withholding_status !== 'Y')
                                     <a href="{{ route('inputtax.delete', $item->input_tax_id) }}" class="text-danger"
                                         onclick="return confirm('Do you want to delete?');"> <i class="fa fa-trash"></i>
                                         ลบ</a>
-                                       @endif
+                                       @endif --}}
                                 @endif
                             @else
                                 {{-- {{ $item->input_tax_cancel }} --}}
