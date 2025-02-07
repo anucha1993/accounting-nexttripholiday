@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
 use App\Models\invoices\invoiceModel;
 use App\Models\inputTax\inputTaxModel;
+use Illuminate\Support\Facades\Storage;
 use App\Models\invoices\taxinvoiceModel;
 use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
@@ -67,8 +68,14 @@ class inputTaxController extends Controller
 
     public function deletefile(Request $request, inputTaxModel $inputTaxModel)
     {
-        if ($inputTaxModel->input_tax_file && File::exists('storage/' . $inputTaxModel->input_tax_file)) {
-            File::delete('storage/' . $inputTaxModel->input_tax_file); // ลบไฟล์
+        // if ($inputTaxModel->input_tax_file && File::exists('storage/' . $inputTaxModel->input_tax_file)) {
+        //     File::delete('storage/' . $inputTaxModel->input_tax_file); // ลบไฟล์
+        //     $inputTaxModel->update(['input_tax_file' => NULL]);
+        // }
+
+        if($inputTaxModel->input_tax_file && storage_path('app/' . $inputTaxModel->input_tax_file))
+        {
+            Storage::delete('app/' . $inputTaxModel->input_tax_file);
             $inputTaxModel->update(['input_tax_file' => NULL]);
         }
 
