@@ -11,6 +11,7 @@ class uploadfileQuoteController extends Controller
     public function uploadFile(Request $request, $quoteNumber, $customerId)
     {
         // ตรวจสอบว่ามีไฟล์ใน request หรือไม่
+        //dd($customerId);
         if ($request->hasFile('file')) {
             // สร้าง path โฟลเดอร์ที่ต้องการเก็บไฟล์
             $folderPath = 'public/' . $customerId . '/inputtax/' . $quoteNumber;

@@ -125,7 +125,9 @@
                             <form action="{{route('inputtax.update',$item->input_tax_id)}}" method="POST" enctype="multipart/form-data"  id="upload-file-{{$item->input_tax_id}}">
                                 @csrf
                                 @method('PUT')
-                                <input type="file" name="file" id="input-file-{{$item->input_tax_id}}">
+                                <input type="hidden" name="customer_id" value="{{$quotationModel->customer_id}}">
+                                <input type="hidden" name="input_tax_quote_number" value="{{$quotationModel->quote_number}}">
+                                <input type="file"   name="file" id="input-file-{{$item->input_tax_id}}">
                             </form>
                         
                             <script>
