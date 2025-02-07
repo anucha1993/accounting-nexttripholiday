@@ -148,7 +148,7 @@
 
                         </td>
                         <td>
-                            @if ($item->input_tax_withholding_status === 'Y')
+                            @if ($item->input_tax_withholding_status === 'Y' && ($document))
                                 <a href="{{ route('MPDF.generatePDFwithholding', $document->id) }}"
                                     onclick="openPdfPopup(this.href); return false;"> <i
                                         class="fa fa-file-pdf text-danger"></i> ปริ้นใบหัก ณ ที่จ่าย</a>
@@ -173,13 +173,19 @@
                         </td>
 
                         <td>
-                            @if ($item->input_tax_withholding_status === 'Y')
+                            @if ($item->input_tax_withholding_status === 'Y' && ($document))
+                            
                                 <a href="{{ route('withholding.modalEdit', $document->id) }}" class="input-tax-edit text-primary">
                                     <i class="fa fa-edit text-primary "></i>แก้ไขใบหัก ณ ที่จ่าย</a>
 
-                                    <a href="{{ route('inputtax.cancelWholesale', $item->input_tax_id) }}"
+                                    {{-- <a href="{{ route('inputtax.cancelWholesale', $item->input_tax_id) }}"
                                         class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle">
-                                            ยกเลิก</i></a>
+                                            ยกเลิก</i></a> --}}
+
+                                            <a href="{{ route('inputtax.delete', $item->input_tax_id) }}" class="text-danger"
+                                                onclick="return confirm('Do you want to delete?');"> <i class="fa fa-trash"></i>
+                                                ลบ</a>
+                                              
                             @else
                                 
                             @endif
@@ -203,7 +209,7 @@
                                        @endif
                                 @endif
                             @else
-                                {{ $item->input_tax_cancel }}
+                                {{-- {{ $item->input_tax_cancel }} --}}
                             @endif
 
                         </td>
@@ -247,6 +253,7 @@
 
                     </tbody>
                 </table>
+                
                 {{-- ภาษีขาย : {{ $invoice->getWithholdingTaxAmountAttribute() }} <br>
                 ภาษีซื้อ : {{ $quotationModel->getTotalInputTaxVat() }} --}}
             </div>

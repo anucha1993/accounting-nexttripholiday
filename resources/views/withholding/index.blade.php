@@ -1,22 +1,25 @@
 @extends('layouts.template')
 
 @section('content')
-<div class="container-fluid page-content">
+<br>
+<div class="email-app todo-box-container container-fluid">
     <div class="card">
 
         <div class="card-body">
     <h3>รายการใบหัก ณ ที่จ่าย</h3>
     <a href="{{ route('withholding.create') }}" class="btn btn-primary mb-3">เพิ่มเอกสารใหม่</a>
-    <table class="table table" id="table-withholding">
+    <div class="table-responsive">
+    <table class="table m-auto " id="table-withholding"  style = "width: 1000px'">
         <thead>
             <tr>
-                <th>No.</th>
+                <th >No.</th>
                 <th>เลขที่เอกสาร</th>
-                <th>Ref. Number</th>
+                <th>Ref.Number</th>
+                <th>ภงด</th>
                 <th>Quote.Ref</th>
-                <th>ชื่อลูกค้า</th>
-                <th>ชื่อโฮลเซล</th>
-                <th>วันที่ออกเอกสาร</th>
+                <th >ชื่อผู้จอง</th>
+                <th >ชื่อผู้ถูกหัก</th>
+                <th >วันที่ออกเอกสาร</th>
                 <th>ยอดชำระ</th>
                 <th>ยอดหัก</th>
                 <th>การจัดการ</th>
@@ -28,16 +31,14 @@
                 <td>{{ $key+1 }}</td>
                 <td>{{ $document->document_number }}</td>
                 <td>{{ $document->ref_number ?? 'N/A' }}</td>
+                <td>{{ $document->withholding_form ?? 'N/A' }}</td>
                 <td>{{ $document->quote->quote_number ?? 'N/A' }}</td>
                 <td>{{ $document->customer->customer_name ?? 'N/A' }}</td>
-                <td>{{ $document->wholesale->wholesale_name_th ?? 'N/A' }}</td>
+                <td>{{ $document->customer->customer_name ?? $document->wholesale->wholesale_name_th  }}</td>
                 <td>{{ date('d/m/Y',strtotime($document->document_date)) }}</td>
                 <td>{{ number_format($document->total_payable,2) }}</td>
                 <td>{{ number_format($document->total_withholding_tax,2) }}</td>
                 <td>
-                
-
-                
                     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                 
                         <div class="btn-group btn-group-sm" role="group">
@@ -69,8 +70,12 @@
         </tbody>
     </table>
 </div>
-    </div>
 </div>
+</div>
+</div>
+
+
+
 
 <script>
    $(document).ready(function() {

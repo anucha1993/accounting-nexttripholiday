@@ -270,7 +270,14 @@ class inputTaxController extends Controller
 
     public function delete(inputTaxModel $inputTaxModel)
     {
+        
+        if ($inputTaxModel->input_tax_file && File::exists('storage/' . $inputTaxModel->input_tax_file)) {
+            File::delete('storage/' . $inputTaxModel->input_tax_file);
+        }
+
         $inputTaxModel->delete();
+        WithholdingTaxDocument::where('quote_id',$inputTaxModel->input_tax_quote_id)->delete();
+
         return redirect()->back();
     }
 }

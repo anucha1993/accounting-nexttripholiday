@@ -74,6 +74,7 @@
             <a href="{{ route('withholding.edit', $document->id) }}">ออกใบหัก ณ ที่จ่ายแล้ว <i
                 class="fa fa-edit text-info"></i> {{$document->document_number}}</a>
             @else --}}
+            @if (!$document)
             <label for="">ต้องการออกใบหัก ณ ที่จ่ายหรือไม่</label>
             <br>
             <input type="radio" id="input_tax_withholding_status1" name="input_tax_withholding_status" value="Y">
@@ -81,6 +82,7 @@
             <input type="radio" id="input_tax_withholding_status2" name="input_tax_withholding_status" value="N"
                 checked>
             <label for="css">ไม่ใช่</label><br>
+            @endif
             {{-- @endif --}}
 
         </div>
@@ -103,8 +105,6 @@
                 $('#input_tax_withholding_status1').prop('disabled', false);
                 $('#input_tax_withholding_status2').prop('disabled', false);
 
-
-                
             } else {
                 // ถ้า input_tax_type ไม่ใช่ 1 ให้ enable input_tax_withholding_status
                 $('#input_tax_withholding_status1').prop('disabled', true);
