@@ -130,11 +130,70 @@ class inputTaxController extends Controller
             ]);
 
         }
+        //สร้างใบหัก ณ ที่จ่าย
+        if($request->input_tax_withholding_status === 'Y'){
+
+            $serviceTotal = 0;
+            $withholdingTotal = 0;
+    
+            $serviceTotal = $request->input_tax_service_total * 0.03;
+            $withholdingTotal = $request->input_tax_service_total -  $serviceTotal;
+            // สร้างรหัสเอกสารใหม่
+            $documentNumber = WithholdingTaxDocument::generateDocumentNumber();
+            $documentNumberNo = WithholdingTaxDocument::generateDocumentNumberNo();
+    
+            // บันทึกเอกสาร
+            $document = WithholdingTaxDocument::create([
+                'quote_id' => $request->input_tax_quote_id, // เพิ่มฟิลด์นี้
+                'wholesale_id' => $request->input_tax_wholesale,
+                'document_number' => $documentNumber, // เพิ่มฟิลด์นี้
+                'withholding_branch' => 'สำนักงานใหญ่', // เพิ่มฟิลด์นี้
+                'ref_input_tax' => $inputTaxModel->input_tax_id,
+                // 'withholding_note' => $request->withholding_note, // เพิ่มฟิลด์นี้
+                // 'customer_id' => $request->customer_id,
+                'document_date' => date('Y-m-d'),
+                'ref_number' => $request->input_tax_ref,
+                'withholding_form' => 'ภ.ง.ด.53',
+                // ค่าที่คำนวณได้
+                'total_amount' => $request->input_tax_service_total,
+                'total_withholding_tax' => $request->input_tax_withholding,
+                'total_payable' => $withholdingTotal,
+                'image_signture_id' => 1,
+                'book_no' => date('Y-m'),
+                'document_no' => $documentNumberNo
+            ]);
+    
+            WithholdingTaxItem::create([
+                'document_id' => $document->id,
+                'income_type' => 'ค่าบริการ',
+                'tax_rate' => 3.00,
+                'amount' => $request->input_tax_service_total,
+                'withholding_tax' => $serviceTotal,
+            ]);
+    
+    
+            // บันทึก Check List 
+            $QuoteLog = QuoteLogModel::where('quote_id',$request->input_tax_quote_id)->first();
+            if($QuoteLog){
+                $QuoteLog->update([
+                    "withholding_tax_status" => 'ออกแล้ว',
+                    "withholding_tax_updated_at" => now(),
+                    "withholding_tax_created_by" => Auth::user()->name
+                ]);
+            }else{
+                $checkList = QuoteLogModel::create([
+                    'quote_id' => $request->input_tax_quote_id,
+                    "withholding_tax_status" => 'ออกแล้ว',
+                    "withholding_tax_updated_at" => now(),
+                    "withholding_tax_created_by" => Auth::user()->name
+                ]);
+            }
+    
+           }
+
+
         return redirect()->back()->with('success', 'อัปเดตข้อมูลเรียบร้อยแล้ว');
     }
-
-
-
 
     public function store(Request $request)
     {

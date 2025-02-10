@@ -29,6 +29,7 @@ class inputTaxModel extends Model
         'upated_by',
         'input_tax_withholding_status',
         'input_tax_wholesale_type',
+        'input_tax_date_doc',
     ];
 
    

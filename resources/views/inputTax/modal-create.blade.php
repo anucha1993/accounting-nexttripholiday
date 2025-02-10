@@ -6,7 +6,7 @@
         @csrf
         @method('POST')
         <div class="row">
-            <div class="col-md-12 mb-3">
+            <div class="col-md-6 mb-3">
                 <label>ประเภท</label>
                 <select name="input_tax_type" id="input_tax_type" class="form-select">
                     <option value="0">ภาษีซื้อ</option>
@@ -15,14 +15,15 @@
                 </select>
             </div>
 
-            <input type="hidden" name="input_tax_quote_id" class="form-control"
-                value="{{ $quotationModel->quote_id }}">
-            <input type="hidden" name="input_tax_quote_number" class="form-control"
-                value="{{ $quotationModel->quote_number }}">
+            <input type="hidden" name="input_tax_quote_id" class="form-control" value="{{ $quotationModel->quote_id }}">
+            <input type="hidden" name="input_tax_quote_number" class="form-control"value="{{ $quotationModel->quote_number }}">
             <input type="hidden" name="customer_id" class="form-control" value="{{ $quotationModel->customer_id }}">
-            <input type="hidden" name="input_tax_wholesale" class="form-control"
-                value="{{ $quotationModel->quote_wholesale }}">
+            <input type="hidden" name="input_tax_wholesale" class="form-control" value="{{ $quotationModel->quote_wholesale }}">
 
+            <div class="col-md-6">
+                <label for="">วันที่ออกเอกสาร</label>
+                <input type="date" name="input_tax_date_doc" class="form-control" value="{{ date('Y-m-d') }}">
+            </div>
 
 
             <div class="col-md-12 mb-3">
