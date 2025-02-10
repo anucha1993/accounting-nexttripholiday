@@ -122,7 +122,7 @@
                     <td>{{ $customer->customer_number }}</td>
                     <td></td>
                     <td><b>Date:</b></td>
-                    <td>{{ thaidate('j F Y', $quotationModel->quote_date) }}</td>
+                    <td>{{date('d/m/Y',$quotationModel->quote_date) }}</td>
                 </tr>
                 <tr>
                     <td><b>Name:</b></td>
