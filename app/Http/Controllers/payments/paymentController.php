@@ -117,7 +117,8 @@ class paymentController extends Controller
             quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_payment_status' => 'payment']);
         }
         //check Status Payment Quotations
-        $paymentStatus = 'refund';
+        $paymentStatus =  'wait';
+
         if($request->payment_total <= 0){
             $paymentStatus = 'cancel';
         }
@@ -129,16 +130,19 @@ class paymentController extends Controller
         $quotationModel = quotationModel::where('quote_id', $paymentModel->payment_quote_id)->first();
         $deposit = $quotationModel->GetDeposit()- $quotationModel->Refund();
         $quotePayment = 'payment';
+
         if($deposit <= 0)
         {
          $quotePayment = 'wait';
         }
+        
         if($deposit >= $quotationModel->quote_grand_total)
         {
          $quoteStatus = 'success';
         }else{
          $quoteStatus = 'wait';
         }
+
         $quotationModel->update([
             'payment' => $deposit,
             'quote_status' =>$quoteStatus,
@@ -272,7 +276,7 @@ class paymentController extends Controller
         }
 
         //check Status
-        $paymentStatus = 'refund';
+        $paymentStatus = 'wait';
         if($request->payment_total <= 0){
             $paymentStatus = 'cancel';
         }
@@ -331,11 +335,12 @@ class paymentController extends Controller
     $quotationModel = quotationModel::where('quote_id', $paymentModel->payment_quote_id)->first();
     
     $quotationModel->update([
-        'quote_id' => $paymentModel->quote_id,
         'payment' => 0,
         'quote_status' => 'wait',
         'quote_payment_status' => 'wait'
     ]);
+
+
     // ตรวจสอบว่ามี quotationModel หรือไม่
     if ($quotationModel) {
         // ดึงค่า deposit 
@@ -354,13 +359,13 @@ class paymentController extends Controller
     } else {
         // หากไม่มี quotationModel ให้สร้างใหม่พร้อมค่าเริ่มต้น
         quotationModel::where('quote_id', $paymentModel->payment_quote_id)->update([
-            'quote_id' => $paymentModel->quote_id,
             'payment' => 0,
             'quote_status' => 'wait',
             'quote_payment_status' => 'wait'
         ]);
     }
 
+ 
     return redirect()->back();
 }
 

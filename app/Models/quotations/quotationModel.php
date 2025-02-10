@@ -70,6 +70,7 @@ class quotationModel extends Model
         'created_by',
         'updated_by',
         'quote_cancel_note',
+        'quote_payment_status'
     ];
 
     public function InputTaxVat()
