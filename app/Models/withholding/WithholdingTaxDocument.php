@@ -32,6 +32,12 @@ class WithholdingTaxDocument extends Model
         'wholesale_id',
         'ref_input_tax',
     ];
+
+    public function GetDepositWithholdingTotal()
+    {
+         return $this->total_withholding_tax;
+    }
+
     public static function generateDocumentNumber()
     {
         $latestDocument = self::latest('id')->first();

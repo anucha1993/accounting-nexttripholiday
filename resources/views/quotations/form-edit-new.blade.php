@@ -309,9 +309,6 @@
                                     // กรณี input_tax_file === NULL
                                     $paymentInputtaxTotal = $withholdingTaxAmount + $getTotalInputTaxVat;
                                 }
-
-
-                                
                         $TotalPayment = $quotationModel->GetDeposit() - $quotationModel->inputtaxTotalWholesale();
                         $TotalGrand = $TotalPayment- ($paymentInputtaxTotal+$quotationModel->getTotalInputTaxVatType()) ;
 

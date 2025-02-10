@@ -161,8 +161,8 @@
                        <label for="refNumber" class="form-label">เลขที่เอกสารอ้างอิง | Ref.Quote : {{ $document->quote->quote_number ?? '-' }}</label>
                        <input type="text" class="form-control" id="refNumber" name="ref_number" value="{{ $document->ref_number }}">
                    </div>
-                   
                </div>
+               
 
                <div class="row mb-2">
                 

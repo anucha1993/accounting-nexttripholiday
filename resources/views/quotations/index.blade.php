@@ -18,6 +18,10 @@
                 <strong>Error - </strong>{{ session('error') }}
             </div>
         @endif
+
+       
+
+
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">ใบเสนอราคา/ใบแจ้งหนี้
@@ -26,6 +30,7 @@
                         class="btn btn-primary float-end">สร้างใบเสนอราคา</a></h4>
                         @endcan
                 <hr>
+
                 <form action="">
                     <div class="row mb-3">
                         <div class="col-md-2">

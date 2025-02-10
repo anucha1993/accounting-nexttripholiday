@@ -19,9 +19,25 @@ use App\Models\withholding\WithholdingTaxDocument;
 class withholdingTaxController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
-        $documents = WithholdingTaxDocument::with('customer')->get();
+
+        $documents = WithholdingTaxDocument::with('customer');
+                     if($request->document_number){
+                        $documents->where('document_number','LIKE','%'.$request->document_number.'%');
+                     }
+                     if($request->ref_number){
+                        $documents->where('ref_number','LIKE','%'.$request->ref_number.'%');
+                     }
+                     if($request->withholding_form && $request->withholding_form !== 'all'){
+                        $documents->where('withholding_form',$request->withholding_form);
+                     }
+                     if($request->document_date_start && $request->document_date_end){
+                        $documents->orWhereBetween('document_date',[$request->document_date_start,$request->document_date_end]);
+                     }
+
+        $documents = $documents->get();
+
         return view('withholding.index', compact('documents'));
     }
 

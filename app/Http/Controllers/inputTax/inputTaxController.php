@@ -171,7 +171,6 @@ class inputTaxController extends Controller
                 'withholding_tax' => $serviceTotal,
             ]);
     
-    
             // บันทึก Check List 
             $QuoteLog = QuoteLogModel::where('quote_id',$request->input_tax_quote_id)->first();
             if($QuoteLog){
@@ -190,6 +189,7 @@ class inputTaxController extends Controller
             }
     
            }
+           
 
 
         return redirect()->back()->with('success', 'อัปเดตข้อมูลเรียบร้อยแล้ว');
