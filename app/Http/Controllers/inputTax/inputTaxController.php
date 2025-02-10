@@ -123,7 +123,7 @@ class inputTaxController extends Controller
             WithholdingTaxItem::where('document_id',$request->document_id)->delete();
             WithholdingTaxItem::create([
                 'document_id' => $request->document_id,
-                'income_type' => 'ค่าบริการ',
+                'income_type' => 'ค่าบริการ '. $request->input_tax_ref,
                 'tax_rate' => 3.00,
                 'amount' => $request->input_tax_service_total,
                 'withholding_tax' => $serviceTotal,
@@ -149,9 +149,7 @@ class inputTaxController extends Controller
                 'document_number' => $documentNumber, // เพิ่มฟิลด์นี้
                 'withholding_branch' => 'สำนักงานใหญ่', // เพิ่มฟิลด์นี้
                 'ref_input_tax' => $inputTaxModel->input_tax_id,
-                // 'withholding_note' => $request->withholding_note, // เพิ่มฟิลด์นี้
-                // 'customer_id' => $request->customer_id,
-                'document_date' => date('Y-m-d'),
+                'document_date' => $request->input_tax_date_doc,
                 'ref_number' => $request->input_tax_ref,
                 'withholding_form' => 'ภ.ง.ด.53',
                 // ค่าที่คำนวณได้
@@ -165,7 +163,7 @@ class inputTaxController extends Controller
     
             WithholdingTaxItem::create([
                 'document_id' => $document->id,
-                'income_type' => 'ค่าบริการ',
+                'income_type' => 'ค่าบริการ '. $request->input_tax_ref,
                 'tax_rate' => 3.00,
                 'amount' => $request->input_tax_service_total,
                 'withholding_tax' => $serviceTotal,
@@ -190,8 +188,6 @@ class inputTaxController extends Controller
     
            }
            
-
-
         return redirect()->back()->with('success', 'อัปเดตข้อมูลเรียบร้อยแล้ว');
     }
 
@@ -254,7 +250,7 @@ class inputTaxController extends Controller
             'ref_input_tax' => $inputTaxModel->input_tax_id,
             // 'withholding_note' => $request->withholding_note, // เพิ่มฟิลด์นี้
             // 'customer_id' => $request->customer_id,
-            'document_date' => date('Y-m-d'),
+            'document_date' => $request->input_tax_date_doc,
             'ref_number' => $request->input_tax_ref,
             'withholding_form' => 'ภ.ง.ด.53',
             // ค่าที่คำนวณได้
@@ -268,7 +264,7 @@ class inputTaxController extends Controller
 
         WithholdingTaxItem::create([
             'document_id' => $document->id,
-            'income_type' => 'ค่าบริการ',
+            'income_type' => 'ค่าบริการ '. $request->input_tax_ref,
             'tax_rate' => 3.00,
             'amount' => $request->input_tax_service_total,
             'withholding_tax' => $serviceTotal,

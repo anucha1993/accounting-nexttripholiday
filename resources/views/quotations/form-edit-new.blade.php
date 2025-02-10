@@ -310,8 +310,11 @@
                                     $paymentInputtaxTotal = $withholdingTaxAmount + $getTotalInputTaxVat;
                                 }
                         $TotalPayment = $quotationModel->GetDeposit() - $quotationModel->inputtaxTotalWholesale();
-                        $TotalGrand = $TotalPayment- ($paymentInputtaxTotal+$quotationModel->getTotalInputTaxVatType()) ;
+                        $TotalGrand = $TotalPayment - ($paymentInputtaxTotal+$quotationModel->getTotalInputTaxVatType()) ;
 
+                        // 
+                        $GetDepositWholesale = $quotationModel->GetDepositWholesale() -  $quotationModel->GetDepositWholesaleRefund();
+                    
                               
 
           
@@ -320,13 +323,13 @@
                         {{-- {{$paymentInputtaxTotal}} --}}
                         <h5 class="card-title">คำนวนกำไร</h5>
                         <hr/>
-                        <span class="float-end"> ยอดรวมต้นทุนโฮลเซลล์: {{ number_format($quotationModel->inputtaxTotalWholesale(), 2) }}</span><br>
+                        <span class="float-end"> ยอดรวมต้นทุนโฮลเซลล์: {{ number_format($GetDepositWholesale+$quotationModel->inputtaxTotalWholesale() - $wholesalePayment, 2) }}</span><br>
                         <span class="float-end"> ชำระเงินโฮลเซลล์แล้ว: {{ number_format($wholesalePayment, 2) }}</span><br>
                         <span class="float-end"> ค้างชำระเงินโฮลเซลล์: {{ number_format($quotationModel->inputtaxTotalWholesale() - $wholesalePayment, 2) }}</span><br>
-                        <span class="float-end"> ลูกค้าชำระแล้ว : {{ number_format($quotationModel->GetDeposit(), 2) }} </span><br>
-                        <span class="float-end"> กำไร : {{ number_format($TotalPayment, 2) }}</span><br>      
+                        <span class="float-end"> ลูกค้าชำระแล้ว :  {{ number_format($quotationModel->GetDeposit(), 2) }} </span><br>
+                        <span class="float-end"> กำไร : {{$wholesalePayment <= 0 ?  0.00 : number_format($TotalPayment, 2)}}</span><br>      
                         <span class="float-end"> ต้นทุนอื่นๆ : {{ number_format($paymentInputtaxTotal+$quotationModel->getTotalInputTaxVatType(), 2) }} </span><br>         
-                        <span class="float-end"> กำไรสุทธิ: {{ number_format($TotalGrand, 2) }} </span><br>
+                        <span class="float-end"> กำไรสุทธิ:  {{$wholesalePayment <= 0 ?  0.00 : number_format($TotalGrand, 2)}} </span><br>
                       
                         <hr />
                     </div>
