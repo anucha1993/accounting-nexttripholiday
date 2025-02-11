@@ -73,7 +73,7 @@
             <div class="row" style="font-size: 12px ">
                 <div class="col-md-2 ms-auto">
                     <label><b>เซลล์ผู้ขายแพคเกจ:</b> {{ $quotationModel->quote_sale }}</label>
-                    <select name="quote_sale" class="form-select">
+                    <select name="quote_sale" class="form-select" required>
                         @forelse ($sales as $item)
                             <option @if ($quotationModel->quote_sale === $item->id) selected @endif value="{{ $item->id }}">
                                 {{ $item->name }}</option>
@@ -85,16 +85,16 @@
 
                 <div class="col-md-2">
                     <label>วันที่เสนอราคา</label>
-                    <input type="text" id="displayDatepickerQuoteDate" class="form-control">
+                    <input type="text" id="displayDatepickerQuoteDate" class="form-control" required>
 
                     <input type="hidden" id="submitDatepickerQuoteDate" name="quote_date"
-                        value="{{ $quotationModel->quote_date }}" class="form-control">
+                        value="{{ $quotationModel->quote_date}}" class="form-control">
                 </div>
 
 
                 <div class="col-md-2 ms-3">
                     <label>วันที่สั่งซื้อ,จองแพคเกจ:</label> 
-                    <input type="text" id="displayDatepicker" class="form-control">
+                    <input type="text" id="displayDatepicker" class="form-control" required>
                     <input type="hidden" id="submitDatepicker" name="quote_booking_create"
                         value="{{ $quotationModel->quote_booking_create }}">
                 </div>
@@ -127,7 +127,7 @@
                     <label>ชื่อแพคเกจทัวร์:</label>
                     <input type="text" id="tourSearch" class="form-control" name="quote_tour_name"
                         placeholder="ค้นหาแพคเกจทัวร์...ENTER เพื่อค้นหา"
-                        value="{{ $quotationModel->quote_tour_name }}">
+                        value="{{ $quotationModel->quote_tour_name }}" required>
                     <div id="tourResults" class="list-group" style="">
                     </div>
                 </div>
@@ -137,7 +137,7 @@
 
                 <div class="col-md-3">
                     <label>ระยะเวลาทัวร์ (วัน/คืน): </label>
-                    <select name="quote_numday" class="form-select" id="numday">
+                    <select name="quote_numday" class="form-select" id="numday" required>
                         <option value="">--เลือกระยะเวลา--</option>
                         @forelse ($numDays as $item)
                             <option @if ($quotationModel->quote_numday === $item->num_day_name) selected @endif
@@ -152,9 +152,9 @@
 
 
                 <div class="col-md-3">
-                    <label>ประเทศที่เดินทาง: {{ $quotationModel->quote_country }}</label>
+                    <label>ประเทศที่เดินทาง: </label>
                     <select name="quote_country" class="form-select country-select select" id="country"
-                        style="width: 100%">
+                        style="width: 100%" required>
                         <option value="">--เลือกประเทศที่เดินทาง--</option>
                         @forelse ($country as $item)
                             <option @if ($item->id === $quotationModel->quote_country) selected @endif value="{{ $item->id }}">
@@ -170,7 +170,7 @@
                 <div class="col-md-3">
                     <label>โฮลเซลล์: </label>
                     <select name="quote_wholesale" class="form-select country-select select" style="width: 100%"
-                        id="wholesale">
+                        id="wholesale" required>
                         <option value="">--เลือกโฮลเซลล์--</option>
                         @forelse ($wholesale as $item)
                             <option @if ($quotationModel->quote_wholesale === $item->id) selected @endif value="{{ $item->id }}">
@@ -182,7 +182,7 @@
                 </div>
                 <div class="col-md-3">
                     <label>สายการบิน:</label>
-                    <select name="quote_airline" class="form-select country-select select" style="width: 100%">
+                    <select name="quote_airline" class="form-select country-select select" style="width: 100%" required>
                         <option value="">--เลือกสายการบิน--</option>
                         @forelse ($airline as $item)
                             <option @if ($quotationModel->quote_airline === $item->id) selected @endif value="{{ $item->id }}">
@@ -194,7 +194,7 @@
                 </div>
                 <div class="col-md-3">
                     <label>วันออกเดินทาง: <a href="#" class="" id="list-period">เลือกวันที่</a></label>
-                    <input type="text" class="form-control" id="date-start-display" placeholder="วันออกเดินทาง..." style="width: 100%">
+                    <input type="text" class="form-control" id="date-start-display" placeholder="วันออกเดินทาง..." style="width: 100%" required>
 
 
                     <div id="date-list" class="list-group" style="position: absolute; z-index: 1000; width: 20%;">
@@ -209,7 +209,7 @@
                 <div class="col-md-3">
                     <label>วันเดินทางกลับ: </label>
                     <input type="text" class="form-control" id="date-end-display"  style="width: 100%"
-                        placeholder="วันเดินทางกลับ...">
+                        placeholder="วันเดินทางกลับ..." required>
                     <input type="hidden" id="date-end" name="quote_date_end"
                         value="{{ date('Y-m-d', strtotime($quotationModel->quote_date_end)) }}">
                 </div>
@@ -224,7 +224,7 @@
                 <div class="col-md-3">
                     <label class="">ชื่อลูกค้า:</label>
                     <input type="text" class="form-control" name="customer_name" placeholder="ชื่อลูกค้า"
-                        value="{{ $customer->customer_name }}" required aria-describedby="basic-addon1">
+                        value="{{ $customer->customer_name }}" required aria-describedby="basic-addon1" >
                 </div>
 
                 <div class="col-md-3">
@@ -1890,7 +1890,7 @@
      let defaultDateQuoteDate = '{{ $quotationModel->quote_date}}';
      $('#submitDatepickerQuoteDate').val(defaultDateQuoteDate);
      const thaiFormattedDateQuoteDate = formatDateToThai(defaultDateQuoteDate);
-     $('#displayDatepickerQuoteDate').val(thaiFormattedDateQuoteDate);
+     $('#displayDatepickerQuoteDate').val(thaiFormattedDateQuoteDate?? '');
 
  });
 </script>

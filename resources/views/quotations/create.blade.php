@@ -40,7 +40,7 @@
                     <div class="row table-custom ">
                         <div class="col-md-2 ms-auto">
                             <label><b>เซลล์ผู้ขายแพคเกจ:</b></label>
-                            <select name="quote_sale" class="form-select">
+                            <select name="quote_sale" class="form-select" required>
                                 @forelse ($sales as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                                 @empty
@@ -50,7 +50,7 @@
                         </div>
                         <div class="col-md-2 ms-3">
                             <label>วันที่สั่งซื้อ,จองแพคเกจ:</label>
-                            <input type="text" id="displayDatepicker" class="form-control">
+                            <input type="text" id="displayDatepicker" class="form-control" required>
                             <input type="hidden" id="submitDatepicker" name="quote_booking_create">
                             <input type="hidden" id="quote-date" name="quote_booking_create">
                         </div>
@@ -73,7 +73,7 @@
                         <div class="col-md-6">
                             <label>ชื่อแพคเกจทัวร์:</label>
                             <input type="text" id="tourSearch" class="form-control" name="quote_tour_name"
-                                placeholder="ค้นหาแพคเกจทัวร์...ENTER เพื่อค้นหา">
+                                placeholder="ค้นหาแพคเกจทัวร์...ENTER เพื่อค้นหา" required>
                             <div id="tourResults" class="list-group" style="position: absolute; z-index: 1000; width: 35%;">
                             </div>
                         </div>
@@ -85,7 +85,7 @@
 
                         <div class="col-md-3">
                             <label>ระยะเวลาทัวร์ (วัน/คืน): </label>
-                            <select name="quote_numday" class="form-select" id="numday">
+                            <select name="quote_numday" class="form-select" id="numday" required>
                                 <option value="">--เลือกระยะเวลา--</option>
                                 @forelse ($numDays as $item)
                                     <option data-day="{{ $item->num_day_total }}" value="{{ $item->num_day_name }}">
@@ -101,7 +101,7 @@
                         <div class="col-md-3">
                             <label>ประเทศที่เดินทาง: </label>
                             <select name="quote_country" class="form-select country-select select" id="country"
-                                style="width: 100%">
+                                style="width: 100%" required>
                                 <option value="">--เลือกประเทศที่เดินทาง--</option>
                                 @forelse ($country as $item)
                                     <option value="{{ $item->id }}">{{ $item->iso2 }}-{{ $item->country_name_th }}
@@ -116,7 +116,7 @@
                         <div class="col-md-3">
                             <label>โฮลเซลล์: </label>
                             <select name="quote_wholesale" class="form-select country-select select" style="width: 100%"
-                                id="wholesale">
+                                id="wholesale" required>
                                 <option value="">--เลือกโฮลเซลล์--</option>
                                 @forelse ($wholesale as $item)
                                     <option value="{{ $item->id }}">
@@ -129,7 +129,7 @@
                         <div class="col-md-3">
                             <label>สายการบิน:</label>
                             <select name="quote_airline" class="form-select country-select select" style="width: 100%"
-                                id="airline">
+                                id="airline" required>
                                 <option value="">--เลือกสายการบิน--</option>
                                 @forelse ($airline as $item)
                                     <option value="{{ $item->id }}">
@@ -143,7 +143,7 @@
                             <label>วันออกเดินทาง: <a href="#" class="" id="list-period">เลือกวันที่</a></label>
 
                             <input type="text" class="form-control" id="date-start-display"
-                                placeholder="วันออกเดินทาง...">
+                                placeholder="วันออกเดินทาง..." required>
 
                             {{-- เพิ่มใหม่ --}}
                             <div id="date-list" class="list-group" style="position: absolute; z-index: 1000; width: 20%;">
@@ -162,7 +162,7 @@
                         <div class="col-md-3">
                             <label>วันเดินทางกลับ: </label>
                             <input type="text" class="form-control" id="date-end-display"
-                                placeholder="วันเดินทางกลับ...">
+                                placeholder="วันเดินทางกลับ..." required>
                             <input type="hidden" id="date-end" name="quote_date_end">
                         </div>
                     </div>
@@ -173,7 +173,7 @@
                         <div class="col-md-3">
                             <label class="">ชื่อลูกค้า:</label>
                             <input type="text" class="form-control" name="customer_name" id="customerSearch"
-                                placeholder="ชื่อลูกค้า...ENTER เพื่อค้นหา" required aria-describedby="basic-addon1">
+                                placeholder="ชื่อลูกค้า...ENTER เพื่อค้นหา" required aria-describedby="basic-addon1" >
                             <div id="customerResults" class="list-group"
                                 style="position: absolute; z-index: 1000; width: 35%;"></div>
                         </div>

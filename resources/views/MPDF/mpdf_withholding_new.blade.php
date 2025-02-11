@@ -334,7 +334,7 @@
  
 
     <div class="text-customer">
-        <span><b>{{$WithholdingTaxDocument->customer ? $WithholdingTaxDocument->customer->customer_name : $WithholdingTaxDocument->wholesale->wholesale_name_th}}</b> &nbsp;</span>
+        <span><b>{{$WithholdingTaxDocument->customer ? $WithholdingTaxDocument->wholesale->wholesale_name_th  : $WithholdingTaxDocument->customer->customer_name}}</b> &nbsp;</span>
     </div>
 
     <div class="text-customer-tax">
@@ -347,7 +347,7 @@
     </div>
 
     <div class="text-customer-addr">
-        <span><b>{{$WithholdingTaxDocument->customer ? $WithholdingTaxDocument->customer->customer_address : $WithholdingTaxDocument->wholesale->address}}</b> &nbsp;</span>
+        <span><b>{{$WithholdingTaxDocument->customer ? $WithholdingTaxDocument->wholesale->address : $WithholdingTaxDocument->customer->customer_address }}</b> &nbsp;</span>
     </div>
 
     {{-- <div class="text-no">
@@ -377,18 +377,18 @@
         <span><b>{{$item->income_type}}</b>&nbsp;</span>
     </div>
     <div class="text-date">
-        <span><b>{{ thaidate('j M Y', $WithholdingTaxDocument->document_date) }}</b>&nbsp;</span>
+        <span><b>{{ thaidate('j M Y', $WithholdingTaxDocument->document_doc_date) }}</b>&nbsp;</span>
     </div>
     
     
     <div class="date-create">
-        <span><b>{{ thaidate('j', $WithholdingTaxDocument->document_date) }}</b>&nbsp;</span>
+        <span><b>{{ thaidate('j', $WithholdingTaxDocument->document_doc_date) }}</b>&nbsp;</span>
     </div>
     <div class="month-create">
-        <span><b>{{ thaidate('M', $WithholdingTaxDocument->document_date) }}</b>&nbsp;</span>
+        <span><b>{{ thaidate('M', $WithholdingTaxDocument->document_doc_date) }}</b>&nbsp;</span>
     </div>
     <div class="year-create">
-        <span><b>{{ thaidate('Y', $WithholdingTaxDocument->document_date) }}</b>&nbsp;</span>
+        <span><b>{{ thaidate('Y', $WithholdingTaxDocument->document_doc_date) }}</b>&nbsp;</span>
     </div> 
     
     <div class="text-total">
