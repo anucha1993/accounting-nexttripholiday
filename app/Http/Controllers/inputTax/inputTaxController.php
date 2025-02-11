@@ -145,11 +145,13 @@ class inputTaxController extends Controller
             // บันทึกเอกสาร
             $document = WithholdingTaxDocument::create([
                 'quote_id' => $request->input_tax_quote_id, // เพิ่มฟิลด์นี้
+                'customer_id' => $request->customer_id,
                 'wholesale_id' => $request->input_tax_wholesale,
                 'document_number' => $documentNumber, // เพิ่มฟิลด์นี้
                 'withholding_branch' => 'สำนักงานใหญ่', // เพิ่มฟิลด์นี้
                 'ref_input_tax' => $inputTaxModel->input_tax_id,
-                'document_date' => $request->input_tax_date_doc,
+                'document_date' => $request->input_tax_date,
+                'document_doc_date' => $request->input_tax_date_doc,
                 'ref_number' => $request->input_tax_ref,
                 'withholding_form' => 'ภ.ง.ด.53',
                 // ค่าที่คำนวณได้
@@ -244,13 +246,15 @@ class inputTaxController extends Controller
         // บันทึกเอกสาร
         $document = WithholdingTaxDocument::create([
             'quote_id' => $request->input_tax_quote_id, // เพิ่มฟิลด์นี้
+            'customer_id' => $request->customer_id,
             'wholesale_id' => $request->input_tax_wholesale,
             'document_number' => $documentNumber, // เพิ่มฟิลด์นี้
             'withholding_branch' => 'สำนักงานใหญ่', // เพิ่มฟิลด์นี้
             'ref_input_tax' => $inputTaxModel->input_tax_id,
             // 'withholding_note' => $request->withholding_note, // เพิ่มฟิลด์นี้
             // 'customer_id' => $request->customer_id,
-            'document_date' => $request->input_tax_date_doc,
+            'document_date' => $request->input_tax_date,
+            'document_doc_date' => $request->input_tax_date_doc,
             'ref_number' => $request->input_tax_ref,
             'withholding_form' => 'ภ.ง.ด.53',
             // ค่าที่คำนวณได้

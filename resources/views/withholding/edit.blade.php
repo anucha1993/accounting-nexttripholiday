@@ -157,6 +157,7 @@
                        <label for="customerAddress" class="form-label">ที่อยู่</label>
                        <textarea class="form-control" id="customerAddress" name="details" {{$document->wholesale ? 'disabled' : ''}} rows="3">{{$document->customer ? $document->customer->customer_address : $document->wholesale->address}}</textarea>
                    </div>
+                   
                    <div class="col-md-6">
                        <label for="refNumber" class="form-label">เลขที่เอกสารอ้างอิง | Ref.Quote : {{ $document->quote->quote_number ?? '-' }}</label>
                        <input type="text" class="form-control" id="refNumber" name="ref_number" value="{{ $document->ref_number }}">

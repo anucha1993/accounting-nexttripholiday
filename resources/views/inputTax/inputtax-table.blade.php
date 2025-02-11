@@ -195,6 +195,7 @@
                                 @if ($item->input_tax_withholding_status !== 'Y')
                                   <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
                                   @endif
+                                  {{-- <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a> --}}
                                 <a href="{{ route('inputtax.delete', $item->input_tax_id) }}" class="text-danger"
                                    onclick="return confirm('Do you want to delete?');"> <i class="fa fa-trash"></i>
                                      ลบ</a>

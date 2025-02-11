@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\invoices\invoiceModel;
 use App\Models\customers\customerModel;
+use App\Models\inputTax\inputTaxModel;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\invoices\taxinvoiceModel;
 use App\Models\quotations\quotationModel;
@@ -23,6 +24,7 @@ class withholdingTaxController extends Controller
     {
 
         $documents = WithholdingTaxDocument::with('customer');
+                     
                      if($request->document_number){
                         $documents->where('document_number','LIKE','%'.$request->document_number.'%');
                      }
@@ -36,9 +38,14 @@ class withholdingTaxController extends Controller
                         $documents->orWhereBetween('document_date',[$request->document_date_start,$request->document_date_end]);
                      }
 
-        $documents = $documents->get();
+                     if($request->customer && $request->customer !== 'all'){
+                        $documents->where('customer_id',$request->customer);
+                     }
 
-        return view('withholding.index', compact('documents'));
+        $documents = $documents->get();
+        $customerWithholding = WithholdingTaxDocument::with('customer')->get();
+
+        return view('withholding.index', compact('documents','customerWithholding'));
     }
 
     public function create()
@@ -237,8 +244,16 @@ class withholdingTaxController extends Controller
                 'withholding_tax' => $request->withholding_tax[$index],
             ]);
         }
+
+        $inputTaxModel = inputTaxModel::where('input_tax_quote_id',$document->quote_id)
+        ->update([
+            'input_tax_service_total' => $totalAmount,
+            'input_tax_vat' => $totalAmount*0.07,
+            'input_tax_withholding' =>  $totalAmount*0.03,
+            'input_tax_grand_total' =>  $totalAmount*0.03
+        ]);
     
-        return redirect()->route('withholding.index')->with('success', 'เอกสารถูกอัปเดตเรียบร้อยแล้ว');
+        return redirect()->back()->with('success', 'เอกสารถูกอัปเดตเรียบร้อยแล้ว');
     }
     
 

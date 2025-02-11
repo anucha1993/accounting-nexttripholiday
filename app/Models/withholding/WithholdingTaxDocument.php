@@ -31,6 +31,7 @@ class WithholdingTaxDocument extends Model
         'document_no',
         'wholesale_id',
         'ref_input_tax',
+        'document_doc_date',
     ];
 
     public function GetDepositWithholdingTotal()

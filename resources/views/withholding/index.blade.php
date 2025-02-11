@@ -37,6 +37,18 @@
                          <input type="date" name="document_date_end" class="form-control">
                     </div>
 
+                    <div class="col-md-2">
+                        <label for="">ชื่อผู้ถูกหัก</label>
+                        <select name="customer" id="customer-select" class="form-select select2" style="width: 100%">
+                            <option value="all">all</option>
+                            @forelse ($customerWithholding as $item)
+                                <option value="{{ $item->customer->customer_id ?? $item->wholesale_id  }}">{{ $item->customer->customer_name ?? $item->wholesale->wholesale_name_th  }}</option>
+                            @empty
+                                
+                            @endforelse
+                        </select>
+                    </div>
+
                 </div>
             </form>
             <br>
