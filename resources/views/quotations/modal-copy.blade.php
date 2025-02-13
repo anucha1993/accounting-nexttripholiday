@@ -1867,7 +1867,6 @@
              $('#submitDatepicker').val(isoDate);
          }
      });
-
      // กำหนดค่าเริ่มต้นให้กับ Datepicker (แสดงเป็นภาษาไทย) และ hidden input
      let defaultDate = '{{ $quotationModel->quote_booking_create }}';
      $('#submitDatepicker').val(defaultDate);
@@ -1885,12 +1884,11 @@
              $('#submitDatepickerQuoteDate').val(isoDate);
          }
      });
-
      // กำหนดค่าเริ่มต้นให้กับ Datepicker quote_date
      let defaultDateQuoteDate = '{{ $quotationModel->quote_date}}';
      $('#submitDatepickerQuoteDate').val(defaultDateQuoteDate);
      const thaiFormattedDateQuoteDate = formatDateToThai(defaultDateQuoteDate);
-     $('#displayDatepickerQuoteDate').val(thaiFormattedDateQuoteDate?? '');
+     $('#displayDatepickerQuoteDate').val(thaiFormattedDateQuoteDate ?? '');
 
  });
 </script>

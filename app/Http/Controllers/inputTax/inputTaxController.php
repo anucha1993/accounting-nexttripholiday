@@ -24,9 +24,14 @@ class inputTaxController extends Controller
 
     public function createWholesale(quotationModel $quotationModel)
     {
+        $invoice = [];
+        $taxinvoice = [];
         $wholesale = wholesaleModel::get();
         $invoice = invoiceModel::where('invoice_quote_id',$quotationModel->quote_id)->first();
-        $taxinvoice = taxinvoiceModel::where('invoice_id',$invoice->invoice_id)->first();
+       
+        if($invoice){
+            $taxinvoice = taxinvoiceModel::where('invoice_id',$invoice->invoice_id)->first();
+        }
         $document = WithholdingTaxDocument::where('quote_id',$quotationModel->quote_id)->first();
         return view('inputTax.modal-create', compact('quotationModel', 'wholesale','taxinvoice','document'));
     }

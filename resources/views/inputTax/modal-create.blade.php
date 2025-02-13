@@ -20,7 +20,7 @@
             <input type="hidden" name="customer_id" class="form-control" value="{{ $quotationModel->customer_id }}">
             <input type="hidden" name="input_tax_wholesale" class="form-control" value="{{ $quotationModel->quote_wholesale }}">
 
-            <div class="col-md-6">
+            <div class="col-md-6" style="display: none" id="date-doc-show">
                 <label for="">วันที่ออกเอกสาร</label>
                 <input type="date" name="input_tax_date_doc" class="form-control" value="{{ date('Y-m-d') }}">
             </div>
@@ -70,7 +70,7 @@
 
         </div>
 
-        <div class="col-md-12">
+        <div class="col-md-12" style="display: none" id="withholding-show">
             {{-- @if ($document)
             <a href="{{ route('withholding.edit', $document->id) }}">ออกใบหัก ณ ที่จ่ายแล้ว <i
                 class="fa fa-edit text-info"></i> {{$document->document_number}}</a>
@@ -102,14 +102,19 @@
             //alert(inputTaxType);
 
             if (inputTaxType === '0') {
+                
                 // ถ้า input_tax_type === 1 ให้ disable input_tax_withholding_status
                 $('#input_tax_withholding_status1').prop('disabled', false);
                 $('#input_tax_withholding_status2').prop('disabled', false);
+                $('#date-doc-show').show();
+                $('#withholding-show').show();
 
             } else {
                 // ถ้า input_tax_type ไม่ใช่ 1 ให้ enable input_tax_withholding_status
                 $('#input_tax_withholding_status1').prop('disabled', true);
                 $('#input_tax_withholding_status2').prop('disabled', true);
+                $('#date-doc-show').hide();
+                $('#withholding-show').hide();
             }
         });
 
@@ -129,7 +134,6 @@
 
         $('#service-total, #vat').on('keyup', function() {
             var inputTaxType = $('#input_tax_type').val();
-
             let total = 0;
             let vat7 = 0;
             let withholdingTotal = 0;
@@ -137,9 +141,7 @@
             let serviceTotal = parseFloat($('#service-total').val()) || 0;
             let vat = parseFloat($('#vat').val()) || 0;
 
-
             if (inputTaxType === '1' | inputTaxType === '3') {
-
                 $('#total').val(serviceTotal.toFixed(2));
             } else {
                 // คำนวณ VAT 7%
@@ -149,7 +151,6 @@
                 // คำนวณภาษี ณ ที่จ่าย (3%)
                 withholdingTotal = serviceTotal * 0.03;
                 $('#withholding').val(withholdingTotal.toFixed(2));
-
                 // คำนวณผลรวมต้นทุน (รวมค่าบริการ ภาษี ณ ที่จ่าย และ VAT)
                 total = serviceTotal + withholdingTotal + vat7;
                 $('#total').val(withholdingTotal.toFixed(2));
