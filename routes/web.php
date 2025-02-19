@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Models\quotations\quotationModel;
 use App\Http\Controllers\MPDF\MailController;
+use App\Http\Controllers\quotations\quoteLog;
 use App\Http\Controllers\selects\periodSelect;
 use App\Http\Controllers\api\apiTourController;
 use App\Http\Controllers\debits\debitController;
@@ -17,31 +19,30 @@ use App\Http\Controllers\invoices\invoiceController;
 use App\Http\Controllers\payments\paymentController;
 use App\Http\Controllers\products\productController;
 use App\Http\Controllers\quotations\quoteController;
+use App\Http\Controllers\inputTax\inputTaxController;
 use App\Http\Controllers\MPDF\MPDF_invoiceController;
 use App\Http\Controllers\MPDF\MPDF_PaymentController;
 use App\Http\Controllers\customers\customerController;
 use App\Http\Controllers\FPDF\FPDF_QuotatioController;
-use App\Http\Controllers\inputTax\inputTaxController;
+use App\Http\Controllers\DebitNote\DebitNoteController;
 use App\Http\Controllers\invoices\taxInvoiceController;
 use App\Http\Controllers\MPDF\MPDF_QuotationController;
 use App\Http\Controllers\MPDF\MPDF_taxReceiptController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
+use App\Http\Controllers\MPDF\MPDF_WithholdingController;
 use App\Http\Controllers\payments\paymentDebitController;
 use App\Http\Controllers\quotefiles\QuoteFilesController;
 use App\Http\Controllers\MPDF\MPDF_DebitReceiptController;
-use App\Http\Controllers\MPDF\MPDF_CreditReceiptController;
 use App\Http\Controllers\MPDF\MPDF_PaymentDebitController;
-use App\Http\Controllers\MPDF\MPDF_WithholdingController;
 use App\Http\Controllers\payments\paymentCreditController;
 use App\Http\Controllers\Invoices\InvoiceBookingController;
-use App\Http\Controllers\invoices\invoiceDashboardController;
-use App\Http\Controllers\MPDF\MPDF_WithhodingDocumentController;
-use App\Http\Controllers\quotations\salesInformationController;
-use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
+use App\Http\Controllers\MPDF\MPDF_CreditReceiptController;
 use App\Http\Controllers\quotations\quotationViewController;
-use App\Http\Controllers\quotations\quoteLog;
+use App\Http\Controllers\invoices\invoiceDashboardController;
 use App\Http\Controllers\withholding\withholdingTaxController;
-use App\Models\quotations\quotationModel;
+use App\Http\Controllers\quotations\salesInformationController;
+use App\Http\Controllers\MPDF\MPDF_WithhodingDocumentController;
+use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -171,10 +172,8 @@ Route::post('customer/ajax/update',[customerController::class,'ajaxUpdate'])->na
 
 
 //Debits
-Route::get('debit/create/{invoiceModel}',[debitController::class,'create'])->name('debit.create');
-Route::get('debit/edit/{debitModel}',[debitController::class,'edit'])->name('debit.edit');
-Route::put('debit/update/{debitModel}',[debitController::class,'update'])->name('debit.update');
-Route::post('debit/store/',[debitController::class,'store'])->name('debit.store');
+Route::get('debit',[debitController::class,'index'])->name('debit.index');
+Route::get('debit/form-create',[debitController::class,'create'])->name('debit.create');
 // Credits 
 Route::get('credit/create/{invoiceModel}',[creditController::class,'create'])->name('credit.create');
 Route::get('credit/edit/{creditModel}',[creditController::class,'edit'])->name('credit.edit');
@@ -304,3 +303,5 @@ Route::get('mpdf/withholding/new/doc/{WithholdingTaxDocument}',[MPDF_WithhodingD
 Route::get('mpdf/withholding/download/doc/{WithholdingTaxDocument}',[MPDF_WithhodingDocumentController::class,'downloadPDFwithholding'])->name('MPDF.downloadPDFwithholding');
 
 
+Route::get('/debit-note', [DebitNoteController::class, 'index']);
+Route::post('/calculate-debit-note', [DebitNoteController::class, 'calculate'])->name('calculate.debit.note');
