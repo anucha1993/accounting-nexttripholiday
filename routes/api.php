@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\api\apiInvoiceController;
 use App\Http\Controllers\customers\customerController;
-
+use App\Http\Controllers\invoices\invoiceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,4 +22,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('customer/store', [customerController::class, 'store'])->name('apicustomer.store');
+
+Route::get('invoice',[apiInvoiceController::class,'invoice'])->name('api.invoice');
 

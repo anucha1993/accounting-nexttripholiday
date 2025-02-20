@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers\DebitNote;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\sales\saleModel;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\invoices\taxinvoiceModel;
+use App\Models\products\productModel;
+use Illuminate\Database\Eloquent\Model;
 
 class DebitNoteController extends Controller
 {
@@ -11,15 +16,16 @@ class DebitNoteController extends Controller
 
     public function index()
     {
-        // สมมติว่ามีรายการสินค้าจากฐานข้อมูล
-        $products = [
-            ['id' => 1, 'name' => 'Product A', 'price' => 1000],
-            ['id' => 2, 'name' => 'Product B', 'price' => 2000],
-            ['id' => 3, 'name' => 'Product C', 'price' => 3000],
-        ];
 
-        return view('debit-note.debit-note', compact('products'));
+      $products = productModel::where('product_type', '!=', 'discount')->get();
+      $customers = DB::table('customer')->get();
+      $sales = saleModel::select('name', 'id')->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])->get();
+      $productDiscount = productModel::where('product_type', 'discount')->get();
+      $taxinvoice = taxinvoiceModel::latest()->get();
+      return view('debit-note.form-create',compact('products','customers','sales','productDiscount','taxinvoice'));
     }
+
+    
 
     public function calculate(Request $request)
     {
