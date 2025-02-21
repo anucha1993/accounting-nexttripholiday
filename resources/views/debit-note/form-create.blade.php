@@ -23,6 +23,9 @@
         .select2-selection__rendered {
             line-height: 31px !important;
         }
+        .readonly {
+            background-color: #e0e0e0;
+        }
     </style>
 
     </style>
@@ -37,7 +40,7 @@
 
                     <div class="row">
 
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <label for="">ใบกำกับภาษี</label>
                             <select name="debitnote_tex_ref" id="tax-ref" class="form-select select2" style="width: 100%">
                                 <option value="">กรุณาเลือกใบกำกับภาษี</option>
@@ -50,33 +53,60 @@
                         </div>
 
                         <div class="col-md-3">
+                            <label for="">ผู้ขาย</label>
+                        <select name="debit_sale" class="form-select" required>
+                            @forelse ($sales as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @empty
+                                <option value="">--Select Sale--</option>
+                            @endforelse
+                        </select>
+                        </div>
+
+
+                        <div class="col-md-3">
                             <label>Ref.Invoice</label>
-                            <input type="text" class="form-control" id="inv-num" name="debitnote_inv_ref" placeholder="Ref..." readonly>
+                            <input type="date"   class="form-control" id="inv-num" name="debitnote_date" >
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>Ref.Invoice</label>
+                            <input type="text"   class="form-control readonly" id="inv-num" name="debitnote_inv_ref" placeholder="Ref..." readonly>
+                            <input type="hidden" class="form-control" id="inv-id" name="debitnote_inv_id" placeholder="Ref..." readonly>
                         </div>
 
                         <div class="col-md-3">
                             <label>Ref.Quotations</label>
-                            <input type="text" class="form-control"  id="quote-num" name="debitnote_quote_ref" placeholder="Ref..." readonly>
+                            <input type="text"   class="form-control readonly"  id="quote-num" name="debitnote_quote_ref" placeholder="Ref..." readonly>
+                            <input type="hidden" class="form-control"  id="quote-id" name="debitnote_quote_id" placeholder="Ref..." readonly>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <label>ชื่อลูกค้า</label>
-                            <input type="text" class="form-control"  id="cus-name" placeholder="..." readonly>
+                            <input type="text" class="form-control readonly"  id="cus-name" placeholder="..." readonly>
+                            <input type="hidden" class="form-control"  id="cus-id" name="debitnote_customer_id" placeholder="..." readonly>
                         </div>
                         <div class="col-md-6">
                             <label>ชื่อแพคเกจทัวร์</label>
-                            <input type="text" class="form-control"  id="tour-name" placeholder="..." readonly>
+                            <input type="text" class="form-control readonly"  id="tour-name" placeholder="..." readonly>
                         </div>
                         <div class="col-md-3">
                             <label>Booking No.</label>
-                            <input type="text" class="form-control"  id="bk-no" placeholder="..." readonly>
+                            <input type="text" class="form-control readonly"  id="bk-no" placeholder="..." readonly>
                         </div>
                         <div class="col-md-3">
                             <label>โฮลเซลล์</label>
-                            <input type="text" class="form-control"  id="whl-name" placeholder="..." readonly>
+                            <input type="text" class="form-control readonly"  id="whl-name" placeholder="..." readonly>
+                            <input type="hidden" class="form-control"  id="whl-id" name="debitnote_wholesale_id" placeholder="..." readonly>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="">สาเหตุที่ออกใบลดหนี้</label>
+                            <textarea name="" id="" cols="30" rows="3" class="form-control" placeholder="สาเหตุที่ออกใบลดหนี้" required></textarea>
                         </div>
 
 
                     </div>
+
 
 
                     <br>
@@ -216,8 +246,36 @@
                         </div>
                         <div class="col-6">
                             <div class="row">
+                                <div class="summary">
+                                <div class="row summary-row ">
+                                    <div class="col-md-10 text-end">มูลค่าสินค้าหรือบริการตามใบกำกับภาษีเดิม:</div>
+                                    <div class="col-md-2 text-end"><span id="total-old-text">0.00</span></div>
+                                     <input type="number" id="total-old" style="display: none">
+                                </div>
+                                <div class="row summary-row ">
+                                    <div class="col-md-10 text-end">มูลค่าสินค้าที่ถูกต้อง:</div>
+                                    <div class="col-md-2 text-end"><span id="total-new">0.00</span></div>
+                                </div>
+                                <div class="row summary-row ">
+                                    <div class="col-md-10 text-end">ผลต่าง:</div>
+                                    <div class="col-md-2 text-end"><span id="total-difference">0.00</span></div>
+                                </div>
+
+                                <div class="row summary-row ">
+                                    <div class="col-md-10 text-end">จำนวนมูลค่าเพิ่ม 7%:</div>
+                                    <div class="col-md-2 text-end"><span id="vat-amount">0.00</span></div>
+                                </div>
+
+                                <div class="row summary-row">
+                                    <div class="col-md-10 text-end">จำนวนรวมทั้งสิ้น:</div>
+                                    <div class="col-md-2 text-end"><span id="grand-total">0.00</span></div>
+                                </div>
+
+
+                                </div>
+
                                 <div class="summary text-info">
-                                    <div class="row summary-row ">
+                                    {{-- <div class="row summary-row ">
                                         <div class="col-md-10 text-end">ยอดรวมยกเว้นภาษี / Vat-Exempted Amount</div>
                                         <div class="col-md-2 text-end"><span id="sum-total-nonvat">0.00</span></div>
                                     </div>
@@ -245,7 +303,7 @@
                                         <div class="col-md-10 text-end">จำนวนเงินรวมทั้งสิ้น / Grand Total:</div>
                                         <div class="col-md-2 text-end"><b><span class="bg-warning"
                                                     id="grand-total">0.00</span></b></div>
-                                    </div>
+                                    </div> --}}
 
                                 </div>
                             </div>
@@ -276,6 +334,12 @@
     <script>
         // Debit Note
         $(document).ready(function() {
+             // ฟังก์ชันจัดรูปแบบตัวเลข
+             function formatNumber(num) {
+                return parseFloat(num).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            }
+
+            
             function refNumber(element) { 
                 var selectedOption = $(element).find('option:selected');
                 var invoiceID = selectedOption.data('invoice');
@@ -288,12 +352,18 @@
                         },
                         success: function(data) {
                         $('#inv-num').val(data.invoice.invoice_number);
+                        $('#inv-id').val(data.invoice.invoice_id);
                         $('#quote-num').val(data.quote.quote_number);
+                        $('#quote-id').val(data.quote.quote_id);
                         $('#cus-name').val(data.customer.customer_name);
+                        $('#cus-id').val(data.customer.customer_id);
                         $('#tour-name').val(data.quote.quote_tour_name);
                         $('#bk-no').val(data.quote.quote_booking);
                         $('#whl-name').val(data.wholesale.wholesale_name_th);
-                        //console.log(data.invoice_number);
+                        $('#whl-id').val(data.wholesale.id);
+                        var totalOld = parseFloat(data.invoice.invoice_vat_exempted_amount);
+                        $('#total-old').val(totalOld);
+                        $('#total-old-text').text(formatNumber(totalOld.toFixed(2)));
                         }
                     });
                 }
@@ -376,6 +446,8 @@
                 let vatMethod = $('input[name="vat_type"]:checked').val() ||
                     'exclude'; // กำหนดค่าเริ่มต้นเป็น 'exclude' หากไม่มีค่า
 
+                let totalOld = $('#total-old').val() || 0 ;
+
                 $('#quotation-table .item-row').each(function(index) {
                     const rowId = $(this).attr('data-row-id');
                     const quantity = parseFloat($(this).find('.quantity').val()) || 0;
@@ -430,6 +502,7 @@
                 let preVatAmount = 0;
                 let grandTotal = 0;
                 let sumPreVat = 0;
+                
 
                 if (vatMethod === 'include') {
                     // VAT รวมอยู่ในยอดแล้ว
@@ -468,13 +541,13 @@
                 $('#withholding-amount').text(formatNumber(withholdingTax.toFixed(2)));
                 $('input[name="quote_withholding_tax"]').val(withholdingTax.toFixed(2));
                 $('#sum-total-nonvat').text(formatNumber((sumPriceExcludingVatNonVat - sumDiscount).toFixed(2)));
-                $('input[name="quote_vat_exempted_amount"]').val((sumPriceExcludingVatNonVat - sumDiscount).toFixed(
-                    2));
+                $('input[name="quote_vat_exempted_amount"]').val((sumPriceExcludingVatNonVat - sumDiscount).toFixed(2));
                 $('#sum-total-vat').text(formatNumber(listVatTotal.toFixed(2)));
                 $('input[name="quote_pre_tax_amount"]').val(listVatTotal.toFixed(2));
                 $('#sum-discount').text(formatNumber(sumDiscount.toFixed(2)));
                 $('input[name="quote_discount"]').val(sumDiscount.toFixed(2));
                 $('#sum-pre-vat').text(formatNumber(sumPreVat.toFixed(2)));
+
                 $('input[name="quote_pre_vat_amount"]').val(sumPreVat.toFixed(2));
                 $('#vat-amount').text(formatNumber(vatAmount.toFixed(2)));
                 $('input[name="quote_vat"]').val(vatAmount.toFixed(2));
@@ -482,6 +555,13 @@
                 $('input[name="quote_include_vat"]').val((sumPreVat + vatAmount).toFixed(2));
                 $('#grand-total').text(formatNumber((grandTotal - sumDiscount).toFixed(2)));
                 $('input[name="quote_grand_total"]').val((grandTotal - sumDiscount).toFixed(2));
+
+
+                // Debit note
+                let totalNew = totalOld -  (sumPreVat + sumPriceExcludingVatNonVat + sumDiscount);
+                $('#total-new').text(formatNumber(totalNew.toFixed(2)));
+                $('#total-difference').text(formatNumber(totalOld - totalNew.toFixed(2)));
+
             }
 
 

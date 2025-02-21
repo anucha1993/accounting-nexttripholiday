@@ -1478,10 +1478,8 @@
                                         // ตรวจสอบว่าตัวเลือกนี้มีอยู่แล้วใน select หรือไม่
                                         if (!$('#wholesale option[value="' + data.id + '"]')
                                             .length) {
-                                            // เพิ่มตัวเลือกใหม่ใน select ของ Wholesale ถ้ายังไม่มีตัวเลือกนี้
-                                            $('#wholesale').append(`
-                                <option value="${data.id}">${data.wholesale_name_th}</option>
-                            `);
+                                            //เพิ่มตัวเลือกใหม่ใน select ของ Wholesale ถ้ายังไม่มีตัวเลือกนี้
+                                            $('#wholesale').append(`<option value="${data.id}">${data.wholesale_name_th}</option>`);
                                         }
                                         // ตั้งค่าให้ตัวเลือกนั้นถูกเลือก
                                         $('#wholesale').val(data.id).trigger('change');
