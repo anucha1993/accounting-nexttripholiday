@@ -431,7 +431,7 @@ class quoteController extends Controller
         $invoiceModel = $invoices->first();
 
         $taxinvoiceIds = $taxinvoices->pluck('taxinvoice_number');
-        $debits = debitModel::whereIn('debit_taxinvoice_number', $taxinvoiceIds)->get();
+        // $debits = debitModel::whereIn('debit_taxinvoice_number', $taxinvoiceIds)->get();
 
         $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)
             ->select('quote_product.*', 'products.product_pax')
@@ -444,7 +444,7 @@ class quoteController extends Controller
             ->where('expense_type', 'discount')
             ->get();
         $document = WithholdingTaxDocument::where('quote_id', $quotationModel->quote_id)->first();
-        return View::make('quotations.quote-table', compact('document', 'quoteProductsDiscount', 'quoteProducts', 'quotations', 'quotationModel', 'invoices', 'taxinvoices', 'debits', 'invoiceModel'))->render();
+        return View::make('quotations.quote-table', compact('document', 'quoteProductsDiscount', 'quoteProducts', 'quotations', 'quotationModel', 'invoices', 'taxinvoices', 'invoiceModel'))->render();
     }
 
     public function modalEdit(quotationModel $quotationModel, Request $request)

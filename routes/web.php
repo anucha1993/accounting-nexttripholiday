@@ -304,4 +304,7 @@ Route::get('mpdf/withholding/download/doc/{WithholdingTaxDocument}',[MPDF_Withho
 
 
 Route::get('/debit-note', [DebitNoteController::class, 'index'])->name('debit-note.index');
-Route::post('/calculate-debit-note', [DebitNoteController::class, 'calculate'])->name('calculate.debit.note');
+Route::get('/debit-note/create', [DebitNoteController::class, 'create'])->name('debit-note.create');
+Route::post('/debit-note/store', [DebitNoteController::class, 'store'])->name('debit-note.store');
+Route::put('/debit-note/update/{debitNoteModel}', [DebitNoteController::class, 'update'])->name('debit-note.update');
+Route::get('/debit-note/edit/{debitNoteModel}', [DebitNoteController::class, 'edit'])->name('debit-note.edit');
