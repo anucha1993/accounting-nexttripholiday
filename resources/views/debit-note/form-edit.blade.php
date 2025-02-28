@@ -319,7 +319,7 @@
                                 <div class="row summary-row ">
                                     <div class="col-md-10 text-end">มูลค่าสินค้าหรือบริการตามใบกำกับภาษีเดิม:</div>
                                     <div class="col-md-2 text-end"><span id="total-old-text">0.00</span></div>
-                                     <input type="number" id="total-old" style="display: none">
+                                     <input type="number" id="total-old" value="{{$debitNoteModel->debitnote_total_old}}" style="display: none">
                                 </div>
                                 <div class="row summary-row ">
                                     <div class="col-md-10 text-end">มูลค่าสินค้าที่ถูกต้อง:</div>
@@ -330,7 +330,7 @@
                                     <div class="col-md-2 text-end"><span id="total-difference">0.00</span></div>
                                 </div>
 
-                                <div class="row summary-row ">
+                                {{-- <div class="row summary-row ">
                                     <div class="col-md-10 text-end">จำนวนมูลค่าเพิ่ม 7%:</div>
                                     <div class="col-md-2 text-end"><span id="vat-amount">0.00</span></div>
                                 </div>
@@ -338,13 +338,15 @@
                                 <div class="row summary-row">
                                     <div class="col-md-10 text-end">จำนวนรวมทั้งสิ้น:</div>
                                     <div class="col-md-2 text-end"><span id="grand-total">0.00</span></div>
-                                </div>
+                                </div> --}}
 
 
                                 </div>
+
+                                <hr>
 
                                 <div class="summary text-info">
-                                    {{-- <div class="row summary-row ">
+                                    <div class="row summary-row ">
                                         <div class="col-md-10 text-end">ยอดรวมยกเว้นภาษี / Vat-Exempted Amount</div>
                                         <div class="col-md-2 text-end"><span id="sum-total-nonvat">0.00</span></div>
                                     </div>
@@ -372,7 +374,7 @@
                                         <div class="col-md-10 text-end">จำนวนเงินรวมทั้งสิ้น / Grand Total:</div>
                                         <div class="col-md-2 text-end"><b><span class="bg-warning"
                                                     id="grand-total">0.00</span></b></div>
-                                    </div> --}}
+                                    </div>
 
                                 </div>
                             </div>
@@ -383,7 +385,7 @@
                     </div>
 
 
-                    <button form="formQuote" class="btn btn-info float-end">สร้างใบลดหนี้</button>
+                    <button form="formQuote" class="btn btn-info float-end">แก้ไขใบลดหนี้</button>
                     <br>
                     <br>
             </div>
@@ -534,6 +536,7 @@
                     'exclude'; // กำหนดค่าเริ่มต้นเป็น 'exclude' หากไม่มีค่า
 
                 let totalOld = $('#total-old').val() || 0 ;
+                
 
                 $('#quotation-table .item-row').each(function(index) {
                     const rowId = $(this).attr('data-row-id');
@@ -645,7 +648,7 @@
 
 
                 // Debit note
-                let totalNew = totalOld -  (sumPreVat + sumPriceExcludingVatNonVat + sumDiscount);
+                let totalNew = totalOld -  (sumPreVat + sumPriceExcludingVatNonVat - sumDiscount);
                 $('#total-new').text(formatNumber(totalNew.toFixed(2)));
                 $('#total_new').val(totalNew.toFixed(2));
                 $('#total-difference').text(formatNumber(totalOld - totalNew.toFixed(2)));

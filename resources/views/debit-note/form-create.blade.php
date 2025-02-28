@@ -261,7 +261,7 @@
                                     <div class="col-md-2 text-end"><span id="total-difference">0.00</span></div>
                                 </div>
 
-                                <div class="row summary-row ">
+                                {{-- <div class="row summary-row ">
                                     <div class="col-md-10 text-end">จำนวนมูลค่าเพิ่ม 7%:</div>
                                     <div class="col-md-2 text-end"><span id="vat-amount">0.00</span></div>
                                 </div>
@@ -269,13 +269,14 @@
                                 <div class="row summary-row">
                                     <div class="col-md-10 text-end">จำนวนรวมทั้งสิ้น:</div>
                                     <div class="col-md-2 text-end"><span id="grand-total">0.00</span></div>
-                                </div>
+                                </div> --}}
 
 
                                 </div>
+                                <hr>
 
                                 <div class="summary text-info">
-                                    {{-- <div class="row summary-row ">
+                                    <div class="row summary-row ">
                                         <div class="col-md-10 text-end">ยอดรวมยกเว้นภาษี / Vat-Exempted Amount</div>
                                         <div class="col-md-2 text-end"><span id="sum-total-nonvat">0.00</span></div>
                                     </div>
@@ -303,7 +304,7 @@
                                         <div class="col-md-10 text-end">จำนวนเงินรวมทั้งสิ้น / Grand Total:</div>
                                         <div class="col-md-2 text-end"><b><span class="bg-warning"
                                                     id="grand-total">0.00</span></b></div>
-                                    </div> --}}
+                                    </div>
 
                                 </div>
                             </div>

@@ -86,21 +86,23 @@ class DebitNoteController extends Controller
       return view('debit-note.form-edit',compact('products','customers','sales','productDiscount','taxinvoice','debitNoteModel','debitItem','debitItemDiscont'));
     }
 
-    public function update(debitNoteModel $debitNote ,Request $request)
+    public function update(debitNoteModel $debitNoteModel ,Request $request)
     {
         //dd($request);
 
-        $debitNote->update_by = Auth::user()->name;
-        $debitNote->update();
+        $debitNoteModel->updated_by = Auth::user()->name;
+        $debitNoteModel->update($request->all());
+
+        //dd($debitNoteModel);
 
         // ลบ Product เก่า ออก
-        if($debitNote) {
-          debitNoteProductModel::where('debitnote_id', $debitNote->debitnote_id)->delete();
+        if($debitNoteModel) {
+          debitNoteProductModel::where('debitnote_id', $debitNoteModel->debitnote_id)->delete();
           foreach ($request->product_id as $key => $product) {
             $productName = productModel::where('id', $request->product_id[$key])->first();
             if ($request->product_id) {
                 debitNoteProductModel::create([
-                    'debitnote_id' => $debitNote->debitnote_id,
+                    'debitnote_id' => $debitNoteModel->debitnote_id,
                     'product_id' => $request->product_id[$key],
                     'product_name' => $productName->product_name,
                     'product_qty' => $request->quantity[$key],
