@@ -2,6 +2,7 @@
 
 namespace App\Models\debitnote;
 
+use App\Models\customers\customerModel;
 use App\Models\invoices\invoiceModel;
 use App\Models\invoices\taxinvoiceModel;
 use App\Models\quotations\quotationModel;
@@ -67,6 +68,12 @@ class debitNoteModel extends Model
     {
         return $this->belongsTo(quotationModel::class, 'quote_id', 'quote_id');
     }
+
+    // public function customer()
+    // {
+    //     return $this->belongsTo(customerModel::class, 'customer_id', $this->quote->customer_id);
+    // }
+    
     public function invoice()
     {
         return $this->belongsTo(invoiceModel::class, 'invoice_id', 'invoice_id');

@@ -83,7 +83,7 @@
                                             <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                                                 <a href="{{route('debit-note.edit',$item->debitnote_id)}}" class=" dropdown-item text-info"> <i
                                                         class="fa fa-edit"></i> แก้ไข</a>
-                                                <a class="dropdown-item" href="#" target="_blink"><i
+                                                <a class="dropdown-item" href="{{route('MPDF.debit-note.generatePDF',$item->debitnote_id)}}" target="_blink"><i
                                                         class="fa fa-print text-danger"></i> พิมพ์</a>
                                                 <a class="dropdown-item" href="#"><i
                                                         class="fas fa-envelope text-info"></i> ส่งเมล</a>

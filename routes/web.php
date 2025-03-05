@@ -39,6 +39,7 @@ use App\Http\Controllers\Invoices\InvoiceBookingController;
 use App\Http\Controllers\MPDF\MPDF_CreditReceiptController;
 use App\Http\Controllers\quotations\quotationViewController;
 use App\Http\Controllers\invoices\invoiceDashboardController;
+use App\Http\Controllers\MPDF\MPDF_DebitNoteController;
 use App\Http\Controllers\withholding\withholdingTaxController;
 use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\MPDF\MPDF_WithhodingDocumentController;
@@ -308,3 +309,4 @@ Route::get('/debit-note/create', [DebitNoteController::class, 'create'])->name('
 Route::post('/debit-note/store', [DebitNoteController::class, 'store'])->name('debit-note.store');
 Route::put('/debit-note/update/{debitNoteModel}', [DebitNoteController::class, 'update'])->name('debit-note.update');
 Route::get('/debit-note/edit/{debitNoteModel}', [DebitNoteController::class, 'edit'])->name('debit-note.edit');
+Route::get('/debit-note/mpdf/{debitNoteModel}', [MPDF_DebitNoteController::class, 'generatePDF'])->name('MPDF.debit-note.generatePDF');
