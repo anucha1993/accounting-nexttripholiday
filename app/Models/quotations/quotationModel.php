@@ -12,6 +12,7 @@ use App\Models\customers\customerModel;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\wholesale\wholesaleModel;
 use App\Http\Controllers\quotations\quoteLog;
+use App\Models\debitnote\debitNoteModel;
 use App\Models\invoices\invoiceModel;
 use App\Models\payments\paymentWholesaleModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -302,6 +303,12 @@ public function calculateNetProfit()
         }
 
         return 0; // กรณีไม่มีข้อมูลใน invoiceVat
+    }
+
+    // debitNote
+    public function debitNote()
+    {
+        return $this->belongsTo(debitNoteModel::class, 'quote_id', 'quote_id');
     }
 
 }

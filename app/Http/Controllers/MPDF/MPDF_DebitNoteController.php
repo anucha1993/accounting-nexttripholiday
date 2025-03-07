@@ -5,14 +5,12 @@ namespace App\Http\Controllers\MPDF;
 use App\Http\Controllers\Controller;
 use App\Models\customers\customerModel;
 use App\Models\debitnote\debitNoteModel;
+use App\Models\debits\debitNoteProductModel;
 use Illuminate\Http\Request;
 
 class MPDF_DebitNoteController extends Controller
 {
-    //
-
-
-
+    //  Debit
     public function generatePDF(debitNoteModel $debitNoteModel)
     {
         // การตั้งค่า font สำหรับภาษาไทย
@@ -22,7 +20,8 @@ class MPDF_DebitNoteController extends Controller
         $fontData = $defaultFontConfig['fontdata'];
 
         $customer = customerModel::where('customer_id',$debitNoteModel->quote->customer_id)->first();
-        $html1 = view('MPDF.mpdf_debitNote',compact('debitNoteModel','customer'))->render();
+        $productLists = debitNoteProductModel::where('debitnote_id',$debitNoteModel->debitnote_id)->get();
+        $html1 = view('MPDF.mpdf_debitNote',compact('debitNoteModel','customer','productLists'))->render();
 
         // กำหนดค่าเริ่มต้นของ mPDF และเพิ่มฟอนต์ภาษาไทย
         $mpdf = new \Mpdf\Mpdf([

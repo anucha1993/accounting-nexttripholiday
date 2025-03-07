@@ -99,8 +99,8 @@
         </div>
 
         <div style="width: 30%; float: left; padding: 0px;">
-            <div class="text-center  " style="padding-left: 52px">
-                <h4>ต้นฉบับ/ใบลดหนี้</h4>
+            <div class="text-center  " style="padding-left: 60px">
+                <h4> ต้นฉบับ/ใบลดหนี้</h4>
             </div>
 
             <div class="text-center " style="padding-left: 50px; padding-top: -55px;">
@@ -302,7 +302,7 @@
                         </b></td>
                 </tr>
 
-                {{-- <tr>
+                <tr>
 
                     <td style="width: 65px; height: 250px; text-align: center; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
@@ -362,34 +362,36 @@
                         @empty
                         @endforelse
                     </td>
-                </tr> --}}
+                </tr>
                 <tr>
                     <td colspan="2" rowspan="11" style="text-align: left; vertical-align: top; padding: 10px;">
                         **(Non VAT) = ค่าบริการไม่คิดภาษีมูลค่าเพิ่ม<br><br>
+                        <b>สาเหตุที่ออกใบลดหนี้ : </b>{{$debitNoteModel->debitnote_cause}}<br>
                         <b>หมายเหตุ / Remark:</b><br>
+
                         -<br>
-                        ภาษีหัก ณ ที่จ่าย 3% : จำนวนเงิน {{ number_format(0, 2, '.', ',') }} บาท<br>
+                        ภาษีหัก ณ ที่จ่าย 3% : จำนวนเงิน {{ number_format($debitNoteModel->debitnote_withholding_tax, 2, '.', ',') }} บาท<br>
                         (คำนวณจากยอดรวมก่อนภาษีมูลค่าเพิ่ม / Pre-VAT Amount)<br>
                         ข้อสังเกต: กรุณาตรวจสอบกับบริษัทเกี่ยวกับการหักภาษี ณ ที่จ่าย 3% ภายใต้เงื่อนไขที่กำหนด
                     </td>
 
                     <td colspan="2" style="text-align: right; padding: 3px;">มูลค่าสินค้าหรือบริการตามใบกำกับภาษีเดิม</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format(0, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitNoteModel->debitnote_total_old, 2, '.', ',') }}</td>
                 </tr>
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">มูลค่าสินค้าที่ถูกต้อง</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format(0, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitNoteModel->debitnote_total_new, 2, '.', ',') }}</td>
                 </tr>
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ผลต่าง</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format(0, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitNoteModel->debitnote_difference, 2, '.', ',') }}</td>
                 </tr>
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ยอดรวมยกเว้นภาษี / Vat-Exempted Amount</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format(0, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitNoteModel->debitnote_vat_exempted_amount, 2, '.', ',') }}</td>
                 </tr>
 
                 
@@ -399,26 +401,26 @@
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ราคาสุทธิสินค้าที่เสียภาษี / Pre-Tax
                         Amount</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format(0, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitNoteModel->debitnote_pre_tax_amount, 2, '.', ',') }}</td>
                 </tr>
                 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ส่วนลด / Discount</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format(0, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitNoteModel->debitnote_discount, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ราคาก่อนภาษีมูลค่าเพิ่ม / Pre-VAT
                         Amount</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format(0, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitNoteModel->debitnote_pre_vat_amount, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ภาษีมูลค่าเพิ่ม VAT 7%</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format(0, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitNoteModel->debitnote_vat, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ราคาพร้อมภาษีมูลค่าเพิ่ม / Include VAT
                     </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format(0, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitNoteModel->debitnote_include_vat, 2, '.', ',') }}</td>
                 </tr>
 
                 <tr>
@@ -428,7 +430,7 @@
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ยอดชำระทั้งสิ้น / Grand Total</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format(0, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($debitNoteModel->debitnote_grand_total, 2, '.', ',') }}</td>
                 </tr>
               
 
@@ -437,7 +439,7 @@
                         <h3>จำนวนเงินตัวอักษร:</h3>
                     </td>
                     <td colspan="3" style="text-align: right; background-color: #fdc4bf;">
-                        <h3>(@bathText(0))</h3>
+                        <h3>(@bathText($debitNoteModel->debitnote_grand_total))</h3>
                     </td>
 
                 </tr>
@@ -486,14 +488,14 @@
                                 {{-- <b>{{ $sale->name }}</b></br> --}}
                                 <p>___________________________</p>
                                 <p><b>Sale / Operation</b></p>
-                                {{-- <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p> --}}
+                                <p><b>{{ thaidate('j F Y', $debitNoteModel->debitnote_date) }}</b></p>
                             </td>
                             <td style="border: none;"></td>
                             <td style="width: 276.6px; text-align: center;">
                                 <b style="color: #fff">ว่าง</b></br>
                                 <p>___________________________</p>
                                 <p><b>Sale / Operation</b></p>
-                                {{-- <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p> --}}
+                                <p><b>{{ thaidate('j F Y', $debitNoteModel->debitnote_date) }}</b></p>
                             </td>
                             <td style="border: none;"></td>
                             <td style="width: 277px; text-align: right; text-align: center;">
@@ -501,7 +503,7 @@
                                 <p style="color: #fff">ว่าง</p></br>
                                 <p style="color: #fff">ว่าง</p></br>
                                 <p><b>ผู้อนุมัติ</b></p>
-                                {{-- <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p> --}}
+                                <p><b>{{ thaidate('j F Y', $debitNoteModel->debitnote_date) }}</b></p>
                             </td>
                         </tr>
                     </table>

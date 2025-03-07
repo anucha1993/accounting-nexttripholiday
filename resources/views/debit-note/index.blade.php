@@ -37,7 +37,13 @@
             <div class=" border bg-white">
                 <h4 class="text-center my-4">ใบลดหนี้ Debit Note
                 </h4>
+              
             </div>
+        </div>
+        <div class="todo-listing ">
+
+                <a href="{{route('debit-note.create')}}" class="btn btn-info mt-4">สร้างใบลดหนี้</a>
+
         </div>
         <br>
 
