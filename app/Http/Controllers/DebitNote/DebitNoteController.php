@@ -86,6 +86,20 @@ class DebitNoteController extends Controller
       return view('debit-note.form-edit',compact('products','customers','sales','productDiscount','taxinvoice','debitNoteModel','debitItem','debitItemDiscont'));
     }
 
+    public function copy(debitNoteModel $debitNoteModel)
+    {
+      
+      $products = productModel::where('product_type', '!=', 'discount')->get();
+      $customers = DB::table('customer')->get();
+      $sales = saleModel::select('name', 'id')->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])->get();
+      $productDiscount = productModel::where('product_type', 'discount')->get();
+      $taxinvoice = taxinvoiceModel::latest()->get();
+      $debitItem = debitNoteProductModel::where('debitnote_id', $debitNoteModel->debitnote_id)->where('expense_type','income')->get();
+      $debitItemDiscont = debitNoteProductModel::where('debitnote_id', $debitNoteModel->debitnote_id)->where('expense_type','discount')->get();
+      //dd($debitItemDiscont);
+      return view('debit-note.form-copy',compact('products','customers','sales','productDiscount','taxinvoice','debitNoteModel','debitItem','debitItemDiscont'));
+    }
+
     public function update(debitNoteModel $debitNoteModel ,Request $request)
     {
         //dd($request);

@@ -93,7 +93,7 @@
                                                         class="fa fa-print text-danger"></i> พิมพ์</a>
                                                 <a class="dropdown-item" href="#"><i
                                                         class="fas fa-envelope text-info"></i> ส่งเมล</a>
-                                                <a class="dropdown-item" href="#"><i class="fas fa-share-square text-info"></i> สร้างซ้ำ</a>
+                                                <a class="dropdown-item" href="{{route('debit-note.copy',$item->debitnote_id)}}" target="_blink" ><i class="fas fa-share-square text-info"></i> สร้างซ้ำ</a>
                                                 <a class="dropdown-item" href="#"><i class="fas fa-trash text-danger"></i> ลบ</a>
 
                                             </div>

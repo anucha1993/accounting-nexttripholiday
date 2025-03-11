@@ -33,23 +33,17 @@
         <!-- Todo list-->
         <div class="todo-listing ">
             <div class="container border bg-white">
-                <h4 class="text-center my-4">แก้ไขใบลดหนี้ Debit Note #{{$debitNoteModel->debitnote_number}}
+                <h4 class="text-center my-4">ทำซ้ำ Debit Note
                 </h4>
 
-                <a class="btn btn-sm btn-danger text-end" href="{{route('MPDF.debit-note.generatePDF',$debitNoteModel->debitnote_id)}}" target="_blink"><i
-                    class="fa fa-print text-white"></i> พิมพ์ </a> 
-    
-               <a class="btn btn-sm btn-info" href="#"><i
-                    class="fas fa-envelope"></i> ส่งเมล</a>
-
-                <a class="btn btn-sm btn-warning" href="{{route('debit-note.copy',$debitNoteModel->debitnote_id)}}" target="_blink"><i class="fas fa-share-square "></i> สร้างซ้ำ</a>
+            
       
                <br>
                <br>
 
-                <form action="{{ route('debit-note.update',$debitNoteModel->debitnote_id) }}" id="formQuote" method="post">
+                <form action="{{ route('debit-note.store',$debitNoteModel->debitnote_id) }}" id="formQuote" method="post">
                     @csrf
-                    @method('PUT')
+                    @method('POST')
 
                     <div class="row">
 
@@ -80,7 +74,7 @@
 
                         <div class="col-md-3">
                             <label>วันที่ออกใบลดหนี้</label>
-                            <input type="date"   class="form-control" name="debitnote_date" value="{{$debitNoteModel->debitnote_date}}" required >
+                            <input type="date"   class="form-control" name="debitnote_date" value="{{date('Y-m-d')}}" required >
                         </div>
 
                         <div class="col-md-3">
@@ -397,7 +391,7 @@
                     </div>
 
 
-                    <button form="formQuote" class="btn btn-info float-end">แก้ไขใบลดหนี้</button>
+                    <button form="formQuote" class="btn btn-info float-end">ยื่นยันทำซ้ำ ใบลดหนี้</button>
                     <br>
                     <br>
             </div>
