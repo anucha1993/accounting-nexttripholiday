@@ -22,10 +22,15 @@ class DebitNoteController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
 
-      $debitNote = debitNoteModel::get();
+      $debitNote = debitNoteModel::with('quote')
+      ->when($request->debitnote_number, function ($query) use ($request) {
+        return $query->where('debitnote_number', $request->debitnote_number);
+      })
+      ->paginate(10);
+      
       return view('debit-note.index',compact('debitNote'));
     }
 
@@ -132,6 +137,14 @@ class DebitNoteController extends Controller
       
       return redirect()->back();
 
+    }
+
+
+    public function delete(debitNoteModel $debitNoteModel)
+    {
+      $debitNoteModel->delete();
+
+      return redirect()->back();
     }
 
  

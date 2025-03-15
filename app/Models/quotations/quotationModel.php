@@ -74,6 +74,12 @@ class quotationModel extends Model
         'quote_payment_status'
     ];
 
+    public function customer()
+{
+    return $this->belongsTo(customerModel::class, 'customer_id', 'customer_id');
+}
+
+
     public function InputTaxVat()
     {
         return $this->belongsTo(inputTaxModel::class, 'quote_id', 'input_tax_quote_id');

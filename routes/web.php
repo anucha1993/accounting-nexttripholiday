@@ -257,6 +257,7 @@ Route::get('modal/mail/debit/{debitModel}',[MailController::class,'formMailDebit
 Route::post('mpdf/mail/credit/{creditModel}',[MPDF_CreditReceiptController::class,'sendPdf'])->name('mpdf.creditReceipt.sendPdf');
 Route::get('modal/mail/credit/{creditModel}',[MailController::class,'formMailCreditReceipt'])->name('mail.creditReceipt.formMail');
 
+
 // input tax 
 Route::get('inputtax/create/wholesale/{quotationModel}',[inputTaxController::class,'createWholesale'])->name('inputtax.createWholesale');
 Route::get('inputtax/inputtax/create/wholesale/{quotationModel}',[inputTaxController::class,'inputtaxCreateWholesale'])->name('inputtax.inputtaxCreateWholesale');
@@ -309,5 +310,8 @@ Route::get('/debit-note/create', [DebitNoteController::class, 'create'])->name('
 Route::post('/debit-note/store', [DebitNoteController::class, 'store'])->name('debit-note.store');
 Route::put('/debit-note/update/{debitNoteModel}', [DebitNoteController::class, 'update'])->name('debit-note.update');
 Route::get('/debit-note/edit/{debitNoteModel}', [DebitNoteController::class, 'edit'])->name('debit-note.edit');
+Route::get('/debit-note/delete/{debitNoteModel}', [DebitNoteController::class, 'delete'])->name('debit-note.delete');
 Route::get('/debit-note/copy/{debitNoteModel}', [DebitNoteController::class, 'copy'])->name('debit-note.copy');
 Route::get('/debit-note/mpdf/{debitNoteModel}', [MPDF_DebitNoteController::class, 'generatePDF'])->name('MPDF.debit-note.generatePDF');
+Route::post('mpdf/mail/debitnote/{debitNoteModel}',[MPDF_DebitNoteController::class,'sendPdf'])->name('mpdf.debitNoteModel.sendPdf');
+Route::get('/debit-note/modal/mail/debitnote/{debitNoteModel}',[MailController::class,'formMailDebitNote'])->name('mail.debitNoteModel.formMail');

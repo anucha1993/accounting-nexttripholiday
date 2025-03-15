@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Model;
 class debitNoteModel extends Model
 {
     use HasFactory;
-    use HasFactory;
     protected $table = 'debit_note';
     protected $primaryKey = 'debitnote_id';
     protected $fillable = [
@@ -68,16 +67,18 @@ class debitNoteModel extends Model
     {
         return $this->belongsTo(quotationModel::class, 'quote_id', 'quote_id');
     }
-
-    // public function customer()
-    // {
-    //     return $this->belongsTo(customerModel::class, 'customer_id', $this->quote->customer_id);
-    // }
     
+    public function customer()
+    {
+        return $this->quote->customer();
+    }
+
     public function invoice()
     {
         return $this->belongsTo(invoiceModel::class, 'invoice_id', 'invoice_id');
     }
+
+    
 
     public function taxinvoice()
     {
