@@ -1209,6 +1209,13 @@
 
                                 <li class="sidebar-item">
                                     <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                        href="{{route('credit-note.index')}}" aria-expanded="false"><i
+                                            class="mdi mdi-cube-send"></i><span class="hide-menu">ใบเพิ่มหนี้ Credit Note</span></a>
+                                </li>
+
+
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                         href="{{route('debit-note.index')}}" aria-expanded="false"><i
                                             class="mdi mdi-cube-send"></i><span class="hide-menu">ใบลดหนี้ Debit Note</span></a>
                                 </li>

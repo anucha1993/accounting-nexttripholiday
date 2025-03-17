@@ -33,27 +33,19 @@
         <!-- Todo list-->
         <div class="todo-listing ">
             <div class="container border bg-white">
-                <h4 class="text-center my-4">ทำซ้ำ Credit Note
+                <h4 class="text-center my-4">สร้างใบเพิ่มหนี้ Credit Note
                 </h4>
-
-            
-      
-               <br>
-               <br>
-
-                <form action="{{ route('credit-note.store',$creditNoteModel->creditnote_id) }}" id="formQuote" method="post">
+                <form action="{{ route('debit-note.store') }}" id="formQuote" method="post">
                     @csrf
-                    @method('POST')
 
                     <div class="row">
 
                         <div class="col-md-6">
                             <label for="">ใบกำกับภาษี</label>
-                            
-                            <select name="taxinvoice_id" id="tax-ref" class="form-select select2 readonly" style="width: 100%" required disabled>
+                            <select name="taxinvoice_id" id="tax-ref" class="form-select select2" style="width: 100%" required>
                                 <option value="">กรุณาเลือกใบกำกับภาษี</option>
                                 @forelse ($taxinvoice as $item)
-                                    <option @if($creditNoteModel->taxinvoice_id === $item->taxinvoice_id) selected @endif data-invoice="{{ $item->invoice_id }}" value="{{ $item->taxinvoice_id }}">
+                                    <option data-invoice="{{ $item->invoice_id }}" value="{{ $item->taxinvoice_id }}">
                                         {{ $item->taxinvoice_number }}</option>
                                 @empty
                                 @endforelse
@@ -64,7 +56,7 @@
                             <label for="">ผู้ขาย</label>
                         <select name="creditnote_sale" class="form-select" required>
                             @forelse ($sales as $item)
-                                <option @if($creditNoteModel->creditnote_sale === $item->id) selected @endif value="{{ $item->id }}">{{ $item->name }}</option>
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
                             @empty
                                 <option value="">--Select Sale--</option>
                             @endforelse
@@ -73,8 +65,8 @@
 
 
                         <div class="col-md-3">
-                            <label>วันที่ออกใบลดหนี้</label>
-                            <input type="date"   class="form-control" name="creditnote_date" value="{{date('Y-m-d')}}" required >
+                            <label>วันที่ออกใบเพิ่มหนี้</label>
+                            <input type="date"   class="form-control"  name="creditnote_date" required >
                         </div>
 
                         <div class="col-md-3">
@@ -108,8 +100,8 @@
                         </div>
 
                         <div class="col-md-12">
-                            <label for="">สาเหตุที่ออกใบลดหนี้</label>
-                            <textarea name="creditnote_cause" id="" cols="30" rows="3" class="form-control" placeholder="สาเหตุที่ออกใบลดหนี้" required>{{$creditNoteModel->creditnote_cause}}</textarea>
+                            <label for="">สาเหตุที่ออกใบเพิ่มหนี้</label>
+                            <textarea name="creditnote_cause" id="" cols="30" rows="3" class="form-control" placeholder="สาเหตุที่ออกใบเพิ่มหนี้" required></textarea>
                         </div>
 
 
@@ -139,11 +131,9 @@
                         @php
                             $key = 0;
                         @endphp
-                        @forelse ($debitItem as $key => $item)
-                            
                         <div class="row item-row table-income" id="table-income">
                             <div class="row">
-                                <div class="col-md-1"><span class="row-number"></span> <a
+                                <div class="col-md-1"><span class="row-number"> {{ $key + 1 }}</span> <a
                                         href="javascript:void(0)" class="remove-row-btn text-danger"><span
                                             class=" fa fa-trash"></span></a></div>
                                 <div class="col-md-4">
@@ -151,7 +141,7 @@
                                         style="width: 100%;">
                                         <option value="">--เลือกสินค้า--</option>
                                         @forelse ($products as $product)
-                                            <option @if($item->product_id === $product->id) selected @endif data-pax="{{ $product->product_pax }}" value="{{ $product->id }}">
+                                            <option data-pax="{{ $product->product_pax }}" value="{{ $product->id }}">
                                                 {{ $product->product_name }}
                                                 {{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
                                         @empty
@@ -161,7 +151,7 @@
                                 </div>
                                 <div class="col-md-1">
 
-                                    <input type="checkbox" name="withholding_tax[]" class="vat-3" @if($item->withholding_tax === 'Y') checked @endif value="Y">
+                                    <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y">
                                 </div>
                                 <div class="col-md-1" style="display: none">
                                     <select name="expense_type[]" class="form-select">
@@ -170,24 +160,20 @@
                                 </div>
                                 <div class="col-md-1 text-center">
                                     <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
-                                        <option @if($item->vat_status === 'nonvat') selected @endif  value="nonvat">nonVat</option>
-                                        <option @if($item->vat_status === 'vat') selected @endif value="vat">Vat</option>
+                                        <option selected value="nonvat">nonVat</option>
+                                        <option value="vat">Vat</option>
 
                                     </select>
                                 </div>
                                 <div class="col-md-1"><input type="number" name="quantity[]"
-                                        class="quantity form-control text-end" step="1" value="{{$item->product_qty}}"></div>
+                                        class="quantity form-control text-end" step="1" value="1"></div>
                                 <div class="col-md-2"><input type="number" name="price_per_unit[]"
-                                        class="price-per-unit form-control text-end" step="0.01" value="{{$item->product_price}}">
+                                        class="price-per-unit form-control text-end" step="0.01" value="0">
                                 </div>
                                 <div class="col-md-2"><input type="number" name="total_amount[]"
-                                        class="total-amount form-control text-end" value="{{$item->product_sum}}" readonly></div>
+                                        class="total-amount form-control text-end" value="0" readonly></div>
                             </div>
                         </div>
-
-                        @empty
-                            
-                        @endforelse
 
 
 
@@ -197,61 +183,11 @@
                         </div>
                         <hr>
 
-
-                        
                         <div class="row item-row table-discount">
-
-
-                            
                             <div class="col-md-12 " style="text-align: left">
                                 <label class="text-danger">ส่วนลด</label>
 
                             </div>
-
-                            @forelse ($debitItemDiscont as $keyD => $itemD)
-                        <div class="row item-row" data-row-id="{{ $keyD }}">
-                            <div class="col-md-1"><span class="row-number"></span>
-                                <a href="javascript:void(0)" class="remove-row-btn text-danger"><span
-                                        class=" fa fa-trash"></span></a>
-                            </div>
-                            <div class="col-md-4">
-                                  <select name="product_id[]" class="form-select product-select" id="product-select" style="width: 100%">
-                                    <option value="">--เลือกส่วนลด--</option>
-                                    @foreach ($productDiscount as $product)
-                                        <option @if ($itemD->product_id === $product->id) selected @endif
-                                            value="{{ $product->id }}">{{ $product->product_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="col-md-1">
-                                <input type="checkbox" name="withholding_tax[]" class="vat-3" disabled>
-                            </div>
-                            <div class="col-md-1" style="display: none">
-                                <select name="expense_type[]" class="form-select">
-                                    <option selected value="discount"> ส่วนลด </option>
-                                </select>
-                            </div>
-                            <div class="col-md-1 text-center">
-                                <select name="vat_status[]" class="vat-status form-select" style="width: 100%;">
-
-                                    <option value="nonvat" selected>nonVat</option>
-                                </select>
-                            </div>
-                            <div class="col-md-1"><input type="number" name="quantity[]"
-                                    class="quantity form-control text-end" value="{{ $itemD->product_qty }}"
-                                    step="0.01"></div>
-                            <div class="col-md-2"><input type="number" name="price_per_unit[]"
-                                    class="price-per-unit form-control text-end" value="{{ $itemD->product_price }}"
-                                    step="0.01">
-                            </div>
-                            <div class="col-md-2"><input type="number" name="total_amount[]"
-                                    class="total-amount form-control text-end" value="0" readonly></div>
-                        </div>
-
-                    @empty
-                    @endforelse
-
                         </div>
 
                         <div class="add-row">
@@ -269,20 +205,13 @@
                                     <div class="form-group">
                                         <label for="vat-method">การคำนวณ VAT:</label>
                                         <div>
-                                            <input type="radio" id="vat-include" name="vat_type" value="include" 
-                                            @if ($creditNoteModel->vat_type === 'include')
-                                            checked
-                                            @endif
-                                                >
+                                            <input type="radio" id="vat-include" name="vat_type" value="include"
+                                                checked>
                                             <label for="vat-include">คำนวณรวมกับราคาสินค้าและบริการ (VAT
                                                 Include)</label>
                                         </div>
                                         <div>
-                                            <input type="radio" id="vat-exclude" name="vat_type" value="exclude"
-                                            @if ($creditNoteModel->vat_type === 'exclude')
-                                            checked
-                                            @endif
-                                            >
+                                            <input type="radio" id="vat-exclude" name="vat_type" value="exclude">
                                             <label for="vat-exclude">คำนวณแยกกับราคาสินค้าและบริการ (VAT
                                                 Exclude)</label>
                                         </div>
@@ -294,11 +223,7 @@
                                     <div class="row summary-row">
                                         <div class="col-md-10">
                                             <input type="checkbox" name="quote_withholding_tax_status" value="Y"
-                                                id="withholding-tax"
-                                                @if ($creditNoteModel->creditnote_withholding_tax_status === 'Y')
-                                                checked
-                                                @endif
-                                                > <span class="">
+                                                id="withholding-tax"> <span class="">
                                                 คิดภาษีหัก ณ ที่จ่าย 3% (คำนวณจากยอด ราคาก่อนภาษีมูลค่าเพิ่ม /
                                                 Pre-VAT
                                                 Amount)</span>
@@ -314,7 +239,7 @@
 
                                 <div class="col-md-12" style="padding-bottom: 10px">
                                     <label>บันทึกเพิ่มเติม</label>
-                                    <textarea name="creditnote_note" class="form-control" cols="30" rows="2">{{$creditNoteModel->creditnote_note}}</textarea>
+                                    <textarea name="creditnote_note" class="form-control" cols="30" rows="2"></textarea>
                                 </div>
                             </div>
 
@@ -325,7 +250,7 @@
                                 <div class="row summary-row ">
                                     <div class="col-md-10 text-end">มูลค่าสินค้าหรือบริการตามใบกำกับภาษีเดิม:</div>
                                     <div class="col-md-2 text-end"><span id="total-old-text">0.00</span></div>
-                                     <input type="number" id="total-old" value="{{$creditNoteModel->creditnote_total_old}}" style="display: none">
+                                     <input type="number" id="total-old" style="display: none">
                                 </div>
                                 <div class="row summary-row ">
                                     <div class="col-md-10 text-end">มูลค่าสินค้าที่ถูกต้อง:</div>
@@ -348,7 +273,6 @@
 
 
                                 </div>
-
                                 <hr>
 
                                 <div class="summary text-info">
@@ -391,7 +315,7 @@
                     </div>
 
 
-                    <button form="formQuote" class="btn btn-info float-end">ยื่นยันทำซ้ำ ใบลดหนี้</button>
+                    <button form="formQuote" class="btn btn-info float-end">สร้างใบเพิ่มหนี้</button>
                     <br>
                     <br>
             </div>
@@ -466,7 +390,6 @@
             $('#tax-ref').change(function() {
                 refNumber(this); 
             });
-            refNumber(this); 
 
         });
 
@@ -542,7 +465,6 @@
                     'exclude'; // กำหนดค่าเริ่มต้นเป็น 'exclude' หากไม่มีค่า
 
                 let totalOld = $('#total-old').val() || 0 ;
-                
 
                 $('#quotation-table .item-row').each(function(index) {
                     const rowId = $(this).attr('data-row-id');
@@ -654,11 +576,14 @@
 
 
                 // Debit note
-                let totalNew = totalOld -  (sumPreVat + sumPriceExcludingVatNonVat - sumDiscount);
+                totalOld = parseFloat(totalOld);
+
+                let totalNew = totalOld +  (sumPreVat + sumPriceExcludingVatNonVat + sumDiscount);
+                
                 $('#total-new').text(formatNumber(totalNew.toFixed(2)));
                 $('#total_new').val(totalNew.toFixed(2));
-                $('#total-difference').text(formatNumber(totalOld - totalNew.toFixed(2)));
-                $('#difference').val(totalOld - totalNew);
+                $('#total-difference').text(formatNumber(totalNew - totalOld.toFixed(2)));
+                $('#difference').val(totalNew - totalOld);
 
             }
 

@@ -26,9 +26,12 @@ use App\Http\Controllers\customers\customerController;
 use App\Http\Controllers\FPDF\FPDF_QuotatioController;
 use App\Http\Controllers\DebitNote\DebitNoteController;
 use App\Http\Controllers\invoices\taxInvoiceController;
+use App\Http\Controllers\MPDF\MPDF_DebitNoteController;
+use App\Http\Controllers\MPDF\MPDF_CreditNoteController;
 use App\Http\Controllers\MPDF\MPDF_QuotationController;
 use App\Http\Controllers\MPDF\MPDF_taxReceiptController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
+use App\Http\Controllers\CreditNote\creditNoteController;
 use App\Http\Controllers\MPDF\MPDF_WithholdingController;
 use App\Http\Controllers\payments\paymentDebitController;
 use App\Http\Controllers\quotefiles\QuoteFilesController;
@@ -39,7 +42,6 @@ use App\Http\Controllers\Invoices\InvoiceBookingController;
 use App\Http\Controllers\MPDF\MPDF_CreditReceiptController;
 use App\Http\Controllers\quotations\quotationViewController;
 use App\Http\Controllers\invoices\invoiceDashboardController;
-use App\Http\Controllers\MPDF\MPDF_DebitNoteController;
 use App\Http\Controllers\withholding\withholdingTaxController;
 use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\MPDF\MPDF_WithhodingDocumentController;
@@ -305,6 +307,7 @@ Route::get('mpdf/withholding/new/doc/{WithholdingTaxDocument}',[MPDF_WithhodingD
 Route::get('mpdf/withholding/download/doc/{WithholdingTaxDocument}',[MPDF_WithhodingDocumentController::class,'downloadPDFwithholding'])->name('MPDF.downloadPDFwithholding');
 
 
+// Debit Note
 Route::get('/debit-note', [DebitNoteController::class, 'index'])->name('debit-note.index');
 Route::get('/debit-note/create', [DebitNoteController::class, 'create'])->name('debit-note.create');
 Route::post('/debit-note/store', [DebitNoteController::class, 'store'])->name('debit-note.store');
@@ -315,3 +318,15 @@ Route::get('/debit-note/copy/{debitNoteModel}', [DebitNoteController::class, 'co
 Route::get('/debit-note/mpdf/{debitNoteModel}', [MPDF_DebitNoteController::class, 'generatePDF'])->name('MPDF.debit-note.generatePDF');
 Route::post('mpdf/mail/debitnote/{debitNoteModel}',[MPDF_DebitNoteController::class,'sendPdf'])->name('mpdf.debitNoteModel.sendPdf');
 Route::get('/debit-note/modal/mail/debitnote/{debitNoteModel}',[MailController::class,'formMailDebitNote'])->name('mail.debitNoteModel.formMail');
+
+// Creadit Note
+Route::get('/credit-note', [creditNoteController::class, 'index'])->name('credit-note.index');
+Route::get('/credit-note/create', [creditNoteController::class, 'create'])->name('credit-note.create');
+Route::post('/credit-note/store', [creditNoteController::class, 'store'])->name('credit-note.store');
+Route::put('/credit-note/update/{creditNoteModel}', [creditNoteController::class, 'update'])->name('credit-note.update');
+Route::get('/credit-note/edit/{creditNoteModel}', [creditNoteController::class, 'edit'])->name('credit-note.edit');
+Route::get('/credit-note/delete/{creditNoteModel}', [creditNoteController::class, 'delete'])->name('credit-note.delete');
+Route::get('/credit-note/copy/{creditNoteModel}', [creditNoteController::class, 'copy'])->name('credit-note.copy');
+Route::get('/credit-note/mpdf/{creditNoteModel}', [MPDF_creditNoteController::class, 'generatePDF'])->name('MPDF.credit-note.generatePDF');
+Route::post('mpdf/mail/creditnote/{creditNoteModel}',[MPDF_creditNoteController::class,'sendPdf'])->name('mpdf.creditNoteModel.sendPdf');
+Route::get('/credit-note/modal/mail/creditnote/{debitNoteModel}',[MailController::class,'formMailCreditNote'])->name('mail.creditNoteModel.formMail');
