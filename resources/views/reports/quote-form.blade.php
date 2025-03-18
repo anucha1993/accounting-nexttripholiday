@@ -2,6 +2,16 @@
 
 @section('content')
     <!-- buttons -->
+    <style>
+        span[title]:hover::after {
+            content: attr(title);
+            background-color: #f0f0f0;
+            padding: 5px;
+            border: 1px solid #ccc;
+            position: absolute;
+            z-index: 1;
+        }
+    </style>
 
 
 
@@ -15,7 +25,7 @@
                     <thead>
                         <tr>
                             <th>ลำดับ</th>
-                            <th>เลขที่ใบเสนอราคา</th>
+                            <th>ใบเสนอราคา</th>
                             <th>เลขที่ใบจองทัวร์</th>
                             <th>โปรแกรมทัวร์</th>
                             <th>Booking Date</th>
@@ -38,7 +48,7 @@
                             <th colspan="10" style="text-align:right">Total:</th>
                             <th></th>
                             <th></th>
-                           
+
                         </tr>
                     </tfoot>
                 </table>
@@ -51,13 +61,46 @@
     <script>
         $(function() {
             var table = $('.quote-table').DataTable({
+                autoWidth: false,
+                columnDefs: [{
+                        width: '20px',
+                        targets: 0
+                    },
+                    {
+                        width: '100px',
+                        targets: 1
+                    },
+
+                ],
                 processing: true,
                 serverSide: true,
                 dom: 'Bfrtip',
                 buttons: ['excel', 'csv', {
                     extend: 'pdf',
                     customize: function(doc) {
+          
+                        doc.styles = {
+                            header: {
+                                fontSize: 18,
+                                bold: true,
+                                alignment: 'center',
+                                margin: [0, 0, 0, 10],
+    
+                            },
+                            subheader: {
+                                fontSize: 12,
+                                alignment: 'center',
+                                margin: [0, 0, 0, 10],
+               
+                            },
+                          
+                        };
+                        doc.content[1].layout = "borders";
+
+
+                        console.log(doc.content)
                         pdfMake.vfs = vfs;
+
                         pdfMake.fonts = {
                             THSarabun: {
                                 normal: 'THSarabun.ttf',
@@ -70,19 +113,45 @@
                         doc.pageOrientation = 'landscape';
                         doc.defaultStyle.font = 'THSarabun';
 
-                         // เพิ่ม footer ลงใน doc.content
-                    var footer = table.column(10).footer().innerHTML;
-                    doc.content[1].table.body.push([
-                        { text: 'Total:', colSpan: 10, alignment: 'right' },
-                        {}, {}, {}, {}, {}, {}, {}, {}, {},{},{},
-                        { text: footer, alignment: 'right' },
-                        {}, {}
-                    ]);
+
+
+                        // เพิ่ม footer ลงใน doc.content
+                        var footer = table.column(10).footer().innerHTML;
+                        doc.content[1].table.body.push([{
+                                text: 'Total:',
+                                colSpan: 10,
+                                alignment: 'right'
+                            },
+                            {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+                            {
+                                text: footer,
+                                alignment: 'right'
+                            },
+                            {}, {}
+                        ]);
+                       
+  
+                       
+               
+                        doc.content.unshift({
+                            text: 'รายงานสรุปใบเสนอราคา',
+                            style: 'header'
+                        }, {
+                            text: 'วันที่สร้าง: ' + new Date().toLocaleDateString(),
+                            style: 'subheader'
+                        });
+                        
+                        
+
+                        
+                    
+            
                     },
+                    
+
                 }],
                 ajax: "{{ route('report.quote.form') }}",
-                columns: [
-                    {
+                columns: [{
                         data: null,
                         render: function(data, type, row, meta) {
                             return meta.row + 1;
@@ -104,11 +173,16 @@
                     {
                         data: null,
                         render: function(data, type, row) {
-                            return row.quote_tour_name ? row.quote_tour_name : row.quote_tour_name1;
+                            var word = row.quote_tour_name ? row.quote_tour_name : row
+                                .quote_tour_name1;
+                            var maxLength = 20; // กำหนดความยาวสูงสุด
+                            var truncatedWord = word.length > maxLength ? word.substring(0,
+                                maxLength) + '...' : word;
+                            return '<span title="' + word + '">' + truncatedWord + '</span>';
                         },
                         name: 'quote_tour_name',
                     },
-                    
+
                     {
                         data: 'quote_booking_create',
                         name: 'quote_booking_create',
@@ -184,7 +258,9 @@
                 footerCallback: function(row, data, start, end, display) {
                     var api = this.api();
                     var total = api
-                        .column(12, { page: 'current' })
+                        .column(12, {
+                            page: 'current'
+                        })
                         .data()
                         .reduce(function(acc, val) {
                             var numVal = parseFloat(val.replace(/,/g, '')) || 0;
@@ -198,13 +274,13 @@
                     );
                 },
             });
-    
+
             function formatDate(dateString) {
                 return dateString ?
                     new Date(dateString).toLocaleDateString('th-TH') :
                     "";
             }
-    
+
             function formatDateRange(startDateString, endDateString) {
                 const startDate = formatDate(startDateString);
                 const endDate = formatDate(endDateString);
@@ -212,5 +288,4 @@
             }
         });
     </script>
-    
 @endsection
