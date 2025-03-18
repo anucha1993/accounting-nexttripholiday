@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>{{ $creditModel->credit_note_number }}</title>
+    <title></title>
     <meta http-equiv="Content-Language" content="th" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <style>
@@ -26,7 +26,7 @@
         }
 
         td {
-            border: 1px solid #95cfff;
+            border: 1px solid #f01a0b;
             /* สีกรอบ */
             /* padding: 10px; /* ระยะห่างระหว่างข้อความกับกรอบ */
             background-color: #fff;
@@ -40,8 +40,17 @@
 
             
         }
-        
-       
+        .text-cancel {
+            transform: rotate(45); /* ปรับมุมองศาตามต้องการ */
+            position: absolute;
+            top: 400px; /* ปรับตำแหน่งแนวตั้ง */
+            right: auto; /* ปรับตำแหน่งแนวนอน */
+            font-size:50px;
+            color: rgba(255, 0, 0, 0.007);
+            display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
+            letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
+            line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
+        } 
        
    
 
@@ -50,6 +59,12 @@
 </head>
 
 <body style="margin-top: 0px; padding-top: 0;">
+    {{-- @if ($quotationModel->quote_status === 'cancel')
+    <div class="text-cancel">
+        <b>ยกเลิก {{$quotationModel->quote_cancel_note}}</b>
+     </div>
+    @endif --}}
+
     <header class="content">
         <div style="width: 15%; float: left; padding: 10px;">
             <img src="{{ asset('logo/Logo-docs.png') }}" alt="">
@@ -84,16 +99,14 @@
         </div>
 
         <div style="width: 30%; float: left; padding: 0px;">
-
-
-            <div class="text-center" style="padding-left: 80px">
-                <h4>ต้นฉบับ/ใบลดหนี้</h4>
+            <div class="text-center  " style="padding-left: 60px">
+                <h4> ต้นฉบับ/ใบลดหนี้</h4>
             </div>
 
-            <div class="text-center " style="padding-left: 60px; padding-top: -55px;">
-                <h4><b>Original / credit Note</b></h4>
+            <div class="text-center " style="padding-left: 50px; padding-top: -55px;">
+                <h4><b>Original/Credit Note</b></h4>
             </div>
-            <div class="" style="padding-left: 100px; padding-top: -35px;">
+            <div class="" style="padding-left: 65px; padding-top: -35px;">
                 <h5><b>(สำหรับลูกค้า) </b> </h5>
             </div>
         </div>
@@ -102,18 +115,19 @@
                 <tr>
 
                     <td 
-                        style="width: 190px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
+                        style="width: 150px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
                         <p><b>ชื่อลูกค้า/Customer Name:</span></p>
                     </td>
-                    <td style="width: 300px; padding-left: 5px; border-left: none;  border-bottom: none; vertical-align: top;">
+                    <td style="width: 290px; padding-left: 5px; border-left: none;  border-bottom: none; vertical-align: top;">
+                      
                         <p><span>{{$customer->customer_name}}</span></p>
                     </td>
                     <td style="border: none;"></td>
-                    <td style="width: 120px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
+                    <td style="width: 185px; padding-left: 5px; border-right: none;  border-bottom: none; vertical-align: top;">
                         <h4><b>เลขที่/No:</b></h4>
                     </td>
-                    <td style="width: 160px; padding-left: 5px; border-left: none; border-bottom: none; vertical-align: top;">
-                        <p><span>{{$creditModel->credit_number}}</span></p>
+                    <td style="padding-left: 5px; border-left: none; border-bottom: none; vertical-align: top;">
+                        <p><span>{{ $creditNoteModel->creditnote_number }}</span></p>
                     </td>
                 
                 </tr>
@@ -136,7 +150,7 @@
 
                     <td
                         style="padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top; ">
-                        <p><span>{{ thaidate('j M Y', $creditModel->credit_date) }}</span></p>
+                        <p><span>{{ thaidate('j M Y', $creditNoteModel->creditnote_date) }}</span></p>
                     </td>
                 </tr>
                 <tr>
@@ -152,12 +166,12 @@
                     <td style="border: none;"></td>
                     <td
                         style="padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <h4><b>วันที่อ้างอิง/Ref Date.:</b></h4>
+                        <h4><b>เลขที่อ้างอิง/Ref No.:</b></h4>
                     </td>
 
                     <td
                         style="padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{ thaidate('j M Y', $invoiceModel->invoice_date) }}</span></p>
+                        <p><span>{{ $creditNoteModel->taxinvoice->taxinvoice_number }}</span></p>
                     </td>
                 </tr>
                 <tr>
@@ -173,12 +187,12 @@
                     <td style="border: none;"></td>
                     <td
                         style="padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <h4><b>เลขที่อ้างอิง/Ref No.:</b></h4>
+                        <h4><b>เลขที่จอง/Booking No.:</b></h4>
                     </td>
 
                     <td
                         style="padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{ $invoiceModel->invoice_number }}</span></p>
+                        <p><span>{{ $creditNoteModel->quote->quote_booking }}</span></p>
                     </td>
                 </tr>
                 <tr>
@@ -195,36 +209,43 @@
                     <td style="border: none;"></td>
                     <td
                         style="padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <h4><b>เลขที่จอง/Booking No.:</b></h4>
-                    </td>
-
-                    <td
-                        style="padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{ $invoiceModel->invoice_booking }}</span></p>
-                    </td>
-                </tr>
-                <tr style="padding: 3px">
-                    <td
-                        style="width: 100px; padding-left: 5px; border-right: none; border-top: none; vertical-align: top; ">
-                        <p><b>เลขประจำตัวผู้เสียภาษี/Tax ID:</span></p>
-                    </td>
-
-                    <td
-                        style="padding-left: 5px; border-left: none; border-top: none; vertical-align: top;">
-                        <p><span>{{ $customer->customer_texid }}</span></p>
-                    </td>
-                    <td style="border: none;"></td>
-                    <td
-                        style="padding-left: 5px; border-right: none; border-top: none; vertical-align: top;">
                         <h4><b>รหัสทัวร์/Tour Code:</b></h4>
                     </td>
 
                     <td
-                        style="padding-left: 5px; border-left: none; border-top: none; vertical-align: top;">
-                        {{ $quotationModel->quote_tour ? $quotationModel->quote_tour : $quotationModel->quote_tour_code  }}</span></p>
+                        style="padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
+                        {{ $creditNoteModel->quote->quote_tour ? $creditNoteModel->quote->quote_tour : $creditNoteModel->quote->quote_tour_code  }}</span></p>
                     </td>
                 </tr>
-                {{-- <tr style="padding: 3px">
+                <tr style="padding: 3px">
+                    <td
+                        style="width: 100px; padding-left: 5px; border-right: none; border-bottom: none; border-top: none; vertical-align: top; ">
+                        {{-- <p><b>เลขประจำตัวผู้เสียภาษี/Tax ID:</span></p> --}}
+                    </td>
+
+                    <td
+                        style="padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
+                        {{-- <p><span>{{ $customer->customer_texid }}</span></p> --}}
+                    </td>
+                    <td style="border: none;"></td>
+                    <td
+                        style="padding-left: 5px; border-right: none;    border-top: none; vertical-align: top;">
+                        {{-- <h4><b>ชำระเงินมัดจำ/deposit Date:</b></h4> --}}
+                    </td>
+                    <td
+                        style="padding: 0; text-align: left; border-left: none;   border-top: none; background-color: #ffffff; vertical-align: top;">
+                        {{-- <p style="margin: 0; padding: 10px;">
+                            @if ($quotationModel->quote_payment_type === 'deposit')
+                                <span> {{ thaidate('j M Y', $quotationModel->quote_payment_date) }} เวลา
+                                    {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.</span>
+                            @else
+                                - ก่อนเวลา - น.
+                            @endif
+
+                        </p> --}}
+                    </td>
+                </tr>
+                <tr style="padding: 3px">
                     <td style="padding-left: 5px; border-right: none;  border-top: none; vertical-align: top; ">
 
                     </td>
@@ -233,11 +254,11 @@
 
                     </td>
                     <td style="border: none;"></td>
-                    <td style="padding-left: 5px; border-right: none;   border-top: none; vertical-align: top;">
+                    {{-- <td style="padding-left: 5px; border-right: none;   border-top: none; vertical-align: top;">
                         <h4><b>ชำระส่วนที่เหลือ/Full Payment Date:</b></h4>
                     </td>
                     <td
-                        style="padding: 0; text-align: left; border-left: none;  ; background-color: #bbdefb; vertical-align: top;">
+                        style="padding: 0; text-align: left; border-left: none;  ; background-color: #ffffff; vertical-align: top;">
                         <p style="margin: 0; padding: 10px;">
                             @if ($quotationModel->quote_payment_type === 'full')
                                 <span> {{ thaidate('j M Y', $quotationModel->quote_payment_date) }} เวลา
@@ -247,8 +268,8 @@
                             @endif
 
                         </p>
-                    </td>
-                </tr> --}}
+                    </td> --}}
+                </tr>
                 <tr>
                     <td style="border: none;"></td>
                 </tr>
@@ -261,33 +282,32 @@
         <div style="margin-top: -35px">
             <table style="margin-right: -41px; margin-left: -37px;">
                 <tr>
-                    <td style="width: 55px; text-align: center; background-color: #bbdefb;">
+                    <td style="width: 55px; text-align: center; background-color: #fdc4bf;">
                         <b>ลำดับ</br>
                             <p>Item</p>
                         </b>
                     </td>
 
-                    <td style="width: 330px; text-align: center; background-color: #bbdefb;"><b>รายการ </br>
+                    <td style="width: 330px; text-align: center; background-color: #fdc4bf;"><b>รายการ </br>
                             <p>Descriptons</p>
                         </b></td>
-                    <td style="width: 100px; text-align: center; background-color: #bbdefb;"><b>จำนวน </br>
+                    <td style="width: 100px; text-align: center; background-color: #fdc4bf;"><b>จำนวน </br>
                             <p>Quanily</p>
                         </b></td>
-                    <td style="width: 140px; text-align: right; background-color: #bbdefb;"><b>ราคาต่อหน่วย </br>
+                    <td style="width: 140px; text-align: right; background-color: #fdc4bf;"><b>ราคาต่อหน่วย </br>
                             <p>Unit Price</p>
                         </b></td>
-                    <td style="width: 120px; text-align: right; background-color: #bbdefb;"><b>ราคารวม </br>
+                    <td style="width: 120px; text-align: right; background-color: #fdc4bf;"><b>ราคารวม </br>
                             <p>Total Amout</p>
                         </b></td>
                 </tr>
 
                 <tr>
 
-                    <td style="width: 65px; height: 200px; text-align: center; vertical-align: top;">
+                    <td style="width: 65px; height: 250px; text-align: center; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
-                        @if ($item->expense_type === 'income')
                             <p style="margin: 0;">{{ $key + 1 }}</p>
-                         @endif
+                       
                         @empty
                         @endforelse
 
@@ -295,35 +315,50 @@
 
                     <td style="width: 270px;  text-align: left; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
-                            @if ($item->expense_type === 'income')
-                            <p style="margin: 0;">{{ $item->product_name }} {{$item->vat === 'Y' ? '**(Non VAT)' : ''}}</p>
-                            @endif
+                        
 
+                        @if ($item->expense_type === 'income')
+                        @if ($item->vat_status === 'vat')
+                        <p style="margin: 0;">{{ $item->product_name}} <b> &nbsp;**(VAT) </b></p>
+                        @else
+                        <p style="margin: 0;">{{ $item->product_name}} <b>  &nbsp;**(Non VAT) </b></p>
+                        @endif
+
+                        @else
+                         ส่วนลด
+                        @endif
                         @empty
+                            
                         @endforelse
-
                     </td>
+
                     <td style="width: 70px; text-align: center; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
-                        @if ($item->expense_type === 'income')
+           
                             <p style="margin: 0;">{{ $item->product_qty }}</p>
-                            @endif
+                
                         @empty
+                        @endforelse
+                    </td>
+                    <td style="width: 120px; text-align: center; vertical-align: top;">
+                        @forelse ($productLists as $key => $item)
+                        <p style="margin: 0;">
+                            @if ($item->withholding_tax === 'N')
+                            {{  number_format( $item->product_price  , 2, '.', ',')}}
+                            @else
+     
+                            {{  number_format( ($item->product_price * 0.03)+$item->product_price  , 2, '.', ',')}}
+                            @endif
+                        </p>
+                        @empty
+                            
                         @endforelse
                     </td>
                     <td style="width: 120px; text-align: right; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
-                        @if ($item->expense_type === 'income')
-                            <p style="margin: 0;">{{ number_format($item->product_price, 2, '.', ',') }}</p>
-                            @endif
-                        @empty
-                        @endforelse
-                    </td>
-                    <td style="width: 120px; text-align: right; vertical-align: top;">
-                        @forelse ($productLists as $key => $item)
-                        @if ($item->expense_type === 'income')
+                       
                             <p style="margin: 0;">{{ number_format($item->product_sum, 2, '.', ',') }}</p>
-                            @endif
+                       
                         @empty
                         @endforelse
                     </td>
@@ -331,112 +366,116 @@
                 <tr>
                     <td colspan="2" rowspan="11" style="text-align: left; vertical-align: top; padding: 10px;">
                         **(Non VAT) = ค่าบริการไม่คิดภาษีมูลค่าเพิ่ม<br><br>
-                        <b>หมายเหตุที่ออกใบลดหนี้ :</b><br>
-                        {{$creditModel->credit_cause ? $creditModel->credit_cause :'-' }}
-                        <br>
+                        <b>สาเหตุที่ออกใบลดหนี้ : </b>{{$creditNoteModel->creditnote_cause}}<br>
                         <b>หมายเหตุ / Remark:</b><br>
-                        {{$creditModel->credit_note ? $creditModel->credit_note :'-' }}
-                        <br><br>
-                        ภาษีหัก ณ ที่จ่าย 3%: {{ number_format($creditModel->vat_3_total, 2, '.', ',') }} บาท<br>
+
+                        -<br>
+                        ภาษีหัก ณ ที่จ่าย 3% : จำนวนเงิน {{ number_format($creditNoteModel->creditnote_withholding_tax, 2, '.', ',') }} บาท<br>
                         (คำนวณจากยอดรวมก่อนภาษีมูลค่าเพิ่ม / Pre-VAT Amount)<br>
                         ข้อสังเกต: กรุณาตรวจสอบกับบริษัทเกี่ยวกับการหักภาษี ณ ที่จ่าย 3% ภายใต้เงื่อนไขที่กำหนด
                     </td>
-                    <td colspan="2" style="text-align: right; padding: 0px;">มูลค่าตามใบกำกับภาษีเดิม/Original Tax Invoice Value
-                    </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_original_invoice_value, 2, '.', ',') }}</td>
-                    
+
+                    <td colspan="2" style="text-align: right; padding: 3px;">มูลค่าสินค้าหรือบริการตามใบกำกับภาษีเดิม</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditNoteModel->creditnote_total_old, 2, '.', ',') }}</td>
                 </tr>
+
                 <tr>
-                    <td colspan="2" style="text-align: right; padding: 3px;">มูลค่าที่ถูกต้อง / Correct Value
-                    </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_correct_value, 2, '.', ',') }}</td>
-                    
+                    <td colspan="2" style="text-align: right; padding: 3px;">มูลค่าสินค้าที่ถูกต้อง</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditNoteModel->creditnote_total_new, 2, '.', ',') }}</td>
                 </tr>
+
                 <tr>
-                    <td colspan="2" style="text-align: right; padding: 3px;">ผลต่าง / Defference
-                    </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_difference, 2, '.', ',') }}</td>
-                    
+                    <td colspan="2" style="text-align: right; padding: 3px;">ผลต่าง</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditNoteModel->creditnote_difference, 2, '.', ',') }}</td>
                 </tr>
+
                 <tr>
-                    <td colspan="2" style="text-align: right; padding: 3px;">ยอดรวมยกเว้นภาษี / Vat-Exempted Amount
-                    </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_vat_exempted_amount, 2, '.', ',') }}</td>
-                    
+                    <td colspan="2" style="text-align: right; padding: 3px;">ยอดรวมยกเว้นภาษี / Vat-Exempted Amount</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditNoteModel->creditnote_vat_exempted_amount, 2, '.', ',') }}</td>
                 </tr>
+
+                
+                
+
+              
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ราคาสุทธิสินค้าที่เสียภาษี / Pre-Tax
                         Amount</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_pre_tax_amount, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditNoteModel->creditnote_pre_tax_amount, 2, '.', ',') }}</td>
                 </tr>
+                
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ส่วนลด / Discount</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_discount, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditNoteModel->creditnote_discount, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ราคาก่อนภาษีมูลค่าเพิ่ม / Pre-VAT
                         Amount</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_pre_vat_amount, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditNoteModel->creditnote_pre_vat_amount, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ภาษีมูลค่าเพิ่ม VAT 7%</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_vat, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditNoteModel->creditnote_vat, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ราคาพร้อมภาษีมูลค่าเพิ่ม / Include VAT
                     </td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_include_vat, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditNoteModel->creditnote_include_vat, 2, '.', ',') }}</td>
                 </tr>
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">หักเงินมัดจำ / Deposit</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($paymentDeposit, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format(0, 2, '.', ',') }}</td>
                 </tr>
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ยอดชำระทั้งสิ้น / Grand Total</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($creditModel->credit_grand_total - $paymentDeposit, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($creditNoteModel->creditnote_grand_total, 2, '.', ',') }}</td>
                 </tr>
+              
+
                 <tr>
                     <td colspan="2" style="text-align: right; background-color: #fff;">
                         <h3>จำนวนเงินตัวอักษร:</h3>
                     </td>
-                    <td colspan="3" style="text-align: right; background-color: #bbdefb;">
-                        <h3>(@bathText($creditModel->credit_grand_total - $paymentDeposit))</h3>
+                    <td colspan="3" style="text-align: right; background-color: #fdc4bf;">
+                        <h3>(@bathText($creditNoteModel->creditnote_grand_total))</h3>
                     </td>
 
                 </tr>
+
+                
 
 
             </table>
         </div>
 
         <footer>
-
-
-            <div style="margin-top: -17px">
+{{-- {{$payment->payment_id}} --}}
+            {{-- <div style="margin-top: -17px">
                 <b>ชำระเงินโดย / Form of payment: </b><br>
                 <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'cash') DejaVuSans; @endif">&#9745;</span> <b>เงินสด</b><br>
                
-                <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'check') DejaVuSans; @endif">&#9745;</span> <b>เช็คธนาคาร</b><br>
+                <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'check') DejaVuSans; @endif">&#9745;</span> <b>เช็คธนาคาร</b>
 
                 @if(!empty($payment->payment_method) && $payment->payment_method === 'check') 
-                {{$payment->bank_name}} เลขที่เช็ค : {{$payment->payment_check_number}}  โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_date_time) }} เวลา: {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.
+                {{$payment->bank_name}} เลขที่เช็ค : {{$payment->payment_check_number}}  โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_in_date) }} เวลา: {{ date('H:m', strtotime($quotationModel->payment_in_date)) }} น.
                 @endif
+                <br>
 
-                <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'credit') DejaVuSans; @endif">&#9745;</span> <b>บัตรเครดิต</b><br>
+                <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'credit') DejaVuSans; @endif">&#9745;</span> <b>บัตรเครดิต</b>
                 
                 @if(!empty($payment->payment_method) && $payment->payment_method === 'credit') 
                 {{$payment->bank_name}}  เลขที่สลิป : {{$payment->payment_credit_slip_number}}
                 @endif
-
+                <br>
                 <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'transfer-money') DejaVuSans; @endif">&#9745;</span> <b>โอนเงินเข้าบัญชี</b>
                 @if(!empty($payment->payment_method) && $payment->payment_method === 'transfer-money') 
-                {{$payment->bank_name}}   โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_date_time) }} เวลา: {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.
+                {{$payment->bank_name}}   โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_in_date) }} เวลา: {{ date('H:m', strtotime($quotationModel->payment_in_date)) }} น.
                 @endif
                 <br>
                 
-            </div>
+            </div> --}}
             
             
 
@@ -446,17 +485,17 @@
                       <table style="margin-right: -41px; margin-left: -37px;">
                         <tr style="border-right: none;">
                             <td style="width: 276.6px; padding: 5x; text-align: center;">
-                                <b>{{ $sale->name }}</b></br>
+                                {{-- <b>{{ $sale->name }}</b></br> --}}
                                 <p>___________________________</p>
                                 <p><b>Sale / Operation</b></p>
-                                <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p>
+                                <p><b>{{ thaidate('j F Y', $creditNoteModel->creditnote_date) }}</b></p>
                             </td>
                             <td style="border: none;"></td>
                             <td style="width: 276.6px; text-align: center;">
                                 <b style="color: #fff">ว่าง</b></br>
                                 <p>___________________________</p>
                                 <p><b>Sale / Operation</b></p>
-                                <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p>
+                                <p><b>{{ thaidate('j F Y', $creditNoteModel->creditnote_date) }}</b></p>
                             </td>
                             <td style="border: none;"></td>
                             <td style="width: 277px; text-align: right; text-align: center;">
@@ -464,7 +503,7 @@
                                 <p style="color: #fff">ว่าง</p></br>
                                 <p style="color: #fff">ว่าง</p></br>
                                 <p><b>ผู้อนุมัติ</b></p>
-                                <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p>
+                                <p><b>{{ thaidate('j F Y', $creditNoteModel->creditnote_date) }}</b></p>
                             </td>
                         </tr>
                     </table>

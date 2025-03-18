@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 class creditNoteModel extends Model
 {
     use HasFactory;
-    protected $table = 'debit_note';
+    protected $table = 'credit_note';
     protected $primaryKey = 'creditnote_id';
     protected $fillable = [
         'quote_id',
@@ -49,7 +49,7 @@ class creditNoteModel extends Model
 
     public static function generateDebitNoteNumber()
     {
-        $prefix = 'DBN';
+        $prefix = 'CDN';
         $yearMonth = now()->format('Ym');
         $lastDebitNote = self::where('creditnote_number', 'like', $prefix . $yearMonth . '-%')->latest()->first();
 

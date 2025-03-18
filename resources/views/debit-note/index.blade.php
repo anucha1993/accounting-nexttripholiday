@@ -35,7 +35,7 @@
         {{-- <div class="email-app todo-box-container container-fluid"> --}}
         <div class="todo-listing ">
             <div class=" border bg-white">
-                <h4 class="text-center my-4">ใบลดหนี้ Debit Note
+                <h4 class="text-center my-4">ใบเพิ่มหนี้ Debit Note
                 </h4>
                 <hr>
                <div class="card">
@@ -43,7 +43,7 @@
                     <form action="#" method="get">
                         <div class="row">
                             <div class="col-md-3">
-                                <label for="">เลขที่ใบลดหนี้</label>
+                                <label for="">เลขที่ใบเพิ่มหนี้</label>
                                 <input type="text" name="debitnote_number" class="form-control" placeholder="DBNXX">
                             </div>
 
@@ -87,7 +87,7 @@
             </div>
         </div>
         <div class="todo-listing ">
-         <a href="{{route('debit-note.create')}}" class="btn btn-info mt-4">สร้างใบลดหนี้</a>
+         <a href="{{route('debit-note.create')}}" class="btn btn-info mt-4">สร้างใบเพิ่มหนี้</a>
         </div>
         <br>
 
@@ -98,7 +98,7 @@
                         <tr>
                             <th>ลำดับ</th>
                             <th>วันที่</th>
-                            <th>เลขที่ใบลดหนี้</th>
+                            <th>เลขที่ใบเพิ่มหนี้</th>
                             <th>Ref.Quote</th>
                             <th>Ref.Tax</th>
                             <th>ลูกค้า</th>
@@ -143,7 +143,7 @@
                                                 <a class="dropdown-item mail-debitnote" href="{{route('mail.debitNoteModel.formMail',$item->debitnote_id)}}"><i
                                                         class="fas fa-envelope text-info"></i> ส่งเมล</a>
                                                 <a class="dropdown-item" href="{{route('debit-note.copy',$item->debitnote_id)}}" target="_blink" ><i class="fas fa-share-square text-info"></i> สร้างซ้ำ</a>
-                                                <a  onclick="return confirm('คุณต้องการลบ ใบลดหนี้ ใช่ หรือ ไม่')" class="dropdown-item" href="{{route('debit-note.delete',$item->debitnote_id)}}"><i class="fas fa-trash text-danger"></i> ลบ</a>
+                                                <a  onclick="return confirm('คุณต้องการลบ ใบเพิ่มหนี้ ใช่ หรือ ไม่')" class="dropdown-item" href="{{route('debit-note.delete',$item->debitnote_id)}}"><i class="fas fa-trash text-danger"></i> ลบ</a>
 
                                             </div>
                                         </div>

@@ -12,6 +12,8 @@ use App\Models\customers\customerModel;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\wholesale\wholesaleModel;
 use App\Http\Controllers\quotations\quoteLog;
+use App\Models\airline\airlineModel;
+use App\Models\creditnote\creditNoteModel;
 use App\Models\debitnote\debitNoteModel;
 use App\Models\invoices\invoiceModel;
 use App\Models\payments\paymentWholesaleModel;
@@ -73,6 +75,11 @@ class quotationModel extends Model
         'quote_cancel_note',
         'quote_payment_status'
     ];
+
+    public function airline()
+    {
+        return $this->belongsTo(airlineModel::class, 'quote_airline', 'id');
+    }
 
     public function customer()
 {
@@ -315,6 +322,10 @@ public function calculateNetProfit()
     public function debitNote()
     {
         return $this->belongsTo(debitNoteModel::class, 'quote_id', 'quote_id');
+    }
+    public function creditNote()
+    {
+        return $this->belongsTo(creditNoteModel::class, 'quote_id', 'quote_id');
     }
 
 }

@@ -26,7 +26,7 @@
         }
 
         td {
-            border: 1px solid #f01a0b;
+            border: 1px solid #008039;
             /* สีกรอบ */
             /* padding: 10px; /* ระยะห่างระหว่างข้อความกับกรอบ */
             background-color: #fff;
@@ -100,7 +100,7 @@
 
         <div style="width: 30%; float: left; padding: 0px;">
             <div class="text-center  " style="padding-left: 60px">
-                <h4> ต้นฉบับ/ใบลดหนี้</h4>
+                <h4> ต้นฉบับ/ใบเพิ่มหนี้</h4>
             </div>
 
             <div class="text-center " style="padding-left: 50px; padding-top: -55px;">
@@ -282,22 +282,22 @@
         <div style="margin-top: -35px">
             <table style="margin-right: -41px; margin-left: -37px;">
                 <tr>
-                    <td style="width: 55px; text-align: center; background-color: #fdc4bf;">
+                    <td style="width: 55px; text-align: center; background-color: #a3ffcd;">
                         <b>ลำดับ</br>
                             <p>Item</p>
                         </b>
                     </td>
 
-                    <td style="width: 330px; text-align: center; background-color: #fdc4bf;"><b>รายการ </br>
+                    <td style="width: 330px; text-align: center; background-color: #a3ffcd;"><b>รายการ </br>
                             <p>Descriptons</p>
                         </b></td>
-                    <td style="width: 100px; text-align: center; background-color: #fdc4bf;"><b>จำนวน </br>
+                    <td style="width: 100px; text-align: center; background-color: #a3ffcd;"><b>จำนวน </br>
                             <p>Quanily</p>
                         </b></td>
-                    <td style="width: 140px; text-align: right; background-color: #fdc4bf;"><b>ราคาต่อหน่วย </br>
+                    <td style="width: 140px; text-align: right; background-color: #a3ffcd;"><b>ราคาต่อหน่วย </br>
                             <p>Unit Price</p>
                         </b></td>
-                    <td style="width: 120px; text-align: right; background-color: #fdc4bf;"><b>ราคารวม </br>
+                    <td style="width: 120px; text-align: right; background-color: #a3ffcd;"><b>ราคารวม </br>
                             <p>Total Amout</p>
                         </b></td>
                 </tr>
@@ -366,7 +366,7 @@
                 <tr>
                     <td colspan="2" rowspan="11" style="text-align: left; vertical-align: top; padding: 10px;">
                         **(Non VAT) = ค่าบริการไม่คิดภาษีมูลค่าเพิ่ม<br><br>
-                        <b>สาเหตุที่ออกใบลดหนี้ : </b>{{$debitNoteModel->debitnote_cause}}<br>
+                        <b>สาเหตุที่ออกใบเพิ่มหนี้ : </b>{{$debitNoteModel->debitnote_cause}}<br>
                         <b>หมายเหตุ / Remark:</b><br>
 
                         -<br>
@@ -438,7 +438,7 @@
                     <td colspan="2" style="text-align: right; background-color: #fff;">
                         <h3>จำนวนเงินตัวอักษร:</h3>
                     </td>
-                    <td colspan="3" style="text-align: right; background-color: #fdc4bf;">
+                    <td colspan="3" style="text-align: right; background-color: #a3ffcd;">
                         <h3>(@bathText($debitNoteModel->debitnote_grand_total))</h3>
                     </td>
 

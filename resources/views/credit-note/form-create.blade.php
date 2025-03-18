@@ -35,7 +35,7 @@
             <div class="container border bg-white">
                 <h4 class="text-center my-4">สร้างใบเพิ่มหนี้ Credit Note
                 </h4>
-                <form action="{{ route('debit-note.store') }}" id="formQuote" method="post">
+                <form action="{{ route('credit-note.store') }}" id="formQuote" method="post">
                     @csrf
 
                     <div class="row">
@@ -578,7 +578,7 @@
                 // Debit note
                 totalOld = parseFloat(totalOld);
 
-                let totalNew = totalOld +  (sumPreVat + sumPriceExcludingVatNonVat + sumDiscount);
+                let totalNew = totalOld -  (sumPreVat + sumPriceExcludingVatNonVat + sumDiscount);
                 
                 $('#total-new').text(formatNumber(totalNew.toFixed(2)));
                 $('#total_new').val(totalNew.toFixed(2));

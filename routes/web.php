@@ -46,6 +46,7 @@ use App\Http\Controllers\withholding\withholdingTaxController;
 use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\MPDF\MPDF_WithhodingDocumentController;
 use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
+use App\Http\Controllers\report\quoteReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -329,4 +330,8 @@ Route::get('/credit-note/delete/{creditNoteModel}', [creditNoteController::class
 Route::get('/credit-note/copy/{creditNoteModel}', [creditNoteController::class, 'copy'])->name('credit-note.copy');
 Route::get('/credit-note/mpdf/{creditNoteModel}', [MPDF_creditNoteController::class, 'generatePDF'])->name('MPDF.credit-note.generatePDF');
 Route::post('mpdf/mail/creditnote/{creditNoteModel}',[MPDF_creditNoteController::class,'sendPdf'])->name('mpdf.creditNoteModel.sendPdf');
-Route::get('/credit-note/modal/mail/creditnote/{debitNoteModel}',[MailController::class,'formMailCreditNote'])->name('mail.creditNoteModel.formMail');
+Route::get('/credit-note/modal/mail/creditnote/{creditNoteModel}',[MailController::class,'formMailCreditNote'])->name('mail.creditNoteModel.formMail');
+
+//Report
+
+Route::get('report/quote/form',[quoteReportController::class,'index'])->name('report.quote.form');

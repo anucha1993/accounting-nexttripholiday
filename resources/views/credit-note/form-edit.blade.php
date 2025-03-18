@@ -33,21 +33,21 @@
         <!-- Todo list-->
         <div class="todo-listing ">
             <div class="container border bg-white">
-                <h4 class="text-center my-4">แก้ไขใบลดหนี้ Debit Note #{{$debitNoteModel->debitnote_number}}
+                <h4 class="text-center my-4">แก้ไขลดหนี้ Credit Note #{{$creditNoteModel->creditnote_number}}
                 </h4>
 
-                <a class="btn btn-sm btn-danger text-end" href="{{route('MPDF.debit-note.generatePDF',$debitNoteModel->debitnote_id)}}" target="_blink"><i
+                <a class="btn btn-sm btn-danger text-end" href="{{route('MPDF.credit-note.generatePDF',$creditNoteModel->creditnote_id)}}" target="_blink"><i
                     class="fa fa-print text-white"></i> พิมพ์ </a> 
     
                <a class="btn btn-sm btn-info" href="#"><i
                     class="fas fa-envelope"></i> ส่งเมล</a>
 
-                <a class="btn btn-sm btn-warning" href="{{route('debit-note.copy',$debitNoteModel->debitnote_id)}}" target="_blink"><i class="fas fa-share-square "></i> สร้างซ้ำ</a>
+                <a class="btn btn-sm btn-warning" href="{{route('credit-note.copy',$creditNoteModel->creditnote_id)}}" target="_blink"><i class="fas fa-share-square "></i> สร้างซ้ำ</a>
       
                <br>
                <br>
 
-                <form action="{{ route('debit-note.update',$debitNoteModel->debitnote_id) }}" id="formQuote" method="post">
+                <form action="{{ route('credit-note.update',$creditNoteModel->creditnote_id) }}" id="formQuote" method="post">
                     @csrf
                     @method('PUT')
 
@@ -59,7 +59,7 @@
                             <select name="taxinvoice_id" id="tax-ref" class="form-select select2 readonly" style="width: 100%" required disabled>
                                 <option value="">กรุณาเลือกใบกำกับภาษี</option>
                                 @forelse ($taxinvoice as $item)
-                                    <option @if($debitNoteModel->taxinvoice_id === $item->taxinvoice_id) selected @endif data-invoice="{{ $item->invoice_id }}" value="{{ $item->taxinvoice_id }}">
+                                    <option @if($creditNoteModel->taxinvoice_id === $item->taxinvoice_id) selected @endif data-invoice="{{ $item->invoice_id }}" value="{{ $item->taxinvoice_id }}">
                                         {{ $item->taxinvoice_number }}</option>
                                 @empty
                                 @endforelse
@@ -68,9 +68,9 @@
 
                         <div class="col-md-3">
                             <label for="">ผู้ขาย</label>
-                        <select name="debitnote_sale" class="form-select" required>
+                        <select name="creditnote_sale" class="form-select" required>
                             @forelse ($sales as $item)
-                                <option @if($debitNoteModel->debitnote_sale === $item->id) selected @endif value="{{ $item->id }}">{{ $item->name }}</option>
+                                <option @if($creditNoteModel->creditnote_sale === $item->id) selected @endif value="{{ $item->id }}">{{ $item->name }}</option>
                             @empty
                                 <option value="">--Select Sale--</option>
                             @endforelse
@@ -80,7 +80,7 @@
 
                         <div class="col-md-3">
                             <label>วันที่ออกใบลดหนี้</label>
-                            <input type="date"   class="form-control" name="debitnote_date" value="{{$debitNoteModel->debitnote_date}}" required >
+                            <input type="date"   class="form-control" name="creditnote_date" value="{{$creditNoteModel->creditnote_date}}" required >
                         </div>
 
                         <div class="col-md-3">
@@ -91,13 +91,13 @@
 
                         <div class="col-md-3">
                             <label>Ref.Quotations</label>
-                            <input type="text"   class="form-control readonly"  id="quote-num" name="debitnote_quote_ref" placeholder="Ref..." readonly required>
+                            <input type="text"   class="form-control readonly"  id="quote-num" name="creditnote_quote_ref" placeholder="Ref..." readonly required>
                             <input type="hidden" class="form-control"  id="quote-id" name="quote_id" placeholder="Ref..." readonly>
                         </div>
                         <div class="col-md-6">
                             <label>ชื่อลูกค้า</label>
                             <input type="text" class="form-control readonly"  id="cus-name" placeholder="..." readonly required>
-                            <input type="hidden" class="form-control"  id="cus-id" name="debitnote_customer_id" placeholder="..." readonly>
+                            <input type="hidden" class="form-control"  id="cus-id" name="creditnote_customer_id" placeholder="..." readonly>
                         </div>
                         <div class="col-md-6">
                             <label>ชื่อแพคเกจทัวร์</label>
@@ -115,7 +115,7 @@
 
                         <div class="col-md-12">
                             <label for="">สาเหตุที่ออกใบลดหนี้</label>
-                            <textarea name="debitnote_cause" id="" cols="30" rows="3" class="form-control" placeholder="สาเหตุที่ออกใบลดหนี้" required>{{$debitNoteModel->debitnote_cause}}</textarea>
+                            <textarea name="creditnote_cause" id="" cols="30" rows="3" class="form-control" placeholder="สาเหตุที่ออกใบลดหนี้" required>{{$creditNoteModel->creditnote_cause}}</textarea>
                         </div>
 
 
@@ -145,7 +145,7 @@
                         @php
                             $key = 0;
                         @endphp
-                        @forelse ($debitItem as $key => $item)
+                        @forelse ($creditItem as $key => $item)
                             
                         <div class="row item-row table-income" id="table-income">
                             <div class="row">
@@ -214,7 +214,7 @@
 
                             </div>
 
-                            @forelse ($debitItemDiscont as $keyD => $itemD)
+                            @forelse ($creditItemDiscont as $keyD => $itemD)
                         <div class="row item-row" data-row-id="{{ $keyD }}">
                             <div class="col-md-1"><span class="row-number"></span>
                                 <a href="javascript:void(0)" class="remove-row-btn text-danger"><span
@@ -276,7 +276,7 @@
                                         <label for="vat-method">การคำนวณ VAT:</label>
                                         <div>
                                             <input type="radio" id="vat-include" name="vat_type" value="include" 
-                                            @if ($debitNoteModel->vat_type === 'include')
+                                            @if ($creditNoteModel->vat_type === 'include')
                                             checked
                                             @endif
                                                 >
@@ -285,7 +285,7 @@
                                         </div>
                                         <div>
                                             <input type="radio" id="vat-exclude" name="vat_type" value="exclude"
-                                            @if ($debitNoteModel->vat_type === 'exclude')
+                                            @if ($creditNoteModel->vat_type === 'exclude')
                                             checked
                                             @endif
                                             >
@@ -301,7 +301,7 @@
                                         <div class="col-md-10">
                                             <input type="checkbox" name="quote_withholding_tax_status" value="Y"
                                                 id="withholding-tax"
-                                                @if ($debitNoteModel->debitnote_withholding_tax_status === 'Y')
+                                                @if ($creditNoteModel->creditnote_withholding_tax_status === 'Y')
                                                 checked
                                                 @endif
                                                 > <span class="">
@@ -320,7 +320,7 @@
 
                                 <div class="col-md-12" style="padding-bottom: 10px">
                                     <label>บันทึกเพิ่มเติม</label>
-                                    <textarea name="debitnote_note" class="form-control" cols="30" rows="2">{{$debitNoteModel->debitnote_note}}</textarea>
+                                    <textarea name="creditnote_note" class="form-control" cols="30" rows="2">{{$creditNoteModel->creditnote_note}}</textarea>
                                 </div>
                             </div>
 
@@ -331,7 +331,7 @@
                                 <div class="row summary-row ">
                                     <div class="col-md-10 text-end">มูลค่าสินค้าหรือบริการตามใบกำกับภาษีเดิม:</div>
                                     <div class="col-md-2 text-end"><span id="total-old-text">0.00</span></div>
-                                     <input type="number" id="total-old" value="{{$debitNoteModel->debitnote_total_old}}" style="display: none">
+                                     <input type="number" id="total-old" value="{{$creditNoteModel->creditnote_total_old}}" style="display: none">
                                 </div>
                                 <div class="row summary-row ">
                                     <div class="col-md-10 text-end">มูลค่าสินค้าที่ถูกต้อง:</div>
@@ -406,17 +406,17 @@
           
         </div>
 
-        <input type="hidden" name="debitnote_vat_exempted_amount" id="vat_exempted_amount">
-        <input type="hidden" name="debitnote_pre_tax_amount" id="pre_tax_amount">
-        <input type="hidden" name="debitnote_discount" id="discount">
-        <input type="hidden" name="debitnote_pre_vat_amount" id="pre_vat_amount">
-        <input type="hidden" name="debitnote_vat" id="vat">
-        <input type="hidden" name="debitnote_include_vat" id="include_vat">
-        <input type="hidden" name="debitnote_grand_total" id="grand_total">
-        <input type="hidden" name="debitnote_withholding_tax" id="withholding_tax">
-        <input type="hidden" name="debitnote_total_new" id="total_new">
-        <input type="hidden" name="debitnote_total_old" id="total_old">
-        <input type="hidden" name="debitnote_difference" id="difference">
+        <input type="hidden" name="creditnote_vat_exempted_amount" id="vat_exempted_amount">
+        <input type="hidden" name="creditnote_pre_tax_amount" id="pre_tax_amount">
+        <input type="hidden" name="creditnote_discount" id="discount">
+        <input type="hidden" name="creditnote_pre_vat_amount" id="pre_vat_amount">
+        <input type="hidden" name="creditnote_vat" id="vat">
+        <input type="hidden" name="creditnote_include_vat" id="include_vat">
+        <input type="hidden" name="creditnote_grand_total" id="grand_total">
+        <input type="hidden" name="creditnote_withholding_tax" id="withholding_tax">
+        <input type="hidden" name="creditnote_total_new" id="total_new">
+        <input type="hidden" name="creditnote_total_old" id="total_old">
+        <input type="hidden" name="creditnote_difference" id="difference">
 
 
        
@@ -659,8 +659,9 @@
                 $('#grand_total').val((grandTotal - sumDiscount).toFixed(2));
 
 
-                // Debit note
-                let totalNew = totalOld -  (sumPreVat + sumPriceExcludingVatNonVat - sumDiscount);
+                totalOld = parseFloat(totalOld);
+
+                let totalNew = totalOld -  (sumPreVat + sumPriceExcludingVatNonVat + sumDiscount);
                 $('#total-new').text(formatNumber(totalNew.toFixed(2)));
                 $('#total_new').val(totalNew.toFixed(2));
                 $('#total-difference').text(formatNumber(totalOld - totalNew.toFixed(2)));

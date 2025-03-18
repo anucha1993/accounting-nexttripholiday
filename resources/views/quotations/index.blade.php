@@ -213,7 +213,7 @@
                                 @forelse ($quotations as $key => $item)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
-                                        <td>{{ $item->quote_number }} {!!$item->debitNote ? '<span class="badge rounded-pill bg-danger">DB</span>' : ''!!} </td>
+                                        <td>{{ $item->quote_number }} {!!$item->debitNote ? '<span class="badge rounded-pill bg-success">DBN</span>' : ''!!} {!!$item->creditNote ? '<span class="badge rounded-pill bg-danger">CDN</span>' : ''!!} </td>
                                         <td>{{ $item->quote_booking }}</td>
                                         <td>{{ date('d/m/Y', strtotime($item->created_at))}}</td>
                                         <td>{{ date('d/m/Y', strtotime($item->quote_date_start)) . '-' . date('d/m/Y', strtotime($item->quote_date_end)) }}

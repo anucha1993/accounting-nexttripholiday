@@ -5,14 +5,15 @@ namespace App\Http\Controllers\CreditNote;
 use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
 use Illuminate\Support\Facades\DB;
-use App\Models\credits\creditModel;
+use App\Models\creditnote\creditNoteModel;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\products\productModel;
 use App\Models\customers\customerModel;
 use App\Models\invoices\taxinvoiceModel;
-use App\Models\creditnote\creditNoteModel;
-use App\Models\debits\creditNoteProductModel;
+use App\Models\creditnote\creditNoteProductModel;
+
+
 
 
 class creditNoteController extends Controller
@@ -30,7 +31,7 @@ class creditNoteController extends Controller
          $dateStart = $request->date_start;
          $dateEnd = $request->date_end;
  
-         $creditNote = creditModel::with('quote', 'taxinvoice')
+         $creditNote = creditNoteModel::with('quote', 'taxinvoice')
              ->when($request->creditnote_number, function ($query) use ($request) {
                  return $query->where('creditnote_number', $request->creditnote_number);
              })

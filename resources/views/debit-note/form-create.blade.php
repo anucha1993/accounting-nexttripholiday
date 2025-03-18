@@ -576,11 +576,13 @@
 
 
                 // Debit note
-                let totalNew = totalOld -  (sumPreVat + sumPriceExcludingVatNonVat + sumDiscount);
+                totalOld = parseFloat(totalOld);
+
+                let totalNew = totalOld +  (sumPreVat + sumPriceExcludingVatNonVat + sumDiscount);
                 $('#total-new').text(formatNumber(totalNew.toFixed(2)));
                 $('#total_new').val(totalNew.toFixed(2));
-                $('#total-difference').text(formatNumber(totalOld - totalNew.toFixed(2)));
-                $('#difference').val(totalOld - totalNew);
+                $('#total-difference').text(formatNumber(totalNew - totalOld.toFixed(2)));
+                $('#difference').val(totalNew - totalOld);
 
             }
 

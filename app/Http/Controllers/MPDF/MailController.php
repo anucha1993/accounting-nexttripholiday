@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\MPDF;
 
 use Illuminate\Http\Request;
+use App\Models\debits\debitModel;
 use App\Http\Controllers\Controller;
 use App\Models\invoices\invoiceModel;
 use App\Models\customers\customerModel;
 use App\Models\debitnote\debitNoteModel;
-use App\Models\debits\debitModel;
 use App\Models\invoices\taxinvoiceModel;
 use App\Models\quotations\quotationModel;
+use App\Models\creditnote\creditNoteModel;
 
 class MailController extends Controller
 {
@@ -47,6 +48,11 @@ class MailController extends Controller
         $customer = customerModel::where('customer_id',$debitNoteModel->quote->customer_id)->first();
         // $taxReceipt = taxinvoiceModel::where('invoice_number',$debitModel->invoice_number)->first();
         return view('MPDF.modal-debitnote',compact('debitNoteModel','customer'));
+    }
+    public function formMailCreditNote(creditNoteModel $creditNoteModel)
+    {
+        $customer = customerModel::where('customer_id',$creditNoteModel->quote->customer_id)->first();
+        return view('MPDF.modal-creditnote',compact('creditNoteModel','customer'));
     }
 
 }

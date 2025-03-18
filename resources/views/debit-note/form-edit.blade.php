@@ -33,13 +33,13 @@
         <!-- Todo list-->
         <div class="todo-listing ">
             <div class="container border bg-white">
-                <h4 class="text-center my-4">แก้ไขใบลดหนี้ Debit Note #{{$debitNoteModel->debitnote_number}}
+                <h4 class="text-center my-4">แก้ไขใบเพิ่มหนี้ Debit Note #{{$debitNoteModel->debitnote_number}}
                 </h4>
 
                 <a class="btn btn-sm btn-danger text-end" href="{{route('MPDF.debit-note.generatePDF',$debitNoteModel->debitnote_id)}}" target="_blink"><i
                     class="fa fa-print text-white"></i> พิมพ์ </a> 
     
-               <a class="btn btn-sm btn-info" href="#"><i
+               <a class="btn btn-sm btn-info mail-debitnote" href="{{route('mail.debitNoteModel.formMail',$debitNoteModel->debitnote_id)}}"><i
                     class="fas fa-envelope"></i> ส่งเมล</a>
 
                 <a class="btn btn-sm btn-warning" href="{{route('debit-note.copy',$debitNoteModel->debitnote_id)}}" target="_blink"><i class="fas fa-share-square "></i> สร้างซ้ำ</a>
@@ -79,7 +79,7 @@
 
 
                         <div class="col-md-3">
-                            <label>วันที่ออกใบลดหนี้</label>
+                            <label>วันที่ออกใบเพิ่มหนี้</label>
                             <input type="date"   class="form-control" name="debitnote_date" value="{{$debitNoteModel->debitnote_date}}" required >
                         </div>
 
@@ -114,8 +114,8 @@
                         </div>
 
                         <div class="col-md-12">
-                            <label for="">สาเหตุที่ออกใบลดหนี้</label>
-                            <textarea name="debitnote_cause" id="" cols="30" rows="3" class="form-control" placeholder="สาเหตุที่ออกใบลดหนี้" required>{{$debitNoteModel->debitnote_cause}}</textarea>
+                            <label for="">สาเหตุที่ออกใบเพิ่มหนี้</label>
+                            <textarea name="debitnote_cause" id="" cols="30" rows="3" class="form-control" placeholder="สาเหตุที่ออกใบเพิ่มหนี้" required>{{$debitNoteModel->debitnote_cause}}</textarea>
                         </div>
 
 
@@ -397,7 +397,7 @@
                     </div>
 
 
-                    <button form="formQuote" class="btn btn-info float-end">แก้ไขใบลดหนี้</button>
+                    <button form="formQuote" class="btn btn-info float-end">แก้ไขใบเพิ่มหนี้</button>
                     <br>
                     <br>
             </div>
@@ -429,6 +429,32 @@
     </div>
 
     </div>
+
+
+    {{-- mail form quote --}}
+<div class="modal fade bd-example-modal-sm modal-lg" id="modal-mail-debitnote" tabindex="-1" role="dialog"
+aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        ...
+    </div>
+</div>
+</div>
+
+<script>
+     $(document).ready(function() {
+        // modal add payment wholesale quote
+        $(".mail-debitnote").click("click", function(e) {
+            e.preventDefault();
+            $("#modal-mail-debitnote")
+                .modal("show")
+                .addClass("modal-lg")
+                .find(".modal-content")
+                .load($(this).attr("href"));
+        });
+    });
+</script>
+
 
     <script>
         // Debit Note
@@ -660,11 +686,13 @@
 
 
                 // Debit note
-                let totalNew = totalOld -  (sumPreVat + sumPriceExcludingVatNonVat - sumDiscount);
+                totalOld = parseFloat(totalOld);
+
+                let totalNew = totalOld +  (sumPreVat + sumPriceExcludingVatNonVat + sumDiscount);
                 $('#total-new').text(formatNumber(totalNew.toFixed(2)));
                 $('#total_new').val(totalNew.toFixed(2));
-                $('#total-difference').text(formatNumber(totalOld - totalNew.toFixed(2)));
-                $('#difference').val(totalOld - totalNew);
+                $('#total-difference').text(formatNumber(totalNew - totalOld.toFixed(2)));
+                $('#difference').val(totalNew - totalOld);
 
             }
 

@@ -3,7 +3,7 @@
         <form id="sendEmailForm" method="post">
             @csrf
             <div class="row">
-                <h4>ส่งเมล์ ใบเพิ่มหนี้ # {{ $debitNoteModel->debitnote_number }}</h4>
+                <h4>ส่งเมล์ ใบลดหนี้ # {{ $creditNoteModel->creditnote_number }}</h4>
                 <hr>
                 <div class="col-md-12 mb-3">
                     <label for="">Subject</label>
@@ -70,7 +70,7 @@
         });
 
         // เรียก Ajax เพื่อส่งอีเมล
-        fetch("{{ route('mpdf.debitNoteModel.sendPdf', $debitNoteModel->debitnote_id) }}", {
+        fetch("{{ route('mpdf.creditNoteModel.sendPdf', $creditNoteModel->creditnote_id) }}", {
                 method: "POST",
                 headers: {
                     "X-CSRF-TOKEN": "{{ csrf_token() }}"
