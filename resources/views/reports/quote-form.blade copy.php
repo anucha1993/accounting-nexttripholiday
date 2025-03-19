@@ -1,41 +1,32 @@
 @extends('layouts.template')
 
 @section('content')
+    <!-- buttons -->
+    <style>
+        span[titlespan]:hover::after {
+            content: attr(titlespan);
+            background-color: #f0f0f0;
+            padding: 5px;
+            border: 1px solid #ccc;
+            position: absolute;
+            z-index: 1;
+        }
+    </style>
+
 
 
     <div class="email-app todo-box-container container-fluid">
-        <br>
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                <strong>Success - </strong>{{ session('success') }}
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                <strong>Error - </strong>{{ session('error') }}
-            </div>
-        @endif
-
-       
-
 
         <div class="card">
+            <div class="card-header">
+                <h3>Report quotations</h3>
+            </div>
             <div class="card-body">
-                <h4 class="card-title">ใบเสนอราคา/ใบแจ้งหนี้
-                    @can('edit-quote')
-                     <a href="{{ route('quote.createNew') }}"
-                        class="btn btn-primary float-end">สร้างใบเสนอราคา</a></h4>
-                        @endcan
-                <hr>
 
-                <form action="">
+                <form action="{{route('report.quote.form')}}">
                     <div class="row mb-3">
                         <div class="col-md-2">
                             <label>คีย์เวิร์ด</label>
-                            <input type="hidden" name="check" value="Y">
                             <input type="text" class="form-control" name="search_keyword" value="{{$request->search_keyword}}" placeholder="คียร์เวิร์ด" data-bs-toggle="tooltip" data-bs-placement="top" title="ชื่อแพคเกจทัวร์,เลขที่ใบเสนอราคา,เลขที่ใบแจ้งหนี้,ชื่อลูกค้า,เลขที่ใบจองทัวร์,ใบกำกับภาษีของโฮลเซลล์,เลขที่ใบหัก ณ ที่จ่ายของลูกค้า"> 
                         </div>
                         <div class="col-md-2">
@@ -165,118 +156,293 @@
                         
                             <div class="input-group-append">
                                 <button class="btn btn-outline-success float-end mx-3" type="submit">ค้นหา</button>
-                                <a href="{{ route('quote.index') }}" class="btn btn-outline-danger float-end mx-3"
+                                <a href="{{ route('report.quote.form') }}" class="btn btn-outline-danger float-end mx-3"
                                     type="submit">ล้างข้อมูล</a>
 
                             </div>
                         </div>
                     </div>
                 </form>
+        </div>
+    </div>
+    
+        <div class="card">
+            <div class="card-header">
+                <h3>Report quotations</h3>
+            </div>
+            <div class="card-body">
+      
+
+                <table class="table table quote-table">
+                    <thead>
+                        <tr>
+                            <th>ลำดับ</th>
+                            <th>ใบเสนอราคา</th>
+                            <th>เลขที่ใบจองทัวร์</th>
+                            <th>โปรแกรมทัวร์</th>
+                            <th>Booking Date</th>
+                            <th>วันที่เดินทาง</th>
+                            <th>ชื่อลูกค้า</th>
+                            <th>Pax</th>
+                            <th>ประเทศ</th>
+                            <th>สายการบิน</th>
+                            <th>โฮลเซลล์</th>
+                            <th>การชำระของลูกค้า</th>
+                            <th>ยอดใบแจ้งหนี้</th>
+                            <th>การชำระโฮลเซลล์</th>
+                            <th>ผู้ขาย</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="10" style="text-align:right">Total:</th>
+                            <th></th>
+                            <th></th>
+
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
+    </div>
 
+    <script src="{{ asset('fonts/vfs_fonts.js') }}"></script>
+
+    <script>
+        $(function() {
+            
+            var table = $('.quote-table').DataTable({
+                
+                autoWidth: false,
+                columnDefs: [{
+                        width: '20px',
+                        targets: 0
+                    },
+                    {
+                        width: '100px',
+                        targets: 1
+                    },
+
+                ],
+                processing: true,
+                serverSide: true,
+              
+                dom: 'Bfrtip',
+                buttons: ['excel', 'csv', {
+                    extend: 'pdf',
+                    customize: function(doc) {
+          
+                        doc.styles = {
+                            header: {
+                                fontSize: 18,
+                                bold: true,
+                                alignment: 'center',
+                                margin: [0, 0, 0, 10],
+    
+                            },
+                            subheader: {
+                                fontSize: 12,
+                                alignment: 'center',
+                                margin: [0, 0, 0, 10],
+               
+                            },
+                          
+                        };
+                        doc.content[1].layout = "borders";
+
+
+                        console.log(doc.content)
+                        pdfMake.vfs = vfs;
+
+                        pdfMake.fonts = {
+                            THSarabun: {
+                                normal: 'THSarabun.ttf',
+                                bold: 'THSarabun Bold.ttf',
+                                italics: 'THSarabun Italic.ttf',
+                                bolditalics: 'THSarabun Bold Italic.ttf'
+                            },
+                        };
+                        doc.pageSize = 'A4';
+                        doc.pageOrientation = 'landscape';
+                        doc.defaultStyle.font = 'THSarabun';
+
+
+
+                        // เพิ่ม footer ลงใน doc.content
+                        var footer = table.column(10).footer().innerHTML;
+                        doc.content[1].table.body.push([{
+                                text: 'Total:',
+                                colSpan: 10,
+                                alignment: 'right'
+                            },
+                            {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+                            {
+                                text: footer,
+                                alignment: 'right'
+                            },
+                            {}, {}
+                        ]);
+                       
+  
+                       
+               
+                        doc.content.unshift({
+                            text: 'รายงานสรุปใบเสนอราคา',
+                            style: 'header'
+                        }, {
+                            text: 'วันที่สร้าง: ' + new Date().toLocaleDateString(),
+                            style: 'subheader'
+                        });
+                        
+                        
+
+                        
+                    
+            
+                    },
+                    
+
+                }],
+                ajax: "{{ route('report.quote.form') }}",
+                columns: [{
+                        data: null,
+                        render: function(data, type, row, meta) {
+                            return meta.row + 1;
+                        },
+                        orderable: false,
+                        searchable: false,
+                    },
+                    {
+                        data: 'quote_number',
+                        name: 'quote_number'
+                    },
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            return row.quote_tour ? row.quote_tour : row.quote_tour_code;
+                        },
+                        name: 'quote_tour_or_code',
+                    },
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            var word = row.quote_tour_name ? row.quote_tour_name : row
+                                .quote_tour_name1;
+                            var maxLength = 20; // กำหนดความยาวสูงสุด
+                            var truncatedWord = word.length > maxLength ? word.substring(0,
+                                maxLength) + '...' : word;
+                            return '<span  titlespan="' + word + '">' + truncatedWord + '</span>';
+                        },
+                        name: 'quote_tour_name',
+                    },
+
+                    {
+                        data: 'quote_booking_create',
+                        name: 'quote_booking_create',
+                        render: function(data, type, row) {
+                            return formatDate(data);
+                        },
+                    },
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            return formatDateRange(row.quote_date_start, row.quote_date_end);
+                        },
+                        name: 'quote_date_range',
+                    },
+                    {
+                        data: 'customer_name',
+                        render: function(data, type, row) {
+                            return data || "";
+                        },
+                    },
+                    {
+                        data: 'quote_pax_total',
+                        name: 'quote_pax_total'
+                    },
+                    {
+                        data: 'country_name_th',
+                        render: function(data, type, row) {
+                            return data || "";
+                        },
+                    },
+                    {
+                        data: 'travel_name',
+                        render: function(data, type, row) {
+                            return data || "";
+                        },
+                    },
+                    {
+                        data: 'code',
+                        render: function(data, type, row) {
+                            return data || "";
+                        },
+                    },
+                    {
+                        data: 'payment_status',
+                        name: 'payment_status'
+                    },
+                    {
+                        data: 'quote_grand_total',
+                        name: 'quote_grand_total',
+                        render: function(data, type, row) {
+                            return data ?
+                                new Intl.NumberFormat('th-TH', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                }).format(data) :
+                                "";
+                        },
+                    },
+                    {
+                        data: 'payment_wholesale',
+                        name: 'payment_wholesale'
+                    },
+                    {
+                        data: 'sale_name',
+                        render: function(data, type, row) {
+                            return data || "";
+                        },
+                    },
+                ],
+                order: [
+                    [0, 'desc']
+                ],
+                
+                footerCallback: function(row, data, start, end, display) {
+                    var api = this.api();
+                    var total = api
+                        .column(12, {
+                            page: 'current'
+                        })
+                        .data()
+                        .reduce(function(acc, val) {
+                            var numVal = parseFloat(val.replace(/,/g, '')) || 0;
+                            return acc + numVal;
+                        }, 0);
+                    $(api.column(10).footer()).html(
+                        new Intl.NumberFormat('th-TH', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                        }).format(total)
+                    );
+                },
+            });
+
+            function formatDate(dateString) {
+                return dateString ?
+                    new Date(dateString).toLocaleDateString('th-TH') :
+                    "";
+            }
+
+            function formatDateRange(startDateString, endDateString) {
+                const startDate = formatDate(startDateString);
+                const endDate = formatDate(endDateString);
+                return startDate && endDate ? `${startDate} - ${endDate}` : "";
+            }
         
-           
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <form method="GET"  class="mb-3">
-                            <label for="per_page">แสดงจำนวน:</label>
-                            <select name="per_page" id="per_page" class="form-select" style="width: auto;" onchange="this.form.submit()">
-                                <option value="50" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                                <option value="200" {{ request('per_page') == 200 ? 'selected' : '' }}>200</option>
-                                <option value="500" {{ request('per_page') == 500 ? 'selected' : '' }}>500</option>
-                            </select>
-                        </form>
-                        <table class="table customize-table table-hover mb-0 v-middle table-striped table-bordered "
-                            style="font-size: 12px">
-                            <thead class="table text-white bg-info">
-                                <tr>
-                                    <th>ลำดับ</th>
-                                    <th>เลขที่ใบเสนอราคา</th>
-                                    <th>เลขที่ใบจองทัวร์</th>
-                                    <th>Booking Date</th>
-                                    <th>วันที่เดินทาง</th>
-                                    <th>ชื่อลูกค้า</th>
-                                    <th>Pax</th>
-                                    <th>ประเทศ</th>
-                                    <th>โฮลเซลล์</th>
-                                    <th>การชำระของลูกค้า</th>
-                                    <th>ยอดใบแจ้งหนี้</th>
-                                    <th>การชำระโฮลเซลล์</th>
-                                    <th>ผู้ขาย</th>
-                                    <th class="text-center">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($quotations as $key => $item)
-                                    <tr>
-                                        <td>{{ $key + 1 }}</td>
-                                        <td>{{ $item->quote_number }} {!!$item->debitNote ? '<span class="badge rounded-pill bg-success">DBN</span>' : ''!!} {!!$item->creditNote ? '<span class="badge rounded-pill bg-danger">CDN</span>' : ''!!} </td>
-                                        <td>{{ $item->quote_booking }}</td>
-                                        <td>{{ date('d/m/Y', strtotime($item->created_at))}}</td>
-                                        <td>{{ date('d/m/Y', strtotime($item->quote_date_start)) . '-' . date('d/m/Y', strtotime($item->quote_date_end)) }}
-                                        </td>
-                                        <td>{{ $item->quotecustomer->customer_name }}</td>
-                                        <td>{{$item->quote_pax_total}}</td>
-                                        <td>
-                                            {{$item->quoteCountry->country_name_th}}
-                                        </td>
-                                        <td>{{ $item->quoteWholesale->code }}</td>
-                                        
-                                        <td>
-                                            {!! getQuoteStatusPayment($item) !!}
-                                            
-                                        </td>
-                                        
-
-                                        <td>{{ number_format($item->quote_grand_total, 2, '.', ',') }}</td>
-                                        <td>
-                                            @php
-                                                // ดึงข้อมูลการชำระเงินล่าสุดจาก paymentWholesale
-                                                $latestPayment = $item->paymentWholesale()->latest('payment_wholesale_id')->first();
-                                            @endphp
-                                          @if (!$latestPayment || $latestPayment->payment_wholesale_type === null)
-                                                <!-- กรณีที่ไม่มีข้อมูลใน paymentWholesale หรือ payment_wholesale_type เป็น NULL -->
-                                                <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
-                                            @elseif ($latestPayment->payment_wholesale_type === 'deposit')
-                                                <!-- กรณีที่เป็น deposit -->
-                                                <span class="badge rounded-pill bg-primary">รอชำระเงินเต็มจำนวน</span>
-                                            @elseif ($latestPayment->payment_wholesale_type === 'full')
-                                                <!-- กรณีที่เป็น full -->
-                                                <span class="badge rounded-pill bg-success">ชำระเงินแล้ว</span>
-                                            @endif
-                                          
-                                        </td>
-                                        
-                                        
-                                        
-
-                                        <td> {{ $item->Salename->name }}</td>
-                                        <td><a href="{{ route('quote.editNew', $item->quote_id) }}"
-                                                class="btn btn-info btn-sm">จัดการข้อมูล</a></td>
-                                    </tr>
-                                    
-                                @empty
-                                    No data
-                                @endforelse
-                                <tr>
-                                    <td class="text-success">ข้อมูลผลรวม</td>
-                                    <td class="text-danger" colspan="12" align="right"> จำนวน {{number_format($SumPax)}} (PAX) | จำนวนมูลค่าใบเสนอราคา {{number_format($SumTotal,2)}} บาท </td>
-                                </tr>
-
-                            </tbody>
-                        </table>
-                        {!! $quotations->withQueryString()->links('pagination::bootstrap-5') !!}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-
-
-    @endsection
+        });
+    </script>
+@endsection
