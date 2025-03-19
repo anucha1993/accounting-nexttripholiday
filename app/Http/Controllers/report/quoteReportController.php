@@ -16,6 +16,13 @@ use App\Models\quotations\quotationModel;
 
 class quoteReportController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+
+    }
+
     //
 
     // public function index(Request $request)
