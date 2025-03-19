@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers\report;
 
-use function Ramsey\Uuid\v1;
 use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
-
-
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\booking\countryModel;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
 
