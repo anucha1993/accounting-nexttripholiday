@@ -64,6 +64,7 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
             <div class="card-body">
 
                 <form action="{{ route('report.quote.form') }}">
+                    <input type="hidden" name="search" value="Y">
                     <div class="row mb-3">
                         <div class="col-md-2">
                             <label>คีย์เวิร์ด</label>
@@ -311,10 +312,12 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="10" style="text-align:right">Total:</th>
+                            <th colspan="12" style="text-align:right">Total:</th>
                             <th></th>
                             <th></th>
-
+                            <th></th>
+    
+                       
                         </tr>
                     </tfoot>
                 </table>
@@ -368,6 +371,22 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                         };
                         doc.content[1].layout = "borders";
 
+                        // เพิ่ม footer ลงใน doc.content
+                        var footer = table.column(12).footer().innerHTML;
+                        doc.content[1].table.body.push([{
+                                text: 'Total:',
+                                colSpan: 12,
+                                alignment: 'right'
+                            },
+                            {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, 
+                            {
+                                text: footer,
+                                alignment: 'right'
+                            },
+                            {}, {}
+                        ]);
+
+
                         doc.content.unshift({
                             text: 'รายงานสรุปใบเสนอราคา',
                             style: 'header'
@@ -376,7 +395,26 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                             style: 'subheader'
                         });
                     }
-                }]
+                }],
+                footerCallback: function(row, data, start, end, display) {
+                    var api = this.api();
+                    var total = api
+                        .column(12, {
+                            page: 'current'
+                        })
+                        .data()
+                        .reduce(function(acc, val) {
+                            var numVal = parseFloat(val.replace(/,/g, '')) || 0;
+                            return acc + numVal;
+                        }, 0);
+                    $(api.column(12).footer()).html(
+                        new Intl.NumberFormat('th-TH', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                        }).format(total)
+                    );
+                },
+                
             });
         });
     </script>

@@ -80,7 +80,7 @@ class quoteReportController extends Controller
 
     public function index(Request $request)
     {
-        $perPage = $request->input('per_page', 50);
+
         $searchKeyword = $request->input('search_keyword');
         $searchPeriodDateStart = $request->input('search_period_start');
         $searchPeriodDateEnd = $request->input('search_period_end');
@@ -205,8 +205,14 @@ class quoteReportController extends Controller
                 });
             })
 
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
+            ->orderBy('created_at', 'desc');
+
+            if ($request->search === 'Y') {
+               $quotations = $quotations->get();
+            }else{
+                $quotations = $quotations->paginate(10);
+            }
+            
 
         // กรองสถานะใน PHP
         if ($searchCustomerPayment !== 'all') {
