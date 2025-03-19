@@ -80,7 +80,7 @@ class quoteReportController extends Controller
 
     public function index(Request $request)
     {
-
+        $perPage = $request->input('per_page', 50);
         $searchKeyword = $request->input('search_keyword');
         $searchPeriodDateStart = $request->input('search_period_start');
         $searchPeriodDateEnd = $request->input('search_period_end');
@@ -97,11 +97,14 @@ class quoteReportController extends Controller
         $searchLogStatus = $request->input('Search_check_list');
         $searchPaymentWholesaleStatus = $request->input('search_wholesale_payment');
         $searchCustomerPayment = $request->input('search_customer_payment', 'all');
-        $sales = saleModel::select('name', 'id')->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])->get();
+        $sales = saleModel::select('name', 'id')
+            ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+            ->get();
         $airlines = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
+
         $country = countryModel::get();
         $wholesales = wholesaleModel::get();
-        
+
         $quotations = quotationModel::with('Salename', 'quoteCustomer', 'quoteWholesale', 'paymentWholesale', 'quoteInvoice', 'quoteLogStatus')
             // Search คียร์เวิร์ด
             ->when($searchKeyword, function ($query, $searchKeyword) {
@@ -206,36 +209,31 @@ class quoteReportController extends Controller
             })
 
             ->orderBy('created_at', 'desc');
-
             if ($request->search === 'Y') {
-               $quotations = $quotations->get();
-            }else{
+                $quotations = $quotations->get();
+            } else {
                 $quotations = $quotations->paginate(10);
             }
-            
 
-        // กรองสถานะใน PHP
-        if ($searchCustomerPayment !== 'all') {
-            $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchCustomerPayment) {
-                return strip_tags(getQuoteStatusPayment($quotation)) === $searchCustomerPayment;
-            });
+       // กรองสถานะใน PHP
+    if ($searchCustomerPayment !== 'all') {
+        $filtered = $quotations->filter(function ($quotation) use ($searchCustomerPayment) {
+            return strip_tags(getQuoteStatusPayment($quotation)) === $searchCustomerPayment;
+        });
 
-            // กำหนด Collection ที่กรองแล้วกลับเข้าไปใน Paginator
-            $quotations->setCollection($filtered);
-        }
-    
+        $quotations = $filtered; // แทนที่ $quotations ด้วย filtered collection
+    }
 
-        // $statuses = $quotations
-        //     ->map(function ($quotation) {
-        //         return strip_tags(getQuoteStatusPayment($quotation));
-        //     })
-        //     ->unique();
+        $statuses = $quotations
+            ->map(function ($quotation) {
+                return strip_tags(getQuoteStatusPayment($quotation));
+            })
+            ->unique();
 
         $SumPax = $quotations->sum('quote_pax_total');
         $SumTotal = $quotations->sum('quote_grand_total');
-   
 
-        return view('reports.quote-form', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request'));
+        return view('reports.quote-form', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'statuses'));
     }
 
 
