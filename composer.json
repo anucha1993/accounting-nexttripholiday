@@ -38,6 +38,7 @@
         },
         "files": [
         "app/Helpers/StatusHelper.php",
+        "app/Helpers/statusPaymentReportHelper.php",
         "app/Helpers/statusPaymentHelper.php"
     ]
         
