@@ -167,16 +167,29 @@ class quoteController extends Controller
             })
 
             ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
+            ->orderBy('created_at', 'desc');
+            if ($request->search === 'Y') {
+                $quotations = $quotations->get();
+            } else {
+                $quotations = $quotations->paginate(10);
+            }
 
         // กรองสถานะใน PHP
+        // if ($searchCustomerPayment !== 'all') {
+        //     $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchCustomerPayment) {
+        //         return strip_tags(getQuoteStatusPayment($quotation)) === $searchCustomerPayment;
+        //     });
+
+        //     // กำหนด Collection ที่กรองแล้วกลับเข้าไปใน Paginator
+        //     $quotations->setCollection($filtered);
+        // }
+
         if ($searchCustomerPayment !== 'all') {
-            $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchCustomerPayment) {
+            $filtered = $quotations->filter(function ($quotation) use ($searchCustomerPayment) {
                 return strip_tags(getQuoteStatusPayment($quotation)) === $searchCustomerPayment;
             });
-
-            // กำหนด Collection ที่กรองแล้วกลับเข้าไปใน Paginator
-            $quotations->setCollection($filtered);
+    
+            $quotations = $filtered; // แทนที่ $quotations ด้วย filtered collection
         }
 
         $statuses = $quotations

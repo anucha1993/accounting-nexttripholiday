@@ -32,6 +32,7 @@
                 <hr>
 
                 <form action="">
+                    <input type="hidden" name="search" value="Y">
                     <div class="row mb-3">
                         <div class="col-md-2">
                             <label>คีย์เวิร์ด</label>
@@ -180,7 +181,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <form method="GET"  class="mb-3">
+                        {{-- <form method="GET"  class="mb-3" id="page">
                             <label for="per_page">แสดงจำนวน:</label>
                             <select name="per_page" id="per_page" class="form-select" style="width: auto;" onchange="this.form.submit()">
                                 <option value="50" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
@@ -189,8 +190,13 @@
                                 <option value="200" {{ request('per_page') == 200 ? 'selected' : '' }}>200</option>
                                 <option value="500" {{ request('per_page') == 500 ? 'selected' : '' }}>500</option>
                             </select>
+                        </form> --}}
+
+                        <form action="#" id="export-excel">
+                            <button class="btn btn-success">EXCEL</button>
                         </form>
-                        <table class="table customize-table table-hover mb-0 v-middle table-striped table-bordered "
+                        <br>
+                        <table class="table customize-table table-hover mb-0 v-middle table-striped table-bordered quote-table"
                             style="font-size: 12px">
                             <thead class="table text-white bg-info">
                                 <tr>
@@ -269,14 +275,11 @@
 
                             </tbody>
                         </table>
-                        {!! $quotations->withQueryString()->links('pagination::bootstrap-5') !!}
+                        {{-- {!! $quotations->withQueryString()->links('pagination::bootstrap-5') !!} --}}
                     </div>
                 </div>
             </div>
         </div>
-
-
-
-
-
+       
     @endsection
+    
