@@ -6,7 +6,7 @@ use function Ramsey\Uuid\v1;
 use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
 
-use Yajra\Datatables\Datatables;
+
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\booking\countryModel;
@@ -221,18 +221,19 @@ class quoteReportController extends Controller
             // กำหนด Collection ที่กรองแล้วกลับเข้าไปใน Paginator
             $quotations->setCollection($filtered);
         }
+    
 
-        $statuses = $quotations
-            ->map(function ($quotation) {
-                return strip_tags(getQuoteStatusPayment($quotation));
-            })
-            ->unique();
+        // $statuses = $quotations
+        //     ->map(function ($quotation) {
+        //         return strip_tags(getQuoteStatusPayment($quotation));
+        //     })
+        //     ->unique();
 
         $SumPax = $quotations->sum('quote_pax_total');
         $SumTotal = $quotations->sum('quote_grand_total');
    
 
-        return view('reports.quote-form', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'statuses'));
+        return view('reports.quote-form', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request'));
     }
 
 
