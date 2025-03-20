@@ -23,7 +23,7 @@ use App\Models\quotations\quotationModel;
 use App\Models\quotations\quoteProductModel;
 use App\Models\booking\bookingQuotationModel;
 use App\Models\withholding\WithholdingTaxDocument;
-require_once app_path('Helpers/statusPaymentHelper.php');
+
 
 class quoteController extends Controller
 {
@@ -38,6 +38,10 @@ class quoteController extends Controller
 
     public function index(Request $request)
     {
+
+        // $result = \App\Helpers\testHelper();
+        // dd($result);
+        
         $perPage = $request->input('per_page', 50);
         $searchKeyword = $request->input('search_keyword');
         $searchPeriodDateStart = $request->input('search_period_start');

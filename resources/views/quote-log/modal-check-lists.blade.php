@@ -49,10 +49,55 @@
                 {{ optional($quoteLog)->invoice_updated_at ? Carbon::parse($quoteLog->invoice_updated_at)->format('d-m-Y : H:m:s') : '' }}
                 โดย {{ optional($quoteLog)->invoice_created_by ?? 'ไม่ทราบ' }}
             </small>
-         
+
+            <ul>
+                {{-- ใบเสนอราคา --}}
+                <li class="list-group-item">
+                    <input type="checkbox" class="form-check-input me-2" id="quote_status"
+                        onchange="updateOrCreateLog('quote', this)"
+                        {{ optional($quoteLog)->quote_status === 'ได้แล้ว' ? 'checked' : '' }}>
+                    <i data-feather="{{ optional($quoteLog)->quote_status === 'ได้แล้ว' ? 'check-circle' : 'box' }}"
+                        class="{{ optional($quoteLog)->quote_status === 'ได้แล้ว' ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
+                    ได้รับไฟล์ใบเสนอราคาแล้ว:
+                    <span
+                        class="{{ optional($quoteLog)->quote_status === 'ได้แล้ว' ? 'text-success' : 'text-muted' }}">
+                        {{ optional($quoteLog)->quote_status ?? 'ยังไม่ได้' }}
+                    </span>
+                    {{-- <input type="file" name="files[]" multiple onchange="uploadFiles(event)"> --}}
+                    <br>
+                    <small class="text-secondary">
+                        อัปเดตล่าสุด:
+                        {{ optional($quoteLog)->quote_updated_at ? Carbon::parse($quoteLog->quote_updated_at)->format('d-m-Y : H:m:s') : '' }}
+                        โดย {{ optional($quoteLog)->quote_created_by ?? 'ไม่ทราบ' }}
+                    </small>
+                </li>
+
+                {{-- ไฟล์ใบแจ้งหนี้ --}}
+                <li class="list-group-item">
+                    <input type="checkbox" class="form-check-input me-2" id="inv_status"
+                        onchange="updateOrCreateLog('inv', this)"
+                        {{ optional($quoteLog)->inv_status === 'ได้แล้ว' ? 'checked' : '' }}>
+                    <i data-feather="{{ optional($quoteLog)->quote_status === 'ได้แล้ว' ? 'check-circle' : 'box' }}"
+                        class="{{ optional($quoteLog)->inv_status === 'ได้แล้ว' ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
+                    ได้รับไฟล์ใบแจ้งหนี้แล้ว:
+                    <span class="{{ optional($quoteLog)->inv_status === 'ได้แล้ว' ? 'text-success' : 'text-muted' }}">
+                        {{ optional($quoteLog)->inv_status ?? 'ยังไม่ได้' }}
+                    </span>
+                    {{-- <input type="file" name="files[]" multiple onchange="uploadFiles(event)"> --}}
+                    <br>
+                    <small class="text-secondary">
+                        อัปเดตล่าสุด:
+                        {{ optional($quoteLog)->inv_updated_at ? Carbon::parse($quoteLog->inv_updated_at)->format('d-m-Y : H:m:s') : '' }}
+                        โดย {{ optional($quoteLog)->inv_created_by ?? 'ไม่ทราบ' }}
+                    </small>
+                </li>
+
+            </ul>
+
+
+
+
         </li>
-
-
 
 
         <!-- ส่งสลิปให้โฮลเซลล์ -->
@@ -72,6 +117,46 @@
                 {{ optional($quoteLog)->slip_updated_at ? Carbon::parse($quoteLog->slip_updated_at)->format('d-m-Y : H:m:s') : '' }}
                 โดย {{ optional($quoteLog)->slip_created_by ?? 'ไม่ทราบ' }}
             </small>
+
+            <ul>
+                <li class="list-group-item">
+                    <input type="checkbox" class="form-check-input me-2" id="depositslip_status"
+                    onchange="updateOrCreateLog('depositslip', this)"
+                    {{ optional($quoteLog)->depositslip_status === 'ส่งแล้ว' ? 'checked' : '' }}>
+                <i data-feather="{{ optional($quoteLog)->depositslip_status === 'ส่งแล้ว' ? 'check-circle' : 'box' }}"
+                    class="{{ optional($quoteLog)->depositslip_status === 'ส่งแล้ว' ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
+                ส่งสลิปมัดจำ:
+                <span class="{{ optional($quoteLog)->depositslip_status === 'ส่งแล้ว' ? 'text-success' : 'text-muted' }}">
+                    {{ optional($quoteLog)->depositslip_status ?? 'ยังไม่ได้ส่ง' }}
+                </span>
+                <br>
+                <small class="text-secondary">
+                    อัปเดตล่าสุด:
+                    {{ optional($quoteLog)->depositslip_updated_at ? Carbon::parse($quoteLog->depositslip_updated_at)->format('d-m-Y : H:m:s') : '' }}
+                    โดย {{ optional($quoteLog)->depositslip_created_by ?? 'ไม่ทราบ' }}
+                </small>
+                </li>
+
+                <li class="list-group-item">
+                    <input type="checkbox" class="form-check-input me-2" id="fullslip_status"
+                    onchange="updateOrCreateLog('fullslip', this)"
+                    {{ optional($quoteLog)->fullslip_status === 'ส่งแล้ว' ? 'checked' : '' }}>
+                <i data-feather="{{ optional($quoteLog)->fullslip_status === 'ส่งแล้ว' ? 'check-circle' : 'box' }}"
+                    class="{{ optional($quoteLog)->fullslip_status === 'ส่งแล้ว' ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
+                ส่งสลิปยอดเต็ม:
+                <span class="{{ optional($quoteLog)->fullslip_status === 'ส่งแล้ว' ? 'text-success' : 'text-muted' }}">
+                    {{ optional($quoteLog)->fullslip_status ?? 'ยังไม่ได้ส่ง' }}
+                </span>
+                <br>
+                <small class="text-secondary">
+                    อัปเดตล่าสุด:
+                    {{ optional($quoteLog)->fullslip_updated_at ? Carbon::parse($quoteLog->fullslip_updated_at)->format('d-m-Y : H:m:s') : '' }}
+                    โดย {{ optional($quoteLog)->fullslip_created_by ?? 'ไม่ทราบ' }}
+                </small>
+                </li>
+
+              
+            </ul>
         </li>
 
         <!-- ส่งพาสปอตให้โฮลเซลล์ -->
@@ -119,8 +204,9 @@
                 {{ optional($quoteLog)->withholding_tax_status === 'ออกแล้ว' ? 'checked' : '' }}>
             <i data-feather="{{ optional($quoteLog)->withholding_tax_status === 'ออกแล้ว' ? 'check-circle' : 'box' }}"
                 class="{{ optional($quoteLog)->withholding_tax_status === 'ออกแล้ว' ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
-                ออกใบหัก ณ ที่จ่าย:
-            <span class="{{ optional($quoteLog)->withholding_tax_status === 'ออกแล้ว' ? 'text-success' : 'text-muted' }}">
+            ออกใบหัก ณ ที่จ่าย:
+            <span
+                class="{{ optional($quoteLog)->withholding_tax_status === 'ออกแล้ว' ? 'text-success' : 'text-muted' }}">
                 {{ optional($quoteLog)->withholding_tax_status ?? 'ยังไม่ได้ออก' }}
             </span>
             <br>
@@ -129,17 +215,25 @@
                 {{ optional($quoteLog)->withholding_tax_updated_at ? Carbon::parse($quoteLog->withholding_tax_updated_at)->format('d-m-Y : H:m:s') : '' }}
                 โดย {{ optional($quoteLog)->withholding_tax_created_at ?? 'ไม่ทราบ' }}
             </small>
+            <ul >
+                <li class="list-group-item">
+                <input type="checkbox" class="form-check-input me-2" id="wholesale_skip_status"
+                onchange="updateOrCreateLog('wholesale_skip', this)"
+                {{ optional($quoteLog)->wholesale_skip_status === 'ไม่ต้องการออก' ? 'checked' : '' }}>ไม่ต้องการออก :
+            </li>
+            </ul>
         </li>
 
-         <!-- ใบแจ้งหนี้โฮลเซลล์ -->
-         <li class="list-group-item">
+        <!-- ใบแจ้งหนี้โฮลเซลล์ -->
+        <li class="list-group-item">
             <input type="checkbox" class="form-check-input me-2" id="wholesale_tax_status"
                 onchange="updateOrCreateLog('wholesale_tax', this)"
                 {{ optional($quoteLog)->wholesale_tax_status === 'ได้รับแล้ว' ? 'checked' : '' }}>
             <i data-feather="{{ optional($quoteLog)->wholesale_tax_status === 'ได้รับแล้ว' ? 'check-circle' : 'box' }}"
                 class="{{ optional($quoteLog)->wholesale_tax_status === 'ได้รับแล้ว' ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
-                ใบกำกับภาษีโฮลเซลล์ :
-            <span class="{{ optional($quoteLog)->wholesale_tax_status === 'ได้รับแล้ว' ? 'text-success' : 'text-muted' }}">
+            ใบกำกับภาษีโฮลเซลล์ :
+            <span
+                class="{{ optional($quoteLog)->wholesale_tax_status === 'ได้รับแล้ว' ? 'text-success' : 'text-muted' }}">
                 {{ optional($quoteLog)->wholesale_tax_status ?? 'ยังไม่ได้รับ' }}
             </span>
             <br>
@@ -148,7 +242,14 @@
                 {{ optional($quoteLog)->wholesale_tax_updated_at ? Carbon::parse($quoteLog->wholesale_tax_updated_at)->format('d-m-Y : H:m:s') : '' }}
                 โดย {{ optional($quoteLog)->withholding_tax_created_by ?? 'ไม่ทราบ' }}
             </small>
+
+            
+
+         
+
         </li>
+        <li>
+       
 
 
     </ul>
@@ -177,190 +278,144 @@
             });
         });
 
+        // ป้องกันการติ๊กเอง
+        $('#invoice_status, #slip_status').on('click', function(event) {
+            event.preventDefault();
+        });
+
 
         function updateOrCreateLog(field, checkbox) {
-    const statusMapping = {
-        booking_email: {
-            true: 'ส่งแล้ว',
-            false: 'ยังไม่ได้ส่ง'
-        },
-        invoice: {
-            true: 'ได้แล้ว',
-            false: 'ยังไม่ได้'
-        },
-        slip: {
-            true: 'ส่งแล้ว',
-            false: 'ยังไม่ได้ส่ง'
-        },
-        passport: {
-            true: 'ส่งแล้ว',
-            false: 'ยังไม่ได้ส่ง'
-        },
-        appointment: {
-            true: 'ส่งแล้ว',
-            false: 'ยังไม่ได้ส่ง'
-        },
-        withholding_tax: {
-            true: 'ออกแล้ว',
-            false: 'ยังไม่ได้ออก'
-        },
-        wholesale_tax: {
-            true: 'ได้รับแล้ว',
-            false: 'ยังไม่ได้รับ'
-        }
-    };
+            const statusMapping = {
+                booking_email: {
+                    true: 'ส่งแล้ว',
+                    false: 'ยังไม่ได้ส่ง'
+                },
+                invoice: {
+                    true: 'ได้แล้ว',
+                    false: 'ยังไม่ได้'
+                },
+                quote: {
+                    true: 'ได้แล้ว',
+                    false: 'ยังไม่ได้'
+                },
+                inv: {
+                    true: 'ได้แล้ว',
+                    false: 'ยังไม่ได้'
+                },
+                slip: {
+                    true: 'ส่งแล้ว',
+                    false: 'ยังไม่ได้ส่ง'
+                },
+                depositslip: {
+                    true: 'ส่งแล้ว',
+                    false: 'ยังไม่ได้ส่ง'
+                },
+                fullslip: {
+                    true: 'ส่งแล้ว',
+                    false: 'ยังไม่ได้ส่ง'
+                },
+                passport: {
+                    true: 'ส่งแล้ว',
+                    false: 'ยังไม่ได้ส่ง'
+                },
+                appointment: {
+                    true: 'ส่งแล้ว',
+                    false: 'ยังไม่ได้ส่ง'
+                },
+                withholding_tax: {
+                    true: 'ออกแล้ว',
+                    false: 'ยังไม่ได้ออก'
+                },
+                withholding_skip: {
+                    true: 'ไม่ต้องการออก',
+                    false: 'ออก'
+                },
+                wholesale_tax: {
+                    true: 'ได้รับแล้ว',
+                    false: 'ยังไม่ได้รับ'
+                }
+            };
 
-    const status = checkbox.checked
-        ? statusMapping[field]?.true || 'ส่งแล้ว'
-        : statusMapping[field]?.false || 'ยังไม่ได้ส่ง';
+            const status = checkbox.checked ?
+    statusMapping[field]?.true || 'ไม่ต้องการออก' : 
+    statusMapping[field]?.false || 'ต้องการออก';
 
-    fetch('{{ route('quote.updateLogStatus', $quotationModel->quote_id) }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({
-            field: field,
-            status: status,
-            created_by: '{{ auth()->user()->name }}'
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message === 'Status updated successfully') {
-            const statusElement = checkbox.nextElementSibling;
-            statusElement.className = status === 'ได้แล้ว' || status === 'ส่งแล้ว' || status === 'ออกแล้ว' || status === 'ได้รับแล้ว' ? 'text-success' : 'text-muted';
-            statusElement.innerText = status;
-
-            const updateInfo = checkbox.parentElement.querySelector('.text-secondary');
-            updateInfo.innerText = `อัปเดตล่าสุด: ${data.updated_at} โดย ${data.created_by}`;
-        }
-    })
-    .catch(error => console.error('Error updating status:', error));
-}
-
-
-
-        // function updateOrCreateLog(field, checkbox) {
-        //     const status = checkbox.checked ? (field === 'invoice' ? 'ได้แล้ว' : 'ส่งแล้ว') : (field === 'invoice' ?
-        //         'ยังไม่ได้' : 'ยังไม่ได้ส่ง');
-
-        //     fetch('{{ route('quote.updateLogStatus', $quotationModel->quote_id) }}', {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        //             },
-        //             body: JSON.stringify({
-        //                 field: field,
-        //                 status: status,
-        //                 created_by: '{{ auth()->user()->name }}'
-        //             })
-        //         })
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             if (data.message === 'Status updated successfully') {
-        //                 const statusElement = checkbox.nextElementSibling;
-        //                 statusElement.className = status === 'ได้แล้ว' || status === 'ส่งแล้ว' ? 'text-success' :
-        //                     'text-muted';
-        //                 statusElement.innerText = status;
-
-        //                 const updateInfo = checkbox.parentElement.querySelector('.text-secondary');
-        //                 updateInfo.innerText = `อัปเดตล่าสุด: ${data.updated_at} โดย ${data.created_by}`;
-
-        //                 const toastMessage = document.getElementById('toastMessage');
-        //                 toastMessage.textContent = `${field} has been updated to "${status}"`;
-        //                 const toastElement = new bootstrap.Toast(document.getElementById('statusToast'));
-        //                 toastElement.show();
-        //             }
-        //         })
-        //         .catch(error => console.error('Error updating status:', error));
-        // }
-
-
-        function uploadFiles(event) {
-            const files = event.target.files;
-            const formData = new FormData();
-            for (const file of files) {
-                formData.append('files[]', file);
-            }
-
-            fetch('{{ route('quote.uploadFiles', $quotationModel->quote_id) }}', {
+            fetch('{{ route('quote.updateLogStatus', $quotationModel->quote_id) }}', {
                     method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message === 'Files uploaded successfully') {
-                        document.getElementById('invoice_status').checked = true;
-                        const statusElement = document.getElementById('invoice_status').nextElementSibling;
-                        statusElement.className = 'text-success';
-                        statusElement.innerText = 'ได้แล้ว';
-
-                        const updateInfo = document.getElementById('invoice_status').parentElement.querySelector(
-                            '.text-secondary');
-                        updateInfo.innerText = `อัปเดตล่าสุด: ${data.updated_at} โดย ${data.created_by}`;
-
-                        // แสดงลิงก์สำหรับดูภาพที่อัปโหลดทั้งหมด
-                        const fileLinksContainer = document.getElementById('uploaded-file-links');
-                        fileLinksContainer.innerHTML = ''; // ล้างลิงก์เก่า
-                        data.uploaded_files.forEach((fileUrl, index) => {
-                            const fileContainer = document.createElement('div');
-                            fileContainer.classList.add('d-flex', 'align-items-center', 'mb-2');
-
-                            const linkElement = document.createElement('a');
-                            linkElement.href = fileUrl;
-                            linkElement.target = '_blank';
-                            linkElement.innerText = `file-upload-${(index + 1).toString().padStart(2, '0')}`;
-                            linkElement.classList.add('me-2');
-
-                            // แทน deleteButton ด้วย <a href="#">
-                            const deleteLink = document.createElement('a');
-                            deleteLink.href = '#';
-                            deleteLink.innerText = 'ลบ';
-                            deleteLink.classList.add('text-danger', 'ms-2');
-                            deleteLink.onclick = (event) => {
-                                event.preventDefault(); // ป้องกันไม่ให้ลิงก์รีเฟรชหน้า
-                                deleteFile(fileUrl, fileContainer); // เรียกใช้ฟังก์ชันลบไฟล์
-                            };
-
-                            fileContainer.appendChild(linkElement);
-                            fileContainer.appendChild(deleteLink);
-                            fileLinksContainer.appendChild(fileContainer);
-                        });
-                        alert(data.message); // หรือแสดงการแจ้งเตือนอื่น
-                    }
-                })
-                .catch(error => console.error('Error uploading files:', error));
-        }
-
-        function deleteFile(fileUrl, fileContainer) {
-            if (!confirm('คุณต้องการลบไฟล์นี้ใช่หรือไม่?')) return;
-
-            fetch("{{ route('quote.deleteFile', $quotationModel->quote_id) }}", {
-                    method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify({
-                        file: fileUrl
+                        field: field,
+                        status: status,
+                        created_by: '{{ auth()->user()->name }}'
                     })
                 })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.message === 'File deleted successfully') {
-                        fileContainer.remove(); // ลบองค์ประกอบของไฟล์ออกจาก DOM
-                        alert(data.message); // แจ้งเตือนการลบสำเร็จ
-                    } else {
-                        alert('ไม่สามารถลบไฟล์ได้');
+                    if (data.message === 'Status updated successfully') {
+                        const statusElement = checkbox.nextElementSibling;
+                        statusElement.className = status === 'ได้แล้ว' || status === 'ส่งแล้ว' || status === 'ออกแล้ว' || status === 'ได้รับแล้ว' ? 'text-success' : 'text-muted';
+                        statusElement.innerText = status;
+
+                        const updateInfo = checkbox.parentElement.querySelector('.text-secondary');
+                        updateInfo.innerText = `อัปเดตล่าสุด: ${data.updated_at} โดย ${data.created_by}`;
                     }
                 })
-                .catch(error => console.error('Error deleting file:', error));
+                .catch(error => console.error('Error updating status:', error));
         }
+
+
+
+        function updateInvoiceStatus() {
+            if ($('#quote_status').prop('checked') && $('#inv_status').prop('checked')) {
+                $('#invoice_status').prop('checked', true).prop('readonly', true);
+                $('#invoice_status').trigger('change');
+            } else {
+                $('#invoice_status').prop('checked', false).prop('readonly', false);
+            }
+        }
+
+        // เรียกใช้ updateInvoiceStatus() เมื่อโหลดหน้าเว็บ
+        updateInvoiceStatus();
+
+        $('#quote_status, #inv_status').on('change', function() {
+            updateInvoiceStatus();
+            // เรียกใช้ updateOrCreateLog สำหรับ invoice_quote_status และ in_inv_status
+            updateOrCreateLog('quote', $('#quote_status')[0]);
+            updateOrCreateLog('inv', $('#inv_status')[0]);
+        });
+
+        // เรียกใช้ updateOrCreateLog สำหรับ inve_status
+        $('#invoice_status').on('change', function() {
+            updateOrCreateLog('invoice', this);
+        });
+
+
+        function updateSlipStatus() {
+            if ($('#depositslip_status').prop('checked') && $('#fullslip_status').prop('checked')) {
+                $('#slip_status').prop('checked', true).prop('readonly', true);
+                $('#slip_status').trigger('change');
+            } else {
+                $('#slip_status').prop('checked', false).prop('readonly', false);
+            }
+        }
+
+        // เรียกใช้ updateInvoiceStatus() เมื่อโหลดหน้าเว็บ
+        updateSlipStatus();
+
+        $('#depositslip_status, #fullslip_status').on('change', function() {
+            updateSlipStatus();
+            // เรียกใช้ updateOrCreateLog สำหรับ invoice_quote_status และ in_inv_status
+            updateOrCreateLog('depositslip', $('#depositslip_status')[0]);
+            updateOrCreateLog('fullslip', $('#fullslip_status')[0]);
+        });
+
+        // เรียกใช้ updateOrCreateLog สำหรับ inve_status
+        $('#slip_status').on('change', function() {
+            updateOrCreateLog('slip', this);
+        });
+
     </script>
 </div>

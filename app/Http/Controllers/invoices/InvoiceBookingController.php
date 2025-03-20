@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Invoices;
+namespace App\Http\Controllers\invoices;
 
 use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\invoices\invoiceModel;
 use App\Models\products\productModel;
 use App\Models\customers\customerModel;
-use App\Models\invoices\addDebtModel;
-use App\Models\invoices\creditNoteModel;
 use App\Models\invoices\invoicePorductsModel;
 
 
@@ -25,19 +23,8 @@ class InvoiceBookingController extends Controller
         $invoices = invoiceModel::where('invoice_id', $invoiceId)->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')->get();
         $invoice = invoiceModel::where('invoice_id', $invoiceId)->first();
 
-        $debts = addDebtModel::where('add_debt.invoice_number', $invoice->invoice_number)
-        ->leftJoin('invoices', 'invoices.invoice_number', '=', 'add_debt.invoice_number')
-        ->leftJoin('customer', 'customer.customer_id', '=', 'invoices.customer_id')
-        ->select('add_debt.*', 'invoices.*', 'customer.*')
-        ->get();
 
-        $creditNotes = creditNoteModel::where('credit_note.invoice_number', $invoice->invoice_number)
-        ->leftJoin('invoices', 'invoices.invoice_number', '=', 'credit_note.invoice_number')
-        ->leftJoin('customer', 'customer.customer_id', '=', 'invoices.customer_id')
-        ->select('credit_note.*', 'invoices.*', 'customer.*')
-        ->get();
-
-        return view('invoices.table-invoice', compact('invoices','invoice','debts','creditNotes'));
+        return view('invoices.table-invoice', compact('invoices','invoice'));
     }
 
     public function edit(Request $request)
