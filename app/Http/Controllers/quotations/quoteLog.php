@@ -96,7 +96,10 @@ public function uploadFiles(Request $request, $quote)
             'invoice_status' => 'ได้แล้ว',
             'invoice_updated_at' => now(),
             'invoice_created_by' => auth()->user()->name,
-            'uploaded_files' => json_encode($allFiles), // บันทึกที่อยู่ไฟล์ทั้งหมดเป็น JSON
+            'uploaded_files' => json_encode($allFiles),
+            'invoice_quote_status' => 'ได้แล้ว',
+            'invoice_quote_updated_at' => now(),
+            'invoice_quote_created_by' => auth()->user()->name,
         ]
     );
 

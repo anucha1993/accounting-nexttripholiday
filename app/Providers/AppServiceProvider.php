@@ -12,7 +12,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        foreach (glob(app_path('Helpers/*.php')) as $file) {
+            require_once($file);
+        }
+        foreach (glob(app_path('CustomHelpers/*.php')) as $file) {
+            require_once($file);
+        }
     }
 
     /**

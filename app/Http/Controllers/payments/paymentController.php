@@ -23,8 +23,8 @@ class paymentController extends Controller
         //dd($quotationModel->quote_number);
         $quotationModel = quotationModel::where('quotation.quote_id', $quotationModel->quote_id)
         ->leftjoin('invoices','invoices.invoice_quote_id','quotation.quote_id')
-        ->leftjoin('debit_note','debit_note.debit_invoice_id','invoices.invoice_id')
-        ->leftjoin('credit_note','credit_note.credit_invoice_id','invoices.invoice_id')
+        // ->leftjoin('debit_note','debit_note.debit_invoice_id','invoices.invoice_id')
+        // ->leftjoin('credit_note','credit_note.credit_invoice_id','invoices.invoice_id')
         ->first();
 
         $quotation = quotationModel::where('quote_id', $quotationModel->quote_id)->first();

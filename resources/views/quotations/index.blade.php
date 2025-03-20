@@ -196,25 +196,28 @@
                             <button class="btn btn-success">EXCEL</button>
                         </form>
                         <br>
-                        <table class="table customize-table table-hover mb-0 v-middle table-striped table-bordered quote-table"
+                        <table class="table customize-table table-hover mb-0 v-middle table-striped table-bordered" id="quote-table"
                             style="font-size: 12px">
                             <thead class="table text-white bg-info">
-                                <tr>
-                                    <th>ลำดับ</th>
-                                    <th>เลขที่ใบเสนอราคา</th>
-                                    <th>เลขที่ใบจองทัวร์</th>
-                                    <th>Booking Date</th>
-                                    <th>วันที่เดินทาง</th>
-                                    <th>ชื่อลูกค้า</th>
-                                    <th>Pax</th>
-                                    <th>ประเทศ</th>
-                                    <th>โฮลเซลล์</th>
-                                    <th>การชำระของลูกค้า</th>
-                                    <th>ยอดใบแจ้งหนี้</th>
-                                    <th>การชำระโฮลเซลล์</th>
-                                    <th>ผู้ขาย</th>
-                                    <th class="text-center">Actions</th>
-                                </tr>
+                                    <tr>
+                                        <th>ลำดับ</th>
+                                        <th>ใบเสนอราคา</th>
+                                        <th>เลขที่ใบจองทัวร์</th>
+                                        <th>โปรแกรมทัวร์</th>
+                                        <th>Booking Date</th>
+                                        <th>วันที่เดินทาง</th>
+                                        <th>ชื่อลูกค้า</th>
+                                        <th>Pax</th>
+                                        <th>ประเทศ</th>
+                                        <th>สายการบิน</th>
+                                        <th>โฮลเซลล์</th>
+                                        <th>การชำระของลูกค้า</th>
+                                        <th>ยอดใบแจ้งหนี้</th>
+                                        <th>การชำระโฮลเซลล์</th>
+                                        <th>CheckLists</th>
+                                        <th>ผู้ขาย</th>
+                                        <th>การจัดการ</th>
+                                    </tr>
                             </thead>
                             <tbody>
                                 @forelse ($quotations as $key => $item)
@@ -222,11 +225,15 @@
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $item->quote_number }} {!!$item->debitNote ? '<span class="badge rounded-pill bg-success">DBN</span>' : ''!!} {!!$item->creditNote ? '<span class="badge rounded-pill bg-danger">CDN</span>' : ''!!} </td>
                                         <td>{{ $item->quote_booking }}</td>
+                                        <td><span data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="{{ $item->quote_tour_name ? $item->quote_tour_name : $item->quote_tour_name1 }}">{{ $item->quote_tour_name ? mb_substr($item->quote_tour_name, 0, 20) . '...' : mb_substr($item->quote_tour_name1, 0, 20) . '...' }}</span>
+                                    </td>
                                         <td>{{ date('d/m/Y', strtotime($item->created_at))}}</td>
                                         <td>{{ date('d/m/Y', strtotime($item->quote_date_start)) . '-' . date('d/m/Y', strtotime($item->quote_date_end)) }}
                                         </td>
                                         <td>{{ $item->quotecustomer->customer_name }}</td>
                                         <td>{{$item->quote_pax_total}}</td>
+                                        <td>{{ $item->airline->code }}</td>
                                         <td>
                                             {{$item->quoteCountry->country_name_th}}
                                         </td>
@@ -234,11 +241,11 @@
                                         
                                         <td>
                                             {!! getQuoteStatusPayment($item) !!}
-                                            
                                         </td>
                                         
 
                                         <td>{{ number_format($item->quote_grand_total, 2, '.', ',') }}</td>
+
                                         <td>
                                             @php
                                                 // ดึงข้อมูลการชำระเงินล่าสุดจาก paymentWholesale
@@ -254,15 +261,56 @@
                                                 <!-- กรณีที่เป็น full -->
                                                 <span class="badge rounded-pill bg-success">ชำระเงินแล้ว</span>
                                             @endif
-                                          
                                         </td>
-                                        
-                                        
-                                        
+
+                                        {{-- <td>
+                                            @if ($item->quoteLogStatus->booking_email_status === 'ยังไม่ได้ส่ง' || $item->quoteLogStatus->booking_email_status === NULL )
+                                            <span class="badge rounded-pill bg-danger">ยังไม่ส่งใบอีเมลล์จองทัวร์ให้โฮลเซลล์</span>
+                                            @endif
+
+                                            @if ($item->quoteLogStatus->invoice_status !== 'ได้แล้ว' || $item->quoteLogStatus->invoice_status ===  NULL)
+                                            <span class="badge rounded-pill bg-danger">ยังไม่ได้อินวอยโฮลเซลล์</span>
+                                            @endif
+
+                                            @if ($item->quoteLogStatus->slip_status === 'ยังไม่ได้ส่ง' || $item->quoteLogStatus->slip_status === NULL)
+                                            <span class="badge rounded-pill bg-danger">ยังไม่ได้ส่งสลิปให้โฮลเซลล์</span>
+                                            @endif
+
+                                            @if ($item->quoteLogStatus->passport_status === 'ยังไม่ได้ส่ง' || $item->quoteLogStatus->passport_status === NULL)
+                                            <span class="badge rounded-pill bg-danger">ยังไม่ได้ส่งพาสปอตให้โฮลเซลล์</span>
+                                            @endif
+
+                                            @if ($item->quoteLogStatus->appointment_status === 'ยังไม่ได้ส่ง' || $item->quoteLogStatus->appointment_status === NULL)
+                                            <span class="badge rounded-pill bg-danger">ส่งใบนัดหมายให้ลูกค้า</span>
+                                            @endif
+
+                                            @if ($item->quoteLogStatus->wholesale_tax_status !== 'ได้รับแล้ว' || $item->quoteLogStatus->wholesale_tax_status === NULL)
+                                            <span class="badge rounded-pill bg-danger">ยังไม่ได้รับใบกำกับภาษีโฮลเซลล์</span>
+                                            @endif
+
+                                            @if ($item->quoteLogStatus->wholesale_skip_status !== 'ไม่ต้องการออก')
+
+                                            @if ($item->quoteLogStatus->withholding_tax_status === 'ได้รับแล้ว' || $item->quoteLogStatus->withholding_tax_status === NULL)
+                                            <span class="badge rounded-pill bg-danger">ยังไม่ได้ออกใบหัก ณ ที่จ่าย</span>
+                                            @endif
+                                                
+                                            @else
+                                                
+                                            @endif
+
+                                            
+
+                                        </td> --}}
+
+                                        <td>
+                                            {!! \App\CustomHelpers\getStatusBadge($item->quoteLogStatus) !!}
+                                        </td>
 
                                         <td> {{ $item->Salename->name }}</td>
                                         <td><a href="{{ route('quote.editNew', $item->quote_id) }}"
-                                                class="btn btn-info btn-sm">จัดการข้อมูล</a></td>
+                                                class="btn btn-info btn-sm">จัดการข้อมูล</a>
+                                                
+                                            </td>
                                     </tr>
                                     
                                 @empty
@@ -280,6 +328,8 @@
                 </div>
             </div>
         </div>
-       
+
+
     @endsection
+    
     
