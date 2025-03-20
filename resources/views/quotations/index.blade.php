@@ -150,17 +150,34 @@
 
                         <div class="col-md-2">
                             <label for="">Check List</label>
-                            <select name="Search_check_list" class="form-select" style="width: 100%">
-                                <option {{ request('Search_check_list') === 'all' ? 'selected' : '' }} value="all">ทั้งหมด</option>
-                                <option {{ request('Search_check_list') === 'booking_email_status' ? 'selected' : '' }} value="booking_email_status">ส่งใบอีเมลล์จองทัวร์ให้โฮลเซลล์</option>
-                                <option {{ request('Search_check_list') === 'invoice_status' ? 'selected' : '' }} value="invoice_status">อินวอยโฮลเซลล์</option>
-                                <option {{ request('Search_check_list') === 'slip_status' ? 'selected' : '' }} value="slip_status">ส่งสลิปให้โฮลเซลล์</option>
-                                <option {{ request('Search_check_list') === 'passport_status' ? 'selected' : '' }} value="passport_status">ส่งพาสปอตให้โฮลเซลล์</option>
-                                <option {{ request('Search_check_list') === 'appointment_status' ? 'selected' : '' }} value="appointment_status">ส่งใบนัดหมายให้ลูกค้า</option>
-                                <option {{ request('Search_check_list') === 'withholding_tax_status' ? 'selected' : '' }} value="withholding_tax_status">ออกใบหัก ณ ที่จ่าย</option>
-                                <option {{ request('Search_check_list') === 'wholesale_tax_status' ? 'selected' : '' }} value="wholesale_tax_status">ใบกำกับภาษีโฮลเซลล์</option>
+                            <select name="search_check_list" class="form-select" style="width: 100%">
+                                <option {{ request('search_check_list') === 'all' ? 'selected' : '' }} value="all">ทั้งหมด</option>
+                                <option {{ request('search_check_list') === 'allCheck' ? 'selected' : '' }} value="allCheck">ทำหมดแล้ว</option>
+                                <option {{ request('search_check_list') === 'booking_email_status' ? 'selected' : '' }} value="booking_email_status">ส่งใบอีเมลล์จองทัวร์ให้โฮลเซลล์</option>
+                                <option {{ request('search_check_list') === 'invoice_status' ? 'selected' : '' }} value="invoice_status">อินวอยโฮลเซลล์</option>
+                                <option {{ request('search_check_list') === 'slip_status' ? 'selected' : '' }} value="slip_status">ส่งสลิปให้โฮลเซลล์</option>
+                                <option {{ request('search_check_list') === 'passport_status' ? 'selected' : '' }} value="passport_status">ส่งพาสปอตให้โฮลเซลล์</option>
+                                <option {{ request('search_check_list') === 'appointment_status' ? 'selected' : '' }} value="appointment_status">ส่งใบนัดหมายให้ลูกค้า</option>
+                                <option {{ request('search_check_list') === 'withholding_tax_status' ? 'selected' : '' }} value="withholding_tax_status">ออกใบหัก ณ ที่จ่าย</option>
+                                <option {{ request('search_check_list') === 'wholesale_tax_status' ? 'selected' : '' }} value="wholesale_tax_status">ใบกำกับภาษีโฮลเซลล์</option>
+         
                             </select>
                         </div>
+
+                        <div class="col-md-2">
+                            <label for="">ยังไม่ได้ทำ Check List</label>
+                            <select name="search_not_check_list" class="form-select" style="width: 100%">
+                                <option {{ request('search_not_check_list') === 'all' ? 'selected' : '' }} value="all">ทั้งหมด</option>
+                                <option {{ request('search_not_check_list') === 'booking_email_status' ? 'selected' : '' }} value="booking_email_status">ยังไม่ส่งใบอีเมลล์จองทัวร์ให้โฮลเซลล์</option>
+                                <option {{ request('search_not_check_list') === 'invoice_status' ? 'selected' : '' }} value="invoice_status">ยังไม่ได้อินวอยโฮลเซลล์</option>
+                                <option {{ request('search_not_check_list') === 'slip_status' ? 'selected' : '' }} value="slip_status">ยังไม่ส่งสลิปให้โฮลเซลล์</option>
+                                <option {{ request('search_not_check_list') === 'passport_status' ? 'selected' : '' }} value="passport_status">ยังไม่ส่งพาสปอตให้โฮลเซลล์</option>
+                                <option {{ request('search_not_check_list') === 'appointment_status' ? 'selected' : '' }} value="appointment_status">ยังไม่ส่งใบนัดหมายให้ลูกค้า</option>
+                                <option {{ request('search_not_check_list') === 'withholding_tax_status' ? 'selected' : '' }} value="withholding_tax_status">ยังไม่ออกใบหัก ณ ที่จ่าย</option>
+                                <option {{ request('search_not_check_list') === 'wholesale_tax_status' ? 'selected' : '' }} value="wholesale_tax_status">ยังไม่ได้รับใบกำกับภาษีโฮลเซลล์</option>
+                            </select>
+                        </div>
+
                         </div>
                         <div class="row ">
                         

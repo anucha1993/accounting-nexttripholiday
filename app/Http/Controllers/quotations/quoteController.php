@@ -23,7 +23,7 @@ use App\Models\quotations\quotationModel;
 use App\Models\quotations\quoteProductModel;
 use App\Models\booking\bookingQuotationModel;
 use App\Models\withholding\WithholdingTaxDocument;
-
+require_once app_path('Helpers/statusPaymentHelper.php');
 
 class quoteController extends Controller
 {
@@ -38,10 +38,6 @@ class quoteController extends Controller
 
     public function index(Request $request)
     {
-
-        // $result = \App\Helpers\testHelper();
-        // dd($result);
-        
         $perPage = $request->input('per_page', 50);
         $searchKeyword = $request->input('search_keyword');
         $searchPeriodDateStart = $request->input('search_period_start');
@@ -56,9 +52,12 @@ class quoteController extends Controller
         $searchWholesale = $request->input('search_wholesale');
         $searchAirline = $request->input('search_airline');
         $searchPax = $request->input('search_pax');
-        $searchLogStatus = $request->input('Search_check_list');
+        $searchLogStatus = $request->input('search_check_list');
+        $searchNotLogStatus = $request->input('search_not_check_list');
         $searchPaymentWholesaleStatus = $request->input('search_wholesale_payment');
         $searchCustomerPayment = $request->input('search_customer_payment', 'all');
+
+       // dd($searchNotLogStatus);
         $sales = saleModel::select('name', 'id')
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
             ->get();
@@ -107,6 +106,20 @@ class quoteController extends Controller
             ->when($searchPax && $searchPax != null, function ($query) use ($searchPax) {
                 return $query->where('quote_pax_total', $searchPax);
             })
+
+             // Search Quote Log Status ทำหมดแล้ว
+             ->when($searchLogStatus && $searchLogStatus === 'allCheck', function ($query, $searchLogStatus) {
+                return $query->whereHas('quoteLogStatus', function ($q1) use ($searchLogStatus) {
+                       $q1->where('booking_email_status', 'ส่งแล้ว');
+                       $q1->where('invoice_status', 'ได้แล้ว');
+                       $q1->where('slip_status', 'ส่งแล้ว');
+                       $q1->where('passport_status', 'ส่งแล้ว');
+                       $q1->where('appointment_status', 'ส่งแล้ว');
+                       $q1->where('withholding_tax_status', 'ออกแล้ว');
+                       $q1->where('wholesale_tax_status', 'ได้รับแล้ว');
+                });
+            })
+
             // Search Quote Log Status
             ->when($searchLogStatus, function ($query, $searchLogStatus) {
                 return $query->whereHas('quoteLogStatus', function ($q1) use ($searchLogStatus) {
@@ -129,8 +142,37 @@ class quoteController extends Controller
                         case 'withholding_tax_status':
                             $q1->where('withholding_tax_status', 'ออกแล้ว');
                             break;
+                        case 'wholesale_tax_status':
+                            $q1->where('wholesale_tax_status', 'ได้รับแล้ว');
+                            break;
+                    }
+                });
+            })
+
+             // Search Quote Log Status Not
+             ->when($searchNotLogStatus, function ($query, $searchNotLogStatus) {
+                return $query->whereHas('quoteLogStatus', function ($q1) use ($searchNotLogStatus) {
+                    switch ($searchNotLogStatus) {
+                        case 'booking_email_status':
+                            $q1->where('booking_email_status', 'ยังไม่ได้ส่ง')->orWhereNull('booking_email_status');
+                            break;
+                        case 'invoice_status':
+                            $q1->where('invoice_status','ยังไม่ได้')->orWhereNull('invoice_status');
+                            break;
+                        case 'slip_status':
+                            $q1->where('slip_status','ยังไม่ได้ส่ง')->orWhereNull('slip_status');
+                            break;
+                        case 'passport_status':
+                            $q1->where('passport_status','ยังไม่ได้ส่ง')->orWhereNull('passport_status');
+                            break;
+                        case 'appointment_status':
+                            $q1->where('appointment_status','ยังไม่ได้ส่ง')->orWhereNull('appointment_status');
+                            break;
                         case 'withholding_tax_status':
-                            $q1->where('withholding_tax_status', 'ได้รับแล้ว');
+                            $q1->where('withholding_tax_status','ยังไม่ได้ออก')->orWhereNull('withholding_tax_status');
+                            break;
+                        case 'wholesale_tax_status':
+                            $q1->where('wholesale_tax_status','ยังไม่ได้รับ')->orWhereNull('wholesale_tax_status');
                             break;
                     }
                 });

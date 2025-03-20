@@ -73,7 +73,7 @@ class quotationModel extends Model
         'created_by',
         'updated_by',
         'quote_cancel_note',
-        'quote_payment_status'
+        'quote_payment_status',
     ];
 
     public function airline()
@@ -81,71 +81,72 @@ class quotationModel extends Model
         return $this->belongsTo(airlineModel::class, 'quote_airline', 'id');
     }
 
-    public function customer()
-{
-    return $this->belongsTo(customerModel::class, 'customer_id', 'customer_id');
-}
+    public function paymentWholesaleLatest()
+    {
+        return $this->hasOne(paymentWholesaleModel::class, 'payment_wholesale_quote_id', 'quote_id')->latest('payment_wholesale_id'); // เพิ่ม latest() เพื่อดึงข้อมูลล่าสุด
+    }
 
+    public function customer()
+    {
+        return $this->belongsTo(customerModel::class, 'customer_id', 'customer_id');
+    }
 
     public function InputTaxVat()
     {
         return $this->belongsTo(inputTaxModel::class, 'quote_id', 'input_tax_quote_id');
     }
 
-public function getTotalInputTaxVat()
-{
-    // ตรวจสอบว่ามีแถวที่ input_tax_file ไม่เป็น NULL หรือไม่
-    $hasFile = $this->InputTaxVat()->whereNotNull('input_tax_file')->exists();
+    public function getTotalInputTaxVat()
+    {
+        // ตรวจสอบว่ามีแถวที่ input_tax_file ไม่เป็น NULL หรือไม่
+        $hasFile = $this->InputTaxVat()->whereNotNull('input_tax_file')->exists();
 
-    if ($hasFile) {
-        // กรณีที่ input_tax_file ไม่เป็น NULL
-        $total = $this->InputTaxVat()
-                      ->whereNotNull('input_tax_file')
-                      ->whereNotIn('input_tax_type',[1,3])
-                      ->where('input_tax_status','success')
-                      ->sum(\DB::raw('COALESCE(input_tax_vat, 0) - COALESCE(input_tax_withholding, 0)'));
-    } else {
-        // กรณีที่ input_tax_file เป็น NULL
-        $total = $this->InputTaxVat()
-                       ->whereNotIn('input_tax_type',[1,3])
-                      ->whereNull('input_tax_file')
-                      ->sum('input_tax_withholding');
+        if ($hasFile) {
+            // กรณีที่ input_tax_file ไม่เป็น NULL
+            $total = $this->InputTaxVat()
+                ->whereNotNull('input_tax_file')
+                ->whereNotIn('input_tax_type', [1, 3])
+                ->where('input_tax_status', 'success')
+                ->sum(\DB::raw('COALESCE(input_tax_vat, 0) - COALESCE(input_tax_withholding, 0)'));
+        } else {
+            // กรณีที่ input_tax_file เป็น NULL
+            $total = $this->InputTaxVat()
+                ->whereNotIn('input_tax_type', [1, 3])
+                ->whereNull('input_tax_file')
+                ->sum('input_tax_withholding');
+        }
+
+        return $total ?? 0; // คืนค่า 0 หากไม่มีผลลัพธ์
     }
 
+    public function getTotalInputTaxVatType()
+    {
+        // ตรวจสอบว่า input_tax_type = 3 หรือไม่
+        $total = $this->InputTaxVat()
+            ->whereIn('input_tax_type', [3, 1])
+            ->sum('input_tax_grand_total');
+        return $total ?? 0; // คืนค่า 0 หากไม่มีผลลัพธ์
+    }
 
-    return $total ?? 0; // คืนค่า 0 หากไม่มีผลลัพธ์
-}
+    public function calculateNetProfit()
+    {
+        $paymentCustomer = $this->GetDeposit(); // ลูกค้าชำระเงิน
+        $paymentWhosale = $this->GetDepositWholesale(); // โอนเงินโฮลเซลล์
+        $inputTaxTotal = $this->getTotalInputTaxVat(); // ภาษีซื้อ
+        $withholdingTax = $this->InputTaxVat()->sum('input_tax_withholding'); // หักโฮลเซลล์
+        $vatClaim = $inputTaxTotal - $this->InputTaxVat()->sum('input_tax_vat'); // VAT ที่เคลมได้
 
-public function getTotalInputTaxVatType()
-{
-    // ตรวจสอบว่า input_tax_type = 3 หรือไม่
-    $total = $this->InputTaxVat()->whereIn('input_tax_type', [3,1])->sum('input_tax_grand_total');
-    return $total ?? 0; // คืนค่า 0 หากไม่มีผลลัพธ์
-}
+        // เงื่อนไขที่ 1: กำไรสุทธิ
+        $profitCondition1 = $paymentCustomer - $paymentWhosale - $inputTaxTotal - $withholdingTax;
 
+        // เงื่อนไขที่ 2: กำไรสุทธิจริงหลังเคลม VAT
+        $profitCondition2 = $paymentCustomer - $paymentWhosale - ($vatClaim + $withholdingTax);
 
-
-
-
-public function calculateNetProfit()
-{
-    $paymentCustomer = $this->GetDeposit(); // ลูกค้าชำระเงิน
-    $paymentWhosale = $this->GetDepositWholesale(); // โอนเงินโฮลเซลล์
-    $inputTaxTotal = $this->getTotalInputTaxVat(); // ภาษีซื้อ
-    $withholdingTax = $this->InputTaxVat()->sum('input_tax_withholding'); // หักโฮลเซลล์
-    $vatClaim = $inputTaxTotal - $this->InputTaxVat()->sum('input_tax_vat'); // VAT ที่เคลมได้
-
-    // เงื่อนไขที่ 1: กำไรสุทธิ
-    $profitCondition1 = $paymentCustomer - $paymentWhosale - $inputTaxTotal - $withholdingTax;
-
-    // เงื่อนไขที่ 2: กำไรสุทธิจริงหลังเคลม VAT
-    $profitCondition2 = $paymentCustomer - $paymentWhosale - ($vatClaim + $withholdingTax);
-
-    return [
-        'profitCondition1' => number_format($profitCondition1, 2),
-        'profitCondition2' => number_format($profitCondition2, 2),
-    ];
-}
+        return [
+            'profitCondition1' => number_format($profitCondition1, 2),
+            'profitCondition2' => number_format($profitCondition2, 2),
+        ];
+    }
 
     protected static function booted()
     {
@@ -184,24 +185,24 @@ public function calculateNetProfit()
         return $this->belongsTo(customerModel::class, 'customer_id', 'customer_id');
     }
 
-      // ความสัมพันธ์กับ invoiceModel
-      public function quoteInvoice()
-      {
-          return $this->belongsTo(invoiceModel::class, 'quote_id', 'invoice_quote_id');
-      }
+    // ความสัมพันธ์กับ invoiceModel
+    public function quoteInvoice()
+    {
+        return $this->belongsTo(invoiceModel::class, 'quote_id', 'invoice_quote_id');
+    }
 
-       // ความสัมพันธ์กับ Payments
-       public function quotePayment()
-       {
-           return $this->belongsTo(paymentModel::class, 'quote_id', 'payment_quote_id');
-       }
+    // ความสัมพันธ์กับ Payments
+    public function quotePayment()
+    {
+        return $this->belongsTo(paymentModel::class, 'quote_id', 'payment_quote_id');
+    }
 
-       // ความสัมพันธ์กับ Quote_log
-       public function quoteLogStatus()
-       {
-           return $this->belongsTo(QuoteLogModel::class, 'quote_id', 'quote_id');
-       }
-       
+    // ความสัมพันธ์กับ Quote_log
+    public function quoteLogStatus()
+    {
+        return $this->belongsTo(QuoteLogModel::class, 'quote_id', 'quote_id');
+    }
+
     // ความสัมพันธ์กับ WholesaleModel
     public function quoteWholesale()
     {
@@ -220,20 +221,11 @@ public function calculateNetProfit()
     }
     public function GetDeposit()
     {
-        return $this->payment()
-            ->where('payment_status', '!=', 'cancel')
-            ->where('payment_type', '!=', 'refund')
-            ->get()
-            ->sum('payment_total');
+        return $this->payment()->where('payment_status', '!=', 'cancel')->where('payment_type', '!=', 'refund')->get()->sum('payment_total');
     }
     public function Refund()
     {
-        return $this->payment()
-            ->where('payment_status', '!=', 'cancel')
-            ->where('payment_type', '=', 'refund')
-            ->where('payment_file_path', '!=', NULL)
-            ->get()
-            ->sum('payment_total');
+        return $this->payment()->where('payment_status', '!=', 'cancel')->where('payment_type', '=', 'refund')->where('payment_file_path', '!=', null)->get()->sum('payment_total');
     }
 
     // // Accessor เพื่อดึงข้อมูล country public function GetDeposit()
@@ -245,7 +237,7 @@ public function calculateNetProfit()
     public function GetDepositWholesale()
     {
         return $this->paymentWholesale()
-            ->where('payment_wholesale_file_name','!=','')
+            ->where('payment_wholesale_file_name', '!=', '')
             ->get()
             ->sum(function ($paymentWholesale) {
                 return $paymentWholesale->payment_wholesale_total;
@@ -255,7 +247,7 @@ public function calculateNetProfit()
     public function GetDepositWholesaleRefund()
     {
         return $this->paymentWholesale()
-            ->where('payment_wholesale_refund_status','=','success')
+            ->where('payment_wholesale_refund_status', '=', 'success')
             ->get()
             ->sum(function ($paymentWholesale) {
                 return $paymentWholesale->payment_wholesale_refund_total;
@@ -283,7 +275,6 @@ public function calculateNetProfit()
             ->where('input_tax_status', 'success')
             ->get()
             ->sum(function ($inputtax) {
-
                 return $inputtax->input_tax_withholding;
             });
     }
@@ -291,7 +282,7 @@ public function calculateNetProfit()
     public function inputtaxTotalWholesale()
     {
         return $this->inputtax()
-            ->whereIn('input_tax_type', [2,4,5,6,7])
+            ->whereIn('input_tax_type', [2, 4, 5, 6, 7])
             ->get()
             ->sum(function ($inputtax) {
                 return $inputtax->input_tax_grand_total;
@@ -327,5 +318,4 @@ public function calculateNetProfit()
     {
         return $this->belongsTo(creditNoteModel::class, 'quote_id', 'quote_id');
     }
-
 }
