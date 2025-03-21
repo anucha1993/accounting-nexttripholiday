@@ -190,11 +190,8 @@
                     <div class="table-responsive">
                         
 
-                        <form action="<?php echo e(route('export.quote')); ?>" id="export-excel" method="post">
-                            <?php echo csrf_field(); ?>
-                            <?php echo method_field('POST'); ?>
-                            <input type="hidden" name="quote_ids" value="<?php echo e($quotations->pluck('quote_id')); ?>">
-                            <button class="btn btn-success" type="submit">EXCEL</button>
+                        <form action="#" id="export-excel">
+                            <button class="btn btn-success">EXCEL</button>
                         </form>
                         <br>
                         <table class="table customize-table table-hover mb-0 v-middle table-striped table-bordered" id="quote-table"
