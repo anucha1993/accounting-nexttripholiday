@@ -39,9 +39,9 @@ class QuoteExport implements FromCollection, WithHeadings, WithMapping, WithColu
         return array_merge([
             'ลำดับ', 
             'ใบเสนอราคา',
+            'วันที่ใบจองทัวร์', 
             'เลขที่ใบจองทัวร์', 
-            'โปรแกรมทัวร์', 
-            'วันที่ใบจองทัวร์',
+            'โปรแกรมทัวร์',
             'วันที่เดินทาง', 
             'ชื่อลูกค้า', 
             'Pax', 
