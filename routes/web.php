@@ -24,11 +24,13 @@ use App\Http\Controllers\MPDF\MPDF_invoiceController;
 use App\Http\Controllers\MPDF\MPDF_PaymentController;
 use App\Http\Controllers\customers\customerController;
 use App\Http\Controllers\FPDF\FPDF_QuotatioController;
+use App\Http\Controllers\report\quoteReportController;
 use App\Http\Controllers\DebitNote\DebitNoteController;
+use App\Http\Controllers\exports\QuoteExportController;
 use App\Http\Controllers\invoices\taxInvoiceController;
 use App\Http\Controllers\MPDF\MPDF_DebitNoteController;
-use App\Http\Controllers\MPDF\MPDF_CreditNoteController;
 use App\Http\Controllers\MPDF\MPDF_QuotationController;
+use App\Http\Controllers\MPDF\MPDF_CreditNoteController;
 use App\Http\Controllers\MPDF\MPDF_taxReceiptController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
 use App\Http\Controllers\CreditNote\creditNoteController;
@@ -46,7 +48,6 @@ use App\Http\Controllers\withholding\withholdingTaxController;
 use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\MPDF\MPDF_WithhodingDocumentController;
 use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
-use App\Http\Controllers\report\quoteReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -335,3 +336,6 @@ Route::get('/credit-note/modal/mail/creditnote/{creditNoteModel}',[MailControlle
 //Report
 
 Route::get('report/quote/form',[quoteReportController::class,'index'])->name('report.quote.form');
+
+// Export Excel 
+Route::post('export/excel/quote', [QuoteExportController::class, 'export'])->name('export.quote');
