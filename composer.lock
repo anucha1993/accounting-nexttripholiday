@@ -3375,6 +3375,7 @@
                 "utility",
                 "validation"
             ],
+            
             "support": {
                 "issues": "https://github.com/nette/utils/issues",
                 "source": "https://github.com/nette/utils/tree/v4.0.5"

@@ -72,25 +72,21 @@ class QuoteExport implements FromCollection, WithHeadings, WithMapping, WithColu
       
     
         return array_merge([
-            
             ++$this->num, 
             $quotations->quote_number,
+            date('d/m/Y',strtotime($quotations->created_at)),
             $quotations->quote_booking,
             $quotations->quote_tour_name ? $quotations->quote_tour_name : $quotations->quote_tour_name1,
-            date('d/m/Y',strtotime($quotations->created_at)),
             date('d/m/Y', strtotime($quotations->quote_date_start)) . '-' . date('d/m/Y', strtotime($quotations->quote_date_end)),
             $quotations->quotecustomer->customer_name,
             $quotations->quote_pax_total,
-            $quotations->airline->code,
             $quotations->quoteCountry->country_name_th,
+            $quotations->airline->code,
             $quotations->quoteWholesale->code,
             getQuoteStatusPaymentReport($quotations),
             number_format($quotations->quote_grand_total),
             $paymentwhosale,
             $quotations->Salename->name
-
-            
-
         ]);
     }
 
@@ -100,9 +96,9 @@ class QuoteExport implements FromCollection, WithHeadings, WithMapping, WithColu
        'A' => 10,
        'B' => 15,
        'C' => 15,
-       'D' => 75,
+       'D' => 20,
        'G' => 20,
-       'E' => 15,
+       'E' => 75,
        'F' => 25,
        'L' => 20,
        'N' => 20,
