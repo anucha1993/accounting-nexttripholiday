@@ -42,8 +42,11 @@
 
     <!-- รวมไฟล์ jQuery และ jQuery UI -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
 
 
     <!-- Bootstrap Select CSS -->
@@ -55,6 +58,10 @@
     <script src="{{ URL::asset('bootstrap-select@1.14.0-beta3/dist/js/bootstrap.bundle.min.js') }}"></script>
     <!-- Bootstrap Select JS -->
     <script src="{{ URL::asset('bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('template/assets/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('template/assets/libs/daterangepicker/daterangepicker.css') }}" />
+
+    
 
 
    
@@ -1273,9 +1280,13 @@
                                     class="hide-menu">รายงาน </span></a>
                             <ul aria-expanded="false" class="collapse first-level">
                                 <li class="sidebar-item">
-                                    <a href="{{route('report.quote.form')}}" class="sidebar-link">
+                                    <a href="{{route('report.input-tax')}}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
-                                        <span class="hide-menu">รายงานใบเสนอราคา</span>
+                                        <span class="hide-menu">รายงานภาษีซื้อ</span>
+                                    </a>
+                                    <a href="{{route('report.invoice')}}" class="sidebar-link">
+                                        <i class="mdi mdi-comment-processing-outline"></i>
+                                        <span class="hide-menu">รายงานใบแจ้งหนี้</span>
                                     </a>
                                 </li>
                             </ul>
@@ -1556,6 +1567,7 @@
     <!-- -------------------------------------------------------------- -->
 
     <!-- Bootstrap tether Core JavaScript -->
+
     <script src="{{ URL::asset('template/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     <!-- apps -->
     <script src="{{ URL::asset('template/dist/js/app.min.js') }}"></script>
@@ -1566,6 +1578,8 @@
     <script src="{{ URL::asset('template/assets/extra-libs/sparkline/sparkline.js') }}"></script>
     <!--Wave Effects -->
     <script src="{{ URL::asset('template/dist/js/waves.js') }}"></script>
+
+    
     <!--Menu sidebar -->
     <script src="{{ URL::asset('template/dist/js/sidebarmenu.js') }}"></script>
     <!--Custom JavaScript -->
@@ -1590,6 +1604,13 @@
     <script src="{{ URL::asset('template/assets/libs/select2/dist/js/select2.min.js') }}"></script>
     <script src="{{ URL::asset('template/dist/js/pages/forms/select2/select2.init.js') }}"></script>
     <script src="{{ URL::asset('template/assets/extra-libs/prism/prism.js') }}"></script>
+
+    
+    <script src="{{ URL::asset('template/assets/libs/moment/min/moment.min.js') }}"></script>
+    <script src="{{ URL::asset('template/assets/libs/daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ URL::asset('template/assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+
+    
 
 </body>
 

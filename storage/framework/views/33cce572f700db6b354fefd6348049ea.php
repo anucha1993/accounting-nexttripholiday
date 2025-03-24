@@ -140,17 +140,34 @@
 
                         <div class="col-md-2">
                             <label for="">Check List</label>
-                            <select name="Search_check_list" class="form-select" style="width: 100%">
-                                <option <?php echo e(request('Search_check_list') === 'all' ? 'selected' : ''); ?> value="all">ทั้งหมด</option>
-                                <option <?php echo e(request('Search_check_list') === 'booking_email_status' ? 'selected' : ''); ?> value="booking_email_status">ส่งใบอีเมลล์จองทัวร์ให้โฮลเซลล์</option>
-                                <option <?php echo e(request('Search_check_list') === 'invoice_status' ? 'selected' : ''); ?> value="invoice_status">อินวอยโฮลเซลล์</option>
-                                <option <?php echo e(request('Search_check_list') === 'slip_status' ? 'selected' : ''); ?> value="slip_status">ส่งสลิปให้โฮลเซลล์</option>
-                                <option <?php echo e(request('Search_check_list') === 'passport_status' ? 'selected' : ''); ?> value="passport_status">ส่งพาสปอตให้โฮลเซลล์</option>
-                                <option <?php echo e(request('Search_check_list') === 'appointment_status' ? 'selected' : ''); ?> value="appointment_status">ส่งใบนัดหมายให้ลูกค้า</option>
-                                <option <?php echo e(request('Search_check_list') === 'withholding_tax_status' ? 'selected' : ''); ?> value="withholding_tax_status">ออกใบหัก ณ ที่จ่าย</option>
-                                <option <?php echo e(request('Search_check_list') === 'wholesale_tax_status' ? 'selected' : ''); ?> value="wholesale_tax_status">ใบกำกับภาษีโฮลเซลล์</option>
+                            <select name="search_check_list" class="form-select" style="width: 100%">
+                                <option <?php echo e(request('search_check_list') === 'all' ? 'selected' : ''); ?> value="all">ทั้งหมด</option>
+                                <option <?php echo e(request('search_check_list') === 'allCheck' ? 'selected' : ''); ?> value="allCheck">ทำหมดแล้ว</option>
+                                <option <?php echo e(request('search_check_list') === 'booking_email_status' ? 'selected' : ''); ?> value="booking_email_status">ส่งใบอีเมลล์จองทัวร์ให้โฮลเซลล์</option>
+                                <option <?php echo e(request('search_check_list') === 'invoice_status' ? 'selected' : ''); ?> value="invoice_status">อินวอยโฮลเซลล์</option>
+                                <option <?php echo e(request('search_check_list') === 'slip_status' ? 'selected' : ''); ?> value="slip_status">ส่งสลิปให้โฮลเซลล์</option>
+                                <option <?php echo e(request('search_check_list') === 'passport_status' ? 'selected' : ''); ?> value="passport_status">ส่งพาสปอตให้โฮลเซลล์</option>
+                                <option <?php echo e(request('search_check_list') === 'appointment_status' ? 'selected' : ''); ?> value="appointment_status">ส่งใบนัดหมายให้ลูกค้า</option>
+                                <option <?php echo e(request('search_check_list') === 'withholding_tax_status' ? 'selected' : ''); ?> value="withholding_tax_status">ออกใบหัก ณ ที่จ่าย</option>
+                                <option <?php echo e(request('search_check_list') === 'wholesale_tax_status' ? 'selected' : ''); ?> value="wholesale_tax_status">ใบกำกับภาษีโฮลเซลล์</option>
+         
                             </select>
                         </div>
+
+                        <div class="col-md-2">
+                            <label for="">ยังไม่ได้ทำ Check List</label>
+                            <select name="search_not_check_list" class="form-select" style="width: 100%">
+                                <option <?php echo e(request('search_not_check_list') === 'all' ? 'selected' : ''); ?> value="all">ทั้งหมด</option>
+                                <option <?php echo e(request('search_not_check_list') === 'booking_email_status' ? 'selected' : ''); ?> value="booking_email_status">ยังไม่ส่งใบอีเมลล์จองทัวร์ให้โฮลเซลล์</option>
+                                <option <?php echo e(request('search_not_check_list') === 'invoice_status' ? 'selected' : ''); ?> value="invoice_status">ยังไม่ได้อินวอยโฮลเซลล์</option>
+                                <option <?php echo e(request('search_not_check_list') === 'slip_status' ? 'selected' : ''); ?> value="slip_status">ยังไม่ส่งสลิปให้โฮลเซลล์</option>
+                                <option <?php echo e(request('search_not_check_list') === 'passport_status' ? 'selected' : ''); ?> value="passport_status">ยังไม่ส่งพาสปอตให้โฮลเซลล์</option>
+                                <option <?php echo e(request('search_not_check_list') === 'appointment_status' ? 'selected' : ''); ?> value="appointment_status">ยังไม่ส่งใบนัดหมายให้ลูกค้า</option>
+                                <option <?php echo e(request('search_not_check_list') === 'withholding_tax_status' ? 'selected' : ''); ?> value="withholding_tax_status">ยังไม่ออกใบหัก ณ ที่จ่าย</option>
+                                <option <?php echo e(request('search_not_check_list') === 'wholesale_tax_status' ? 'selected' : ''); ?> value="wholesale_tax_status">ยังไม่ได้รับใบกำกับภาษีโฮลเซลล์</option>
+                            </select>
+                        </div>
+
                         </div>
                         <div class="row ">
                         
@@ -173,8 +190,11 @@
                     <div class="table-responsive">
                         
 
-                        <form action="#" id="export-excel">
-                            <button class="btn btn-success">EXCEL</button>
+                        <form action="<?php echo e(route('export.quote')); ?>" id="export-excel" method="post">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('POST'); ?>
+                            <input type="hidden" name="quote_ids" value="<?php echo e($quotations->pluck('quote_id')); ?>">
+                            <button class="btn btn-success" type="submit">EXCEL</button>
                         </form>
                         <br>
                         <table class="table customize-table table-hover mb-0 v-middle table-striped table-bordered" id="quote-table"

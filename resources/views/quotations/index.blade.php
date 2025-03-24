@@ -209,8 +209,11 @@
                             </select>
                         </form> --}}
 
-                        <form action="#" id="export-excel">
-                            <button class="btn btn-success">EXCEL</button>
+                        <form action="{{route('export.quote')}}" id="export-excel" method="post">
+                            @csrf
+                            @method('POST')
+                            <input type="hidden" name="quote_ids" value="{{$quotations->pluck('quote_id')}}">
+                            <button class="btn btn-success" type="submit">EXCEL</button>
                         </form>
                         <br>
                         <table class="table customize-table table-hover mb-0 v-middle table-striped table-bordered" id="quote-table"
