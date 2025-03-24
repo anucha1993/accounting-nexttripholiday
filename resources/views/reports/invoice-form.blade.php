@@ -150,14 +150,15 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                             <td>{{number_format($item->invoice_grand_total,2)}}</td>
                             <td>{{number_format($item->invoice_vat,2)}}</td> --}}
                             <td>{{++$key}}</td>
-                            <td>{{$item->invoice_number}}</td>
-                            <td>{{$item->quote->quote_number ? $item->quote->quote_number : 'ใบเสนอราคาถูกลบ'}}</td>
+                            <td> <a href="{{route('mpdf.invoice',$item->invoice_id)}}" target="_blank">{{$item->invoice_number}}</a></td>
+                            <td> <a target="_blank" href="{{route('mpdf.quote',$item->quote->quote_id)}}">{{$item->quote->quote_number ? $item->quote->quote_number : 'ใบเสนอราคาถูกลบ'}}</a> </td>
                             <td>{{date('d/m/Y',strtotime($item->invoice_date))}}</td>
                             <td>{{$item->customer->customer_name}}</td>
                             <td>{{$item->invoice_booking}}</td>
                             <td>{{number_format($item->invoice_grand_total,2)}}</td>
                             <td>{{number_format($item->invoice_withholding_tax,2)}}</td>
                             <td>{{$item->created_by}}</td>
+                           
                    
                         </tr>
                             
