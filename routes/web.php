@@ -46,7 +46,9 @@ use App\Http\Controllers\payments\paymentCreditController;
 use App\Http\Controllers\reports\inputTaxReportController;
 use App\Http\Controllers\Invoices\InvoiceBookingController;
 use App\Http\Controllers\MPDF\MPDF_CreditReceiptController;
+use App\Http\Controllers\exports\taxinvoiceExportController;
 use App\Http\Controllers\quotations\quotationViewController;
+use App\Http\Controllers\reports\taxinvoiceReportController;
 use App\Http\Controllers\invoices\invoiceDashboardController;
 use App\Http\Controllers\withholding\withholdingTaxController;
 use App\Http\Controllers\quotations\salesInformationController;
@@ -340,6 +342,10 @@ Route::get('/credit-note/modal/mail/creditnote/{creditNoteModel}',[MailControlle
 //Report
 Route::get('/report/inputtax/form',[inputTaxReportController::class,'index'])->name('report.input-tax');
 Route::get('/report/invoice/form',[invoiceReportController::class,'index'])->name('report.invoice');
+Route::get('/report/taxinvoice/form',[taxinvoiceReportController::class,'index'])->name('report.taxinvoice');
+
 // Export Excel 
 Route::post('export/excel/quote', [QuoteExportController::class, 'export'])->name('export.quote');
 Route::post('export/excel/invoice', [invoiceExportController::class, 'export'])->name('export.invoice');
+Route::post('export/excel/taxinvoice', [taxinvoiceExportController::class, 'export'])->name('export.taxinvoice');
+

@@ -13,53 +13,11 @@
         }
     </style>
 
-<?php
-
-use Carbon\Carbon;
-
-if (!function_exists('getQuoteStatusPaymentReport')) {
-    function getQuoteStatusPaymentReport($quotationModel)
-    {
-        $now = Carbon::now();
-        $status = '';
-        // ตรวจสอบ payment_status ผ่านความสัมพันธ์ quotePayment
-        if ($quotationModel->quotePayment && $quotationModel->quotePayment->payment_status === 'refund') {
-
-            $status = 'รอคืนเงิน';
-        } elseif ($quotationModel->quote_status === 'cancel') {
-            $status = 'ยกเลิกการสั่งซื้อ';
-    
-        } elseif ($quotationModel->quote_status === 'success') {
-            $status = 'ชำระเงินครบแล้ว';
-        } elseif ($quotationModel->payment > 0) {
-            $status = 'รอชำระเงินเต็มจำนวน';
-        } elseif ($quotationModel->quote_payment_type === 'deposit') {
-            if ($now->gt(Carbon::parse($quotationModel->quote_payment_date))) {
-                $status = 'เกินกำหนดชำระเงิน';
-            } else {
-                $status = 'รอชำระเงินมัดจำ';
-            }
-        } elseif ($quotationModel->quote_payment_type === 'full') {
-            if ($now->gt(Carbon::parse($quotationModel->quote_payment_date_full))) {
-                $status = 'เกินกำหนดชำระเงิน';
-            } else {
-                $status = 'รอชำระเงินเต็มจำนวน';
-            }
-        } else {
-            $status = 'รอชำระเงิน';
-        }
-        return $status;
-    }
-}
-
-?>
-
-
     <div class="email-app todo-box-container container-fluid">
 
         <div class="card">
             <div class="card-header mt-2">
-                <h4 class="text-info">รายงานใบแจ้งหนี้ตามเอกสาร </h4>
+                <h4 class="text-info">รายงานใบกำกับภาษีตามเอกสาร </h4>
             </div>
             <div class="card-body">
                 <form action="">
@@ -79,7 +37,6 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                                 <label for="">สถานะ</label>
                                 <select name="status" id="" class="form-select" >
                                     <option value="">---กรุณาเลือก---</option>
-                                    <option value="wait">กำลังดำนเนินการ</option>
                                     <option value="success">สำเร็จ</option>
                                     <option value="cancel">ยกเลิก</option>
                                 </select>
@@ -88,6 +45,7 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                                 <label for="">เงือนไข</label>
                                 <select name="column_name" class="form-select">
                                     <option @if($request->column_name === 'all') selected @endif value="all">ทั้งหมด</option>
+                                    <option @if($request->column_name === 'taxinvoice_number') selected @endif value="taxinvoice_number">เลขที่ใบกำกับภาษี</option>
                                     <option @if($request->column_name === 'invoice_number') selected @endif value="invoice_number">เลขที่ใบแจ้งหนี้</option>
                                     <option @if($request->column_name === 'invoice_booking') selected @endif value="invoice_booking">เลขที่ใบจองทัวร์</option>
                                     <option @if($request->column_name === 'customer_name') selected @endif value="customer_name">ชื่อลูกค้า</option>
@@ -105,7 +63,7 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                             </div>
                             <div class="col-md-1">
                                 <br>
-                                 <a href="{{route('report.invoice')}}"  class="btn  btn-danger float-end ml-2">ล้างการค้นหา</a>
+                                 <a href="{{route('report.taxinvoice')}}"  class="btn  btn-danger float-end ml-2">ล้างการค้นหา</a>
                              </div>
                         </div>
                      
@@ -122,11 +80,11 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
 
         <div class="card">
             <div class="card-header">
-                <h3 class="text-info">Report Invoice</h3><br>
-                <form action="{{route('export.invoice')}}" method="post">
+                <h3 class="text-info">Report Tax Invoice</h3><br>
+                <form action="{{route('export.taxinvoice')}}" method="post">
                     @csrf
                     @method('post')
-                    <input type="hidden" name="invoice_ids" value="{{$invoices->pluck('invoice_id')}}">
+                    <input type="hidden" name="taxinvoice_ids" value="{{$taxinvoices->pluck('taxinvoice_id')}}">
                     <button type="submit" class="btn btn-success"> <i class="fa fa-file-excel"></i> Export To Excel</button>
                 </form>
             </div>
@@ -136,34 +94,31 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                     <thead>
                         <tr>
                             <th>ลำดับ</th>
-                           
+                            <th>เลขที่ใบกำกับภาษี</th>
                             <th>เลขที่ใบแจ้งหนี้</th>
-                            <th>เลขที่ใบเสนอราคา</th>
-                            <th>วันที่ออกใบแจ้งหนี้</th>
+                            <th>วันที่ออกใบกำกับภาษี</th>
                             <th>ชื่อลูกค้า</th>
                             <th>Booking Code</th>
                             <th>จำนวนเงิน:บาท</th>
                             <th>ภาษีหัก ณ ที่จ่าย:บาท</th>
                             <th>ผู้จัดทำ</th>
-
-       
                         </tr>
                     </thead>
 
 
                         
                     <tbody>
-                        @forelse ($invoices as $key => $item)
+                        @forelse ($taxinvoices as $key => $item)
                         <tr>
-                          
+                         
                             <td>{{++$key}}</td>
-                            <td> <a href="{{route('mpdf.invoice',$item->invoice_id)}}" target="_blank">{{$item->invoice_number}}</a></td>
-                            <td> <a target="_blank" href="{{route('quote.editNew',$item->quote->quote_id)}}">{{$item->quote->quote_number ? $item->quote->quote_number : 'ใบเสนอราคาถูกลบ'}}</a> </td>
-                            <td>{{date('d/m/Y',strtotime($item->invoice_date))}}</td>
-                            <td>{{$item->customer->customer_name}}</td>
-                            <td>{{$item->invoice_booking}}</td>
-                            <td>{{number_format($item->invoice_grand_total,2)}}</td>
-                            <td>{{number_format($item->invoice_withholding_tax,2)}}</td>
+                            <td> <a href="{{route('mpdf.taxreceipt',$item->invoice_id)}}" target="_blank">{{$item->taxinvoice_number}}</a></td>
+                            <td> <a target="_blank" href="{{route('mpdf.invoice',$item->invoice_id)}}">{{$item->invoice_number}}</a> </td>
+                            <td>{{date('d/m/Y',strtotime($item->taxinvoice_date))}}</td>
+                            <td>{{$item->invoice->customer->customer_name}}</td>
+                            <td>{{$item->invoice->invoice_booking}}</td>
+                            <td>{{number_format($item->invoice->invoice_grand_total,2)}}</td>
+                            <td>{{number_format($item->invoice->invoice_withholding_tax,2)}}</td>
                             <td>{{$item->created_by}}</td>
                            
                    
@@ -177,8 +132,12 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                     <tfoot>
                         <tr>
                             <th colspan="7" style="text-align:left"></th>
-                            <th style="text-align:left">มูลค่ารวม : {{number_format($invoices->sum('invoice_grand_total',2))}}</th>
-                            <th style="text-align:left">มูลค่า.หัก.ณ.ที่จ่าย รวม: {{number_format($invoices->sum('invoice_withholding_tax',2))}}</th>
+                            <th style="text-align:left">
+                                มูลค่ารวม : {{ number_format($grandTotalSum, 2) }}
+                            </th>
+                            <th style="text-align:left">
+                                มูลค่า.หัก.ณ.ที่จ่าย รวม: {{ number_format($withholdingTaxSum, 2) }}
+                            </th>
                         </tr>
                     </tfoot>
                 </table>

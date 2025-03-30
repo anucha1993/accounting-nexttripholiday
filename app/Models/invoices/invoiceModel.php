@@ -2,13 +2,14 @@
 
 namespace App\Models\invoices;
 
+use App\Models\sales\saleModel;
 use App\Models\booking\bookingModel;
 use App\Models\booking\countryModel;
 use App\Models\customers\customerModel;
-use App\Models\quotations\quotationModel;
-use App\Models\sales\saleModel;
-use App\Models\wholesale\wholesaleModel;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\invoices\taxinvoiceModel;
+use App\Models\wholesale\wholesaleModel;
+use App\Models\quotations\quotationModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class invoiceModel extends Model
@@ -51,6 +52,13 @@ class invoiceModel extends Model
     public function customer()
     {
         return $this->belongsTo(customerModel::class, 'customer_id', 'customer_id');
+    }
+
+
+
+    public function taxInvoice()
+    {
+        return $this->hasOne(taxinvoiceModel::class, 'invoice_id'); // 'invoice_id' เป็นคอลัมน์ใน taxinvoice ที่เชื่อมโยงกับ invoice
     }
    
 
