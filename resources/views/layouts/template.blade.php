@@ -1284,6 +1284,10 @@
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานภาษีซื้อ</span>
                                     </a>
+                                    <a href="{{route('report.receipt')}}" class="sidebar-link">
+                                        <i class="mdi mdi-comment-processing-outline"></i>
+                                        <span class="hide-menu">รายงานใบเสร็จรับเงิน</span>
+                                    </a>
                                     <a href="{{route('report.invoice')}}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานใบแจ้งหนี้</span>
