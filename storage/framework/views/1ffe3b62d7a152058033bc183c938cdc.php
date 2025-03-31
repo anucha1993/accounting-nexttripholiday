@@ -1288,6 +1288,10 @@
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานใบแจ้งหนี้</span>
                                     </a>
+                                    <a href="<?php echo e(route('report.taxinvoice')); ?>" class="sidebar-link">
+                                        <i class="mdi mdi-comment-processing-outline"></i>
+                                        <span class="hide-menu">รายงานใบกำกับภาษี</span>
+                                    </a>
                                 </li>
                             </ul>
                         </li>
