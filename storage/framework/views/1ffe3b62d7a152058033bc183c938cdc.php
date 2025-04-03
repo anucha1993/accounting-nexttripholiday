@@ -1296,6 +1296,10 @@
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานใบกำกับภาษี</span>
                                     </a>
+                                    <a href="<?php echo e(route('report.saletax')); ?>" class="sidebar-link">
+                                        <i class="mdi mdi-comment-processing-outline"></i>
+                                        <span class="hide-menu">รายงานภาษีขาย</span>
+                                    </a>
                                 </li>
                             </ul>
                         </li>

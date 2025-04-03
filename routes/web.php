@@ -16,6 +16,7 @@ use App\Http\Controllers\credits\creditController;
 use App\Http\Controllers\MPDF\MailQuoteController;
 use App\Http\Controllers\airline\airlineController;
 use App\Http\Controllers\booking\BookingController;
+use App\Http\Controllers\reports\saleTaxController;
 use App\Http\Controllers\invoices\invoiceController;
 use App\Http\Controllers\payments\paymentController;
 use App\Http\Controllers\products\productController;
@@ -31,16 +32,19 @@ use App\Http\Controllers\exports\QuoteExportController;
 use App\Http\Controllers\invoices\taxInvoiceController;
 use App\Http\Controllers\MPDF\MPDF_DebitNoteController;
 use App\Http\Controllers\MPDF\MPDF_QuotationController;
+use App\Http\Controllers\exports\receiptExportControlle;
 use App\Http\Controllers\MPDF\MPDF_CreditNoteController;
 use App\Http\Controllers\MPDF\MPDF_taxReceiptController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
 use App\Http\Controllers\CreditNote\creditNoteController;
 use App\Http\Controllers\exports\invoiceExportController;
-use App\Http\Controllers\exports\receiptExportControlle;
+use App\Http\Controllers\exports\saleTaxExportController;
 use App\Http\Controllers\MPDF\MPDF_WithholdingController;
 use App\Http\Controllers\payments\paymentDebitController;
 use App\Http\Controllers\quotefiles\QuoteFilesController;
 use App\Http\Controllers\reports\invoiceReportController;
+use App\Http\Controllers\reports\receiptReportController;
+use App\Http\Controllers\reports\saleTaxReportController;
 use App\Http\Controllers\MPDF\MPDF_DebitReceiptController;
 use App\Http\Controllers\MPDF\MPDF_PaymentDebitController;
 use App\Http\Controllers\payments\paymentCreditController;
@@ -55,7 +59,6 @@ use App\Http\Controllers\withholding\withholdingTaxController;
 use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\MPDF\MPDF_WithhodingDocumentController;
 use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
-use App\Http\Controllers\reports\receiptReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -346,10 +349,12 @@ Route::get('/report/inputtax/form',[inputTaxReportController::class,'index'])->n
 Route::get('/report/invoice/form',[invoiceReportController::class,'index'])->name('report.invoice');
 Route::get('/report/taxinvoice/form',[taxinvoiceReportController::class,'index'])->name('report.taxinvoice');
 Route::get('/report/receipt/form',[receiptReportController::class,'index'])->name('report.receipt');
+Route::get('/report/saletax/form',[saleTaxReportController::class,'index'])->name('report.saletax');
 
 // Export Excel 
 Route::post('export/excel/quote', [QuoteExportController::class, 'export'])->name('export.quote');
 Route::post('export/excel/invoice', [invoiceExportController::class, 'export'])->name('export.invoice');
 Route::post('export/excel/taxinvoice', [taxinvoiceExportController::class, 'export'])->name('export.taxinvoice');
 Route::post('export/excel/receipt', [receiptExportControlle::class, 'export'])->name('export.receipt');
+Route::post('export/excel/saletax', [saleTaxExportController::class, 'export'])->name('export.saletax');
 
