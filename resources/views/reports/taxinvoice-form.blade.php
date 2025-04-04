@@ -98,7 +98,7 @@
                             <th>เลขที่ใบแจ้งหนี้</th>
                             <th>วันที่ออกใบกำกับภาษี</th>
                             <th>ชื่อลูกค้า</th>
-                            <th>Booking Code</th>
+                            <th>Quotations</th>
                             <th>จำนวนเงิน:บาท</th>
                             <th>ภาษีหัก ณ ที่จ่าย:บาท</th>
                             <th>ผู้จัดทำ</th>
@@ -116,7 +116,7 @@
                             <td> <a target="_blank" href="{{route('mpdf.invoice',$item->invoice_id)}}">{{$item->invoice_number}}</a> </td>
                             <td>{{date('d/m/Y',strtotime($item->taxinvoice_date))}}</td>
                             <td>{{$item->invoice->customer->customer_name}}</td>
-                            <td>{{$item->invoice->invoice_booking}}</td>
+                            <td> <a target="_blank" href="{{route('quote.editNew',$item->invoice->quote->quote_id)}}">{{$item->invoice->quote->quote_number ? $item->invoice->quote->quote_number : 'ใบเสนอราคาถูกลบ'}}</a> </td>
                             <td>{{number_format($item->invoice->invoice_grand_total,2)}}</td>
                             <td>{{number_format($item->invoice->invoice_withholding_tax,2)}}</td>
                             <td>{{$item->created_by}}</td>

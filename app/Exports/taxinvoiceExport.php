@@ -44,7 +44,7 @@ class taxinvoiceExport implements FromCollection, WithHeadings, WithMapping, Wit
             'เลขที่ใบแจ้งหนี้',
             'วันที่ออกใบแจ้งหนี้',
             'ชื่อลูกค้า',
-            'Booking Code',
+            'Quotations',
             'จำนวนเงิน:บาท',
             'ภาษีหัก ณ ที่จ่าย:บาท',
             'ผู้จัดทำ'
@@ -59,7 +59,7 @@ class taxinvoiceExport implements FromCollection, WithHeadings, WithMapping, Wit
             $taxinvoices->invoice->invoice_number,
             date('d/m/Y',strtotime($taxinvoices->taxinvoice_date)),
             $taxinvoices->taxinvoiceCustomer->customer_name,
-            $taxinvoices->invoice->invoice_booking,
+            $taxinvoices->invoice->quote->quote_number,
             number_format($taxinvoices->invoice->invoice_grand_total,2),
             number_format($taxinvoices->invoice->invoice_withholding_tax,2),
             $taxinvoices->created_by,

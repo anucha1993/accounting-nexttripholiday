@@ -2,6 +2,7 @@
 
 namespace App\Models\payments;
 
+use App\Models\bank\bankModel;
 use App\Models\customers\customerModel;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\quotations\quotationModel;
@@ -24,6 +25,12 @@ class paymentModel extends Model
     public function quote()
     {
         return $this->belongsTo(quotationModel::class, 'payment_quote_id', 'quote_id');
+    }
+
+    
+    public function bank()
+    {
+        return $this->belongsTo(bankModel::class, 'payment_bank', 'bank_id');
     }
 
 

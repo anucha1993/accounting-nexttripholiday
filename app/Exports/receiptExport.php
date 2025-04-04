@@ -45,6 +45,7 @@ class receiptExport implements FromCollection, WithHeadings, WithMapping, WithCo
             'วันที่ออกใบเสร็จ',
             'เลขที่ใบเสนอราคา',
             'เลขที่อ้างอิงใบจองทัวร์',
+            'รายละเอียดการชำระ',
             'จำนวนเงิน:บาท',
             'ประเภท',
             'สถานะการชำระเงิน',
@@ -53,15 +54,28 @@ class receiptExport implements FromCollection, WithHeadings, WithMapping, WithCo
 
     public function map($payments): array
     {
-        if($payments->payment_method === 'cash'){ $payment_method = 'เงินสด';}
-        if($payments->payment_method === 'transfer-money'){ $payment_method = 'โอนเงิน';} 
-        if($payments->payment_method === 'check'){ $payment_method = 'เช็ค';}  
-        if($payments->payment_method === 'credit'){ $payment_method = 'บัตรเครดิต';}    
+        if ($payments->payment_method === 'cash') {
+            $payment_method = "วิธีการชำระเงิน : เงินสด\nวันที่ : " . date('d/m/Y : H:m', strtotime($payments->payment_in_date));
+        } elseif ($payments->payment_method === 'transfer-money') {
+            $payment_method = "วิธีการชำระเงิน : โอนเงิน\nวันที่ : " . date('d/m/Y : H:m', strtotime($payments->payment_in_date)) . "\nเช็คธนาคาร : " . ($payments->bank ? $payments->bank->bank_name : '');
+        } elseif ($payments->payment_method === 'check') {
+            $payment_method = "วิธีการชำระเงิน : เช็ค\nโอนเข้าบัญชี : " . ($payments->bank ? $payments->bank->bank_name : '') . "\nเลขที่เช็ค : " . ($payments->check_number ?? '') . "\nวันที่ : " . date('d/m/Y : H:m', strtotime($payments->payment_in_date));
+        } elseif ($payments->payment_method === 'credit') {
+            $payment_method = "วิธีการชำระเงิน : บัตรเครดิต\nเลขที่สลิป : " . ($item->payment_credit_slip_number ?? '') . "\nวันที่ : " .date('d/m/Y : H:m', strtotime($payments->payment_in_date));
+        }
 
         if($payments->payment_status === 'success'){ $payment_status = 'สำเร็จ';}
         if($payments->payment_status === 'cancel'){ $payment_status = 'ยกเลิก';} 
         if($payments->payment_status === 'refund'){ $payment_status = 'คืนเงิน';}  
-        if($payments->payment_status === 'wait'){ $payment_status = 'รอชำระเงิน';}   
+        if($payments->payment_status === 'wait'){ $payment_status = 'รอชำระเงิน';} 
+        
+        if($payments->payment_type === 'deposit'){ 
+            $payment_type = 'ชำระมัดจำ';
+        } else {
+           $payment_type = 'ชำระเงินเต็มจำนวน' ;
+        }
+        
+  
 
 
         return array_merge([
@@ -70,8 +84,9 @@ class receiptExport implements FromCollection, WithHeadings, WithMapping, WithCo
             date('d/m/Y',strtotime($payments->payment_in_date)),
             $payments->quote->quote_number,
             $payments->quote->quote_booking,
-            number_format($payments->payment_total,2),
             $payment_method,
+            number_format($payments->payment_total,2),
+            $payment_type,
             $payment_status,
 
  

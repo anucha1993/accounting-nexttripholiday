@@ -137,6 +137,7 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                             <th>วันที่ออกใบเสร็จ</th>
                             <th>เลขที่ใบเสนอราคา</th>
                             <th>เลขที่อ้างอิงใบจองทัวร์</th>
+                            <th>รายละเอียดการชำระ</th>
                             <th>จำนวนเงิน:บาท</th>
                             <th>ไฟล์แนบ</th>
                             <th>ประเภท</th>
@@ -156,6 +157,30 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                            <td>{{date('d/m/Y ',strtotime($item->payment_in_date))}}</td>
                           <td><a href="{{route('quote.editNew',$item->quote->quote_id)}}">{{$item->quote->quote_number}}</a></td>
                           <td>{{$item->quote->quote_booking}} </td>
+                          <td>
+                            @if ($item->payment_method === 'cash')
+                                วิธีการชำระเงิน : เงินสด </br>
+                                วันที่ :{{ date('d/m/Y : H:m', strtotime($item->payment_in_date)) }}</br>
+                            @endif
+                            @if ($item->payment_method === 'transfer-money')
+                                วิธีการชำระเงิน : โอนเงิน</br>
+                                วันที่ :{{ date('d/m/Y : H:m', strtotime($item->payment_in_date)) }}</br>
+                                เช็คธนาคาร : {{ $item->bank->bank_name }}
+                            @endif
+                            @if ($item->payment_method === 'check')
+                                วิธีการชำระเงิน : เช็ค</br>
+                                โอนเข้าบัญชี : {{ $item->bank }} </br>
+                                เลขที่เช็ค : {{ $item->bank->bank_name }} </br>
+                                วันที่ :{{ date('d/m/Y : H:m', strtotime($item->payment_in_date)) }}</br>
+                            @endif
+
+                            @if ($item->payment_method === 'credit')
+                                วิธีการชำระเงิน : บัตรเครดิต </br>
+                                เลขที่สลิป : {{ $item->payment_credit_slip_number }} </br>
+                                วันที่ :{{ date('d/m/Y : H:m', strtotime($item->payment_in_date)) }}</br>
+                            @endif
+                        </td>
+                     
                           <td>{{number_format($item->payment_total,2)}}</td>
                           <td>
                             @if ($item->payment_file_path)
@@ -167,10 +192,18 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                             @endif
                           </td>
                           <td>
-                            @if ($item->payment_method === 'cash') เงินสด </br>@endif
-                            @if ($item->payment_method === 'transfer-money')โอนเงิน</br> @endif
-                            @if ($item->payment_method === 'check') เช็ค</br>@endif
-                            @if ($item->payment_method === 'credit')บัตรเครดิต </br>@endif
+
+                            @if ($item->payment_status === 'cancel')
+                                -
+                            @else
+                                @if ($item->payment_type === 'deposit')
+                                    ชำระมัดจำ
+                                @else
+                                    ชำระเงินเต็มจำนวน
+                                @endif
+                            @endif
+
+
                         </td>
                         <td>
                             @if ($item->payment_status === 'success') สำเร็จ </br>@endif
