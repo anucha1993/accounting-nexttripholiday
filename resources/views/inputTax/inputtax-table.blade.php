@@ -45,6 +45,7 @@
                                 <td>
                                     <div id="invoice-file-container-{{ $item->invoice_id }}">
                                         <!-- กรณีไม่มีไฟล์ ให้แสดง input สำหรับอัปโหลด -->
+                                        
                                         @if (empty($item->invoice_image))
                                             <input type="file" name="invoice_file" data-id="{{ $item->invoice_id }}"
                                                 onchange="uploadInvoiceImage(this)">
@@ -120,7 +121,7 @@
                              เปิดดูไฟล์</a>
 
                              <a href="{{route('inputtax.deletefile',$item->input_tax_id)}}" class="btn btn-danger btn-sm" onclick="return confirm('Do you want to delete file?');"> ลบไฟล์</a>
-                            @else
+                            @elseif($item->input_tax_type !== 0)
 
                             <form action="{{route('inputtax.update',$item->input_tax_id)}}" method="POST" enctype="multipart/form-data"  id="upload-file-{{$item->input_tax_id}}">
                                 @csrf
@@ -137,6 +138,8 @@
                                     });
                                 });
                             </script>
+                             @else
+                             รอแนบไฟล์เอกสาร
                             @endif 
                            
 
@@ -174,7 +177,8 @@
 
                         <td>
                             @if ($item->input_tax_withholding_status === 'Y' && ($document))
-                            
+                            <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
+                              <br>
                                 <a href="{{ route('withholding.modalEdit', $document->id) }}" class="input-tax-edit text-primary">
                                     <i class="fa fa-edit text-primary "></i>แก้ไขใบหัก ณ ที่จ่าย</a>
                             @else

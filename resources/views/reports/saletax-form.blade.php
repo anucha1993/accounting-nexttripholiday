@@ -44,6 +44,7 @@
                             <div class="col-md-2">
                                 <label for="">เงือนไข</label>
                                 <select name="column_name" class="form-select">
+       
                                     <option @if($request->column_name === 'all') selected @endif value="all">ทั้งหมด</option>
                                     <option @if($request->column_name === 'taxinvoice_number') selected @endif value="taxinvoice_number">เลขที่ใบกำกับภาษี</option>
                                     <option @if($request->column_name === 'invoice_number') selected @endif value="invoice_number">เลขที่ใบแจ้งหนี้</option>
@@ -63,7 +64,7 @@
                             </div>
                             <div class="col-md-1">
                                 <br>
-                                 <a href="{{route('report.taxinvoice')}}"  class="btn  btn-danger float-end ml-2">ล้างการค้นหา</a>
+                                 <a href="{{route('report.saletax')}}"  class="btn  btn-danger float-end ml-2">ล้างการค้นหา</a>
                              </div>
                         </div>
                      
@@ -84,7 +85,7 @@
                 <form action="{{route('export.saletax')}}" method="post">
                     @csrf
                     @method('post')
-                    <input type="hidden" name="taxinvoice_ids" value="{{$taxinvoices->pluck('taxinvoice_id')}}">
+                    <input type="hidden" name="taxinvoice_ids" value="{{$taxinvoiceSum->pluck('taxinvoice_id')}}">
                     <button type="submit" class="btn btn-success"> <i class="fa fa-file-excel"></i> Export To Excel</button>
                 </form>
             </div>
@@ -98,15 +99,15 @@
                             <th>เลขที่ใบแจ้งหนี้</th>
                             <th>เลขที่ใบกำกับภาษี</th>
                             <th>ชื่อลูกค้า</th>
-                            <th>เลขที่ใบกำกับภาษี</th>
+                            <th>เลขผู้เสียกับภาษี</th>
                             <th>มูลค่าสินค้า/บริการ</th>
                             <th>ภาษีมูลค่าเพิ่ม</th>
-                            <th>ผู้ดำจัดทำ</th>
+                            <th>สถานะ</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        @forelse ($taxinvoices as $key => $item)
+                        @forelse ($taxinvoiceSearch as $key => $item)
                         <tr>
                          
                             <td>{{++$key}}</td>
@@ -115,9 +116,9 @@
                             <td> <a target="_blank" href="{{route('mpdf.taxreceipt',$item->invoice_id)}}">{{$item->taxinvoice_number}}</a> </td>
                             <td>{{$item->invoice->customer->customer_name}}</td>
                             <td>{{$item->invoice->customer?->customer_texid ?? '0000000000000' }}</td>
-                            <td>{{number_format($item->invoice->invoice_grand_total,2)}}</td>
+                            <td>{{number_format($item->invoice->invoice_pre_vat_amount,2)}}</td>
                             <td>{{number_format($item->invoice->invoice_vat,2)}}</td>
-                            <td>{{$item->created_by}}</td>
+                            <td>{{$item->taxinvoice_status === 'success' ? 'สำเร็จ' : 'ยกเลิก'  }}</td>
                            
                    
                         </tr>
@@ -129,16 +130,17 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="7" style="text-align:left"></th>
-                            <th style="text-align:left">
-                                มูลค่าสินค้ารวม : {{ number_format($grandTotalSum, 2) }}
+                            <th colspan="6" style="text-align:left"></th>
+                            <th style="text-align:left" class="text-danger">
+                                มูลค่ารวม : {{ number_format($grandTotalSum, 2) }}
                             </th>
-                            <th style="text-align:left">
-                             ภาษีมูลค่าเพิ่ม: {{ number_format($vatTotal, 2) }}
+                            <th style="text-align:left" class="text-danger">
+                                มูลค่าภาษีรวม: {{ number_format($vatTotal, 2) }}
                             </th>
                         </tr>
                     </tfoot>
                 </table>
+                  {!! $taxinvoiceSearch->withQueryString()->links('pagination::bootstrap-5') !!}
           
             </div>
         </div>

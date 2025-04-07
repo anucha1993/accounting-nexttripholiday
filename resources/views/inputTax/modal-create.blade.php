@@ -69,6 +69,19 @@
             </div> --}}
 
         </div>
+        <div class="col-md-12" id="tax-input" style="display: none">
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="">วันที่ภาษีซื้อ</label>
+                    <input type="date" class="form-control" name="input_tax_date_tax" >
+                </div>
+                <div class="col-md-6">
+                    <label for="">เลขที่ใบกำกับภาษีซื้อ</label>
+                    <input type="text" class="form-control" name="input_tax_number_tax" placeholder="เลขที่ใบกำกับภาษีซื้อ">
+                </div>
+            </div>
+        </div>
+        <br>
 
         <div class="col-md-12" style="display: none" id="withholding-show">
             {{-- @if ($document)
@@ -87,6 +100,8 @@
             {{-- @endif --}}
 
         </div>
+
+        
 
         <br>
         <button type="submit" class="btn btn-sm btn-success">บันทึก</button>
@@ -108,6 +123,7 @@
                 $('#input_tax_withholding_status2').prop('disabled', false);
                 $('#date-doc-show').show();
                 $('#withholding-show').show();
+                $('#tax-input').show();
 
             } else {
                 // ถ้า input_tax_type ไม่ใช่ 1 ให้ enable input_tax_withholding_status
@@ -115,6 +131,7 @@
                 $('#input_tax_withholding_status2').prop('disabled', true);
                 $('#date-doc-show').hide();
                 $('#withholding-show').hide();
+                $('#tax-input').hide();
             }
         });
 

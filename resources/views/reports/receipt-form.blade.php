@@ -206,10 +206,21 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
 
                         </td>
                         <td>
-                            @if ($item->payment_status === 'success') สำเร็จ </br>@endif
-                            @if ($item->payment_status === 'cancel') ยกเลิก</br> @endif
-                            @if ($item->payment_status === 'refund') คืนเงิน</br>@endif
-                            @if ($item->payment_status === 'wait') รอชำระเงิน </br>@endif
+                            @if ($item->payment_status === 'cancel')
+                                <span class="badge rounded-pill bg-danger">ยกเลิก</span>
+                            @elseif ($item->payment_type === 'refund')
+                                @if ($item->payment_file_path !== null)
+                                    <span class="badge rounded-pill bg-success">คืนเงินแล้ว</span>
+                                @else
+                                    <span class="badge rounded-pill bg-warning">รอคืนเงิน</span>
+                                @endif
+                            @elseif ($item->payment_status === 'success')
+                                <span class="badge rounded-pill bg-success">สำเร็จ</span>
+                            @elseif ($item->payment_status === 'wait')
+                                <span class="badge rounded-pill bg-warning">รอแนบสลิป</span>
+                            @elseif ($item->payment_status === null)
+                                <span class="badge rounded-pill bg-secondary">ไม่มีข้อมูล</span>
+                            @endif
                         </td>
                        
                         </tr>

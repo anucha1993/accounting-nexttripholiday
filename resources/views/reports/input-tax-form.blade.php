@@ -75,12 +75,12 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                                     <input type="hidden" name="date_end">
                                 </div>
 
-                            <div class="col-md-2">
+                            {{-- <div class="col-md-2">
                                 <label for="">สถานะ</label>
                                 <select name="" id="" class="form-select" >
                                     <option value="">---กรุณาเลือก---</option>
                                 </select>
-                            </div>
+                            </div> --}}
 
                             <div class="col-md-8">
                                <br>
@@ -123,16 +123,33 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
 
                         
                     <tbody>
-                       
+                       @forelse ($inputTaxs as $key => $item)
+                       <tr>
+                        <td>{{++$key}}</td>
+                        <td>{{date('d/m/Y',strtotime($item->input_tax_date_tax))}}</td>
+                        <td>{{$item->input_tax_ref}}</td>
+                        <td>{{ $item->invoice->taxinvoice->taxinvoice_number ?? 'ไม่มีข้อมูล' }}</td>
+                        <td>{{$item->quote->quoteWholesale->wholesale_name_th}}</td>
+                        <td>{{$item->quote->quoteWholesale->textid}}</td>
+                        <td>{{number_format($item->input_tax_service_total,2)}}</td>
+                        <td>{{number_format($item->input_tax_vat,2)}}</td>
+
+                        
+                       </tr>
+                           
+                       @empty
+                           
+                       @endforelse
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="12" style="text-align:right">Total:</th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-    
-                       
+                            <th colspan="6" style="text-align:left"></th>
+                            <th style="text-align:left" class="text-danger">
+                                มูลค่ารวม : {{ number_format($grandTotalSum, 2) }}
+                            </th>
+                            <th style="text-align:left" class="text-danger">
+                                มูลค่าภาษีรวม: {{ number_format($vat, 2) }}
+                            </th>
                         </tr>
                     </tfoot>
                 </table>

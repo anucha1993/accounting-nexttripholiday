@@ -12,8 +12,8 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 class receiptExport implements FromCollection, WithHeadings, WithMapping, WithColumnWidths
 {
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
 
     private $paymentIdsArray;
     private $payments;
@@ -39,17 +39,7 @@ class receiptExport implements FromCollection, WithHeadings, WithMapping, WithCo
 
     public function headings(): array
     {
-        return array_merge([
-            'ลำดับ',
-            'Payment No.',
-            'วันที่ออกใบเสร็จ',
-            'เลขที่ใบเสนอราคา',
-            'เลขที่อ้างอิงใบจองทัวร์',
-            'รายละเอียดการชำระ',
-            'จำนวนเงิน:บาท',
-            'ประเภท',
-            'สถานะการชำระเงิน',
-        ]);
+        return array_merge(['ลำดับ', 'Payment No.', 'วันที่ออกใบเสร็จ', 'เลขที่ใบเสนอราคา', 'เลขที่อ้างอิงใบจองทัวร์', 'รายละเอียดการชำระ', 'จำนวนเงิน:บาท', 'ประเภท', 'สถานะการชำระเงิน']);
     }
 
     public function map($payments): array
@@ -61,54 +51,47 @@ class receiptExport implements FromCollection, WithHeadings, WithMapping, WithCo
         } elseif ($payments->payment_method === 'check') {
             $payment_method = "วิธีการชำระเงิน : เช็ค\nโอนเข้าบัญชี : " . ($payments->bank ? $payments->bank->bank_name : '') . "\nเลขที่เช็ค : " . ($payments->check_number ?? '') . "\nวันที่ : " . date('d/m/Y : H:m', strtotime($payments->payment_in_date));
         } elseif ($payments->payment_method === 'credit') {
-            $payment_method = "วิธีการชำระเงิน : บัตรเครดิต\nเลขที่สลิป : " . ($item->payment_credit_slip_number ?? '') . "\nวันที่ : " .date('d/m/Y : H:m', strtotime($payments->payment_in_date));
+            $payment_method = "วิธีการชำระเงิน : บัตรเครดิต\nเลขที่สลิป : " . ($item->payment_credit_slip_number ?? '') . "\nวันที่ : " . date('d/m/Y : H:m', strtotime($payments->payment_in_date));
         }
 
-        if($payments->payment_status === 'success'){ $payment_status = 'สำเร็จ';}
-        if($payments->payment_status === 'cancel'){ $payment_status = 'ยกเลิก';} 
-        if($payments->payment_status === 'refund'){ $payment_status = 'คืนเงิน';}  
-        if($payments->payment_status === 'wait'){ $payment_status = 'รอชำระเงิน';} 
-        
-        if($payments->payment_type === 'deposit'){ 
+        $payment_status = ''; // กำหนดค่าเริ่มต้น
+
+        if ($payments->payment_status === 'cancel') {
+            $payment_status = 'ยกเลิก';
+        } elseif ($payments->payment_type === 'refund') {
+            if ($payments->payment_file_path !== null) {
+                $payment_status = 'คืนเงินแล้ว';
+            } else {
+                $payment_status = 'รอคืนเงิน';
+            }
+        } elseif ($payments->payment_status === 'success') {
+            $payment_status = 'สำเร็จ';
+        } elseif ($payments->payment_status === 'wait') {
+            $payment_status = 'รอแนบสลิป';
+        } elseif ($payments->payment_status === null) {
+            $payment_status = 'ไม่มีข้อมูล';
+        }
+
+        if ($payments->payment_type === 'deposit') {
             $payment_type = 'ชำระมัดจำ';
         } else {
-           $payment_type = 'ชำระเงินเต็มจำนวน' ;
+            $payment_type = 'ชำระเงินเต็มจำนวน';
         }
-        
-  
 
-
-        return array_merge([
-            ++$this->num,
-            $payments->payment_number,
-            date('d/m/Y',strtotime($payments->payment_in_date)),
-            $payments->quote->quote_number,
-            $payments->quote->quote_booking,
-            $payment_method,
-            number_format($payments->payment_total,2),
-            $payment_type,
-            $payment_status,
-
- 
-
-        ]);
+        return array_merge([++$this->num, $payments->payment_number, date('d/m/Y', strtotime($payments->payment_in_date)), $payments->quote->quote_number, $payments->quote->quote_booking, $payment_method, number_format($payments->payment_total, 2), $payment_type, $payment_status]);
     }
 
     public function columnWidths(): array
     {
-      return [
-        'B' => 20,
-        'C' => 20,
-        'D' => 20,
-        'E' => 50,
-        'F' => 25,
-        'G' => 25,
-        'H' => 25,
-        'I' => 30,
-      ];
+        return [
+            'B' => 20,
+            'C' => 20,
+            'D' => 20,
+            'E' => 50,
+            'F' => 25,
+            'G' => 25,
+            'H' => 25,
+            'I' => 30,
+        ];
     }
-
-
-
-
 }

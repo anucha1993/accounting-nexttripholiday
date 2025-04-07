@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label>ประเภท</label>
-                <select name="input_tax_type" id="" class="form-select">
+                <select name="input_tax_type" id="input_tax_type" class="form-select">
                     <option @if($inputTaxModel->input_tax_type === 0) selected @endif value="0">ภาษีซื้อ</option>
                     <option @if($inputTaxModel->input_tax_type === 1) selected @endif value="1">ต้นทุนอื่นๆ</option>
                     <option @if($inputTaxModel->input_tax_type === 3) selected @endif value="1">ค่าธรรมเนียมรูดบัตร</option>
@@ -64,7 +64,22 @@
                 <input type="number" name="input_tax_grand_total" step="0.01" value="{{$inputTaxModel->input_tax_grand_total}}"  class="form-control" placeholder="0.0" id="total" >
             </div>
 
-            <div class="col-md-12 mb-3">
+            <div class="col-md-12" id="tax-input" style="display: none">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="">วันที่ภาษีซื้อ</label>
+                        <input type="date" class="form-control" name="input_tax_date_tax" value="{{$inputTaxModel->input_tax_date_tax}}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="">เลขที่ใบกำกับภาษีซื้อ</label>
+                        <input type="text" class="form-control" name="input_tax_number_tax" placeholder="เลขที่ใบกำกับภาษีซื้อ" value="{{$inputTaxModel->input_tax_number_tax}}">
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+
+            <div class="col-md-12 mt-3">
                 <label for="">ไฟล์เอกสารแนบ</label>
                 <input type="file" name="file">
             </div>
@@ -84,6 +99,8 @@
                 @endif
                
             </div>
+
+          
 
 
             <div class="col-md-12">
@@ -105,9 +122,43 @@
 </div>
 
 
+
+
   
 
 <script>
+
+$(document).ready(function() {
+        // เมื่อค่า input_tax_type มีการเปลี่ยนแปลง
+        $('#input_tax_type').change(function() {
+            var inputTaxType = $(this).val(); // รับค่าจาก input_tax_type
+
+            //alert(inputTaxType);
+
+            if (inputTaxType === '0') {
+                
+                // ถ้า input_tax_type === 1 ให้ disable input_tax_withholding_status
+                $('#input_tax_withholding_status1').prop('disabled', false);
+                $('#input_tax_withholding_status2').prop('disabled', false);
+                $('#date-doc-show').show();
+                $('#withholding-show').show();
+                $('#tax-input').show();
+
+            } else {
+                // ถ้า input_tax_type ไม่ใช่ 1 ให้ enable input_tax_withholding_status
+                $('#input_tax_withholding_status1').prop('disabled', true);
+                $('#input_tax_withholding_status2').prop('disabled', true);
+                $('#date-doc-show').hide();
+                $('#withholding-show').hide();
+                $('#tax-input').hide();
+            }
+        });
+
+        // เรียกใช้งานทันทีเพื่อให้รองรับค่าเริ่มต้น
+        $('#input_tax_type').trigger('change');
+    });
+
+
       $(document).ready(function() {
                  $('.selectpicker').selectpicker({
                      width: '100%'
@@ -138,4 +189,6 @@
 });
 
   });
+
+  
 </script>

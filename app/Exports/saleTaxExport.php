@@ -44,10 +44,10 @@ class saleTaxExport implements FromCollection, WithHeadings, WithMapping, WithCo
             'เลขที่ใบแจ้งหนี้',
             'เลขที่ใบกำกับภาษี',
             'ชื่อลูกค้า',
-            'เลขที่ใบกำกับภาษี',
+            'เลขผู้เสียกับภาษี',
             'มูลค่าสินค้า/บริการ',
             'ภาษีมูลค่าเพิ่ม',
-            'ผู้ดำจัดทำ',
+            'สถานะ',
         ]);
     }
 
@@ -60,9 +60,9 @@ class saleTaxExport implements FromCollection, WithHeadings, WithMapping, WithCo
             $taxinvoices->taxinvoice_number,
             $taxinvoices->invoice->customer->customer_name,
             $item->invoice->customer?->customer_texid ?? '0000000000000',
-            number_format($taxinvoices->invoice->invoice_grand_total,2),
+            number_format($taxinvoices->invoice->invoice_pre_vat_amount,2),
             number_format($taxinvoices->invoice->invoice_vat,2),
-            $taxinvoices->created_by
+            $taxinvoices->taxinvoice_status === 'success' ? 'สำเร็จ' : 'ยกเลิก'
 
         ]);
     }

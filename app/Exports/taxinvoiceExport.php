@@ -47,12 +47,27 @@ class taxinvoiceExport implements FromCollection, WithHeadings, WithMapping, Wit
             'Quotations',
             'จำนวนเงิน:บาท',
             'ภาษีหัก ณ ที่จ่าย:บาท',
-            'ผู้จัดทำ'
+            'สถานะ'
         ]);
     }
 
     public function map($taxinvoices): array
     {
+        
+       
+
+        if($taxinvoices->invoice_status === 'wait')
+        {
+            $invoice_status = 'รอดำเนินการ';
+
+        }elseif($taxinvoices->invoice_status === 'success')
+        {
+            $invoice_status = 'สำเร็จ';
+        }else{
+            $invoice_status = 'ยกเลิก';
+        }
+
+
         return array_merge([
             ++$this->num,
             $taxinvoices->taxinvoice_number,
@@ -62,7 +77,7 @@ class taxinvoiceExport implements FromCollection, WithHeadings, WithMapping, Wit
             $taxinvoices->invoice->quote->quote_number,
             number_format($taxinvoices->invoice->invoice_grand_total,2),
             number_format($taxinvoices->invoice->invoice_withholding_tax,2),
-            $taxinvoices->created_by,
+            $invoice_status
         ]);
     }
 

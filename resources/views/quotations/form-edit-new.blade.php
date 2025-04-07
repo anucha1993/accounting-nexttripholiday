@@ -290,11 +290,8 @@
                         $paymentWhosale = $quotationModel->GetDepositWholesale();
                         $withholdingTaxAmount = $invoiceModel?->getWithholdingTaxAmountAttribute() ?? 0;
                         $getTotalInputTaxVat = $quotationModel?->getTotalInputTaxVat() ?? 0;
-  
 
                         $invoiceVatAmount = $quotationModel->invoicetaxTotal() + $paymentInputtaxTotal;
-
-
                         $wholesalePayment = 0;
                         $wholesalePayment = $quotationModel->GetDepositWholesale() - $quotationModel->GetDepositWholesaleRefund();
 
@@ -311,14 +308,8 @@
                                 }
                         $TotalPayment = $quotationModel->GetDeposit() - $quotationModel->inputtaxTotalWholesale();
                         $TotalGrand = $TotalPayment - ($paymentInputtaxTotal+$quotationModel->getTotalInputTaxVatType()) ;
-
                         // 
                         $GetDepositWholesale = $quotationModel->GetDepositWholesale() -  $quotationModel->GetDepositWholesaleRefund();
-                    
-                              
-
-          
-
                     @endphp
                         {{-- {{$paymentInputtaxTotal}} --}}
                         <h5 class="card-title">คำนวนกำไร</h5>

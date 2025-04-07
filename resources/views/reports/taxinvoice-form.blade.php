@@ -101,7 +101,7 @@
                             <th>Quotations</th>
                             <th>จำนวนเงิน:บาท</th>
                             <th>ภาษีหัก ณ ที่จ่าย:บาท</th>
-                            <th>ผู้จัดทำ</th>
+                            <th>สถานะ</th>
                         </tr>
                     </thead>
 
@@ -119,7 +119,7 @@
                             <td> <a target="_blank" href="{{route('quote.editNew',$item->invoice->quote->quote_id)}}">{{$item->invoice->quote->quote_number ? $item->invoice->quote->quote_number : 'ใบเสนอราคาถูกลบ'}}</a> </td>
                             <td>{{number_format($item->invoice->invoice_grand_total,2)}}</td>
                             <td>{{number_format($item->invoice->invoice_withholding_tax,2)}}</td>
-                            <td>{{$item->created_by}}</td>
+                            <td>{{$item->taxinvoice_status === 'success' ? 'สำเร็จ' : 'ยกเลิก'  }}</td>
                            
                    
                         </tr>
@@ -131,12 +131,12 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="7" style="text-align:left"></th>
-                            <th style="text-align:left">
+                            <th colspan="6" style="text-align:left"></th>
+                            <th style="text-align:left" class="text-danger">
                                 มูลค่ารวม : {{ number_format($grandTotalSum, 2) }}
                             </th>
-                            <th style="text-align:left">
-                                มูลค่า.หัก.ณ.ที่จ่าย รวม: {{ number_format($withholdingTaxSum, 2) }}
+                            <th style="text-align:left" class="text-danger">
+                                มูลค่าภาษีรวม: {{ number_format($vat, 2) }}
                             </th>
                         </tr>
                     </tfoot>

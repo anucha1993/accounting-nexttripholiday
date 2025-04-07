@@ -144,7 +144,7 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                             <th>Booking Code</th>
                             <th>จำนวนเงิน:บาท</th>
                             <th>ภาษีหัก ณ ที่จ่าย:บาท</th>
-                            <th>ผู้จัดทำ</th>
+                            <th>สถานะ</th>
 
        
                         </tr>
@@ -164,7 +164,11 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                             <td>{{$item->invoice_booking}}</td>
                             <td>{{number_format($item->invoice_grand_total,2)}}</td>
                             <td>{{number_format($item->invoice_withholding_tax,2)}}</td>
-                            <td>{{$item->created_by}}</td>
+                            <td>
+                                {{$item->invoice_status === 'wait' ? 'รอดำเนินการ' : ''  }}
+                                {{$item->invoice_status === 'cancel' ? 'ยกเลิก' : ''  }}
+                                {{$item->invoice_status === 'success' ? 'สำเร็จ' : ''  }}
+                            </td>
                            
                    
                         </tr>
@@ -175,8 +179,8 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                        
                     </tbody>
                     <tfoot>
-                        <tr>
-                            <th colspan="7" style="text-align:left"></th>
+                        <tr class="text-danger">
+                            <th colspan="6" style="text-align:left"></th>
                             <th style="text-align:left">มูลค่ารวม : {{number_format($invoices->sum('invoice_grand_total',2))}}</th>
                             <th style="text-align:left">มูลค่า.หัก.ณ.ที่จ่าย รวม: {{number_format($invoices->sum('invoice_withholding_tax',2))}}</th>
                         </tr>

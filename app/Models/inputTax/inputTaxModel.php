@@ -2,8 +2,11 @@
 
 namespace App\Models\inputTax;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\invoices\invoiceModel;
+use App\Models\invoices\taxinvoiceModel;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\quotations\quotationModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class inputTaxModel extends Model
 {
@@ -30,8 +33,32 @@ class inputTaxModel extends Model
         'input_tax_withholding_status',
         'input_tax_wholesale_type',
         'input_tax_date_doc',
+        'input_tax_number_tax',
+        'input_tax_date_tax',
+        'taxinvoice_number',
         
     ];
 
+
+    public function quote()
+    {
+        return $this->belongsTo(quotationModel::class, 'input_tax_quote_id', 'quote_id');
+    }
+
+    public function invoice()
+    {
+        return $this->hasOneThrough(
+            invoiceModel::class,
+            quotationModel::class,
+            'quote_id', // Foreign key on quotations table
+            'invoice_quote_id', // Foreign key on invoices table
+            'input_tax_quote_id', // Local key on input_tax table
+            'quote_id' // Local key on quotations table
+        );
+    }
+
+    
+    
+ 
    
 }

@@ -74,11 +74,11 @@ class taxinvoiceReportController extends Controller
             return $taxinvoice->invoice->invoice_grand_total;
         });
         
-        $withholdingTaxSum = $taxinvoices->sum(function ($taxinvoice) {
+        $vat = $taxinvoices->sum(function ($taxinvoice) {
             return $taxinvoice->invoice->invoice_withholding_tax;
         });
 
         
-        return view('reports.taxinvoice-form', compact('taxinvoices','request','grandTotalSum','withholdingTaxSum'));
+        return view('reports.taxinvoice-form', compact('taxinvoices','request','grandTotalSum','vat'));
     }
 }

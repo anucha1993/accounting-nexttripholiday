@@ -66,7 +66,7 @@
                                 <td>
 
                                     @if ($item->payment_status === 'cancel')
-                                        0
+                                        
                                     @else
                                          @php
                                          
@@ -116,25 +116,27 @@
                                     @endif
                                     <a class="dropdown-item " href=""><i class="fas fa-envelope text-info"></i>ส่งเมล</a>
                                 </td>
+                                
+                              
+
                                 <td>
                                     @if ($item->payment_status === 'cancel')
-                                    <span class="badge rounded-pill bg-danger">Cancel</span>
-                                    @else
-                                    @if ($item->payment_status === 'success' && $item->payment_type !== 'refund')
-                                        <span class="badge rounded-pill bg-success">Success</span>
-                                    @endif
-                                    @if ($item->payment_type === 'refund')
-                                    @if ($item->payment_file_path !== NULL)
-                                      <span class="badge rounded-pill bg-success">คืนเงินแล้ว</span>
-                                    @else
-                                    <span class="badge rounded-pill bg-warning">รอคืนเงิน</span>
-                                    @endif
-                                    @endif
-                                    @if ($item->payment_status === null)
-                                        <span class="badge rounded-pill bg-warning">NULL</span>
-                                    @endif
+                                        <span class="badge rounded-pill bg-danger">ยกเลิก</span>
+                                    @elseif ($item->payment_type === 'refund')
+                                        @if ($item->payment_file_path !== null)
+                                            <span class="badge rounded-pill bg-success">คืนเงินแล้ว</span>
+                                        @else
+                                            <span class="badge rounded-pill bg-warning">รอคืนเงิน</span>
+                                        @endif
+                                    @elseif ($item->payment_status === 'success')
+                                        <span class="badge rounded-pill bg-success">สำเร็จ</span>
+                                    @elseif ($item->payment_status === 'wait')
+                                        <span class="badge rounded-pill bg-warning">รอแนบสลิป</span>
+                                    @elseif ($item->payment_status === null)
+                                        <span class="badge rounded-pill bg-secondary">ไม่มีข้อมูล</span>
                                     @endif
                                 </td>
+
                                 <td>
                                     @if ($item->payment_status !== 'cancel')
                                         <a class="dropdown-item payment-modal"
