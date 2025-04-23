@@ -11,9 +11,29 @@ class inputTaxReportController extends Controller
 {
     //
 
-    public function index()
+    public function index(Request $request)
     {
-        $inputTaxs = inputTaxModel::whereNotNull('input_tax_number_tax')->get();
+        $searchDateStart = $request->input('date_start');
+        $searchDateEnd = $request->input('date_end');
+        $status = $request->input('status');
+
+        $inputTaxs = inputTaxModel::whereNotNull('input_tax_number_tax')
+
+        ->when($searchDateStart && $searchDateEnd, function ($query) use ($searchDateStart, $searchDateEnd) {
+            return $query->whereBetween('input_tax_date_tax', [$searchDateStart, $searchDateEnd]);
+        })
+
+        ->when($status ,function ($query) use ($status) {
+            if ($status === 'not_null') {
+                 return $query->whereNotNull('input_tax_file');
+            } else {
+                return $query->whereNull('input_tax_file');
+            }
+            
+           
+        })
+
+        ->get();
 
 
         $grandTotalSum = $inputTaxs->sum(function ($inputTax) {

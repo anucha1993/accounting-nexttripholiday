@@ -37,6 +37,7 @@ use App\Http\Controllers\MPDF\MPDF_CreditNoteController;
 use App\Http\Controllers\MPDF\MPDF_taxReceiptController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
 use App\Http\Controllers\CreditNote\creditNoteController;
+use App\Http\Controllers\exports\inputTaxExportController;
 use App\Http\Controllers\exports\invoiceExportController;
 use App\Http\Controllers\exports\saleTaxExportController;
 use App\Http\Controllers\MPDF\MPDF_WithholdingController;
@@ -357,4 +358,5 @@ Route::post('export/excel/invoice', [invoiceExportController::class, 'export'])-
 Route::post('export/excel/taxinvoice', [taxinvoiceExportController::class, 'export'])->name('export.taxinvoice');
 Route::post('export/excel/receipt', [receiptExportControlle::class, 'export'])->name('export.receipt');
 Route::post('export/excel/saletax', [saleTaxExportController::class, 'export'])->name('export.saletax');
+Route::post('export/excel/inputtax', [inputTaxExportController::class, 'export'])->name('export.inputtax');
 

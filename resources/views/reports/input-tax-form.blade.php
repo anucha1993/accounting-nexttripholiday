@@ -75,17 +75,23 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                                     <input type="hidden" name="date_end">
                                 </div>
 
-                            {{-- <div class="col-md-2">
-                                <label for="">สถานะ</label>
-                                <select name="" id="" class="form-select" >
-                                    <option value="">---กรุณาเลือก---</option>
-                                </select>
-                            </div> --}}
+                                <div class="col-md-2">
+                                    <label for="">สถานะ</label>
+                                    <select name="status" id="" class="form-select" >
+                                        <option value="">---กรุณาเลือก---</option>
+                                        <option value="not_null">ได้รับแล้ว</option>
+                                        <option value="is_noll">ยังไม่ได้รับ</option>
+                                    </select>
+                                </div>
 
-                            <div class="col-md-8">
+                            <div class="col-md-7">
                                <br>
                                 <button type="submit" class="btn  btn-info float-end">แสดงรายงาน</button>
                             </div>
+                            <div class="col-md-1">
+                                <br>
+                                 <a href="{{route('report.input-tax')}}"  class="btn  btn-danger float-end ml-2">ล้างการค้นหา</a>
+                             </div>
                         </div>
                      
                         </div>
@@ -104,36 +110,55 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                 <h3>Report quotations</h3>
             </div>
             <div class="card-body">
-
+                <form action="{{route('export.inputtax')}}" method="post">
+                    @csrf
+                    @method('post')
+                    <input type="hidden" name="input_tax_ids" value="{{$inputTaxs->pluck('input_tax_id')}}">
+                    <button type="submit" class="btn btn-success"> <i class="fa fa-file-excel"></i> Export To Excel</button>
+                </form>
+            </div>
                 <table class="table table quote-table " style="font-size: 12px; width: 100%">
                     <thead>
                         <tr>
                             <th>ลำดับ</th>
                             <th>วันที่</th>
                             <th>เลขที่เอกสาร</th>
+                            <th>ไฟล์แนบ</th>
                             <th>เอกสารอ้างอิง</th>
                             <th>ชื่อผู้จำหน่าย</th>
                             <th>เลขที่ผู้เสียภาษี</th>
                             <th>มูลค่า</th>
                             <th>ภาษีมูลค่าเพิ่ม</th>
-       
+                            <th>สถานะ</th>
                         </tr>
                     </thead>
-
-
-                        
                     <tbody>
                        @forelse ($inputTaxs as $key => $item)
                        <tr>
                         <td>{{++$key}}</td>
                         <td>{{date('d/m/Y',strtotime($item->input_tax_date_tax))}}</td>
-                        <td>{{$item->input_tax_ref}}</td>
+                        <td>{{$item->input_tax_number_tax}}</td>
+                        <td>
+                            @if ($item->input_tax_file)
+                            <a href="{{ asset('storage/' . $item->input_tax_file) }}" class="btn btn-info btn-sm" onclick="openPdfPopup(this.href); return false;">
+                             เปิดดูไฟล์</a>
+                             @else
+                             ยังไม่รับเอกสาร
+                             @endif
+                        </td>
                         <td>{{ $item->invoice->taxinvoice->taxinvoice_number ?? 'ไม่มีข้อมูล' }}</td>
                         <td>{{$item->quote->quoteWholesale->wholesale_name_th}}</td>
                         <td>{{$item->quote->quoteWholesale->textid}}</td>
                         <td>{{number_format($item->input_tax_service_total,2)}}</td>
                         <td>{{number_format($item->input_tax_vat,2)}}</td>
 
+                        <td>
+                            @if ($item->input_tax_file)
+                            ได้รับเอกสารแล้ว
+                            @else
+                            ยังไม่รับเอกสาร
+                            @endif
+                        </td>
                         
                        </tr>
                            

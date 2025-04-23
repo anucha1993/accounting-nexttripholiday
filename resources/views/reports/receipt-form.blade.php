@@ -79,12 +79,11 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                                 <label for="">สถานะ</label>
                                 <select name="status" id="" class="form-select" >
                                     <option value="">---กรุณาเลือก---</option>
-                                    <option value="wait">รอชำระเงิน</option>
                                     <option value="success">สำเร็จ</option>
-                                    <option value="cancel">ยกเลิก</option>
-                                    <option value="refund">คืนเงิน</option>
+                                    <option value="wait">รอแนบสลิป</option>
                                 </select>
                             </div>
+
                             <div class="col-md-2">
                                 <label for="">เงือนไข</label>
                                 <select name="column_name" class="form-select">
@@ -95,6 +94,7 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                                     <option @if($request->column_name === 'customer_texid') selected @endif value="customer_texid">เลขประจำตัวผู้เสียภาษี</option>
                                 </select>
                             </div>
+
                             <div class="col-md-2">
                                 <label for="">คียร์เวิร์ด</label>
                                 <input type="text" name="keyword" class="form-control" placeholder="คียร์เวิร์ด" value="{{$request->keyword}}">
@@ -205,16 +205,9 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
 
 
                         </td>
+
                         <td>
-                            @if ($item->payment_status === 'cancel')
-                                <span class="badge rounded-pill bg-danger">ยกเลิก</span>
-                            @elseif ($item->payment_type === 'refund')
-                                @if ($item->payment_file_path !== null)
-                                    <span class="badge rounded-pill bg-success">คืนเงินแล้ว</span>
-                                @else
-                                    <span class="badge rounded-pill bg-warning">รอคืนเงิน</span>
-                                @endif
-                            @elseif ($item->payment_status === 'success')
+                            @if ($item->payment_status === 'success')
                                 <span class="badge rounded-pill bg-success">สำเร็จ</span>
                             @elseif ($item->payment_status === 'wait')
                                 <span class="badge rounded-pill bg-warning">รอแนบสลิป</span>

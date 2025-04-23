@@ -32,7 +32,6 @@ class receiptReportController extends Controller
             return $query->where('payment_number','LIKE','%'.$keyword.'%');
         })
 
-          
         ->when($column_name === 'quote_number', function ($query) use ($keyword) {
             return $query->whereHas('quote', function ($q1) use ($keyword) {
                 $q1->where('quote_number', 'LIKE', '%' . $keyword . '%');

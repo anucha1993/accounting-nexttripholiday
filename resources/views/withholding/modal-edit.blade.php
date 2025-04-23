@@ -144,12 +144,12 @@
                   
 
                    <div class="col-md-3">
-                       <label for="documentDate" class="form-label">วัน/เดือน/ปี/ ที่จ่าย</label>
-                       <input type="date" class="form-control" id="documentDate" name="document_date" value="{{ $document->document_date }}">
+                       <label for="documentDate" class="form-label">วัน/เดือน/ปี/ ที่จ่าย <span class="text-danger">*</span></label>
+                       <input type="date" class="form-control" id="documentDate" name="document_date" value="{{ $document->document_date }}" required>
                    </div>
                    <div class="col-md-3">
-                    <label for="documentDate" class="form-label">วันออกเอกสาร</label>
-                    <input type="date" class="form-control" id="documentDate" name="document_doc_date" value="{{ $document->document_doc_date }}">
+                    <label for="documentDate" class="form-label">วันออกเอกสาร <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="documentDate" name="document_doc_date" value="{{ $document->document_doc_date }}" required>
                 </div>
                </div>
        
