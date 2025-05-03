@@ -27,6 +27,7 @@ use App\Http\Controllers\MPDF\MPDF_PaymentController;
 use App\Http\Controllers\customers\customerController;
 use App\Http\Controllers\FPDF\FPDF_QuotatioController;
 use App\Http\Controllers\report\quoteReportController;
+use App\Http\Controllers\reports\saleReportController;
 use App\Http\Controllers\DebitNote\DebitNoteController;
 use App\Http\Controllers\exports\QuoteExportController;
 use App\Http\Controllers\invoices\taxInvoiceController;
@@ -37,7 +38,6 @@ use App\Http\Controllers\MPDF\MPDF_CreditNoteController;
 use App\Http\Controllers\MPDF\MPDF_taxReceiptController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
 use App\Http\Controllers\CreditNote\creditNoteController;
-use App\Http\Controllers\exports\inputTaxExportController;
 use App\Http\Controllers\exports\invoiceExportController;
 use App\Http\Controllers\exports\saleTaxExportController;
 use App\Http\Controllers\MPDF\MPDF_WithholdingController;
@@ -46,6 +46,7 @@ use App\Http\Controllers\quotefiles\QuoteFilesController;
 use App\Http\Controllers\reports\invoiceReportController;
 use App\Http\Controllers\reports\receiptReportController;
 use App\Http\Controllers\reports\saleTaxReportController;
+use App\Http\Controllers\exports\inputTaxExportController;
 use App\Http\Controllers\MPDF\MPDF_DebitReceiptController;
 use App\Http\Controllers\MPDF\MPDF_PaymentDebitController;
 use App\Http\Controllers\payments\paymentCreditController;
@@ -351,6 +352,7 @@ Route::get('/report/invoice/form',[invoiceReportController::class,'index'])->nam
 Route::get('/report/taxinvoice/form',[taxinvoiceReportController::class,'index'])->name('report.taxinvoice');
 Route::get('/report/receipt/form',[receiptReportController::class,'index'])->name('report.receipt');
 Route::get('/report/saletax/form',[saleTaxReportController::class,'index'])->name('report.saletax');
+Route::get('/report/sales/form',[saleReportController::class,'index'])->name('report.sales');
 
 // Export Excel 
 Route::post('export/excel/quote', [QuoteExportController::class, 'export'])->name('export.quote');
