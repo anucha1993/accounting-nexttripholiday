@@ -17,52 +17,32 @@ class invoiceModel extends Model
     use HasFactory;
     protected $table = 'invoices';
     protected $primaryKey = 'invoice_id';
-    protected $fillable = [
-          'invoice_id',
-          'invoice_number',
-          'invoice_date',
-          'invoice_quote_id',
-          'invoice_quote_number',
-          'invoice_booking',
-          'invoice_sale',
-          'customer_id',
-          'invoice_vat_exempted_amount',
-          'invoice_pre_tax_amount',
-          'invoice_discount',
-          'invoice_pre_vat_amount',
-          'invoice_vat',
-          'invoice_include_vat',
-          'invoice_grand_total',
-          'invoice_withholding_tax',
-          'invoice_withholding_tax_status',
-          'invoice_status',
-          'invoice_note',
-          'invoice_vat_type',
-          'deposit',
-          'created_by',
-          'updated_by',
-          'invoice_cancel_note',
-          'invoice_image'
-    ];
+    protected $fillable = ['invoice_id', 'invoice_number', 'invoice_date', 'invoice_quote_id', 'invoice_quote_number', 'invoice_booking', 'invoice_sale', 'customer_id', 'invoice_vat_exempted_amount', 'invoice_pre_tax_amount', 'invoice_discount', 'invoice_pre_vat_amount', 'invoice_vat', 'invoice_include_vat', 'invoice_grand_total', 'invoice_withholding_tax', 'invoice_withholding_tax_status', 'invoice_status', 'invoice_note', 'invoice_vat_type', 'deposit', 'created_by', 'updated_by', 'invoice_cancel_note', 'invoice_image'];
 
     public function quote()
     {
         return $this->belongsTo(quotationModel::class, 'invoice_quote_id', 'quote_id');
     }
+
+    public function quotation()
+    {
+        return $this->belongsTo(
+            quotationModel::class,
+            'invoice_quote_id', // FK บน invoices
+            'quote_id', // PK บน quotations (หรือ id ตามจริง)
+        );
+    }
+
     public function customer()
     {
         return $this->belongsTo(customerModel::class, 'customer_id', 'customer_id');
     }
 
-
-
     public function taxInvoice()
     {
         return $this->hasOne(taxinvoiceModel::class, 'invoice_id'); // 'invoice_id' เป็นคอลัมน์ใน taxinvoice ที่เชื่อมโยงกับ invoice
     }
-   
 
-   
     // public function getWithholdingTaxAmountAttribute()
     // {
     //     // ใช้ is_null เพื่อตรวจสอบว่า invoice_image เป็น NULL หรือไม่
@@ -76,13 +56,11 @@ class invoiceModel extends Model
     {
         // ใช้ is_null เพื่อตรวจสอบว่า invoice_image เป็น NULL หรือไม่
         if (is_null($this->invoice_image)) {
-            return is_numeric($this->invoice_withholding_tax) ? $this->invoice_withholding_tax+$this->invoice_vat : 0;
+            return is_numeric($this->invoice_withholding_tax) ? $this->invoice_withholding_tax + $this->invoice_vat : 0;
         }
         return $this->invoice_vat;
     }
 
-    
-    
     // ความสัมพันธ์กับ BookingModel
     public function invoiceBooking()
     {

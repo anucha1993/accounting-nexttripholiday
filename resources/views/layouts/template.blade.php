@@ -1300,6 +1300,10 @@
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานภาษีขาย</span>
                                     </a>
+                                    <a href="{{route('report.sales')}}" class="sidebar-link">
+                                        <i class="mdi mdi-comment-processing-outline"></i>
+                                        <span class="hide-menu">รายงานยอดขาย</span>
+                                    </a>
                                 </li>
                             </ul>
                         </li>
@@ -1357,12 +1361,14 @@
                                     </a>
                                 </li>
                                 <li class="sidebar-item">
-                                    <a href="widgets-data.html" class="sidebar-link">
+                                    <a href="{{route('commissions.index')}}" class="sidebar-link">
                                         <i class="mdi mdi-calendar"></i>
                                         <span class="hide-menu">
-                                            Data Widgets</span>
+                                            Commissions
+                                        </span>
                                     </a>
                                 </li>
+                                
                             </ul>
                         </li>
 

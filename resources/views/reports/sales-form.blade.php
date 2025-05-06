@@ -47,6 +47,8 @@
                                     <select name="column_name" class="form-select">
                                         <option @if ($request->column_name === 'all') selected @endif value="all">ทั้งหมด
                                         </option>
+                                        <option @if ($request->column_name === 'quote_number') selected @endif value="quote_number">
+                                            เลขที่ใบเสนอราคา</option>
                                         <option @if ($request->column_name === 'taxinvoice_number') selected @endif value="taxinvoice_number">
                                             เลขที่ใบกำกับภาษี</option>
                                         <option @if ($request->column_name === 'invoice_number') selected @endif value="invoice_number">
@@ -71,7 +73,7 @@
                                 </div>
                                 <div class="col-md-1">
                                     <br>
-                                    <a href="{{ route('report.taxinvoice') }}"
+                                    <a href="{{ route('report.sales') }}"
                                         class="btn  btn-danger float-end ml-2">ล้างการค้นหา</a>
                                 </div>
                             </div>
@@ -90,20 +92,20 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="text-info">Sales Report</h3><br>
-                <form action="{{ route('export.taxinvoice') }}" method="post">
+                {{-- <form action="{{ route('export.taxinvoice') }}" method="post">
                     @csrf
                     @method('post')
                     <input type="hidden" name="taxinvoice_ids" value="">
                     <button type="submit" class="btn btn-success"> <i class="fa fa-file-excel"></i> Export To
                         Excel</button>
-                </form>
+                </form> --}}
             </div>
             <div class="card-body">
 
                 <table class="table table quote-table " style="font-size: 12px; width: 100%">
                     <thead>
                         <tr>
-                            <th>เลขที่ใบแจ้งหนี้</th>
+                            <th>Quotes</th>
                             <th>ช่วงเวลาเดินทาง</th>
                             <th>โฮลเซลล์</th>
                             <th>ชื่อลูกค้า</th>
@@ -118,13 +120,20 @@
                             <th>ต้นทุนอื่นๆ</th>
                             <th>กำไร</th>
                             <th>กำไรเฉลี่ย:คน</th>
+                            <th>คอมมิชชั่นทั้งสิ้น</th>
+                            <th>ค่าคอมมิชชั่น/Step</th>
+                            <th>ค่าคอมมิชชั่น/%</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
+                        @php
+                        $totalMath = 0;
+                        @endphp
                         @forelse ($taxinvoices as $item)
                             @php
                                 $withholdingTaxAmount = $item->invoice?->getWithholdingTaxAmountAttribute() ?? 0;
-                                $getTotalInputTaxVat =  $item->invoice->quote?->getTotalInputTaxVat() ?? 0;
+                                $getTotalInputTaxVat = $item->invoice->quote?->getTotalInputTaxVat() ?? 0;
                                 $hasInputTaxFile = $item->invoice->quote
                                     ->InputTaxVat()
                                     ->whereNotNull('input_tax_file')
@@ -138,13 +147,29 @@
                                     $paymentInputtaxTotal = $withholdingTaxAmount + $getTotalInputTaxVat;
                                 }
 
-                                $wholesaleTotal = $item->invoice->quote->GetDepositWholesale() - $item->invoice->quote->GetDepositWholesaleRefund();
+                                $profit =
+                                    $item->invoice->quote->GetDepositWholesale() -
+                                    ($item->invoice->quote->GetDepositWholesaleRefund() - $paymentInputtaxTotal);
 
-                                $totalSale = $item->invoice->quote->quote_grand_total - $wholesaleTotal;
+                                $totalSale = $item->invoice->quote->quote_grand_total - $profit;
+                                $commission = $totalSale - $paymentInputtaxTotal;
+                                // 1) กำไรรวม (total profit) — ใช้เป็นฐานคูณ %
+                                $people = $item->invoice->quote->quote_pax_total;
+                                $totalProfit = $totalSale - $paymentInputtaxTotal;
+                                // 2) กำไร “ต่อคน” (profit per person) — ใช้จับช่วง Step
+                                $profitPerPerson = $people > 0 ? $totalProfit / $people : 0;
+                                /// คำนวนค่าคมมิซชั่น
+                                $matches = \App\Models\CommissionRule::matchBoth($profitPerPerson, $totalProfit);
+                               
+                                $totalMath += $matches['step']['commission']*$item->invoice->quote->quote_pax_total;
+
 
                             @endphp
                             <tr>
-                                <td>{{ $item->invoice_number }}</td>
+                                <td> <a target="_blank"
+                                        href="{{ route('quote.editNew', $item->invoice->quote->quote_id) }}">{{ $item->invoice->quote->quote_number ? $item->invoice->quote->quote_number : 'ใบเสนอราคาถูกลบ' }}</a>
+                                </td>
+
                                 <td>{{ date('d/m/Y', strtotime($item->invoice->quote->quote_date_start)) . ' - ' . date('d/m/Y', strtotime($item->invoice->quote->quote_date_start)) }}
                                 </td>
                                 <td>{{ $item->invoice->quote->quoteWholesale->code }}</td>
@@ -159,10 +184,33 @@
                                 </td>
                                 <td>{{ number_format($item->invoice->quote->quote_discount, 2) }}</td>
                                 <td>{{ number_format($item->invoice->quote->quote_grand_total, 2) }}</td>
-                                <td>{{ number_format($wholesaleTotal, 2) }}</td>
+                                <td>{{ number_format($profit, 2) }}</td>
                                 <td>{{ number_format($paymentInputtaxTotal, 2) }}</td>
                                 <td>{{ number_format($totalSale, 2) }}</td>
-                                <td>{{ number_format(($totalSale-$paymentInputtaxTotal)/2, 2) }}</td>
+                                <td>{{ number_format($commission / 2, 2) }}</td>
+                               
+                                {{-- STEP --}}
+                                
+                                <td>{{ number_format($matches['step']['commission']*$item->invoice->quote->quote_pax_total , 2) }}</td>
+                                <td>
+                                    @if ($matches['step']['rule'])
+                                        {{ $matches['step']['rule']->name }}
+                                        ({{ number_format($matches['step']['commission'], 2) }} ฿/คน)
+                                    @else
+                                        ไม่พบช่วง
+                                    @endif
+                                </td>
+
+                                {{-- PERCENT --}}
+                                <td>
+                                    @if ($matches['percent']['rule'])
+                                        {{ $matches['percent']['rule']->value }} %
+                                        ({{ number_format($matches['percent']['commission'], 2) }} ฿)
+                                    @else
+                                        ไม่พบช่วง
+                                    @endif
+                                </td>
+                                
                             </tr>
 
                         @empty
@@ -171,13 +219,14 @@
 
                     <tfoot>
                         <tr>
-                            <th colspan="10" style="text-align:left"></th>
-                            <th style="text-align:left" class="text-danger">
-                                มูลค่ารวม :
+                            <th colspan="15" style=""></th>
+                            <th style="" class="text-danger">
+                               คอมมิชชั่น : {{ number_format($totalMath,2)}} บาท
                             </th>
-                            <th style="text-align:left" class="text-danger">
-                                มูลค่าภาษีรวม:
-                            </th>
+                            {{-- <th style="" class="text-danger">
+                                {{ number_format($discount,2)}}
+                            </th> --}}
+                  
                         </tr>
                     </tfoot>
 

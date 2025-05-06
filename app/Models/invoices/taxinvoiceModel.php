@@ -4,6 +4,7 @@ namespace App\Models\invoices;
 
 use App\Models\invoices\invoiceModel;
 use App\Models\customers\customerModel;
+use App\Models\quotations\quotationModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -34,12 +35,14 @@ class taxinvoiceModel extends Model
         return $this->hasOneThrough(
             customerModel::class,
             invoiceModel::class,
-            'invoice_id', // Foreign key on invoices table...
-            'customer_id', // Foreign key on customers table...
-            'invoice_id', // Local key on taxinvoices table...
-            'customer_id'  // Local key on invoices table...
+            'invoice_id', 
+            'customer_id', 
+            'invoice_id', 
+            'customer_id'  
         );
     }
+
+
 
 
     

@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('withholding_tax_documents', function (Blueprint $table) {
+        Schema::create('commission_settings', function (Blueprint $table) {
             $table->id();
+            $table->enum('type', ['step', 'percent']);
+            $table->json('settings');
+            $table->boolean('is_active')->default(false); // เปิดใช้งานอันไหน
             $table->timestamps();
         });
     }
@@ -22,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('withholding_tax_documents');
+        Schema::dropIfExists('commission_settings');
     }
 };

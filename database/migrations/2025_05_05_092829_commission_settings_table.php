@@ -9,12 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('quote_log_models', function (Blueprint $table) {
+        Schema::create('commission_settings', function (Blueprint $table) {
             $table->id();
+            $table->enum('current_type', ['step','percent'])->default('step');
             $table->timestamps();
         });
+
+        // ใส่ค่า default แถวแรก
+        DB::table('commission_settings')->insert(['current_type' => 'step']);
     }
 
     /**
@@ -22,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('quote_log_models');
+        //
     }
 };

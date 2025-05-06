@@ -12,11 +12,13 @@ use App\Http\Controllers\quotations\quoteLog;
 use App\Http\Controllers\selects\periodSelect;
 use App\Http\Controllers\api\apiTourController;
 use App\Http\Controllers\debits\debitController;
+use App\Http\Controllers\CommissionRuleController;
 use App\Http\Controllers\credits\creditController;
 use App\Http\Controllers\MPDF\MailQuoteController;
 use App\Http\Controllers\airline\airlineController;
 use App\Http\Controllers\booking\BookingController;
 use App\Http\Controllers\reports\saleTaxController;
+use App\Http\Controllers\Admin\CommissionController;
 use App\Http\Controllers\invoices\invoiceController;
 use App\Http\Controllers\payments\paymentController;
 use App\Http\Controllers\products\productController;
@@ -361,4 +363,8 @@ Route::post('export/excel/taxinvoice', [taxinvoiceExportController::class, 'expo
 Route::post('export/excel/receipt', [receiptExportControlle::class, 'export'])->name('export.receipt');
 Route::post('export/excel/saletax', [saleTaxExportController::class, 'export'])->name('export.saletax');
 Route::post('export/excel/inputtax', [inputTaxExportController::class, 'export'])->name('export.inputtax');
+
+
+Route::resource('commissions', CommissionRuleController::class)
+     ->except(['show', 'create', 'edit']);   // เราใช้แค่หน้า index หน้าเดียว
 
