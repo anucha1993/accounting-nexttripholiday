@@ -66,6 +66,7 @@
                                     <input type="text" name="keyword" class="form-control" placeholder="คียร์เวิร์ด"
                                         value="{{ $request->keyword }}">
                                 </div>
+                                
 
                                 <div class="col-md-2">
                                     <br>
@@ -75,6 +76,49 @@
                                     <br>
                                     <a href="{{ route('report.sales') }}"
                                         class="btn  btn-danger float-end ml-2">ล้างการค้นหา</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="">โฮลเซลล์</label>
+                                    <select name="wholsale_id" id="" class="form-select">
+                                        <option value="">---กรุณาเลือก---</option>
+                                     @forelse ($wholesales as $item)
+                                     <option value="{{$item->id}}" @if ($request->wholsale_id == $item->id) selected @endif >{{$item->code}}</option>
+                                     @empty
+                                         
+                                     @endforelse
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="">ประเทศ</label>
+                                    <select name="country_id" id="" class="form-select">
+                                        <option value="">---กรุณาเลือก---</option>
+                                     @forelse ($country as $item)
+                                     <option value="{{$item->id}}" @if ($request->country_id == $item->id) selected @endif >{{$item->iso2}}</option>
+                                     @empty
+                                         
+                                     @endforelse
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="">เซลล์ผู้ขาย</label>
+                                    <select name="sale_id" id="" class="form-select">
+                                        <option value="">---กรุณาเลือก---</option>
+                                     @forelse ($sales as $item)
+                                     <option value="{{$item->id}}" @if ($request->sale_id == $item->id) selected @endif >{{$item->name}}</option>
+                                     @empty
+                                         
+                                     @endforelse
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="">ประเภทคำนวนค่าคอมมิชชั่น</label>
+                                    <select name="commission" id="" class="form-select">
+                                        <option value="step"  @if ($request->commission == 'step') selected @endif>step</option>
+                                        <option value="%"  @if ($request->commission == '%') selected @endif>%</option>
+                                    
+                                    </select>
                                 </div>
                             </div>
 
@@ -92,13 +136,13 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="text-info">Sales Report</h3><br>
-                {{-- <form action="{{ route('export.taxinvoice') }}" method="post">
+                <form action="{{ route('export.sales') }}" method="post">
                     @csrf
                     @method('post')
-                    <input type="hidden" name="taxinvoice_ids" value="">
+                    <input type="hidden" name="taxinvoice_ids" value="{{$taxinvoices->pluck('taxinvoice_id')}}">
                     <button type="submit" class="btn btn-success"> <i class="fa fa-file-excel"></i> Export To
                         Excel</button>
-                </form> --}}
+                </form>
             </div>
             <div class="card-body">
 
@@ -121,14 +165,30 @@
                             <th>กำไร</th>
                             <th>กำไรเฉลี่ย:คน</th>
                             <th>คอมมิชชั่นทั้งสิ้น</th>
+
+                            @if ($request->commission !== '%')
                             <th>ค่าคอมมิชชั่น/Step</th>
+
+                            @endif
+                            @if ($request->commission === '%')
                             <th>ค่าคอมมิชชั่น/%</th>
+                            @endif
+                           
+                           
                             
                         </tr>
                     </thead>
                     <tbody>
                         @php
                         $totalMath = 0;
+                        $totalPeople = 0;
+                        $totalSales = 0;
+                        $InputtaxTotal = 0;
+                        $WhosaleTotal = 0;
+                        $granTotal = 0;
+                        $discountTotal = 0;
+                        $serviceTotal = 0;
+                        $paxTotal = 0;
                         @endphp
                         @forelse ($taxinvoices as $item)
                             @php
@@ -150,14 +210,26 @@
                                 $profit =
                                     $item->invoice->quote->GetDepositWholesale() -
                                     ($item->invoice->quote->GetDepositWholesaleRefund() - $paymentInputtaxTotal);
+                                 
 
                                 $totalSale = $item->invoice->quote->quote_grand_total - $profit;
+                                $totalSales +=  $totalSale;
+                                $WhosaleTotal += $profit;
+                                $granTotal += $item->invoice->quote->quote_grand_total;
+                                $discountTotal += $item->invoice->quote->quote_discount;
+                                $serviceTotal += $item->invoice->quote->quote_grand_total + $item->invoice->quote->quote_discount;
+                                $paxTotal += $item->invoice->quote->quote_pax_total;
+
                                 $commission = $totalSale - $paymentInputtaxTotal;
                                 // 1) กำไรรวม (total profit) — ใช้เป็นฐานคูณ %
                                 $people = $item->invoice->quote->quote_pax_total;
                                 $totalProfit = $totalSale - $paymentInputtaxTotal;
                                 // 2) กำไร “ต่อคน” (profit per person) — ใช้จับช่วง Step
                                 $profitPerPerson = $people > 0 ? $totalProfit / $people : 0;
+
+                                $totalPeople += $profitPerPerson;
+                                $InputtaxTotal += $paymentInputtaxTotal;
+                             
                                 /// คำนวนค่าคมมิซชั่น
                                 $matches = \App\Models\CommissionRule::matchBoth($profitPerPerson, $totalProfit);
                                
@@ -192,6 +264,8 @@
                                 {{-- STEP --}}
                                 
                                 <td>{{ number_format($matches['step']['commission']*$item->invoice->quote->quote_pax_total , 2) }}</td>
+
+                                @if ($request->commission !== '%')
                                 <td>
                                     @if ($matches['step']['rule'])
                                         {{ $matches['step']['rule']->name }}
@@ -200,7 +274,10 @@
                                         ไม่พบช่วง
                                     @endif
                                 </td>
-
+                                
+                                @endif
+                                @if ($request->commission === '%')
+                              
                                 {{-- PERCENT --}}
                                 <td>
                                     @if ($matches['percent']['rule'])
@@ -210,6 +287,10 @@
                                         ไม่พบช่วง
                                     @endif
                                 </td>
+                                @endif
+
+                              
+
                                 
                             </tr>
 
@@ -219,9 +300,17 @@
 
                     <tfoot>
                         <tr>
-                            <th colspan="15" style=""></th>
+                            <th colspan="7" style=""></th>
+                            <th class="text-danger">{{ number_format($paxTotal)}} </th>
+                            <th class="text-danger">{{ number_format($serviceTotal,2)}} </th>
+                            <th class="text-danger">{{ number_format($discountTotal,2)}} </th>
+                            <th class="text-danger">{{ number_format($granTotal,2)}} </th>
+                            <th class="text-danger">{{ number_format($WhosaleTotal,2)}} </th>
+                            <th class="text-danger">{{ number_format($InputtaxTotal,2)}} </th>
+                            <th class="text-danger">{{ number_format($totalSales,2)}} </th>
+                            <th class="text-danger">{{ number_format($totalPeople,2)}} </th>
                             <th style="" class="text-danger">
-                               คอมมิชชั่น : {{ number_format($totalMath,2)}} บาท
+                               {{ number_format($totalMath,2)}} 
                             </th>
                             {{-- <th style="" class="text-danger">
                                 {{ number_format($discount,2)}}

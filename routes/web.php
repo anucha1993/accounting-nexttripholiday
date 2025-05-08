@@ -32,6 +32,7 @@ use App\Http\Controllers\report\quoteReportController;
 use App\Http\Controllers\reports\saleReportController;
 use App\Http\Controllers\DebitNote\DebitNoteController;
 use App\Http\Controllers\exports\QuoteExportController;
+use App\Http\Controllers\exports\salesExportController;
 use App\Http\Controllers\invoices\taxInvoiceController;
 use App\Http\Controllers\MPDF\MPDF_DebitNoteController;
 use App\Http\Controllers\MPDF\MPDF_QuotationController;
@@ -363,6 +364,7 @@ Route::post('export/excel/taxinvoice', [taxinvoiceExportController::class, 'expo
 Route::post('export/excel/receipt', [receiptExportControlle::class, 'export'])->name('export.receipt');
 Route::post('export/excel/saletax', [saleTaxExportController::class, 'export'])->name('export.saletax');
 Route::post('export/excel/inputtax', [inputTaxExportController::class, 'export'])->name('export.inputtax');
+Route::post('export/excel/sales', [salesExportController::class, 'export'])->name('export.sales');
 
 
 Route::resource('commissions', CommissionRuleController::class)
