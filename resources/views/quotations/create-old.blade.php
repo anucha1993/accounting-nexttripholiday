@@ -165,7 +165,7 @@
                                     </div>
                                     <div class="col-md-3 mb-2">
                                         <label>Email <span class="text-danger"> * </span></label>
-                                        <input type="email" class="form-control" name="customer_email" placeholder="email"
+                                        <input type="email" class="form-control" name="customer_email" placeholder="email" 
                                             >
                                     </div>
                                     <div class="col-md-3 mb-2">

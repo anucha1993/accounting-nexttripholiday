@@ -18,7 +18,6 @@ use App\Http\Controllers\MPDF\MailQuoteController;
 use App\Http\Controllers\airline\airlineController;
 use App\Http\Controllers\booking\BookingController;
 use App\Http\Controllers\reports\saleTaxController;
-use App\Http\Controllers\Admin\CommissionController;
 use App\Http\Controllers\invoices\invoiceController;
 use App\Http\Controllers\payments\paymentController;
 use App\Http\Controllers\products\productController;
@@ -49,6 +48,7 @@ use App\Http\Controllers\quotefiles\QuoteFilesController;
 use App\Http\Controllers\reports\invoiceReportController;
 use App\Http\Controllers\reports\receiptReportController;
 use App\Http\Controllers\reports\saleTaxReportController;
+use App\Http\Controllers\commissions\CommissionController;
 use App\Http\Controllers\exports\inputTaxExportController;
 use App\Http\Controllers\MPDF\MPDF_DebitReceiptController;
 use App\Http\Controllers\MPDF\MPDF_PaymentDebitController;
@@ -367,6 +367,9 @@ Route::post('export/excel/inputtax', [inputTaxExportController::class, 'export']
 Route::post('export/excel/sales', [salesExportController::class, 'export'])->name('export.sales');
 
 
-Route::resource('commissions', CommissionRuleController::class)
-     ->except(['show', 'create', 'edit']);   // เราใช้แค่หน้า index หน้าเดียว
+
+Route::get('/commissions', [CommissionController::class, 'index'])->name('commissions.index');
+Route::post('/commissions/store', [CommissionController::class, 'store'])->name('commissions.store');
+Route::post('/commissions/update', [CommissionController::class, 'update'])->name('commissions.update');
+Route::delete('/commissions/{id}', [CommissionController::class, 'destroy'])->name('commissions.destroy');
 

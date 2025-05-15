@@ -231,9 +231,9 @@
                                 $InputtaxTotal += $paymentInputtaxTotal;
                              
                                 /// คำนวนค่าคมมิซชั่น
-                                $matches = \App\Models\CommissionRule::matchBoth($profitPerPerson, $totalProfit);
+                                // $matches = \App\Models\CommissionRule::matchBoth($profitPerPerson, $totalProfit);
                                
-                                $totalMath += $matches['step']['commission']*$item->invoice->quote->quote_pax_total;
+                                // $totalMath += $matches['step']['commission']*$item->invoice->quote->quote_pax_total;
 
 
                             @endphp
@@ -263,8 +263,8 @@
                                
                                 {{-- STEP --}}
                                 
-                                <td>{{ number_format($matches['step']['commission']*$item->invoice->quote->quote_pax_total , 2) }}</td>
-
+                                {{-- <td>{{ number_format($matches['step']['commission']*$item->invoice->quote->quote_pax_total , 2) }}</td> --}}
+{{-- 
                                 @if ($request->commission !== '%')
                                 <td>
                                     @if ($matches['step']['rule'])
@@ -277,8 +277,7 @@
                                 
                                 @endif
                                 @if ($request->commission === '%')
-                              
-                                {{-- PERCENT --}}
+ 
                                 <td>
                                     @if ($matches['percent']['rule'])
                                         {{ $matches['percent']['rule']->value }} %
@@ -287,7 +286,7 @@
                                         ไม่พบช่วง
                                     @endif
                                 </td>
-                                @endif
+                                @endif --}}
 
                               
 

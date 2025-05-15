@@ -1,190 +1,188 @@
 @extends('layouts.template')
 
 @section('content')
-<div class="container-fluid page-content py-4">
-    <div class="container">
-
-        {{-- ฟอร์มเพิ่มรายการ (Create) --}}
-        <div class="card mb-4">
-            <div class="card-header fw-bold">เพิ่มค่าคอมมิชชั่น</div>
-            <div class="card-body">
-                <form id="create-form" class="row g-2">
-                    @csrf
-                    <div class="col-md-3">
-                        <input class="form-control" name="name" placeholder="ชื่อ (เช่น Step1)" required>
-                    </div>
-                    <div class="col-md-2">
-                        <select class="form-select" name="type" required>
-                            <option value="step">Step</option>
-                            <option value="percent">Percent</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <input class="form-control" type="number" step="0.01"
-                               name="min_profit" placeholder="Min Profit" required>
-                    </div>
-                    <div class="col-md-2">
-                        <input class="form-control" type="number" step="0.01"
-                               name="max_profit" placeholder="Max Profit (เว้นว่างคือ ∞)">
-                    </div>
-                    <div class="col-md-2">
-                        <input class="form-control" type="number" step="0.01"
-                               name="value" placeholder="Value" required>
-                    </div>
-                    <div class="col-md-1">
-                        <select class="form-select" name="unit">
-                            <option value="baht">บาท</option>
-                            <option value="percent">%</option>
-                        </select>
-                    </div>
-                    <input type="hidden" name="status" value="active">
-                    <div class="col-12 text-end">
-                        <button type="submit" class="btn btn-primary">บันทึก</button>
-                    </div>
-                </form>
-            </div>
+<div class="container-fluid page-content">
+    <div class="card">
+        <div class="card-header">
+            <h3>Commission Groups</h3>
         </div>
+        <div class="card-body">
+            <button class="btn btn-success mb-3" id="newCommission">+ เพิ่มกลุ่มค่าคอมมิชชั่น</button>
 
-        {{-- ตารางรายการ (Read) --}}
-        <div class="card">
-            <div class="card-header fw-bold">รายการค่าคอมมิชชั่น</div>
-            <div class="card-body table-responsive">
-                <table class="table align-middle" id="commission-table">
-                    <thead class="table-light">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>ชื่อกลุ่ม</th>
+                        <th>Sale IDs</th>
+                        <th>ประเภท</th>
+                        <th>ช่วง Commission</th>
+                        <th>จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($commissions as $item)
                         <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Min</th>
-                            <th>Condition</th>
-                            <th>Max</th>
-                            <th>Value</th>
-                            <th>Unit</th>
-                            <th>Status</th>
-                            <th style="width:120px">Actions</th>
+                            <td>{{ $item->id }}</td>
+                            <td>{{ $item->name }}</td>
+                            <td>
+                                @php
+                                    $saleNames = \App\Models\sales\saleModel::whereIn('id', $item->sale_ids ?? [])->pluck('name')->toArray();
+                                @endphp
+                                {{ implode(', ', $saleNames) }}
+                            </td>
+                            <td>{{ $item->type }}</td>
+                            <td>
+                                @foreach ($item->commissionLists as $list)
+                                    <div>{{ $list->min_amount }} - {{ $list->max_amount }} = {{ $list->commission_calculate }}</div>
+                                @endforeach
+                            </td>
+                            <td>
+                                <button class="btn btn-warning edit-btn"
+                                    data-id="{{ $item->id }}"
+                                    data-name="{{ $item->name }}"
+                                    data-type="{{ $item->type }}"
+                                    data-sale_ids='@json($item->sale_ids)'
+                                    data-lists='@json($item->commissionLists)'>
+                                    แก้ไข
+                                </button>
+                                <form action="{{ route('commissions.destroy', $item->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('ยืนยันการลบ?')">ลบ</button>
+                                </form>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($commissions as $item)
-                            @include('commissions.partials.row', ['item' => $item])
-                        @endforeach
-                    </tbody>
-                </table>
+                    @endforeach
+                </tbody>
+            </table>
+
+            {{-- MODAL --}}
+            <div class="modal fade" id="commissionModal">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <form id="commissionForm" method="POST" action="{{ route('commissions.store') }}">
+                            @csrf
+                            <input type="hidden" name="commission_id" id="commission_id">
+
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title">เพิ่ม/แก้ไข Commission</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <label>ชื่อกลุ่ม</label>
+                                <input type="text" name="name" class="form-control" required>
+
+                                <label>เลือกพนักงานขาย</label>
+                                <select name="sale_ids[]" class="form-select" multiple id="sale_ids">
+                                    @foreach ($sales as $sale)
+                                        @php $usedGroup = $usedSalesMap[$sale->id] ?? null; @endphp
+                                        <option value="{{ $sale->id }}" data-used-group="{{ $usedGroup }}" @if ($usedGroup && $usedGroup != old('commission_id')) data-disabled="true" @endif style="{{ $usedGroup ? 'color: #999;' : '' }}">
+                                            {{ $sale->name }}{{ $usedGroup ? ' (ใช้แล้ว)' : '' }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                                <label>ประเภท</label>
+                                <select name="type" class="form-control" required>
+                                    <option value="step">Step</option>
+                                    <option value="percentage">Percentage</option>
+                                </select>
+
+                                <hr>
+                                <table class="table" id="commissionTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Min</th>
+                                            <th>Max</th>
+                                            <th>จำนวนเงิน</th>
+                                            <th><button type="button" class="btn btn-success" id="addRow">+</button></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" type="submit">บันทึก</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </div>
 
-{{-- โมดัลแก้ไข (Update) --}}
-<div class="modal fade" id="editModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <form id="edit-form" class="modal-content">
-        @csrf @method('PUT')
-        <div class="modal-header">
-            <h5 class="modal-title">แก้ไขค่าคอมมิชชั่น</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body row g-2"><!-- ช่องฟิลด์จะเติมด้วย JS --></div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-            <button type="submit" class="btn btn-success">อัปเดต</button>
-        </div>
-    </form>
-  </div>
-</div>
-
-
 <script>
-$(function () {
-    const tableBody = $('#commission-table tbody');
-    const token = $('meta[name="csrf-token"]').attr('content');
+$(document).ready(function() {
+    $('#sale_ids').select2({
+        dropdownParent: $("#commissionModal"),
+        placeholder: "เลือกพนักงานขาย",
+        width: '100%'
+    });
 
-    /* ---------- Create ---------- */
-    $('#create-form').on('submit', function (e) {
-        e.preventDefault();
-        $.ajax({
-            url: "{{ route('commissions.store') }}",
-            method: 'POST',
-            data: $(this).serialize(),
-            headers: {'X-CSRF-TOKEN': token},
-            success(res) {
-                tableBody.prepend(res.html);   // ใช้แถว HTML ที่ backend ส่งกลับ
-                $('#create-form')[0].reset();
-            },
-            error(xhr){ alert(xhr.responseJSON.message); }
+    $('#sale_ids').on('select2:selecting', function(e) {
+        const option = $(e.params.args.data.element);
+        if (option.data('disabled')) {
+            alert('พนักงานขายคนนี้ถูกใช้ในกลุ่มอื่นแล้ว');
+            e.preventDefault();
+        }
+    });
+
+    $('#newCommission').click(function() {
+        $('#commissionForm').trigger('reset');
+        $('#commission_id').val('');
+        $('#commissionForm').attr('action', '{{ route('commissions.store') }}');
+        $('#commissionTable tbody').html('');
+        $('#sale_ids').val([]).trigger('change');
+        $('#commissionModal').modal('show');
+    });
+
+    $('.edit-btn').click(function() {
+        let id = $(this).data('id');
+        let name = $(this).data('name');
+        let sale_ids = $(this).data('sale_ids');
+        let type = $(this).data('type');
+        let lists = $(this).data('lists');
+
+        $('#commission_id').val(id);
+        $('input[name="name"]').val(name);
+        $('select[name="type"]').val(type);
+        $('#commissionForm').attr('action', '{{ route('commissions.update') }}');
+        $('#sale_ids').val(sale_ids).trigger('change');
+
+        let html = '';
+        lists.forEach((item, index) => {
+            html += `<tr>
+                <td><input type="number" name="commission_lists[${index}][min_amount]" class="form-control" value="${item.min_amount}"></td>
+                <td><input type="number" name="commission_lists[${index}][max_amount]" class="form-control" value="${item.max_amount}"></td>
+                <td><input type="number" name="commission_lists[${index}][commission_calculate]" class="form-control" value="${item.commission_calculate}"></td>
+                <td><button type="button" class="btn btn-danger removeRow">-</button></td>
+            </tr>`;
         });
+        $('#commissionTable tbody').html(html);
+        $('#commissionModal').modal('show');
     });
 
-    /* ---------- Edit (open modal) ---------- */
-    tableBody.on('click','.btn-edit',function () {
-        const item = $(this).data('item');
-        fillEditForm(item);
-        $('#editModal').modal('show');
-    });
-
-    function fillEditForm(item){
-        const body = $('#editModal .modal-body').empty();
-        body.append(`
-            <input type="hidden" name="id" value="${item.id}">
-            <div class="col-md-4"><label class="form-label">Name</label>
-              <input class="form-control" name="name" value="${item.name}" required></div>
-            <div class="col-md-3"><label class="form-label">Type</label>
-              <select class="form-select" name="type">
-                <option value="step" ${item.type==='step'?'selected':''}>Step</option>
-                <option value="percent" ${item.type==='percent'?'selected':''}>Percent</option>
-              </select></div>
-            <div class="col-md-2"><label class="form-label">Min Profit</label>
-              <input class="form-control" type="number" step="0.01" name="min_profit" value="${item.min_profit}" required></div>
-            <div class="col-md-2"><label class="form-label">Max Profit</label>
-              <input class="form-control" type="number" step="0.01" name="max_profit" value="${item.max_profit ?? ''}"></div>
-            <div class="col-md-2"><label class="form-label">Value</label>
-              <input class="form-control" type="number" step="0.01" name="value" value="${item.value}" required></div>
-            <div class="col-md-2"><label class="form-label">Unit</label>
-              <select class="form-select" name="unit">
-                <option value="baht" ${item.unit==='baht'?'selected':''}>บาท</option>
-                <option value="percent" ${item.unit==='percent'?'selected':''}>%</option>
-              </select></div>
-            <div class="col-md-3"><label class="form-label">Status</label>
-              <select class="form-select" name="status">
-                <option value="active" ${item.status==='active'?'selected':''}>Active</option>
-                <option value="inactive" ${item.status==='inactive'?'selected':''}>Inactive</option>
-              </select></div>
+    $('#addRow').click(function(e) {
+        e.preventDefault();
+        let idx = $('#commissionTable tbody tr').length;
+        $('#commissionTable tbody').append(`
+            <tr>
+                <td><input type="number" name="commission_lists[${idx}][min_amount]" class="form-control" required></td>
+                <td><input type="number" name="commission_lists[${idx}][max_amount]" class="form-control" required></td>
+                <td><input type="number" name="commission_lists[${idx}][commission_calculate]" class="form-control" required></td>
+                <td><button type="button" class="btn btn-danger removeRow">-</button></td>
+            </tr>
         `);
-    }
-
-    /* ---------- Update ---------- */
-    $('#edit-form').on('submit',function(e){
-        e.preventDefault();
-        const id = $(this).find('input[name=id]').val();
-        $.ajax({
-            url: `/commissions/${id}`,
-            method:'POST',
-            data: $(this).serialize(),
-            headers: {'X-CSRF-TOKEN': token, 'X-HTTP-Method-Override':'PUT'},
-            success(res){
-                tableBody.find(`tr[data-id=${id}]`).replaceWith(res.html);
-                $('#editModal').modal('hide');
-            },
-            error(xhr){ alert(xhr.responseJSON.message); }
-        });
     });
 
-    /* ---------- Delete ---------- */
-    tableBody.on('click','.btn-delete',function(){
-        if(!confirm('ลบรายการนี้?')) return;
-        const id = $(this).data('id');
-        $.ajax({
-            url: `/commissions/${id}`,
-            method:'POST',
-            headers:{'X-CSRF-TOKEN':token,'X-HTTP-Method-Override':'DELETE'},
-            success(){
-                tableBody.find(`tr[data-id=${id}]`).remove();
-            },
-            error(xhr){ alert(xhr.responseJSON.message); }
-        });
+    $(document).on('click', '.removeRow', function() {
+        $(this).closest('tr').remove();
     });
 });
 </script>
-
 @endsection
-
