@@ -38,6 +38,7 @@
         "Barryvdh\\DomPDF\\": "vendor/barryvdh/laravel-dompdf/src/"
     },
     "files": [
+        "app/Helpers/Commission.php",
         "app/Helpers/StatusHelper.php",
         "app/Helpers/statusPaymentReportHelper.php",
         "app/Helpers/statusCheckListHelper.php",

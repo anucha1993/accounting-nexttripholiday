@@ -166,13 +166,7 @@
                             <th>กำไรเฉลี่ย:คน</th>
                             <th>คอมมิชชั่นทั้งสิ้น</th>
 
-                            @if ($request->commission !== '%')
-                            <th>ค่าคอมมิชชั่น/Step</th>
-
-                            @endif
-                            @if ($request->commission === '%')
-                            <th>ค่าคอมมิชชั่น/%</th>
-                            @endif
+                   
                            
                            
                             
@@ -234,7 +228,8 @@
                                 // $matches = \App\Models\CommissionRule::matchBoth($profitPerPerson, $totalProfit);
                                
                                 // $totalMath += $matches['step']['commission']*$item->invoice->quote->quote_pax_total;
-
+                                $saleId = $item->invoice->quote->Salename->id ?? null;
+                                $totalMath += $commissionTotal = $saleId ? calculateCommission($totalSale, $saleId) : 0;
 
                             @endphp
                             <tr>
@@ -259,38 +254,8 @@
                                 <td>{{ number_format($profit, 2) }}</td>
                                 <td>{{ number_format($paymentInputtaxTotal, 2) }}</td>
                                 <td>{{ number_format($totalSale, 2) }}</td>
-                                <td>{{ number_format($commission / 2, 2) }}</td>
-                               
-                                {{-- STEP --}}
-                                
-                                {{-- <td>{{ number_format($matches['step']['commission']*$item->invoice->quote->quote_pax_total , 2) }}</td> --}}
-{{-- 
-                                @if ($request->commission !== '%')
-                                <td>
-                                    @if ($matches['step']['rule'])
-                                        {{ $matches['step']['rule']->name }}
-                                        ({{ number_format($matches['step']['commission'], 2) }} ฿/คน)
-                                    @else
-                                        ไม่พบช่วง
-                                    @endif
-                                </td>
-                                
-                                @endif
-                                @if ($request->commission === '%')
- 
-                                <td>
-                                    @if ($matches['percent']['rule'])
-                                        {{ $matches['percent']['rule']->value }} %
-                                        ({{ number_format($matches['percent']['commission'], 2) }} ฿)
-                                    @else
-                                        ไม่พบช่วง
-                                    @endif
-                                </td>
-                                @endif --}}
-
-                              
-
-                                
+                                <td>{{ number_format($commission / $item->invoice->quote->quote_pax_total , 2) }}</td>
+                                <td>{{number_format($commissionTotal,2)}}</td>
                             </tr>
 
                         @empty
@@ -311,10 +276,7 @@
                             <th style="" class="text-danger">
                                {{ number_format($totalMath,2)}} 
                             </th>
-                            {{-- <th style="" class="text-danger">
-                                {{ number_format($discount,2)}}
-                            </th> --}}
-                  
+                         
                         </tr>
                     </tfoot>
 

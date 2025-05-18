@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\invoices\taxinvoiceModel;
 use App\Models\wholesale\wholesaleModel;
+use App\Models\commissions\commissionListModel;
+use App\Models\commissions\commissionGroupModel;
 
 class saleReportController extends Controller
 {
@@ -103,4 +105,35 @@ class saleReportController extends Controller
             'taxinvoices','request','grandTotalSum','vat','wholesales','country','sales'
         ));
     }
+
+
+    /**
+ * คำนวณค่าคอมของ Sale จากยอดกำไร
+ *
+ * @param float $profit     // ยอดกำไรหรือยอดขายที่ใช้คำนวณ
+ * @param int $saleId       // ID ของ Sale
+ * @return float            // ค่าคอมที่ได้
+ */
+function calculateCommission(float $profit, int $saleId): float
+{
+    // ดึงกลุ่มค่าคอมมิชชั่นที่ sale นี้อยู่
+    $commissionGroup = commissionGroupModel::whereJsonContains('sale_ids', $saleId)->first();
+
+    if (!$commissionGroup) {
+        return 0;
+    }
+
+    // ดึงเรทค่าคอมทั้งหมดของกลุ่มนี้
+    $rates = commissionListModel::where('commission_group_id', $commissionGroup->id)->get();
+
+    foreach ($rates as $rate) {
+        if ($profit >= $rate->min_amount && $profit <= $rate->max_amount) {
+            return (float) $rate->commission_calculate;
+        }
+    }
+
+    return 0; // ถ้าไม่เข้าเงื่อนไขใดเลย
+}
+
+
 }
