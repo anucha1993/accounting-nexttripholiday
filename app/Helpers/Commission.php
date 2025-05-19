@@ -9,7 +9,7 @@ if (!function_exists('calculateCommission')) {
         $group = commissionGroupModel::whereJsonContains('sale_ids', (string) $saleId)->first();
 
         if (!$group) {
-            Log::warning("ไม่มี Commission Group สำหรับ Sale ID: $saleId");
+            // Log::warning("ไม่มี Commission Group สำหรับ Sale ID: $saleId");
             return 0;
         }
 
@@ -22,7 +22,7 @@ if (!function_exists('calculateCommission')) {
             $max = (float) $rate->max_amount;
             $calculate = (float) $rate->commission_calculate;
 
-            \Log::info("คำนวณคอม", compact('profit', 'min', 'max', 'calculate'));
+            // \Log::info("คำนวณคอม", compact('profit', 'min', 'max', 'calculate'));
 
             if ($profit >= $min && $profit <= $max) {
                 return $calculate;
