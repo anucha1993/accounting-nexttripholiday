@@ -66,7 +66,7 @@
                                     <input type="text" name="keyword" class="form-control" placeholder="คียร์เวิร์ด"
                                         value="{{ $request->keyword }}">
                                 </div>
-                                
+
 
                                 <div class="col-md-2">
                                     <br>
@@ -83,41 +83,46 @@
                                     <label for="">โฮลเซลล์</label>
                                     <select name="wholsale_id" id="" class="form-select">
                                         <option value="">---กรุณาเลือก---</option>
-                                     @forelse ($wholesales as $item)
-                                     <option value="{{$item->id}}" @if ($request->wholsale_id == $item->id) selected @endif >{{$item->code}}</option>
-                                     @empty
-                                         
-                                     @endforelse
+                                        @forelse ($wholesales as $item)
+                                            <option value="{{ $item->id }}"
+                                                @if ($request->wholsale_id == $item->id) selected @endif>{{ $item->code }}
+                                            </option>
+                                        @empty
+                                        @endforelse
                                     </select>
                                 </div>
                                 <div class="col-md-2">
                                     <label for="">ประเทศ</label>
                                     <select name="country_id" id="" class="form-select">
                                         <option value="">---กรุณาเลือก---</option>
-                                     @forelse ($country as $item)
-                                     <option value="{{$item->id}}" @if ($request->country_id == $item->id) selected @endif >{{$item->iso2}}</option>
-                                     @empty
-                                         
-                                     @endforelse
+                                        @forelse ($country as $item)
+                                            <option value="{{ $item->id }}"
+                                                @if ($request->country_id == $item->id) selected @endif>{{ $item->iso2 }}
+                                            </option>
+                                        @empty
+                                        @endforelse
                                     </select>
                                 </div>
                                 <div class="col-md-2">
                                     <label for="">เซลล์ผู้ขาย</label>
                                     <select name="sale_id" id="" class="form-select">
                                         <option value="">---กรุณาเลือก---</option>
-                                     @forelse ($sales as $item)
-                                     <option value="{{$item->id}}" @if ($request->sale_id == $item->id) selected @endif >{{$item->name}}</option>
-                                     @empty
-                                         
-                                     @endforelse
+                                        @forelse ($sales as $item)
+                                            <option value="{{ $item->id }}"
+                                                @if ($request->sale_id == $item->id) selected @endif>{{ $item->name }}
+                                            </option>
+                                        @empty
+                                        @endforelse
                                     </select>
                                 </div>
                                 <div class="col-md-2">
                                     <label for="">ประเภทคำนวนค่าคอมมิชชั่น</label>
                                     <select name="commission" id="" class="form-select">
-                                        <option value="step"  @if ($request->commission == 'step') selected @endif>step</option>
-                                        <option value="%"  @if ($request->commission == '%') selected @endif>%</option>
-                                    
+                                        <option value="step" @if ($request->commission == 'step') selected @endif>step
+                                        </option>
+                                        <option value="%" @if ($request->commission == '%') selected @endif>%
+                                        </option>
+
                                     </select>
                                 </div>
                             </div>
@@ -139,7 +144,7 @@
                 <form action="{{ route('export.sales') }}" method="post">
                     @csrf
                     @method('post')
-                    <input type="hidden" name="taxinvoice_ids" value="{{$taxinvoices->pluck('taxinvoice_id')}}">
+                    <input type="hidden" name="taxinvoice_ids" value="{{ $taxinvoices->pluck('taxinvoice_id') }}">
                     <button type="submit" class="btn btn-success"> <i class="fa fa-file-excel"></i> Export To
                         Excel</button>
                 </form>
@@ -165,24 +170,20 @@
                             <th>กำไร</th>
                             <th>กำไรเฉลี่ย:คน</th>
                             <th>คอมมิชชั่นทั้งสิ้น</th>
-
-                   
-                           
-                           
-                            
+                            <th>CommissionGroup</th>
                         </tr>
                     </thead>
                     <tbody>
                         @php
-                        $totalMath = 0;
-                        $totalPeople = 0;
-                        $totalSales = 0;
-                        $InputtaxTotal = 0;
-                        $WhosaleTotal = 0;
-                        $granTotal = 0;
-                        $discountTotal = 0;
-                        $serviceTotal = 0;
-                        $paxTotal = 0;
+                            $totalMath = 0;
+                            $totalPeople = 0;
+                            $totalSales = 0;
+                            $InputtaxTotal = 0;
+                            $WhosaleTotal = 0;
+                            $granTotal = 0;
+                            $discountTotal = 0;
+                            $serviceTotal = 0;
+                            $paxTotal = 0;
                         @endphp
                         @forelse ($taxinvoices as $item)
                             @php
@@ -204,14 +205,14 @@
                                 $profit =
                                     $item->invoice->quote->GetDepositWholesale() -
                                     ($item->invoice->quote->GetDepositWholesaleRefund() - $paymentInputtaxTotal);
-                                 
 
                                 $totalSale = $item->invoice->quote->quote_grand_total - $profit;
-                                $totalSales +=  $totalSale;
+                                $totalSales += $totalSale;
                                 $WhosaleTotal += $profit;
                                 $granTotal += $item->invoice->quote->quote_grand_total;
                                 $discountTotal += $item->invoice->quote->quote_discount;
-                                $serviceTotal += $item->invoice->quote->quote_grand_total + $item->invoice->quote->quote_discount;
+                                $serviceTotal +=
+                                    $item->invoice->quote->quote_grand_total + $item->invoice->quote->quote_discount;
                                 $paxTotal += $item->invoice->quote->quote_pax_total;
 
                                 $commission = $totalSale - $paymentInputtaxTotal;
@@ -223,14 +224,15 @@
 
                                 $totalPeople += $profitPerPerson;
                                 $InputtaxTotal += $paymentInputtaxTotal;
-                             
+
                                 /// คำนวนค่าคมมิซชั่น
                                 // $matches = \App\Models\CommissionRule::matchBoth($profitPerPerson, $totalProfit);
-                               
+
                                 // $totalMath += $matches['step']['commission']*$item->invoice->quote->quote_pax_total;
                                 $saleId = $item->invoice->quote->Salename->id ?? null;
-                                $totalMath += $commissionTotal = $saleId ? calculateCommission($totalSale, $saleId) : 0;
-
+                                $result = $saleId
+                                    ? calculateCommission($totalSale, $saleId)
+                                    : ['amount' => 0, 'group_name' => null];
                             @endphp
                             <tr>
                                 <td> <a target="_blank"
@@ -254,8 +256,11 @@
                                 <td>{{ number_format($profit, 2) }}</td>
                                 <td>{{ number_format($paymentInputtaxTotal, 2) }}</td>
                                 <td>{{ number_format($totalSale, 2) }}</td>
-                                <td>{{ number_format($commission / $item->invoice->quote->quote_pax_total , 2) }}</td>
-                                <td>{{number_format($commissionTotal,2)}}</td>
+                                <td>{{ number_format($commission / $item->invoice->quote->quote_pax_total, 2) }}</td>
+                                <td>{{ number_format($result['amount'], 2) }}</td>
+                                <td>
+                                    {{ $result['group_name'] ? $result['group_name'] : 'ไม่พบกลุ่ม' }}
+                                </td>
                             </tr>
 
                         @empty
@@ -265,18 +270,18 @@
                     <tfoot>
                         <tr>
                             <th colspan="7" style=""></th>
-                            <th class="text-danger">{{ number_format($paxTotal)}} </th>
-                            <th class="text-danger">{{ number_format($serviceTotal,2)}} </th>
-                            <th class="text-danger">{{ number_format($discountTotal,2)}} </th>
-                            <th class="text-danger">{{ number_format($granTotal,2)}} </th>
-                            <th class="text-danger">{{ number_format($WhosaleTotal,2)}} </th>
-                            <th class="text-danger">{{ number_format($InputtaxTotal,2)}} </th>
-                            <th class="text-danger">{{ number_format($totalSales,2)}} </th>
-                            <th class="text-danger">{{ number_format($totalPeople,2)}} </th>
+                            <th class="text-danger">{{ number_format($paxTotal) }} </th>
+                            <th class="text-danger">{{ number_format($serviceTotal, 2) }} </th>
+                            <th class="text-danger">{{ number_format($discountTotal, 2) }} </th>
+                            <th class="text-danger">{{ number_format($granTotal, 2) }} </th>
+                            <th class="text-danger">{{ number_format($WhosaleTotal, 2) }} </th>
+                            <th class="text-danger">{{ number_format($InputtaxTotal, 2) }} </th>
+                            <th class="text-danger">{{ number_format($totalSales, 2) }} </th>
+                            <th class="text-danger">{{ number_format($totalPeople, 2) }} </th>
                             <th style="" class="text-danger">
-                               {{ number_format($totalMath,2)}} 
+                                {{ number_format($totalMath, 2) }}
                             </th>
-                         
+
                         </tr>
                     </tfoot>
 
