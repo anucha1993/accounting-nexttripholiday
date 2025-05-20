@@ -87,7 +87,7 @@
                                 <label>ประเภท</label>
                                 <select name="type" class="form-control" required>
                                     <option value="step">Step</option>
-                                    <option value="percentage">Percentage</option>
+                                    <option value="Percent">Percent</option>
                                 </select>
 
                                 <hr>

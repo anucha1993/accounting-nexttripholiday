@@ -14,7 +14,7 @@ class commissionGroupModel extends Model
     protected $casts = [
         'sale_ids' => 'array',
     ];
-    protected $fillable = ['name','sale_ids','step'];
+    protected $fillable = ['name','sale_ids','type'];
 
 
   public function commissionLists()
