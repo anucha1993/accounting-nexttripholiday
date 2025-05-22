@@ -125,6 +125,17 @@
 
                                     </select>
                                 </div>
+
+                                <div class="col-md-2">
+                                    <label for="">ประเภทคำนวนค่าคอมมิชชั่น</label>
+                                    <select name="commission_mode" class="form-select">
+                                        <option @if ($request->commission_mode == 'qt') selected @endif value="qt">แบบ QT
+                                        </option>
+                                        <option @if ($request->commission_mode == 'total') selected @endif value="total">แบบรวม
+                                        </option>
+                                    </select>
+                                </div>
+
                             </div>
 
                         </div>
@@ -149,6 +160,7 @@
                         Excel</button>
                 </form>
             </div>
+            <div class="responsive table-responsive ">
             <div class="card-body">
 
                 <table class="table table quote-table " style="font-size: 12px; width: 100%">
@@ -184,71 +196,73 @@
                             $discountTotal = 0;
                             $serviceTotal = 0;
                             $paxTotal = 0;
+                            $coms = 0;
                         @endphp
                         @forelse ($taxinvoices as $item)
                             @php
                                 $withholdingTaxAmount = $item->invoice?->getWithholdingTaxAmountAttribute() ?? 0;
                                 $getTotalInputTaxVat = $item->invoice->quote?->getTotalInputTaxVat() ?? 0;
+
                                 $hasInputTaxFile = $item->invoice->quote
                                     ->InputTaxVat()
                                     ->whereNotNull('input_tax_file')
                                     ->exists();
 
-                                if ($hasInputTaxFile) {
-                                    // กรณี input_tax_file !== NULL
-                                    $paymentInputtaxTotal = $withholdingTaxAmount - $getTotalInputTaxVat;
-                                } else {
-                                    // กรณี input_tax_file === NULL
-                                    $paymentInputtaxTotal = $withholdingTaxAmount + $getTotalInputTaxVat;
-                                }
+                                $paymentInputtaxTotal = $hasInputTaxFile
+                                    ? $withholdingTaxAmount - $getTotalInputTaxVat
+                                    : $withholdingTaxAmount + $getTotalInputTaxVat;
 
-                                $profit =
-                                    $item->invoice->quote->GetDepositWholesale() -
-                                    ($item->invoice->quote->GetDepositWholesaleRefund() - $paymentInputtaxTotal);
+                                $deposit = $item->invoice->quote->GetDepositWholesale();
+                                $refund = $item->invoice->quote->GetDepositWholesaleRefund();
+                                $profit = $deposit - ($refund - $paymentInputtaxTotal);
 
                                 $totalSale = $item->invoice->quote->quote_grand_total - $profit;
+                                $totalProfit = $totalSale - $paymentInputtaxTotal;
+
+                                $people = $item->invoice->quote->quote_pax_total;
+                                $profitPerPerson = $people > 0 ? $totalProfit / $people : 0;
+
+                                // รวมยอดรวมทั้งหมด
                                 $totalSales += $totalSale;
                                 $WhosaleTotal += $profit;
                                 $granTotal += $item->invoice->quote->quote_grand_total;
                                 $discountTotal += $item->invoice->quote->quote_discount;
                                 $serviceTotal +=
                                     $item->invoice->quote->quote_grand_total + $item->invoice->quote->quote_discount;
-                                $paxTotal += $item->invoice->quote->quote_pax_total;
-
-                                $commission = $totalSale - $paymentInputtaxTotal;
-                                // 1) กำไรรวม (total profit) — ใช้เป็นฐานคูณ %
-                                $people = $item->invoice->quote->quote_pax_total;
-                                $totalProfit = $totalSale - $paymentInputtaxTotal;
-                                // 2) กำไร “ต่อคน” (profit per person) — ใช้จับช่วง Step
-                                $profitPerPerson = $people > 0 ? $totalProfit / $people : 0;
-
-                                $totalPeople += $profitPerPerson;
+                                $paxTotal += $people;
                                 $InputtaxTotal += $paymentInputtaxTotal;
+                                $totalPeople += $profitPerPerson;
 
-                                /// คำนวนค่าคมมิซชั่น
-                                // $matches = \App\Models\CommissionRule::matchBoth($profitPerPerson, $totalProfit);
-
-                                // $totalMath += $matches['step']['commission']*$item->invoice->quote->quote_pax_total;
                                 $saleId = $item->invoice->quote->Salename->id ?? null;
                                 $result = $saleId
-                                    ? calculateCommission($totalSale, $saleId)
+                                    ? calculateCommission($totalProfit, $saleId)
                                     : ['amount' => 0, 'group_name' => null];
-                            @endphp
-                            <tr>
-                                <td> <a target="_blank"
-                                        href="{{ route('quote.editNew', $item->invoice->quote->quote_id) }}">{{ $item->invoice->quote->quote_number ? $item->invoice->quote->quote_number : 'ใบเสนอราคาถูกลบ' }}</a>
-                                </td>
 
-                                <td>{{ date('d/m/Y', strtotime($item->invoice->quote->quote_date_start)) . ' - ' . date('d/m/Y', strtotime($item->invoice->quote->quote_date_start)) }}
+                            @endphp
+
+                            <tr>
+                                <td>
+                                    <a target="_blank"
+                                        href="{{ route('quote.editNew', $item->invoice->quote->quote_id) }}">
+                                        {{ $item->invoice->quote->quote_number ?? 'ใบเสนอราคาถูกลบ' }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ date('d/m/Y', strtotime($item->invoice->quote->quote_date_start)) }}
+                                    -
+                                    {{ date('d/m/Y', strtotime($item->invoice->quote->quote_date_start)) }}
                                 </td>
                                 <td>{{ $item->invoice->quote->quoteWholesale->code }}</td>
                                 <td>{{ $item->invoice->customer->customer_name }}</td>
                                 <td>{{ $item->invoice->quote->quoteCountry->iso2 }}</td>
-                                <td><span data-bs-toggle="tooltip" data-bs-placement="top"
-                                        title="{{ $item->invoice->quote->quote_tour_name ? $item->invoice->quote->quote_tour_name : $item->invoice->quote->quote_tour_name1 }}">{{ $item->invoice->quote->quote_tour_name ? mb_substr($item->invoice->quote->quote_tour_name, 0, 20) . '...' : mb_substr($item->invoice->quote->quote_tour_name1, 0, 20) . '...' }}</span>
+                                <td>
+                                    <span data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="{{ $item->invoice->quote->quote_tour_name ?? $item->invoice->quote->quote_tour_name1 }}">
+                                        {{ Str::limit($item->invoice->quote->quote_tour_name ?? $item->invoice->quote->quote_tour_name1, 20) }}
+                                    </span>
                                 </td>
-                                <td> {{ $item->invoice->quote->Salename->name }}</td>
-                                <td>{{ $item->invoice->quote->quote_pax_total }}</td>
+                                <td>{{ $item->invoice->quote->Salename->name }}</td>
+                                <td>{{ $people }}</td>
                                 <td>{{ number_format($item->invoice->quote->quote_grand_total + $item->invoice->quote->quote_discount, 2) }}
                                 </td>
                                 <td>{{ number_format($item->invoice->quote->quote_discount, 2) }}</td>
@@ -256,18 +270,48 @@
                                 <td>{{ number_format($profit, 2) }}</td>
                                 <td>{{ number_format($paymentInputtaxTotal, 2) }}</td>
                                 <td>{{ number_format($totalSale, 2) }}</td>
-                                <td>{{ number_format($commission / $item->invoice->quote->quote_pax_total, 2) }}</td>
-                                <td>{{ number_format($result['amount'], 2) }}</td>
+                                <td>{{ number_format($people > 0 ? ($totalSale - $paymentInputtaxTotal) / $people : 0, 2) }}
+                                </td>
+
                                 <td>
-                                    {{ $result['group_name'] ? $result['group_name'] : 'ไม่พบกลุ่ม' }}
+
+                                    @if ($request->commission_mode === 'total')
+                                        -
+                                    @else
+                                        {{ number_format($result['amount'], 2) }}
+                                    @endif
+
+                                </td>
+
+                                <td>
+                                    @if ($request->commission_mode === 'total')
+                                        -
+                                    @else
+                                        {{ $result['group_name'] ?? 'ไม่พบกลุ่ม' }}
+                                    @endif
+
                                 </td>
                             </tr>
-
                         @empty
+                            <tr>
+                                <td colspan="18" class="text-center text-muted">ไม่พบรายการ</td>
+                            </tr>
                         @endforelse
+
                     </tbody>
 
                     <tfoot>
+                        @php
+                            if ($request->commission_mode === 'total') {
+                                $saleId = $request->sale_id ?? null;
+                                if ($saleId) {
+                                    $result = calculateCommission($totalSales, $saleId);
+                                    $commissionTotal = $totalSales*$result['amount']/100;
+                                    $commissionGroupName = $result['group_name'];
+                                }
+                            }
+                        @endphp
+
                         <tr>
                             <th colspan="7" style=""></th>
                             <th class="text-danger">{{ number_format($paxTotal) }} </th>
@@ -278,14 +322,14 @@
                             <th class="text-danger">{{ number_format($InputtaxTotal, 2) }} </th>
                             <th class="text-danger">{{ number_format($totalSales, 2) }} </th>
                             <th class="text-danger">{{ number_format($totalPeople, 2) }} </th>
-                            <th style="" class="text-danger">
-                                {{ number_format($totalMath, 2) }}
-                            </th>
+                            <th class="text-danger">{{ $request->commission_mode === 'total' ? number_format($commissionTotal, 2) : number_format($totalMath, 2) }}</th>
+                            <th class="text-danger">{{ $request->commission_mode === 'total' ? $commissionGroupName ?? '-' : '-' }}</th>
 
                         </tr>
                     </tfoot>
 
                 </table>
+                </div>
 
             </div>
         </div>
