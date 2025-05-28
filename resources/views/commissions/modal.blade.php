@@ -24,8 +24,10 @@
 
                     <label>ประเภท (step หรือ percentage)</label>
                     <select name="type" class="form-control">
-                        <option value="step">Step</option>
-                        <option value="percentage">Percentage</option>
+                        <option value="step-QT">Step-Qt</option>
+                        <option value="percent-QT">Percent-QT</option>
+                        <option value="step-Total">Step-Total</option>
+                        <option value="percent-Total">Percent-Tota</option>
                     </select>
 
                     <hr>
