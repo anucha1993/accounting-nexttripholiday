@@ -396,6 +396,7 @@
                                             $result['amount'] = $res['amount']; // เช่น 10%
                                             $result['group_name'] = $res['group_name'];
                                             $result['calculated'] = $res['calculated']; // ✅ ค่าคอมที่แท้จริง
+                                            $result['type'] = $res['type']; // ✅ ค่าคอมที่แท้จริง
                                             $totalMath += $res['calculated'];
                                         }
                                     @endphp
@@ -413,7 +414,14 @@
                                         <td>{{ number_format($totalSale, 2) }}</td>
                                         <td>{{ number_format($profitAvgPerPax, 2) }}</td>
                                         <td>{{ number_format($result['calculated'], 2) }}</td>
-                                        <td>({{ number_format($result['amount'], 2) }}) {{ $result['group_name'] }}</td>
+                                        <td>
+                                            @if ($result['type'] === 'step-QT' || $result['type'] === 'step-Total')
+                                                ({{ number_format($result['amount']).'บาท' }}) {{ $result['group_name'] }}</td>
+                                            @else
+                                                 ({{ number_format($result['amount']).'%' }}) {{ $result['group_name'] }}</td>
+                                            @endif
+                                           
+                                            
                                     </tr>
                                 @empty
                                     <tr>
