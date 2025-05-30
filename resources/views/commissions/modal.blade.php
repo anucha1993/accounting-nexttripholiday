@@ -27,7 +27,7 @@
                         <option value="step-QT">Step-Qt</option>
                         <option value="percent-QT">Percent-QT</option>
                         <option value="step-Total">Step-Total</option>
-                        <option value="percent-Total">Percent-Tota</option>
+                        <option value="percent-Total">Percent-Total</option>
                     </select>
 
                     <hr>
