@@ -333,9 +333,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php
+                               @php
                                     $totalMath = 0;
-                                @endphp
+                               @endphp
                                 @forelse ($taxinvoices as $saleId => $groupedQuotes)
                                     @php
                                         $quoteCount = $groupedQuotes->count();
@@ -399,6 +399,9 @@
                                             $result['type'] = $res['type']; // ✅ ค่าคอมที่แท้จริง
                                             $totalMath += $res['calculated'];
                                         }
+
+                                    
+                                        $totalMath += $result['calculated']; // ✅ ค่าคอมรวม
                                     @endphp
 
                                     <tr>
@@ -416,20 +419,116 @@
                                         <td>{{ number_format($result['calculated'], 2) }}</td>
                                         <td>
                                             @if ($result['type'] === 'step-QT' || $result['type'] === 'step-Total')
-                                                ({{ number_format($result['amount']).'บาท' }}) {{ $result['group_name'] }}</td>
-                                            @else
-                                                 ({{ number_format($result['amount']).'%' }}) {{ $result['group_name'] }}</td>
-                                            @endif
-                                           
-                                            
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="13" class="text-center text-muted">ไม่พบรายการ</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                                ({{ number_format($result['amount']) . 'บาท' }})
+                                                {{ $result['group_name'] }}
+                                        </td>
+                                    @else
+                                        ({{ number_format($result['amount']) . '%' }})
+                                        {{ $result['group_name'] }}</td>
+                                @endif
+
+
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="13" class="text-center text-muted">ไม่พบรายการ</td>
+                                </tr>
+                    @endforelse
+
+                    <tfoot>
+                        @php
+    $sumQuotes = 0;
+    $sumPax = 0;
+    $sumService = 0;
+    $sumDiscount = 0;
+    $sumGrand = 0;
+    $sumWholesale = 0;
+    $sumOtherCost = 0;
+    $sumProfit = 0;
+    $sumCommission = 0;
+   
+
+    foreach ($taxinvoices as $saleId => $groupedQuotes) {
+        $paxTotal = $groupedQuotes->sum(fn($i) => $i->invoice->quote->quote_pax_total ?? 0);
+        $serviceTotal = $groupedQuotes->sum(fn($i) => ($i->invoice->quote->quote_grand_total ?? 0) + ($i->invoice->quote->quote_discount ?? 0));
+        $discountTotal = $groupedQuotes->sum(fn($i) => $i->invoice->quote->quote_discount ?? 0);
+        $grandTotal = $groupedQuotes->sum(fn($i) => $i->invoice->quote->quote_grand_total ?? 0);
+
+        $wholesaleTotal = $groupedQuotes->sum(function ($i) {
+            $deposit = $i->invoice->quote->GetDepositWholesale();
+            $refund = $i->invoice->quote->GetDepositWholesaleRefund();
+            $withholding = $i->invoice?->getWithholdingTaxAmountAttribute() ?? 0;
+            $inputTax = $i->invoice->quote?->getTotalInputTaxVat() ?? 0;
+            $hasInputTaxFile = $i->invoice->quote->InputTaxVat()->whereNotNull('input_tax_file')->exists();
+            $paymentInputTax = $hasInputTaxFile ? $withholding - $inputTax : $withholding + $inputTax;
+            return $deposit - ($refund - $paymentInputTax);
+        });
+
+        $otherCostTotal = $groupedQuotes->sum(function ($i) {
+            $withholding = $i->invoice?->getWithholdingTaxAmountAttribute() ?? 0;
+            $inputTax = $i->invoice->quote?->getTotalInputTaxVat() ?? 0;
+            $hasInputTaxFile = $i->invoice->quote->InputTaxVat()->whereNotNull('input_tax_file')->exists();
+            return $hasInputTaxFile ? $withholding - $inputTax : $withholding + $inputTax;
+        });
+
+        $totalSale = $serviceTotal - $wholesaleTotal;
+        $people = $paxTotal;
+        $mode = $request->commission_mode ?? 'qt';
+
+        $res = calculateCommission($totalSale, $saleId, $mode, $people);
+        $commission = $res['calculated'] ?? 0;
+
+        // ✔ สะสมรวม
+        $sumQuotes += $groupedQuotes->count();
+        $sumPax += $paxTotal;
+        $sumService += $serviceTotal;
+        $sumDiscount += $discountTotal;
+        $sumGrand += $grandTotal;
+        $sumWholesale += $wholesaleTotal;
+        $sumOtherCost += $otherCostTotal;
+        $sumProfit += $totalSale;
+        $sumCommission += $commission;
+    }
+
+   $sumProfitAvg = $taxinvoices->sum(function ($quotes) {
+    $pax = $quotes->sum(fn($i) => $i->invoice->quote->quote_pax_total ?? 0);
+
+    $service = $quotes->sum(fn($i) => ($i->invoice->quote->quote_grand_total ?? 0) + ($i->invoice->quote->quote_discount ?? 0));
+
+    $wholesale = $quotes->sum(function ($i) {
+        $deposit = $i->invoice->quote->GetDepositWholesale();
+        $refund = $i->invoice->quote->GetDepositWholesaleRefund();
+        $withholding = $i->invoice?->getWithholdingTaxAmountAttribute() ?? 0;
+        $inputTax = $i->invoice->quote?->getTotalInputTaxVat() ?? 0;
+        $hasInputTaxFile = $i->invoice->quote->InputTaxVat()->whereNotNull('input_tax_file')->exists();
+        $paymentInputTax = $hasInputTaxFile ? $withholding - $inputTax : $withholding + $inputTax;
+        return $deposit - ($refund - $paymentInputTax);
+    });
+
+    $profit = $service - $wholesale;
+
+    return $pax > 0 ? $profit / $pax : 0;
+});
+@endphp
+
+                        <tr class="text-danger fw-bold">
+        <td>{{ $sumQuotes }}</td>
+        <td class="text-end">รวมทั้งหมด</td>
+        <td>{{ number_format($sumPax) }}</td>
+        <td>{{ number_format($sumService, 2) }}</td>
+        <td>{{ number_format($sumService, 2) }}</td>
+        <td>{{ number_format($sumDiscount, 2) }}</td>
+        <td>{{ number_format($sumGrand, 2) }}</td>
+        <td>{{ number_format($sumWholesale, 2) }}</td>
+        <td>{{ number_format($sumOtherCost, 2) }}</td>
+        <td>{{ number_format($sumProfit, 2) }}</td>
+        <td>{{ number_format($sumProfitAvg, 2) }}</td>
+        <td>{{ number_format($sumCommission, 2) }}</td>
+        <td>-</td>
+    </tr>
+                    </tfoot>
+                    </tbody>
+                    </table>
                     @endif
                 </div>
 
