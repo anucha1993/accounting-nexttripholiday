@@ -148,7 +148,7 @@
                                 <input type="number" class="form-control" value="{{$request->search_pax}}" name="search_pax" placeholder="ไม่ระบุ">
                             </div> --}}
 
-                        <div class="col-md-2">
+                        {{-- <div class="col-md-2">
                             <label for="">Check List</label>
                             <select name="search_check_list" class="form-select" style="width: 100%">
                                 <option {{ request('search_check_list') === 'all' ? 'selected' : '' }} value="all">ทั้งหมด</option>
@@ -162,7 +162,7 @@
                                 <option {{ request('search_check_list') === 'wholesale_tax_status' ? 'selected' : '' }} value="wholesale_tax_status">ใบกำกับภาษีโฮลเซลล์</option>
          
                             </select>
-                        </div>
+                        </div> --}}
 
                         <div class="col-md-2">
                             <label for="">ยังไม่ได้ทำ Check List</label>
@@ -283,47 +283,11 @@
                                             @endif
                                         </td>
 
-                                        {{-- <td>
-                                            @if ($item->quoteLogStatus->booking_email_status === 'ยังไม่ได้ส่ง' || $item->quoteLogStatus->booking_email_status === NULL )
-                                            <span class="badge rounded-pill bg-danger">ยังไม่ส่งใบอีเมลล์จองทัวร์ให้โฮลเซลล์</span>
-                                            @endif
-
-                                            @if ($item->quoteLogStatus->invoice_status !== 'ได้แล้ว' || $item->quoteLogStatus->invoice_status ===  NULL)
-                                            <span class="badge rounded-pill bg-danger">ยังไม่ได้อินวอยโฮลเซลล์</span>
-                                            @endif
-
-                                            @if ($item->quoteLogStatus->slip_status === 'ยังไม่ได้ส่ง' || $item->quoteLogStatus->slip_status === NULL)
-                                            <span class="badge rounded-pill bg-danger">ยังไม่ได้ส่งสลิปให้โฮลเซลล์</span>
-                                            @endif
-
-                                            @if ($item->quoteLogStatus->passport_status === 'ยังไม่ได้ส่ง' || $item->quoteLogStatus->passport_status === NULL)
-                                            <span class="badge rounded-pill bg-danger">ยังไม่ได้ส่งพาสปอตให้โฮลเซลล์</span>
-                                            @endif
-
-                                            @if ($item->quoteLogStatus->appointment_status === 'ยังไม่ได้ส่ง' || $item->quoteLogStatus->appointment_status === NULL)
-                                            <span class="badge rounded-pill bg-danger">ส่งใบนัดหมายให้ลูกค้า</span>
-                                            @endif
-
-                                            @if ($item->quoteLogStatus->wholesale_tax_status !== 'ได้รับแล้ว' || $item->quoteLogStatus->wholesale_tax_status === NULL)
-                                            <span class="badge rounded-pill bg-danger">ยังไม่ได้รับใบกำกับภาษีโฮลเซลล์</span>
-                                            @endif
-
-                                            @if ($item->quoteLogStatus->wholesale_skip_status !== 'ไม่ต้องการออก')
-
-                                            @if ($item->quoteLogStatus->withholding_tax_status === 'ได้รับแล้ว' || $item->quoteLogStatus->withholding_tax_status === NULL)
-                                            <span class="badge rounded-pill bg-danger">ยังไม่ได้ออกใบหัก ณ ที่จ่าย</span>
-                                            @endif
-                                                
-                                            @else
-                                                
-                                            @endif
-
-                                            
-
-                                        </td> --}}
-
                                         <td>
-                                            {!! \App\CustomHelpers\getStatusBadge($item->quoteLogStatus) !!}
+                                            {{-- {!! \App\CustomHelpers\getStatusBadge($item->quoteLogStatus) !!} --}}
+                                           {!! getQuoteStatusQuotePayment($item) !!}
+                                            
+                                            
                                         </td>
 
                                         <td> {{ $item->Salename->name }}</td>

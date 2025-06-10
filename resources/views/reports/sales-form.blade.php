@@ -187,9 +187,11 @@
                                     $discountTotal = 0;
                                     $serviceTotal = 0;
                                     $paxTotal = 0;
+                                    $paymentWhosale = 0;
                                 @endphp
                                 @forelse ($taxinvoices as $item)
                                     @php
+                                       $paymentWhosale = $item->invoice->quote->GetDepositWholesale();
                                         $withholdingTaxAmount =
                                             $item->invoice?->getWithholdingTaxAmountAttribute() ?? 0;
                                         $getTotalInputTaxVat = $item->invoice->quote?->getTotalInputTaxVat() ?? 0;
@@ -229,7 +231,7 @@
                                         $result = ['amount' => 0, 'group_name' => '-', 'calculated' => 0];
 
                                         if ($saleId) {
-                                            $res = calculateCommission($totalSale, $saleId, $mode, $people);
+                                            $res = calculateCommission($profitPerPerson, $saleId, $mode, $people);
                                             $result['amount'] = $res['amount']; // ค่า base เช่น 10, 100
                                             $result['group_name'] = $res['group_name']; // ชื่อกลุ่ม
                                             $result['calculated'] = $res['calculated']; // ✅ ค่าคอมที่แท้จริง
@@ -256,7 +258,7 @@
                                         <td>{{ number_format($item->invoice->quote->quote_grand_total + $item->invoice->quote->quote_discount, 2) }}
                                         </td>
                                         <td>{{ number_format($item->invoice->quote->quote_discount, 2) }}</td>
-                                        <td>{{ number_format($item->invoice->quote->quote_grand_total, 2) }}</td>
+                                        <td>{{ number_format($paymentWhosale, 2) }}</td>
                                         <td>{{ number_format($profit, 2) }}</td>
                                         <td>{{ number_format($paymentInputtaxTotal, 2) }}</td>
                                         <td>{{ number_format($totalSale, 2) }}</td>
@@ -280,12 +282,12 @@
                                     if ($request->commission_mode === 'total') {
                                         $saleId = $request->sale_id ?? null;
                                         if ($saleId) {
-                                            $result = calculateCommission($totalSales, $saleId);
+                                            $result = calculateCommission($profitPerPerson, $saleId);
                                             $commissionGroupName = $result['group_name'] ?? '-';
                                             $commissionPercent = $result['percent'] ?? null;
                                             // ถ้า percent ให้คิดตามเปอร์เซ็นต์
                                             if ($commissionPercent !== null) {
-                                                $commissionTotal = ($totalSales * $commissionPercent) / 100;
+                                                $commissionTotal = ($profitPerPerson * $commissionPercent) / 100;
                                             } else {
                                                 $commissionTotal = $result['amount']; // fallback
                                             }

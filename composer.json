@@ -42,7 +42,8 @@
         "app/Helpers/StatusHelper.php",
         "app/Helpers/statusPaymentReportHelper.php",
         "app/Helpers/statusCheckListHelper.php",
-        "app/Helpers/statusPaymentHelper.php"
+        "app/Helpers/statusPaymentHelper.php",
+        "app/Helpers/statusPaymentQuoteHelper.php"
     ]
 },
     "autoload-dev": {

@@ -197,6 +197,19 @@ class quotationModel extends Model
         return $this->belongsTo(paymentModel::class, 'quote_id', 'payment_quote_id');
     }
 
+    public function quotePayments()
+    {
+        return $this->hasMany(paymentModel::class, 'payment_quote_id', 'quote_id');
+    }
+    public function getRefundTotalAttribute()
+    {
+        return $this->quotePayments()->where('payment_type', 'refund')->whereNotNull('payment_file_path')->where('payment_status','success')->sum('payment_total');
+    }
+     public function getTotalAttribute()
+    {
+       return $this->quotePayments()->whereNot('payment_type','refund')->whereNotNull('payment_file_path')->where('payment_status','success')->sum('payment_total');
+    }
+
     // ความสัมพันธ์กับ Quote_log
     public function quoteLogStatus()
     {

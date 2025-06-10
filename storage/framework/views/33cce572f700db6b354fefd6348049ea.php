@@ -138,21 +138,7 @@
                             </div>
                             
 
-                        <div class="col-md-2">
-                            <label for="">Check List</label>
-                            <select name="search_check_list" class="form-select" style="width: 100%">
-                                <option <?php echo e(request('search_check_list') === 'all' ? 'selected' : ''); ?> value="all">ทั้งหมด</option>
-                                <option <?php echo e(request('search_check_list') === 'allCheck' ? 'selected' : ''); ?> value="allCheck">ทำหมดแล้ว</option>
-                                <option <?php echo e(request('search_check_list') === 'booking_email_status' ? 'selected' : ''); ?> value="booking_email_status">ส่งใบอีเมลล์จองทัวร์ให้โฮลเซลล์</option>
-                                <option <?php echo e(request('search_check_list') === 'invoice_status' ? 'selected' : ''); ?> value="invoice_status">อินวอยโฮลเซลล์</option>
-                                <option <?php echo e(request('search_check_list') === 'slip_status' ? 'selected' : ''); ?> value="slip_status">ส่งสลิปให้โฮลเซลล์</option>
-                                <option <?php echo e(request('search_check_list') === 'passport_status' ? 'selected' : ''); ?> value="passport_status">ส่งพาสปอตให้โฮลเซลล์</option>
-                                <option <?php echo e(request('search_check_list') === 'appointment_status' ? 'selected' : ''); ?> value="appointment_status">ส่งใบนัดหมายให้ลูกค้า</option>
-                                <option <?php echo e(request('search_check_list') === 'withholding_tax_status' ? 'selected' : ''); ?> value="withholding_tax_status">ออกใบหัก ณ ที่จ่าย</option>
-                                <option <?php echo e(request('search_check_list') === 'wholesale_tax_status' ? 'selected' : ''); ?> value="wholesale_tax_status">ใบกำกับภาษีโฮลเซลล์</option>
-         
-                            </select>
-                        </div>
+                        
 
                         <div class="col-md-2">
                             <label for="">ยังไม่ได้ทำ Check List</label>
@@ -267,11 +253,12 @@
                                             <?php endif; ?>
                                         </td>
 
-                                        
-
                                         <td>
-                                            <?php echo \App\CustomHelpers\getStatusBadge($item->quoteLogStatus); ?>
+                                            
+                                           <?php echo getQuoteStatusQuotePayment($item); ?>
 
+                                            
+                                            
                                         </td>
 
                                         <td> <?php echo e($item->Salename->name); ?></td>
