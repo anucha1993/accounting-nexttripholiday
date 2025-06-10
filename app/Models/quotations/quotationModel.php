@@ -203,7 +203,7 @@ class quotationModel extends Model
     }
     public function getRefundTotalAttribute()
     {
-        return $this->quotePayments()->where('payment_type', 'refund')->whereNotNull('payment_file_path')->where('payment_status','success')->sum('payment_total');
+        return $this->quotePayments()->where('payment_type', 'refund')->whereNot('payment_status','cancel')->sum('payment_total');
     }
      public function getTotalAttribute()
     {

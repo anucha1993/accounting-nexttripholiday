@@ -1,54 +1,61 @@
 <?php
-
 use Carbon\Carbon;
 
 if (!function_exists('getQuoteStatusQuotePayment')) {
     function getQuoteStatusQuotePayment($quotationModel)
     {
-        $total = $quotationModel->total;                 // ยอดที่ลูกค้าชำระเข้ามา
-        $refund = $quotationModel->refund_total;         // ยอดที่คืนลูกค้าแล้ว
-        $refundPayments = $quotationModel->quotePayments
-            ->where('payment_type', 'refund');
+        $status = '';
+        $totalPaid = $quotationModel->getTotalAttribute(); // ยอดที่ลูกค้าจ่ายทั้งหมด
 
-        $hasPendingRefund = $refundPayments
-            ->where('payment_status', '!=', 'success')
-            ->count() > 0;
+        $refundPayments = $quotationModel->quotePayments->where('payment_type', 'refund');
 
-        $hasSuccessRefund = $refundPayments
+        // ✅ รวมยอด refund ที่ success แล้ว โดยแปลงให้เป็นบวก
+        $refundSuccessTotal = $refundPayments
             ->where('payment_status', 'success')
-            ->count() > 0;
+            ->sum(function ($payment) {
+                return abs($payment->payment_total);
+            });
 
-        // กรณีใบเสนอราคาโดนยกเลิก
+        // ✅ รวมยอด refund ที่ยังรอคืน โดยแปลงให้เป็นบวก
+        $refundWaitTotal = $refundPayments
+            ->where('payment_status', 'wait')
+            ->sum(function ($payment) {
+                return abs($payment->payment_total);
+            });
+
+        // ✅ สถานะยกเลิก
         if ($quotationModel->quote_status === 'cancel') {
-            // ไม่มีการชำระเงินเลย
-            if ($total <= 0) {
+            if ($totalPaid <= 0) {
                 return '';
             }
 
-            // มีการชำระเงิน แต่ยังไม่ได้คืน
-            if ($total > 0 && $refund < $total) {
+            if ($refundSuccessTotal >= $totalPaid) {
+                return '<span class="badge rounded-pill bg-success">คืนเงินลูกค้าแล้ว</span>';
+            }
+
+            if ($refundWaitTotal > 0) {
                 return '<span class="badge rounded-pill bg-warning text-dark">รอคืนเงินลูกค้า</span>';
             }
 
-            // คืนเงินครบแล้ว
-            if ($total > 0 && $refund >= $total) {
-                return '<span class="badge rounded-pill bg-success">คืนเงินลูกค้าแล้ว</span>';
-            }
-        }
-
-        // กรณีใบเสนอราคายังไม่ถูกยกเลิก
-        if ($quotationModel->quote_status !== 'cancel') {
-            if ($hasPendingRefund) {
+            return '<span class="badge rounded-pill bg-danger">ยังไม่ได้คืนเงินลูกค้า</span>';
+        } else {
+            // ✅ กรณียังไม่ยกเลิก
+            if ($refundWaitTotal > 0) {
                 return '<span class="badge rounded-pill bg-warning text-dark">รอคืนเงินบางส่วน</span>';
             }
 
-            if ($hasSuccessRefund) {
+            if ($refundSuccessTotal > $totalPaid && $totalPaid > 0) {
+                //  return $refundSuccessTotal.'-'.$totalPaid;
                 return '<span class="badge rounded-pill bg-success">คืนเงินบางส่วนแล้ว</span>';
             }
+             if ($refundSuccessTotal > $totalPaid && $totalPaid <= 0) {
+                //  return $refundSuccessTotal.'-'.$totalPaid;
+                return '<span class="badge rounded-pill bg-warning">รอคืนเงินบางส่วน</span>';
+            }
         }
+        // return $refundSuccessTotal;
 
-        // ไม่เข้าเงื่อนไขใดเลย
-        return '';
+        return '<span class="badge rounded-pill bg-secondary">ไม่มียอดคืน</span>';
     }
 }
 
