@@ -55,7 +55,7 @@ if (!function_exists('getQuoteStatusQuotePayment')) {
         }
         // return $refundSuccessTotal;
 
-        return '<span class="badge rounded-pill bg-secondary">ไม่มียอดคืน</span>';
+        return '';
     }
 }
 
