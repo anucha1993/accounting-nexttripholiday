@@ -239,6 +239,7 @@
                                             $totalMath += $res['calculated'];
                                         }
 
+
                                     @endphp
 
                                     <tr>

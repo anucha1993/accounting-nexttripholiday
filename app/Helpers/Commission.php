@@ -39,7 +39,7 @@ if (!function_exists('calculateCommission')) {
                     } elseif ($type === 'percent-QT' || $type === 'percent-Total') {
                         return [
                             'amount' => $baseAmount, // อัตราคอมมิชชั่น เช่น 10%
-                            'calculated' => ($profit * $baseAmount) / 100, // จำนวนเงินที่ผู้ขายจะได้รับจริง
+                            'calculated' => ($profit * $baseAmount) / 100 * $people, // จำนวนเงินที่ผู้ขายจะได้รับจริง
                             'group_name' => $groupName,
                             'type' => $group->type . '-' . $mode, // เช่น 'percent-QT', 'step-QT', 'percent-Total'
                             'base_amount' => $profit, // เพื่อความชัดเจนว่าคูณกับอะไร

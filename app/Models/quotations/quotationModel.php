@@ -207,7 +207,8 @@ class quotationModel extends Model
     }
      public function getTotalAttribute()
     {
-       return $this->quotePayments()->whereNot('payment_type','refund')->whereNotNull('payment_file_path')->where('payment_status','success')->sum('payment_total');
+     //return $this->quotePayments()->whereNot('payment_type','refund')->whereNotNull('payment_file_path')->sum('payment_total');
+      return $this->quotePayments()->whereNot('payment_status','cancel')->sum('payment_total');
     }
 
     // ความสัมพันธ์กับ Quote_log
