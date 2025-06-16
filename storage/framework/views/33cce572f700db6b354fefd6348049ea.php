@@ -254,14 +254,10 @@
                                         </td>
 
                                         <td>
-                                            
                                            <?php echo getQuoteStatusQuotePayment($item); ?>
 
                                            <?php echo getStatusPaymentWhosale($item); ?>
 
-                                           
-                                            
-                                            
                                         </td>
 
                                         <td> <?php echo e($item->Salename->name); ?></td>
