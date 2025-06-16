@@ -222,7 +222,7 @@ class quotationModel extends Model
     {
         return $this->belongsTo(wholesaleModel::class, 'quote_wholesale', 'id');
     }
-
+    
     public function quoteCountry()
     {
         return $this->belongsTo(countryModel::class, 'quote_country', 'id');
@@ -245,7 +245,7 @@ class quotationModel extends Model
     // // Accessor เพื่อดึงข้อมูล country public function GetDeposit()
     public function paymentWholesale()
     {
-        return $this->hasOne(paymentWholesaleModel::class, 'payment_wholesale_quote_id', 'quote_id');
+        return $this->hasMany(paymentWholesaleModel::class, 'payment_wholesale_quote_id', 'quote_id');
     }
 
     public function GetDepositWholesale()
@@ -267,6 +267,27 @@ class quotationModel extends Model
                 return $paymentWholesale->payment_wholesale_refund_total;
             });
     }
+
+    //  public function GetDepositWholesaleRefundWait()
+    // {
+    //     return $this->paymentWholesale()
+    //         ->where('payment_wholesale_refund_status', '=', 'wait')
+    //         ->get()
+    //         ->sum(function ($paymentWholesale) {
+    //             return $paymentWholesale->payment_wholesale_refund_total;
+    //         });
+    // }
+
+    //  public function GetDepositWholesaleTotal()
+    // {
+    //     return $this->paymentWholesale()
+    //         ->where('payment_wholesale_refund_status', '!=', 'cancel')
+    //         ->get()
+    //         ->sum(function ($paymentWholesale) {
+    //             return $paymentWholesale->payment_wholesale_total;
+    //         });
+    // }
+
 
     public function GrossProfit()
     {

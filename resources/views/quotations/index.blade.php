@@ -286,6 +286,8 @@
                                         <td>
                                             {{-- {!! \App\CustomHelpers\getStatusBadge($item->quoteLogStatus) !!} --}}
                                            {!! getQuoteStatusQuotePayment($item) !!}
+                                           {!!getStatusPaymentWhosale($item) !!}
+                                           {{-- {{$item->GetDepositWholesale()}} {{$item->GetDepositWholesaleRefundWait()}} {{$item->GetDepositWholesaleTotal()}}  --}}
                                             
                                             
                                         </td>

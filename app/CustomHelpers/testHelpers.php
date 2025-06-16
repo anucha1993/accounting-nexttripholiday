@@ -6,6 +6,7 @@ function getStatusBadge($quoteLogStatus)
 {
     $badges = [];
     $allDone = true; // เริ่มต้นด้วย true
+    
 
     // if ($quoteLogStatus->booking_email_status === 'ยังไม่ได้ส่ง' || $quoteLogStatus->booking_email_status === null) {
     //     $badges[] = '<span class="badge rounded-pill bg-danger">ยังไม่ส่งใบอีเมลล์จองทัวร์ให้โฮลเซลล์</span>';

@@ -257,6 +257,9 @@
                                             
                                            <?php echo getQuoteStatusQuotePayment($item); ?>
 
+                                           <?php echo getStatusPaymentWhosale($item); ?>
+
+                                           
                                             
                                             
                                         </td>

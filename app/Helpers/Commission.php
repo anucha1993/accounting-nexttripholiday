@@ -2,6 +2,7 @@
 
 use App\Models\commissions\commissionGroupModel;
 
+
 if (!function_exists('calculateCommission')) {
     function calculateCommission(float $profit, int $saleId, string $mode = 'qt', int $people = 1): array
     {
@@ -20,43 +21,48 @@ if (!function_exists('calculateCommission')) {
         foreach ($group->commissionLists as $rate) {
             $min = (float) $rate->min_amount;
             $max = (float) $rate->max_amount;
+            $type = $group->type;
+
+            // ✅ กรองเฉพาะ type ที่ตรงกับ mode
+            if ($mode === 'qt' && !in_array($type, ['step-QT', 'percent-QT'])) {
+                continue;
+            }
+            if ($mode === 'total' && !in_array($type, ['step-Total', 'percent-Total'])) {
+                continue;
+            }
 
             if ($profit >= $min && $profit <= $max) {
                 $baseAmount = (float) $rate->commission_calculate;
                 $groupName = $group->name;
-                $type = $group->type;
 
-                // ✅ หาจำนวนค่าคอมจริงที่ต้องจ่าย
-                if ($mode === 'qt' || $mode === 'total') {
-                    if ($type === 'step-QT' || $type === 'step-Total') {
-                        return [
-                            'amount' => $baseAmount,
-                            'calculated' => $baseAmount * $people,
-                            'group_name' => $groupName,
-                            'type' => $group?->type ?? 'unknown',
-                            'percent' => 0,
-                        ];
-                    } elseif ($type === 'percent-QT' || $type === 'percent-Total') {
-                        return [
-                            'amount' => $baseAmount, // อัตราคอมมิชชั่น เช่น 10%
-                            'calculated' => ($profit * $baseAmount) / 100 * $people, // จำนวนเงินที่ผู้ขายจะได้รับจริง
-                            'group_name' => $groupName,
-                            'type' => $group->type . '-' . $mode, // เช่น 'percent-QT', 'step-QT', 'percent-Total'
-                            'base_amount' => $profit, // เพื่อความชัดเจนว่าคูณกับอะไร
-                        ];
-                    }
-                } else {
-                    // กรณี total ใช้ amount ตรง ๆ
+                // ✅ step
+                if (str_starts_with($type, 'step')) {
                     return [
                         'amount' => $baseAmount,
-                        'calculated' => $baseAmount,
+                        'calculated' => $mode === 'qt' ? $baseAmount * $people : $baseAmount,
                         'group_name' => $groupName,
-                        'percent' => $type === 'percent' ? $baseAmount : 0,
+                        'type' => $type,
+                        'percent' => 0,
+                    ];
+                }
+
+                // ✅ percent
+                if (str_starts_with($type, 'percent')) {
+                    return [
+                        'amount' => $baseAmount,
+                        'calculated' => $mode === 'qt'
+                            ? ($profit * $baseAmount) / 100 * $people
+                            : ($profit * $baseAmount) / 100,
+                        'group_name' => $groupName,
+                        'type' => $type,
+                        'percent' => $baseAmount,
+                        'base_amount' => $profit,
                     ];
                 }
             }
         }
 
-        return ['amount' => 0, 'group_name' => $group->name, 'percent' => 0, 'calculated' => 0];
+        return ['amount' => 0, 'group_name' => $group->name, 'percent' => 0, 'calculated' => 0, 'type' => 'not-matched'];
     }
 }
+
