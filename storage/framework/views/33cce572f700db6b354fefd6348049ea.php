@@ -258,6 +258,8 @@
 
                                            <?php echo getStatusPaymentWhosale($item); ?>
 
+                                           <?php echo getStatusWithholdingTax($item->quoteInvoice); ?>
+
                                         </td>
 
                                         <td> <?php echo e($item->Salename->name); ?></td>

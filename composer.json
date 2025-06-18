@@ -44,7 +44,8 @@
         "app/Helpers/statusCheckListHelper.php",
         "app/Helpers/statusPaymentHelper.php",
         "app/Helpers/statusPaymentQuoteHelper.php",
-        "app/Helpers/statusPaymentWhosale.php"
+        "app/Helpers/statusPaymentWhosale.php",
+        "statusWithholdingTaxHelper.php"
     ]
 },
     "autoload-dev": {
