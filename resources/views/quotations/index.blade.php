@@ -287,6 +287,9 @@
                                            {!! getQuoteStatusQuotePayment($item) !!}
                                            {!!getStatusPaymentWhosale($item) !!}
                                            {!!getStatusWithholdingTax($item->quoteInvoice)!!}
+                                           {!!getQuoteStatusWithholdingTax($item->quoteLogStatus)!!}
+                                           {!!getStatusWhosaleInputTax($item->checkfileInputtax)!!}
+                                          
                                         </td>
 
                                         <td> {{ $item->Salename->name }}</td>

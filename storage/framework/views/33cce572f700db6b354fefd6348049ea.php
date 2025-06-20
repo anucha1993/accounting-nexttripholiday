@@ -260,6 +260,11 @@
 
                                            <?php echo getStatusWithholdingTax($item->quoteInvoice); ?>
 
+                                           <?php echo getQuoteStatusWithholdingTax($item->quoteLogStatus); ?>
+
+                                           <?php echo getStatusWhosaleInputTax($item->checkfileInputtax); ?>
+
+                                          
                                         </td>
 
                                         <td> <?php echo e($item->Salename->name); ?></td>

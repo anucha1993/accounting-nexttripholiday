@@ -212,10 +212,10 @@ class quotationModel extends Model
     }
 
     // ความสัมพันธ์กับ Quote_log
-    public function quoteLogStatus()
-    {
-        return $this->belongsTo(QuoteLogModel::class, 'quote_id', 'quote_id');
-    }
+    // public function quoteLogStatus()
+    // {
+    //     return $this->belongsTo(QuoteLogModel::class, 'quote_id', 'quote_id');
+    // }
 
     // ความสัมพันธ์กับ WholesaleModel
     public function quoteWholesale()
@@ -268,25 +268,7 @@ class quotationModel extends Model
             });
     }
 
-    //  public function GetDepositWholesaleRefundWait()
-    // {
-    //     return $this->paymentWholesale()
-    //         ->where('payment_wholesale_refund_status', '=', 'wait')
-    //         ->get()
-    //         ->sum(function ($paymentWholesale) {
-    //             return $paymentWholesale->payment_wholesale_refund_total;
-    //         });
-    // }
-
-    //  public function GetDepositWholesaleTotal()
-    // {
-    //     return $this->paymentWholesale()
-    //         ->where('payment_wholesale_refund_status', '!=', 'cancel')
-    //         ->get()
-    //         ->sum(function ($paymentWholesale) {
-    //             return $paymentWholesale->payment_wholesale_total;
-    //         });
-    // }
+   
 
 
     public function GrossProfit()
@@ -298,12 +280,23 @@ class quotationModel extends Model
 
         return $grossProfit;
     }
+     public function quoteLogStatus()
+    {
+        return $this->hasOne(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
+    }
 
     public function inputtax()
     {
         return $this->hasOne(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
     }
+   
 
+public function checkfileInputtax()
+{
+    return $this->hasOne(inputTaxModel::class, 'input_tax_quote_id', 'quote_id')
+                ->where('input_tax_type', 0)
+                ->where('input_tax_status', 'success');
+}
     public function inputtaxTotal()
     {
         return $this->inputtax()

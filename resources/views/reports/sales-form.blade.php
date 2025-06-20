@@ -235,11 +235,8 @@
                                             $result['amount'] = $res['amount']; // ค่า base เช่น 10, 100
                                             $result['group_name'] = $res['group_name']; // ชื่อกลุ่ม
                                             $result['calculated'] = $res['calculated']; // ✅ ค่าคอมที่แท้จริง
-
                                             $totalMath += $res['calculated'];
                                         }
-
-
                                     @endphp
 
                                     <tr>
