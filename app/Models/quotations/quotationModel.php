@@ -216,8 +216,8 @@ class quotationModel extends Model
     // {
     //     return $this->belongsTo(QuoteLogModel::class, 'quote_id', 'quote_id');
     // }
-
     // ความสัมพันธ์กับ WholesaleModel
+
     public function quoteWholesale()
     {
         return $this->belongsTo(wholesaleModel::class, 'quote_wholesale', 'id');
@@ -258,6 +258,7 @@ class quotationModel extends Model
             });
     }
 
+    
     public function GetDepositWholesaleRefund()
     {
         return $this->paymentWholesale()
@@ -267,9 +268,7 @@ class quotationModel extends Model
                 return $paymentWholesale->payment_wholesale_refund_total;
             });
     }
-
    
-
 
     public function GrossProfit()
     {

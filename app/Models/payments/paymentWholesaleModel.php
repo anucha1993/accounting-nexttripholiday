@@ -2,6 +2,8 @@
 
 namespace App\Models\payments;
 
+use App\Models\quotations\quotationModel;
+use App\Models\wholesale\wholesaleModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -33,4 +35,8 @@ class paymentWholesaleModel extends Model
         'created_by',
         'updated_by',
     ];
+       public function quote()
+    {
+        return $this->belongsTo(quotationModel::class, 'payment_wholesale_quote_id', 'quote_id');
+    }
 }

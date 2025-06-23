@@ -98,12 +98,7 @@
                                         @else
                                             ชำระมัดจำ 
                                         @endif
-                                    @else
-                                        @if ($item->payment_wholesale_type === 'full')
-                                            ชำระเต็มจำนวน 
-                                        @else
-                                            ชำระมัดจำ 
-                                        @endif
+                                   
                                     @endif
                                 </td>
 

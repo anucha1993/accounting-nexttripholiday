@@ -64,6 +64,7 @@ use App\Http\Controllers\withholding\withholdingTaxController;
 use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\MPDF\MPDF_WithhodingDocumentController;
 use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
+use App\Http\Controllers\reports\paymentWholesaleReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -356,6 +357,7 @@ Route::get('/report/taxinvoice/form',[taxinvoiceReportController::class,'index']
 Route::get('/report/receipt/form',[receiptReportController::class,'index'])->name('report.receipt');
 Route::get('/report/saletax/form',[saleTaxReportController::class,'index'])->name('report.saletax');
 Route::get('/report/sales/form',[saleReportController::class,'index'])->name('report.sales');
+Route::get('/report/payment-wholesale/form',[paymentWholesaleReportController::class,'index'])->name('report.payment-wholesale');
 
 // Export Excel 
 Route::post('export/excel/quote', [QuoteExportController::class, 'export'])->name('export.quote');

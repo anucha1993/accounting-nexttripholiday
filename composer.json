@@ -47,7 +47,8 @@
         "app/Helpers/statusPaymentWhosale.php",
         "statusWithholdingTaxHelper.php",
         "statusQuoteWithholdingTaxHelper.php",
-        "statusWhosaleInputTaxHelper.php.php"
+        "statusWhosaleInputTaxHelper.php",
+        "statusPaymentRefundWholesaleHelper.php"
     ]
 },
     "autoload-dev": {
