@@ -1304,6 +1304,10 @@
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานยอดขาย</span>
                                     </a>
+                                     <a href="<?php echo e(route('report.payment-wholesale')); ?>" class="sidebar-link">
+                                        <i class="mdi mdi-comment-processing-outline"></i>
+                                        <span class="hide-menu"> รายงานใบเสร็จโฮลเซลล์</span>
+                                    </a>
                                 </li>
                             </ul>
                         </li>
