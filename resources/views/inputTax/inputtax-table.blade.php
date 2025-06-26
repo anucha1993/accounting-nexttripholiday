@@ -33,6 +33,7 @@
                     @endphp
                     <tbody>
                         @forelse ($invoiceModel as $item)
+                        
                             @php
                                 $inputTaxTotal += $invoice->getWithholdingTaxAmountAttribute();
                                 $inputTaxTotal += $item->invoice_vat;

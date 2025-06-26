@@ -194,7 +194,7 @@
                                         <th>Booking Date</th>
                                         <th>วันที่เดินทาง</th>
                                         <th>ชื่อลูกค้า</th>
-                                        <th>Pax</th>
+                                        <th>Paxs</th>
                                         <th>ประเทศ</th>
                                         <th>สายการบิน</th>
                                         <th>โฮลเซลล์</th>
@@ -237,20 +237,10 @@
                                         <td><?php echo e(number_format($item->quote_grand_total, 2, '.', ',')); ?></td>
 
                                         <td>
-                                            <?php
-                                                // ดึงข้อมูลการชำระเงินล่าสุดจาก paymentWholesale
-                                                $latestPayment = $item->paymentWholesale()->latest('payment_wholesale_id')->first();
-                                            ?>
-                                          <?php if(!$latestPayment || $latestPayment->payment_wholesale_type === null): ?>
-                                                <!-- กรณีที่ไม่มีข้อมูลใน paymentWholesale หรือ payment_wholesale_type เป็น NULL -->
-                                                <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
-                                            <?php elseif($latestPayment->payment_wholesale_type === 'deposit'): ?>
-                                                <!-- กรณีที่เป็น deposit -->
-                                                <span class="badge rounded-pill bg-primary">รอชำระเงินเต็มจำนวน</span>
-                                            <?php elseif($latestPayment->payment_wholesale_type === 'full'): ?>
-                                                <!-- กรณีที่เป็น full -->
-                                                <span class="badge rounded-pill bg-success">ชำระเงินแล้ว</span>
-                                            <?php endif; ?>
+
+                                             <?php echo getQuoteStatusPayment($item); ?>
+
+                                            
                                         </td>
 
                                         <td>

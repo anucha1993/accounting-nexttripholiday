@@ -15,9 +15,28 @@ if (!function_exists('getQuoteStatusPayment')) {
             $status = '<span class="badge rounded-pill bg-danger">ยกเลิกการสั่งซื้อ</span>';
     
         } elseif ($quotationModel->quote_status === 'success') {
-            $status = '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>';
-        } elseif ($quotationModel->payment > 0) {
-            $status = '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
+            
+            if ($quotationModel->payment === $quotationModel->quote_grand_total) {
+                $status = '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>';
+            } elseif ($quotationModel->payment > $quotationModel->quote_grand_total) {
+                $status = '<span class="badge rounded-pill bg-info">ชำระเงินเกิน</span>';
+            }else {
+
+            }
+            // $status = '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>'.$quotationModel->payment;
+        } elseif ($quotationModel->payment > 0 && $quotationModel->payment < $quotationModel->quote_grand_total) {
+            // กรณีชำระเงินบางส่วน
+            $paymentDate = null;
+            if ($quotationModel->quote_payment_type === 'deposit') {
+                $paymentDate = $quotationModel->quote_payment_date;
+            } elseif ($quotationModel->quote_payment_type === 'full') {
+                $paymentDate = $quotationModel->quote_payment_date_full;
+            }
+            if ($paymentDate && $now->gt(Carbon::parse($paymentDate))) {
+                $status = '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
+            } else {
+                $status = '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
+            }
         } elseif ($quotationModel->quote_payment_type === 'deposit') {
             if ($now->gt(Carbon::parse($quotationModel->quote_payment_date))) {
                 $status = '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';

@@ -44,7 +44,7 @@ use App\Http\Controllers\exports\invoiceExportController;
 use App\Http\Controllers\exports\saleTaxExportController;
 use App\Http\Controllers\MPDF\MPDF_WithholdingController;
 use App\Http\Controllers\payments\paymentDebitController;
-use App\Http\Controllers\quotefiles\QuoteFilesController;
+use AppHttp\Controllers\quotefiles\QuoteFilesController;
 use App\Http\Controllers\reports\invoiceReportController;
 use App\Http\Controllers\reports\receiptReportController;
 use App\Http\Controllers\reports\saleTaxReportController;
@@ -358,6 +358,7 @@ Route::get('/report/receipt/form',[receiptReportController::class,'index'])->nam
 Route::get('/report/saletax/form',[saleTaxReportController::class,'index'])->name('report.saletax');
 Route::get('/report/sales/form',[saleReportController::class,'index'])->name('report.sales');
 Route::get('/report/payment-wholesale/form',[paymentWholesaleReportController::class,'index'])->name('report.payment-wholesale');
+Route::get('/report/payment-wholesale/export', [paymentWholesaleReportController::class, 'exportExcel'])->name('report.payment-wholesale.export');
 
 // Export Excel 
 Route::post('export/excel/quote', [QuoteExportController::class, 'export'])->name('export.quote');

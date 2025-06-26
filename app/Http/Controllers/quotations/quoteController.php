@@ -220,15 +220,7 @@ class quoteController extends Controller
                 $quotations = $quotations->paginate(10);
             }
 
-        // กรองสถานะใน PHP
-        // if ($searchCustomerPayment !== 'all') {
-        //     $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchCustomerPayment) {
-        //         return strip_tags(getQuoteStatusPayment($quotation)) === $searchCustomerPayment;
-        //     });
-
-        //     // กำหนด Collection ที่กรองแล้วกลับเข้าไปใน Paginator
-        //     $quotations->setCollection($filtered);
-        // }
+       
 
         if ($searchCustomerPayment !== 'all') {
             $filtered = $quotations->filter(function ($quotation) use ($searchCustomerPayment) {
@@ -395,6 +387,19 @@ class quoteController extends Controller
             'created_by' => Auth::user()->name,
         ]);
 
+        // คำนวณ pax ฝั่ง server
+        $paxTotal = 0;
+        if ($request->has('product_id')) {
+            foreach ($request->product_id as $key => $productId) {
+                $product = \App\Models\products\productModel::find($productId);
+                if ($product && $product->product_pax === 'Y') {
+                    $qty = isset($request->quantity[$key]) ? (float)$request->quantity[$key] : 0;
+                    $paxTotal += $qty;
+                }
+            }
+        }
+        $request->merge(['quote_pax_total' => $paxTotal]);
+
         $quote = quotationModel::create($request->all());
 
         //ลงข้อมูลรายการสินค้า
@@ -556,6 +561,26 @@ class quoteController extends Controller
 
     public function update(quotationModel $quotationModel, Request $request)
     {
+        // --- Date validation: block past dates for key fields ---
+        $today = Carbon::today();
+        $fields = [
+            'quote_date' => 'วันที่เสนอราคา',
+            'quote_booking_create' => 'วันที่จองแพคเกจ',
+            'quote_date_start' => 'วันออกเดินทาง',
+            'quote_date_end' => 'วันเดินทางกลับ',
+        ];
+        $invalidFields = [];
+        foreach ($fields as $field => $label) {
+            if (!empty($request->$field) && Carbon::parse($request->$field)->lt($today)) {
+                $invalidFields[] = $label;
+            }
+        }
+        if (count($invalidFields) > 0) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['date_error' => 'ไม่สามารถเลือกวันที่ย้อนหลังได้: ' . implode(', ', $invalidFields)]);
+        }
+
         //dd($request);
         $country = DB::connection('mysql2')
             ->table('tb_country')

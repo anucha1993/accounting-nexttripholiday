@@ -24,7 +24,7 @@
                 </div>
                 <div class="col-md-3 mt-3">
                     <label>วิธีการชำระเงิน </label>
-                    <select id="payment-method" class="form-select" name="payment_method">
+                    <select id="payment-method" class="form-select" name="payment_method" required>
                         <option value="">--กรุณาเลือก--</option>
                         <option value="cash">เงินสด</option>
                         <option value="transfer-money">โอนเงินเข้าบัญชี</option>
@@ -99,7 +99,7 @@
             <div class="row mt-3" id="payment-file">
                 <div class="col-md-3">
                     <label for="">แนบไฟล์เอกสาร</label>
-                    <input type="file" name="payment_file">
+                    <input type="file" name="payment_file" required>
                 </div>
             </div>
             

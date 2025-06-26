@@ -227,7 +227,7 @@
                                         <th>Booking Date</th>
                                         <th>วันที่เดินทาง</th>
                                         <th>ชื่อลูกค้า</th>
-                                        <th>Pax</th>
+                                        <th>Paxs</th>
                                         <th>ประเทศ</th>
                                         <th>สายการบิน</th>
                                         <th>โฮลเซลล์</th>
@@ -267,7 +267,9 @@
                                         <td>{{ number_format($item->quote_grand_total, 2, '.', ',') }}</td>
 
                                         <td>
-                                            @php
+
+                                             {!! getQuoteStatusPayment($item) !!}
+                                            {{-- @php
                                                 // ดึงข้อมูลการชำระเงินล่าสุดจาก paymentWholesale
                                                 $latestPayment = $item->paymentWholesale()->latest('payment_wholesale_id')->first();
                                             @endphp
@@ -280,7 +282,7 @@
                                             @elseif ($latestPayment->payment_wholesale_type === 'full')
                                                 <!-- กรณีที่เป็น full -->
                                                 <span class="badge rounded-pill bg-success">ชำระเงินแล้ว</span>
-                                            @endif
+                                            @endif --}}
                                         </td>
 
                                         <td>

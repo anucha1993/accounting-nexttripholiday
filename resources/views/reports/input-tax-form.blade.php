@@ -84,6 +84,18 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                                     </select>
                                 </div>
 
+                                <div class="col-md-2">
+                                    <label for="seller_id">เซลผู้ขาย</label>
+                                    <select name="seller_id" class="form-select">
+                                        <option value="">---กรุณาเลือก---</option>
+                                        @foreach($sellers as $seller)
+                                            <option value="{{ $seller->id }}" {{ request('seller_id') == $seller->id ? 'selected' : '' }}>
+                                                {{ $seller->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
                             <div class="col-md-7">
                                <br>
                                 <button type="submit" class="btn  btn-info float-end">แสดงรายงาน</button>
@@ -102,7 +114,7 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
         </div>
 
 
-        </div>
+    
 
 
         <div class="card">
@@ -146,7 +158,7 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                              ยังไม่รับเอกสาร
                              @endif
                         </td>
-                        <td>{{ $item->invoice->taxinvoice->taxinvoice_number ?? 'ไม่มีข้อมูล' }}</td>
+                        <td><a href="{{route('quote.editNew',$item->quote->quote_id)}}">{{ $item->invoice->taxinvoice->taxinvoice_number ?? 'ไม่มีข้อมูล' }}</a></td>
                         <td>{{$item->quote->quoteWholesale->wholesale_name_th}}</td>
                         <td>{{$item->quote->quoteWholesale->textid}}</td>
                         <td>{{number_format($item->input_tax_service_total,2)}}</td>

@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
 use App\Models\payments\paymentWholesaleModel;
+use App\Exports\paymentWholesaleExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class paymentWholesaleReportController extends Controller
 {
@@ -54,6 +56,11 @@ public function index(Request $request)
         'sum_total',
         'sum_refund'
     ));
+}
+
+public function exportExcel(Request $request)
+{
+    return Excel::download(new paymentWholesaleExport($request), 'payment_wholesale_report.xlsx');
 }
 
 

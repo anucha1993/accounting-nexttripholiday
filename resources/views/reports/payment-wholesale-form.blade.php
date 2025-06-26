@@ -39,6 +39,7 @@
                     <div class="col-md-12 text-end">
                         <button type="submit" class="btn btn-primary">ค้นหา</button>
                         <a href="{{ route('report.payment-wholesale') }}" class="btn btn-secondary">รีเซ็ต</a>
+                        <a href="{{ route('report.payment-wholesale.export', request()->all()) }}" class="btn btn-success">Export Excel</a>
                     </div>
                 </form>
             </div>
