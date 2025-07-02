@@ -17,7 +17,26 @@ class invoiceModel extends Model
     use HasFactory;
     protected $table = 'invoices';
     protected $primaryKey = 'invoice_id';
-    protected $fillable = ['invoice_id', 'invoice_number', 'invoice_date', 'invoice_quote_id', 'invoice_quote_number', 'invoice_booking', 'invoice_sale', 'customer_id', 'invoice_vat_exempted_amount', 'invoice_pre_tax_amount', 'invoice_discount', 'invoice_pre_vat_amount', 'invoice_vat', 'invoice_include_vat', 'invoice_grand_total', 'invoice_withholding_tax', 'invoice_withholding_tax_status', 'invoice_status', 'invoice_note', 'invoice_vat_type', 'deposit', 'created_by', 'updated_by', 'invoice_cancel_note', 'invoice_image'];
+    protected $fillable = ['invoice_id', 'invoice_number', 'invoice_date', 'invoice_quote_id', 'invoice_quote_number', 'invoice_booking', 'invoice_sale', 'customer_id', 'invoice_vat_exempted_amount', 'invoice_pre_tax_amount', 'invoice_discount', 'invoice_pre_vat_amount', 'invoice_vat', 'invoice_include_vat', 'invoice_grand_total', 'invoice_withholding_tax', 'invoice_withholding_tax_status', 'invoice_status', 'invoice_note', 'invoice_vat_type', 'deposit', 'created_by', 'updated_by', 'invoice_cancel_note', 'invoice_image', 'revised', 'revision_reason', 'revision_date'];
+
+    /**
+     * Cast attributes to native types.
+     */
+    protected $casts = [
+        'revised' => 'boolean',
+        'revision_date' => 'datetime',
+        'invoice_date' => 'date',
+    ];
+
+    /**
+     * The attributes that should be mutated to dates.
+     */
+    protected $dates = [
+        'invoice_date',
+        'revision_date',
+        'created_at',
+        'updated_at',
+    ];
 
     public function quote()
     {

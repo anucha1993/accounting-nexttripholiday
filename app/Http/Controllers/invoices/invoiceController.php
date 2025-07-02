@@ -167,7 +167,10 @@ class invoiceController extends Controller
 
         $request->merge([
             'invoice_withholding_tax_status' => isset($request->invoice_withholding_tax_status) ? 'Y' : 'N',
-            'updated_by' => Auth::user()->name
+            'updated_by' => Auth::user()->name,
+            'revised' => true,
+            'revision_date' => now(),
+            'revision_reason' => $request->revision_reason ?? 'แก้ไขข้อมูลใบแจ้งหนี้'
         ]);
         $invoiceModel->update($request->all());
 
@@ -280,5 +283,28 @@ public function deleteInvoiceImage(Request $request)
     }
 }
 
+public function markAsRevised(invoiceModel $invoiceModel, Request $request)
+    {
+        $invoiceModel->update([
+            'revised' => true,
+            'revision_reason' => $request->revision_reason ?? 'แก้ไขข้อมูลใบแจ้งหนี้',
+            'revision_date' => now(),
+            'updated_by' => Auth::user()->name
+        ]);
+        
+        return response()->json(['success' => true, 'message' => 'ทำเครื่องหมายเป็น Revised แล้ว']);
+    }
+
+    public function unmarkRevised(invoiceModel $invoiceModel)
+    {
+        $invoiceModel->update([
+            'revised' => false,
+            'revision_reason' => null,
+            'revision_date' => null,
+            'updated_by' => Auth::user()->name
+        ]);
+        
+        return response()->json(['success' => true, 'message' => 'ยกเลิกการทำเครื่องหมาย Revised แล้ว']);
+    }
 
 }

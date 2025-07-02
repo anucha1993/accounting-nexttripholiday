@@ -67,15 +67,25 @@ class MPDF_WithhodingDocumentController extends Controller
            // เขียน HTML ลงใน PDF
            $mpdf->WriteHTML($html);
     
-           // ส่งออกไฟล์ PDF ไปยังเบราว์เซอร์เพื่อดาวน์โหลด
-           return $mpdf->Output('ใบหัก_ณ_ที่จ่าย_'.$WithholdingTaxDocument->document_number.'.pdf', 'I'); // 'I' เพื่อแสดงในเบราว์เซอร์
+           // สร้างชื่อไฟล์ตามรูปแบบ: เลขที่เอกสาร-ref.Number-quote.ref-ชื่อผู้ถูกหัก
+           $documentNumber = $WithholdingTaxDocument->document_number ?? 'ไม่ระบุ';
+           $refNumber = $WithholdingTaxDocument->ref_number ?? 'ไม่ระบุ';
+           $quoteRef = optional($quote)->quote_number ?? 'ไม่ระบุ';
+           $customerName = optional($customer)->customer_name ?? optional($wholesale)->wholesale_name_th ?? 'ไม่ระบุ';
+           
+           $filename = $documentNumber . '-' . $refNumber . '-' . $quoteRef . '-' . $customerName;
+           
+           // ส่งออกไฟล์ PDF ไปยังเบราว์เซอร์เพื่อแสดงผล
+           return $mpdf->Output($filename . '.pdf', 'I'); // 'I' เพื่อแสดงในเบราว์เซอร์
     }
 
     public function downloadPDFwithholding(WithholdingTaxDocument $WithholdingTaxDocument)
     {
         $customer = customerModel::where('customer_id', $WithholdingTaxDocument->customer_id)->first();
+        $wholesale = wholesaleModel::where('id', $WithholdingTaxDocument->wholesale_id)->first();
         $imageSignature = DB::table('image_signature')->where('image_signture_id', $WithholdingTaxDocument->image_signture_id)->first();
         $item = WithholdingTaxItem::where('document_id', $WithholdingTaxDocument->id)->first();
+        $quote = quotationModel::where('quote_id', $WithholdingTaxDocument->quote_id)->first();
 
            // การตั้งค่า font สำหรับภาษาไทย
            $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
@@ -83,7 +93,7 @@ class MPDF_WithhodingDocumentController extends Controller
            $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
            $fontData = $defaultFontConfig['fontdata'];
            // ดึง HTML จาก Blade Template
-           $html = view('MPDF.mpdf_withholding_new',compact('WithholdingTaxDocument', 'customer', 'item', 'imageSignature'));
+           $html = view('MPDF.mpdf_withholding_new',compact('WithholdingTaxDocument', 'customer', 'item', 'imageSignature', 'quote', 'wholesale'));
        
            // กำหนดค่าเริ่มต้นของ mPDF และเพิ่มฟอนต์ภาษาไทย
            $mpdf = new \Mpdf\Mpdf([
@@ -107,8 +117,16 @@ class MPDF_WithhodingDocumentController extends Controller
            // เขียน HTML ลงใน PDF
            $mpdf->WriteHTML($html);
        
+           // สร้างชื่อไฟล์ตามรูปแบบ: เลขที่เอกสาร-ref.Number-quote.ref-ชื่อผู้ถูกหัก
+           $documentNumber = $WithholdingTaxDocument->document_number ?? 'ไม่ระบุ';
+           $refNumber = $WithholdingTaxDocument->ref_number ?? 'ไม่ระบุ';
+           $quoteRef = optional($quote)->quote_number ?? 'ไม่ระบุ';
+           $customerName = optional($customer)->customer_name ?? optional($wholesale)->wholesale_name_th ?? 'ไม่ระบุ';
+           
+           $filename = $documentNumber . '-' . $refNumber . '-' . $quoteRef . '-' . $customerName;
+           
            // ส่งออกไฟล์ PDF ไปยังเบราว์เซอร์เพื่อดาวน์โหลด
-           return $mpdf->Output('ใบหัก_ณ_ที่จ่าย_'.$WithholdingTaxDocument->document_number.'.pdf', 'D'); // 'I' เพื่อแสดงในเบราว์เซอร์
+           return $mpdf->Output($filename . '.pdf', 'D'); // 'D' เพื่อดาวน์โหลด
     }
 
 

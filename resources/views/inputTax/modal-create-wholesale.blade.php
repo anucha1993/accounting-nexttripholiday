@@ -9,10 +9,8 @@
             <div class="col-md-12 mb-3">
                 <label>ประเภท</label>
                 <select name="input_tax_type" id="" class="form-select">
-                    {{-- <option value="0">ภาษีซื้อ</option>
-                    <option value="1">ต้นทุนอื่นๆ</option> --}}
-                    <option value="2" selected>ต้นทุนโฮลเซลล์</option>
-                    <option value="4">ค่าทัวร์รวมทั้งหมด</option>
+                    <option value="4" selected>ค่าทัวร์รวมทั้งหมด</option>
+                    <option value="2">ค่าห้อง</option>
                     <option value="5">ค่าอาหาร</option>
                     <option value="6">ค่าตั๋วเครื่องบิน</option>
                     <option value="7">อื่นๆ</option>
@@ -25,7 +23,7 @@
             <input type="hidden" name="input_tax_wholesale_type" class="form-control" value="Y" >
 
             <div class="col-md-12 mb-3">
-                <label for=""> วันเดือน ที่จ่าย </label>
+                <label for="">วันที่บันทึกเอกสาร</label>
                 <input type="date-local" name="" class="form-control" placeholder="tax number" value="{{date('d-m-Y : H:m:s')}}" disabled >
             </div>
       

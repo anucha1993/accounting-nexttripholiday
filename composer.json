@@ -45,10 +45,11 @@
         "app/Helpers/statusPaymentHelper.php",
         "app/Helpers/statusPaymentQuoteHelper.php",
         "app/Helpers/statusPaymentWhosale.php",
-        "statusWithholdingTaxHelper.php",
-        "statusQuoteWithholdingTaxHelper.php",
-        "statusWhosaleInputTaxHelper.php",
-        "statusPaymentRefundWholesaleHelper.php"
+        "app/Helpers/statusWithholdingTaxHelper.php",
+        "app/Helpers/statusQuoteWithholdingTaxHelper.php",
+        "app/Helpers/statusWhosaleInputTaxHelper.php",
+        "app/Helpers/statusPaymentRefundWholesaleHelper.php",
+        "app/Helpers/statusRefundHelper.php"
     ]
 },
     "autoload-dev": {

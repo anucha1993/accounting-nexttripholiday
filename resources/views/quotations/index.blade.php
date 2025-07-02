@@ -1,9 +1,53 @@
 @extends('layouts.template')
 
 @section('content')
+<style>
+    .table-sm td, .table-sm th {
+        padding: 0.4rem;
+        vertical-align: middle;
+    }
+    
+    .badge-sm {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .sticky-top {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+    
+    .table-dark th {
+        border-color: #495057;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    
+    .text-truncate-custom {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 150px;
+    }
+    
+    .status-badges .badge {
+        margin: 1px;
+        display: inline-block;
+    }
+    
+    .quote-summary {
+        background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+        border-radius: 8px;
+        padding: 0.5rem;
+    }
+</style>
 
-
-    <div class="email-app todo-box-container container-fluid">
+<div class="email-app todo-box-container container-fluid">
         <br>
         @if (session('success'))
             <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
@@ -22,16 +66,22 @@
        
 
 
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">ใบเสนอราคา/ใบแจ้งหนี้
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-file-invoice"></i> ใบเสนอราคา/ใบแจ้งหนี้
+                    </h5>
                     @can('edit-quote')
-                     <a href="{{ route('quote.createNew') }}"
-                        class="btn btn-primary float-end">สร้างใบเสนอราคา</a></h4>
-                        @endcan
-                <hr>
-
-                <form action="">
+                        <a href="{{ route('quote.createNew') }}" class="btn btn-light btn-sm">
+                            <i class="fas fa-plus"></i> สร้างใบเสนอราคา
+                        </a>
+                    @endcan
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="collapse" id="searchCollapse">
+                    <form action="" class="border rounded p-3 bg-light mb-3">
                     <input type="hidden" name="search" value="Y">
                     <div class="row mb-3">
                         <div class="col-md-2">
@@ -175,21 +225,32 @@
                                 <option {{ request('search_not_check_list') === 'appointment_status' ? 'selected' : '' }} value="appointment_status">ยังไม่ส่งใบนัดหมายให้ลูกค้า</option>
                                 <option {{ request('search_not_check_list') === 'withholding_tax_status' ? 'selected' : '' }} value="withholding_tax_status">ยังไม่ออกใบหัก ณ ที่จ่าย</option>
                                 <option {{ request('search_not_check_list') === 'wholesale_tax_status' ? 'selected' : '' }} value="wholesale_tax_status">ยังไม่ได้รับใบกำกับภาษีโฮลเซลล์</option>
+                                <option {{ request('search_not_check_list') === 'customer_refund_status' ? 'selected' : '' }} value="customer_refund_status">ยังไม่คืนเงินลูกค้า</option>
+                                <option {{ request('search_not_check_list') === 'wholesale_refund_status' ? 'selected' : '' }} value="wholesale_refund_status">ยังไม่ได้รับเงินคืนจากโฮลเซลล์</option>
                             </select>
                         </div>
 
                         </div>
-                        <div class="row ">
-                        
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-success float-end mx-3" type="submit">ค้นหา</button>
-                                <a href="{{ route('quote.index') }}" class="btn btn-outline-danger float-end mx-3"
-                                    type="submit">ล้างข้อมูล</a>
-
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <button class="btn btn-primary btn-sm" type="submit">
+                                        <i class="fas fa-search"></i> ค้นหา
+                                    </button>
+                                    <a href="{{ route('quote.index') }}" class="btn btn-outline-secondary btn-sm">
+                                        <i class="fas fa-times"></i> ล้างข้อมูล
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
+                
+                <div class="mb-3">
+                    <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#searchCollapse" aria-expanded="false">
+                        <i class="fas fa-filter"></i> แสดง/ซ่อน ตัวกรอง
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -209,107 +270,152 @@
                             </select>
                         </form> --}}
 
-                        <form action="{{route('export.quote')}}" id="export-excel" method="post">
-                            @csrf
-                            @method('POST')
-                            <input type="hidden" name="quote_ids" value="{{$quotations->pluck('quote_id')}}">
-                            <button class="btn btn-success" type="submit">EXCEL</button>
-                        </form>
-                        <br>
-                        <table class="table customize-table table-hover mb-0 v-middle table-striped table-bordered" id="quote-table"
-                            style="font-size: 12px">
-                            <thead class="table text-white bg-info">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <form action="{{route('export.quote')}}" id="export-excel" method="post" class="d-inline">
+                                    @csrf
+                                    @method('POST')
+                                    <input type="hidden" name="quote_ids" value="{{$quotations->pluck('quote_id')}}">
+                                    <button class="btn btn-success btn-sm" type="submit">
+                                        <i class="fas fa-file-excel"></i> Export Excel
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="text-muted">
+                                <small>พบข้อมูล {{number_format($quotations->count())}} รายการ | รวม {{number_format($SumPax)}} PAX | มูลค่า {{number_format($SumTotal,2)}} บาท</small>
+                            </div>
+                        </div>
+                        
+                        <table class="table table-sm table-hover table-striped table-bordered" id="quote-table" style="font-size: 11px;">
+                            <thead class="table-dark sticky-top">
                                     <tr>
-                                        <th>ลำดับ</th>
-                                        <th>ใบเสนอราคา</th>
-                                        <th>เลขที่ใบจองทัวร์</th>
-                                        <th>โปรแกรมทัวร์</th>
-                                        <th>Booking Date</th>
-                                        <th>วันที่เดินทาง</th>
-                                        <th>ชื่อลูกค้า</th>
-                                        <th>Paxs</th>
-                                        <th>ประเทศ</th>
-                                        <th>สายการบิน</th>
-                                        <th>โฮลเซลล์</th>
-                                        <th>การชำระของลูกค้า</th>
-                                        <th>ยอดใบแจ้งหนี้</th>
-                                        <th>การชำระโฮลเซลล์</th>
-                                        <th>CheckLists</th>
-                                        <th>ผู้ขาย</th>
-                                        <th>การจัดการ</th>
+                                        <th style="width: 40px;" class="text-center">#</th>
+                                        <th style="width: 120px;">ใบเสนอราคา</th>
+                                        <th style="width: 100px;">เลขจองทัวร์</th>
+                                        <th style="width: 200px;">โปรแกรมทัวร์</th>
+                                        <th style="width: 80px;">วันที่จอง</th>
+                                        <th style="width: 120px;">วันเดินทาง</th>
+                                        <th style="width: 150px;">ลูกค้า</th>
+                                        <th style="width: 50px;" class="text-center">PAX</th>
+                                        <th style="width: 80px;">ประเทศ</th>
+                                        <th style="width: 60px;">สายการบิน</th>
+                                        <th style="width: 80px;">โฮลเซลล์</th>
+                                        <th style="width: 120px;">สถานะลูกค้า</th>
+                                        <th style="width: 100px;" class="text-end">ยอดเงิน</th>
+                                        <th style="width: 120px;">สถานะโฮลเซลล์</th>
+                                        <th style="width: 100px;">CheckList</th>
+                                        <th style="width: 80px;">ผู้ขาย</th>
+                                        <th style="width: 80px;" class="text-center">จัดการ</th>
                                     </tr>
                             </thead>
                             <tbody>
                                 @forelse ($quotations as $key => $item)
-                                    <tr>
-                                        <td>{{ $key + 1 }}</td>
-                                        <td>{{ $item->quote_number }} {!!$item->debitNote ? '<span class="badge rounded-pill bg-success">DBN</span>' : ''!!} {!!$item->creditNote ? '<span class="badge rounded-pill bg-danger">CDN</span>' : ''!!} </td>
-                                        <td>{{ $item->quote_booking }}</td>
-                                        <td><span data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="{{ $item->quote_tour_name ? $item->quote_tour_name : $item->quote_tour_name1 }}">{{ $item->quote_tour_name ? mb_substr($item->quote_tour_name, 0, 20) . '...' : mb_substr($item->quote_tour_name1, 0, 20) . '...' }}</span>
-                                    </td>
-                                        <td>{{ date('d/m/Y', strtotime($item->created_at))}}</td>
-                                        <td>{{ date('d/m/Y', strtotime($item->quote_date_start)) . '-' . date('d/m/Y', strtotime($item->quote_date_end)) }}
-                                        </td>
-                                        <td>{{ $item->quotecustomer->customer_name }}</td>
-                                        <td>{{$item->quote_pax_total}}</td>
-                                        <td>{{ $item->airline->code }}</td>
+                                    <tr class="align-middle">
+                                        <td class="text-center fw-bold">{{ $key + 1 }}</td>
                                         <td>
-                                            {{$item->quoteCountry->country_name_th}}
+                                            <div class="d-flex flex-column">
+                                                <span class="fw-bold text-primary">{{ $item->quote_number }}</span>
+                                                <div>
+                                                    @if($item->debitNote)
+                                                        <span class="badge bg-success badge-sm">DBN</span>
+                                                    @endif
+                                                    @if($item->creditNote)
+                                                        <span class="badge bg-danger badge-sm">CDN</span>
+                                                    @endif
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td>{{ $item->quoteWholesale->code }}</td>
-                                        
                                         <td>
-                                            {!! getQuoteStatusPayment($item) !!}
+                                            <span class="badge bg-light text-dark">{{ $item->quote_booking }}</span>
                                         </td>
-                                        
-
-                                        <td>{{ number_format($item->quote_grand_total, 2, '.', ',') }}</td>
-
                                         <td>
-
-                                             {!! getQuoteStatusPayment($item) !!}
-                                            {{-- @php
-                                                // ดึงข้อมูลการชำระเงินล่าสุดจาก paymentWholesale
-                                                $latestPayment = $item->paymentWholesale()->latest('payment_wholesale_id')->first();
-                                            @endphp
-                                          @if (!$latestPayment || $latestPayment->payment_wholesale_type === null)
-                                                <!-- กรณีที่ไม่มีข้อมูลใน paymentWholesale หรือ payment_wholesale_type เป็น NULL -->
-                                                <span class="badge rounded-pill bg-primary">รอชำระเงิน</span>
-                                            @elseif ($latestPayment->payment_wholesale_type === 'deposit')
-                                                <!-- กรณีที่เป็น deposit -->
-                                                <span class="badge rounded-pill bg-primary">รอชำระเงินเต็มจำนวน</span>
-                                            @elseif ($latestPayment->payment_wholesale_type === 'full')
-                                                <!-- กรณีที่เป็น full -->
-                                                <span class="badge rounded-pill bg-success">ชำระเงินแล้ว</span>
-                                            @endif --}}
+                                            <div data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="{{ $item->quote_tour_name ?: $item->quote_tour_name1 }}">
+                                                {{ mb_substr($item->quote_tour_name ?: $item->quote_tour_name1, 0, 25) }}{{ strlen($item->quote_tour_name ?: $item->quote_tour_name1) > 25 ? '...' : '' }}
+                                            </div>
                                         </td>
-
+                                        <td class="text-center">
+                                            <small class="text-muted">{{ date('d/m/y', strtotime($item->created_at)) }}</small>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex flex-column">
+                                                <small>{{ date('d/m/y', strtotime($item->quote_date_start)) }}</small>
+                                                <small class="text-muted">{{ date('d/m/y', strtotime($item->quote_date_end)) }}</small>
+                                            </div>
+                                        </td>
                                         <td>
-                                           {!! getQuoteStatusQuotePayment($item) !!}
-                                           {!!getStatusPaymentWhosale($item) !!}
-                                           {!!getStatusWithholdingTax($item->quoteInvoice)!!}
-                                           {!!getQuoteStatusWithholdingTax($item->quoteLogStatus)!!}
-                                           {!!getStatusWhosaleInputTax($item->checkfileInputtax)!!}
-                                          
+                                            <div data-bs-toggle="tooltip" title="{{ $item->quotecustomer->customer_name }}">
+                                                {{ mb_substr($item->quotecustomer->customer_name, 0, 20) }}{{ strlen($item->quotecustomer->customer_name) > 20 ? '...' : '' }}
+                                            </div>
                                         </td>
-
-                                        <td> {{ $item->Salename->name }}</td>
-                                        <td><a href="{{ route('quote.editNew', $item->quote_id) }}"
-                                                class="btn btn-info btn-sm">จัดการข้อมูล</a>
-                                                
-                                            </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-info">{{ $item->quote_pax_total }}</span>
+                                        </td>
+                                        <td>
+                                            <small>{{ $item->quoteCountry->country_name_th }}</small>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-secondary badge-sm">{{ $item->airline->code }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-warning text-dark badge-sm">{{ $item->quoteWholesale->code }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                {!! getQuoteStatusPayment($item) !!}
+                                            </div>
+                                        </td>
+                                        <td class="text-end">
+                                            <strong class="text-success">{{ number_format($item->quote_grand_total, 0) }}</strong>
+                                            <small class="text-muted d-block">บาท</small>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                {!! getStatusPaymentWhosale($item) !!}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-wrap gap-1" style="max-width: 100px;">
+                                                {!! getQuoteStatusQuotePayment($item) !!}
+                                                {!! getStatusWithholdingTax($item->quoteInvoice) !!}
+                                                {!! getQuoteStatusWithholdingTax($item->quoteLogStatus) !!}
+                                                {!! getStatusWhosaleInputTax($item->checkfileInputtax) !!}
+                                                {!! getStatusCustomerRefund($item->quoteLogStatus) !!}
+                                                {!! getStatusWholesaleRefund($item->quoteLogStatus) !!}
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <small>{{ $item->Salename->name }}</small>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{ route('quote.editNew', $item->quote_id) }}" 
+                                               class="btn btn-primary btn-sm" 
+                                               data-bs-toggle="tooltip" 
+                                               title="จัดการข้อมูล">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </td>
                                     </tr>
-                                    
                                 @empty
-                                    No data
+                                    <tr>
+                                        <td colspan="17" class="text-center py-4">
+                                            <div class="text-muted">
+                                                <i class="fas fa-search fa-2x mb-3"></i>
+                                                <p>ไม่พบข้อมูลตามเงื่อนไขที่ค้นหา</p>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @endforelse
-                                <tr>
-                                    <td class="text-success">ข้อมูลผลรวม</td>
-                                    <td class="text-danger" colspan="12" align="right"> จำนวน {{number_format($SumPax)}} (PAX) | จำนวนมูลค่าใบเสนอราคา {{number_format($SumTotal,2)}} บาท </td>
-                                </tr>
-
                             </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <td colspan="7" class="text-end fw-bold">สรุปรวม:</td>
+                                    <td class="text-center fw-bold text-primary">{{number_format($SumPax)}}</td>
+                                    <td colspan="4"></td>
+                                    <td class="text-end fw-bold text-success">{{number_format($SumTotal,2)}}</td>
+                                    <td colspan="4" class="text-muted"><small>บาท</small></td>
+                                </tr>
+                            </tfoot>
                         </table>
                         {{-- {!! $quotations->withQueryString()->links('pagination::bootstrap-5') !!} --}}
                     </div>
@@ -318,6 +424,132 @@
         </div>
 
 
-    @endsection
+<script>
+$(document).ready(function() {
+    // Initialize tooltips
+    $('[data-bs-toggle="tooltip"]').tooltip();
     
+    // Initialize Select2
+    $('.select2').select2({
+        placeholder: 'เลือก...',
+        allowClear: true,
+        width: '100%'
+    });
     
+    // Auto-submit form on select change for better UX
+    $('select[name^="search_"]').on('change', function() {
+        if ($(this).val() !== 'all' && $(this).val() !== '') {
+            $(this).closest('form').submit();
+        }
+    });
+    
+    // Highlight search keywords
+    var searchKeyword = $('input[name="search_keyword"]').val();
+    if (searchKeyword) {
+        $('#quote-table tbody').highlight(searchKeyword, {className: 'bg-warning'});
+    }
+    
+    // Enhanced table row click
+    $('#quote-table tbody tr').on('click', function(e) {
+        if (!$(e.target).closest('a, button').length) {
+            var editLink = $(this).find('a[href*="editNew"]').attr('href');
+            if (editLink) {
+                window.location.href = editLink;
+            }
+        }
+    });
+    
+    // Add loading state to form submission
+    $('form').on('submit', function() {
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalText = submitBtn.html();
+        submitBtn.html('<i class="fas fa-spinner fa-spin"></i> กำลังค้นหา...');
+        submitBtn.prop('disabled', true);
+        
+        setTimeout(function() {
+            submitBtn.html(originalText);
+            submitBtn.prop('disabled', false);
+        }, 3000);
+    });
+});
+
+// jQuery highlight plugin (lightweight version)
+jQuery.fn.highlight = function(pat, options) {
+    var opts = jQuery.extend({}, jQuery.fn.highlight.defaults, options);
+    return this.each(function() {
+        var regex = new RegExp('(' + pat + ')', 'gi');
+        $(this).html($(this).html().replace(regex, '<span class="' + opts.className + '">$1</span>'));
+    });
+};
+jQuery.fn.highlight.defaults = {
+    className: 'highlight'
+};
+</script>
+
+@endsection
+
+@section('scripts')
+@parent
+<script>
+$(document).ready(function() {
+    // Initialize tooltips
+    $('[data-bs-toggle="tooltip"]').tooltip();
+    
+    // Initialize Select2
+    $('.select2').select2({
+        placeholder: 'เลือก...',
+        allowClear: true,
+        width: '100%'
+    });
+    
+    // Auto-submit form on select change for better UX
+    $('select[name^="search_"]').on('change', function() {
+        if ($(this).val() !== 'all' && $(this).val() !== '') {
+            $(this).closest('form').submit();
+        }
+    });
+    
+    // Highlight search keywords
+    var searchKeyword = $('input[name="search_keyword"]').val();
+    if (searchKeyword) {
+        $('#quote-table tbody').highlight(searchKeyword, {className: 'bg-warning'});
+    }
+    
+    // Enhanced table row click
+    $('#quote-table tbody tr').on('click', function(e) {
+        if (!$(e.target).closest('a, button').length) {
+            var editLink = $(this).find('a[href*="editNew"]').attr('href');
+            if (editLink) {
+                window.location.href = editLink;
+            }
+        }
+    });
+    
+    // Add loading state to form submission
+    $('form').on('submit', function() {
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalText = submitBtn.html();
+        submitBtn.html('<i class="fas fa-spinner fa-spin"></i> กำลังค้นหา...');
+        submitBtn.prop('disabled', true);
+        
+        setTimeout(function() {
+            submitBtn.html(originalText);
+            submitBtn.prop('disabled', false);
+        }, 3000);
+    });
+});
+
+// jQuery highlight plugin (lightweight version)
+jQuery.fn.highlight = function(pat, options) {
+    var opts = jQuery.extend({}, jQuery.fn.highlight.defaults, options);
+    return this.each(function() {
+        var regex = new RegExp('(' + pat + ')', 'gi');
+        $(this).html($(this).html().replace(regex, '<span class="' + opts.className + '">$1</span>'));
+    });
+};
+jQuery.fn.highlight.defaults = {
+    className: 'highlight'
+};
+</script>
+@endsection
+

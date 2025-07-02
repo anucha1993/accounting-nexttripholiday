@@ -1,128 +1,230 @@
 @extends('layouts.template')
 
 @section('content')
-    <div class="container-fluid page-content">
+<style>
+    .info-card {
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .info-card .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px 8px 0 0;
+        padding: 12px 20px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    .info-table {
+        margin: 0;
+        font-size: 13px;
+    }
+    
+    .info-table td {
+        padding: 6px 0;
+        border: none;
+        vertical-align: top;
+    }
+    
+    .info-table .label {
+        width: 35%;
+        color: #6c757d;
+        font-weight: 500;
+        text-align: right;
+        padding-right: 12px;
+    }
+    
+    .info-table .value {
+        color: #495057;
+        font-weight: 400;
+    }
+    
+    .price-highlight {
+        font-size: 24px !important;
+        font-weight: 700;
+        color: #e74c3c;
+    }
+    
+    .action-btn {
+        border-radius: 6px;
+        font-size: 13px;
+        padding: 10px 16px;
+        margin-bottom: 8px;
+        border: 1px solid #dee2e6;
+        background: white;
+        color: #495057;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+    
+    .action-btn:hover {
+        background: #f8f9fa;
+        border-color: #007bff;
+        color: #007bff;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,123,255,0.15);
+    }
+    
+    .action-btn i {
+        width: 16px;
+        margin-right: 8px;
+    }
+    
+    .profit-section {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 15px;
+    }
+    
+    .profit-section h6 {
+        color: #495057;
+        margin-bottom: 12px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    .profit-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 0;
+        font-size: 13px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .profit-item:last-child {
+        border-bottom: none;
+        font-weight: 600;
+        color: #28a745;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 2px solid #28a745;
+    }
+    
+    .profit-item .label {
+        color: #6c757d;
+    }
+    
+    .profit-item .value {
+        color: #495057;
+        font-weight: 500;
+    }
+
+    .quote-header {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .quote-header h5 {
+        margin: 0;
+        color: #495057;
+        font-weight: 600;
+    }
+    
+    .quote-header .quote-date {
+        color: #6c757d;
+        font-size: 13px;
+        margin: 0;
+    }
+    
+    @media (max-width: 768px) {
+        .col-md-6 {
+            margin-bottom: 15px;
+        }
+        
+        .action-btn {
+            font-size: 12px;
+            padding: 8px 12px;
+        }
+        
+        .info-table {
+            font-size: 12px;
+        }
+    }
+</style>
+ิ
+
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-md-9">
-
-                <div class="card">
-                    <div class="card-header bg-info text-white">
-                        Quotation No. : {{ $quotationModel->quote_number }}
-                        <span class="float-end">วันที่ออกใบเสนอราคา :
-                            {{ thaidate('j F Y', $quotationModel->created_at) }} เวลา :
-                            {{ date('H:m:s', strtotime($quotationModel->created_at)) }}</span>
+            <div class="col-lg-8 col-md-7">
+                <!-- Quote Header -->
+                <div class="quote-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5><i data-feather="file-text" class="feather-sm me-2"></i>{{ $quotationModel->quote_number }}</h5>
+                        <p class="quote-date mb-0">{{ thaidate('j M Y', $quotationModel->created_at) }} {{ date('H:i', strtotime($quotationModel->created_at)) }}</p>
                     </div>
                 </div>
 
+                <!-- Information Cards -->
                 <div class="row">
                     <div class="col-md-6">
-
-                        <div class="card">
-                            <div class="card-header ">
-                                <i data-feather="user-check" class="feather-sm fill-white me-2 text-primary "></i>
-                                รายละเอียดลูกค้า (Customer)
+                        <div class="card info-card">
+                            <div class="card-header">
+                                <i data-feather="user" class="feather-sm me-2"></i>ข้อมูลลูกค้า
                             </div>
                             <div class="card-body">
-                                <table style="font-size: 12px">
-                                    <tbody>
-                                        <tr>
-                                            <td align="right" class="text-info">เลขเสียภาษี :</td>
-                                            <td>&nbsp;{{ $customer->customer_texid ? $customer->customer_texid : '-' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right" class="text-info">ชื่อลูกค้า :</td>
-                                            <td>&nbsp; คุณ {{ $customer->customer_name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right" class="text-info">ที่อยู่ :</td>
-                                            <td>&nbsp; {{ $customer->customer_address ? $customer->customer_address : '-' }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right" class="text-info">อีเมล์ :</td>
-                                            <td>&nbsp; {{ $customer->customer_email ? $customer->customer_email : '-' }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right" class="text-info">เบอร์มือถือ :</td>
-                                            <td>&nbsp; {{ $customer->customer_tel ? $customer->customer_tel : '-' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right" class="text-info">เบอร์โทรสาร (Fax) :</td>
-                                            <td>&nbsp; {{ $customer->customer_fax ? $customer->customer_fax : '-' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right" class="text-info">ลูกค้าจาก :</td>
-                                            <td>&nbsp;
-                                                {{ $customer->campaign_source_name ? $customer->campaign_source_name : '-' }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right" class="text-info">Social ID :</td>
-                                            <td>&nbsp;
-                                                {{ $customer->customer_social_id ? $customer->customer_social_id : '-' }}
-                                            </td>
-                                        </tr>
-
-                                    </tbody>
+                                <table class="info-table w-100">
+                                    <tr>
+                                        <td class="label">ชื่อลูกค้า:</td>
+                                        <td class="value">{{ $customer->customer_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">เลขเสียภาษี:</td>
+                                        <td class="value">{{ $customer->customer_texid ?: '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">อีเมล:</td>
+                                        <td class="value">{{ $customer->customer_email ?: '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">เบอร์โทร:</td>
+                                        <td class="value">{{ $customer->customer_tel ?: '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">ที่มา:</td>
+                                        <td class="value">{{ $customer->campaign_source_name ?: '-' }}</td>
+                                    </tr>
                                 </table>
                             </div>
                         </div>
                     </div>
+                    
                     <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header ">
-                                <i data-feather="file-text" class="feather-sm fill-white me-2 text-primary "></i>
-                                รายละเอียดใบจองทัวร์ (Booking Form)
+                        <div class="card info-card">
+                            <div class="card-header">
+                                <i data-feather="calendar" class="feather-sm me-2"></i>ข้อมูลการจอง
                             </div>
                             <div class="card-body">
-                                <table style="font-size: 12px">
-                                    <tbody>
-                                        <tr>
-                                            <td align="right" class="text-info">Quotation No. :</td>
-                                            <td>&nbsp; {{ $quotationModel->quote_number }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right" class="text-info">Booking No. :</td>
-                                            <td>&nbsp; {{ $quotationModel->quote_booking }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right" class="text-info">วันที่จองทัวร์ :</td>
-                                            <td>&nbsp;
-                                                {{ $customer->quotationModel ? thaidate('j F Y', $quotationModel->quote_booking_create) : thaidate('j F Y', $quotationModel->quote_booking_create) }}
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td align="right" class="text-info">รหัสทัวร์ :</td>
-                                            <td>&nbsp;
-                                                {{ $quotationModel->quote_tour ? $quotationModel->quote_tour : $quotationModel->quote_tour_code }}
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td align="right" class="text-info">พนักงานขาย :</td>
-                                            <td>&nbsp; {{ $sale->name }}</td>
-                                        </tr>
-
-                                        <tr>
-                                            <td align="right" class="text-info">Tel :</td>
-                                            <td>&nbsp; 091-091-6364 </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td align="right" class="text-info">แก้ไขล่าสุดโดย :</td>
-                                            <td>&nbsp;
-                                                {{ $quotationModel->updated_by ? $quotationModel->updated_by : $quotationModel->created_by }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right" class="text-info">วันที่แก้ไขล่าสุด :</td>
-                                            <td>&nbsp; {{ date('d/m/Y H:m:s', strtotime($quotationModel->updated_at)) }}
-                                            </td>
-                                        </tr>
-
-                                    </tbody>
+                                <table class="info-table w-100">
+                                    <tr>
+                                        <td class="label">Booking No:</td>
+                                        <td class="value">{{ $quotationModel->quote_booking }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">รหัสทัวร์:</td>
+                                        <td class="value">{{ $quotationModel->quote_tour ?: $quotationModel->quote_tour_code }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">พนักงานขาย:</td>
+                                        <td class="value">{{ $sale->name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">วันที่จอง:</td>
+                                        <td class="value">{{ thaidate('j M Y', $quotationModel->quote_booking_create) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">แก้ไขล่าสุด:</td>
+                                        <td class="value">{{ date('d/m/Y H:i', strtotime($quotationModel->updated_at)) }}</td>
+                                    </tr>
                                 </table>
                             </div>
                         </div>
@@ -131,100 +233,76 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header ">
-                                <i data-feather="flag" class="feather-sm fill-white me-2 text-primary "></i>
-                                รายละเอียดแพคเกจที่ซื้อ/วันเดินทาง
+                        <div class="card info-card">
+                            <div class="card-header">
+                                <i data-feather="map-pin" class="feather-sm me-2"></i>รายละเอียดแพคเกจ
                             </div>
                             <div class="card-body">
-                                <table style="font-size: 12px">
-                                    <tbody>
-                                        <tr>
-                                            <td align="right" class="text-info">ชื่อแพคเกจ :</td>
-                                            <td>&nbsp;
-                                                {{ $quotationModel->quote_tour_name }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right" class="text-info">สายการบิน :</td>
-                                            <td>&nbsp; {{ $airline->travel_name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right" class="text-info">ช่วงเวลาเดินทาง :</td>
-                                            <td>&nbsp;
-                                                {{ thaidate('j F Y', $quotationModel->quote_date_start) . ' -ถึง- ' . thaidate('j F Y', $quotationModel->quote_date_end) }}
-                                                ({{ $quotationModel->quote_numday }})
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right" class="text-info">ผู้เดินทาง (PAX) :</td>
-                                            <td>&nbsp;
-                                                {{ $quotationModel->quote_pax_total ? $quotationModel->quote_pax_total : '-' }}
-                                                ท่าน
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right" class="text-info">โฮลเซลล์ :</td>
-                                            <td>&nbsp; {{ $wholesale->wholesale_name_th }}</td>
-                                        </tr>
-
-                                    </tbody>
+                                <table class="info-table w-100">
+                                    <tr>
+                                        <td class="label">ชื่อแพคเกจ:</td>
+                                        <td class="value">{{ $quotationModel->quote_tour_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">สายการบิน:</td>
+                                        <td class="value">{{ $airline->travel_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">วันเดินทาง:</td>
+                                        <td class="value">
+                                            {{ thaidate('j M Y', $quotationModel->quote_date_start) }} - 
+                                            {{ thaidate('j M Y', $quotationModel->quote_date_end) }}
+                                            <small class="text-muted">({{ $quotationModel->quote_numday }})</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">ผู้เดินทาง:</td>
+                                        <td class="value">{{ $quotationModel->quote_pax_total ?: '-' }} ท่าน</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">โฮลเซลล์:</td>
+                                        <td class="value">{{ $wholesale->wholesale_name_th }}</td>
+                                    </tr>
                                 </table>
                             </div>
                         </div>
                     </div>
+                    
                     <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header ">
-                                <i data-feather="dollar-sign" class="feather-sm fill-white me-2 text-primary "></i>
-                                ยอดรวมสุทธิและกำหนดชำระเงิน
+                        <div class="card info-card">
+                            <div class="card-header">
+                                <i data-feather="dollar-sign" class="feather-sm me-2"></i>ข้อมูลการชำระเงิน
                             </div>
                             <div class="card-body">
-                                <table style="font-size: 12px">
-                                    <tbody>
-                                        <tr>
-                                            <td align="right" class="text-info">ราคารวมสุทธิ :</td>
-                                            <td align="align-center" style="font-size: 28px">&nbsp; <b
-                                                    class="text-danger">{{number_format($quotationModel->quote_grand_total, 2, '.', ',') }}
-                                                    .-</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right" class="text-info">จำนวนเงินอักษร :</td>
-                                            <td>&nbsp; <span>(@bathText($quotationModel->quote_grand_total)) </span></td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right" class="text-info">กำหนดชำระมัดจำ: :</td>
-                                            <td>&nbsp;
-                                                @if ($quotationModel->quote_payment_date)
-                                                    {{ thaidate('j F Y', $quotationModel->quote_payment_date) . ' ก่อนเวลา ' . date('H:m', strtotime($quotationModel->quote_payment_date)) . ' น.' }}
-                                                    &nbsp;
-                                                    {{ 'จำนวนเงิน :' . number_format($quotationModel->quote_payment_total, 2, '.', ',') . '.-' }}
-                                                @else
-                                                    -ไม่มียอดมัดจำ-
-                                                @endif
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-
-                                            <td align="right" class="text-info">กำหนดชำระเต็ม: :</td>
-                                            <td>&nbsp;
-                                                {{ thaidate('j F Y', $quotationModel->quote_payment_date_full) . ' ก่อนเวลา ' . date('H:m', strtotime($quotationModel->quote_payment_date_full)) . ' น.' }}
-                                                &nbsp;
-                                                {{ 'จำนวนเงิน :' . number_format($quotationModel->quote_payment_total_full, 2, '.', ',') . '.-' }}
-                                            </td>
-
-                                        </tr>
-
-
-                                        <tr>
-                                            <td align="right" class="text-info">สถานะการชำระเงิน :</td>
-                                            <td>
-                                                {!! getQuoteStatusPayment($quotationModel) !!}
-                                                
-                                            </td>
-                                        </tr>
-                                    </tbody>
+                                <table class="info-table w-100">
+                                    <tr>
+                                        <td class="label">ราคารวม:</td>
+                                        <td class="value price-highlight">{{ number_format($quotationModel->quote_grand_total, 2) }} บาท</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">ตัวอักษร:</td>
+                                        <td class="value"><small>(@bathText($quotationModel->quote_grand_total))</small></td>
+                                    </tr>
+                                    @if($quotationModel->quote_payment_date)
+                                    <tr>
+                                        <td class="label">กำหนดมัดจำ:</td>
+                                        <td class="value">
+                                            {{ thaidate('j M Y', $quotationModel->quote_payment_date) }}
+                                            <br><strong>{{ number_format($quotationModel->quote_payment_total, 2) }} บาท</strong>
+                                        </td>
+                                    </tr>
+                                    @endif
+                                    <tr>
+                                        <td class="label">กำหนดชำระเต็ม:</td>
+                                        <td class="value">
+                                            {{ thaidate('j M Y', $quotationModel->quote_payment_date_full) }}
+                                            <br><strong>{{ number_format($quotationModel->quote_payment_total_full, 2) }} บาท</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">สถานะ:</td>
+                                        <td class="value">{!! getQuoteStatusPayment($quotationModel) !!}</td>
+                                    </tr>
                                 </table>
                             </div>
                         </div>
@@ -233,133 +311,127 @@
 
             </div>
 
-
-            <div class="col-md-3">
-                <div class="card">
+            <!-- Actions & Profit Sidebar -->
+            <div class="col-lg-4 col-md-5">
+                <div class="card info-card">
+                    <div class="card-header">
+                        <i data-feather="settings" class="feather-sm me-2"></i>การจัดการ
+                    </div>
                     <div class="card-body">
                         <a href="{{ route('quote.modalEditCopy', $quotationModel->quote_id) }}"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 modal-quote-copy">
-                            <i data-feather="repeat" class="feather-sm fill-white me-2 text-info"></i>
-                            คัดลอกใบเสนอราคา
+                            class="d-flex align-items-center action-btn modal-quote-copy">
+                            <i data-feather="copy"></i>คัดลอกใบเสนอราคา
                         </a>
+                        
                         <a href="{{ route('payment.quotation', $quotationModel->quote_id) }}"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 invoice-modal">
-                            <i data-feather="dollar-sign" class="feather-sm fill-white me-2 text-success"></i>
-                            แจ้งชำระเงิน
+                            class="d-flex align-items-center action-btn invoice-modal">
+                            <i data-feather="credit-card"></i>แจ้งชำระเงิน
                         </a>
+                        
                         <a href="{{ route('paymentWholesale.quote', $quotationModel->quote_id) }}"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3 payment-wholesale">
-                            <i data-feather="dollar-sign" class="feather-sm fill-white me-2 "></i>
-                            แจ้งชำระเงินโฮลเซลล์
+                            class="d-flex align-items-center action-btn payment-wholesale">
+                            <i data-feather="dollar-sign"></i>ชำระเงินโฮลเซลล์
                         </a>
+                        
                         <a href="{{ route('inputtax.createWholesale', $quotationModel->quote_id) }}"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-primary d-flex align-items-center mb-3 modal-input-tax ">
-                            <i data-feather="file-minus" class="feather-sm fill-white me-2 "></i>
-                            บันทึกภาษีซื้อ , ต้นทุนอื่นๆ
+                            class="d-flex align-items-center action-btn modal-input-tax">
+                            <i data-feather="file-minus"></i>บันทึกภาษีซื้อ
                         </a>
+                        
                         @php
                             use Illuminate\Support\Facades\Crypt;
                             $encryptedId = Crypt::encryptString($quotationModel->quote_id);
                         @endphp
                         <a href="{{ route('quotationView.index', $encryptedId) }}" id="shareLinkButton"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-dark d-flex align-items-center mb-3">
-                            <i data-feather="link" class="feather-sm fill-white me-2 text-info"></i>
-                            Share
+                            class="d-flex align-items-center action-btn">
+                            <i data-feather="share-2"></i>แชร์ลิงก์
                         </a>
+                        
                         <a href="{{ route('quoteLog.index', $quotationModel->quote_id) }}"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-success d-flex align-items-center mb-3 modal-quote-check ">
-                            <i data-feather="align-justify" class="feather-sm fill-white me-2 "></i>
-                            Check List
+                            class="d-flex align-items-center action-btn modal-quote-check">
+                            <i data-feather="check-circle"></i>เช็คลิสต์
                         </a>
+                        
                         <a href="{{ route('inputtax.inputtaxCreateWholesale', $quotationModel->quote_id) }}"
-                            class="justify-content-left w-100 btn btn-rounded btn-outline-warning d-flex align-items-center mb-3 modal-inputtax-wholesale">
-                            <i data-feather="percent" class="feather-sm fill-white me-2 "></i>
-                            ต้นทุนโฮลเซลล์
+                            class="d-flex align-items-center action-btn modal-inputtax-wholesale">
+                            <i data-feather="percent"></i>ต้นทุนโฮลเซลล์
                         </a>
                     </div>
-                    <div class="card-body">
+                    
+                    <!-- Profit Calculation -->
+                    <div class="profit-section">
                         @php
                         $paymentCustomer = 0;
                         $paymentWhosale = 0;
                         $paymentInputtaxTotal = 0;
                         $TotalPayment = 0;
                         $TotalGrand = 0;
-                        // เรียกข้อมูลการฝากเงินของลูกค้า
+                        
                         $paymentCustomer = $quotationModel->GetDeposit();
-                        // เรียกข้อมูลการฝากเงินของผู้ค้าส่ง
                         $paymentWhosale = $quotationModel->GetDepositWholesale();
                         $withholdingTaxAmount = $invoiceModel?->getWithholdingTaxAmountAttribute() ?? 0;
                         $getTotalInputTaxVat = $quotationModel?->getTotalInputTaxVat() ?? 0;
-
                         $invoiceVatAmount = $quotationModel->invoicetaxTotal() + $paymentInputtaxTotal;
-                        $wholesalePayment = 0;
                         $wholesalePayment = $quotationModel->GetDepositWholesale() - $quotationModel->GetDepositWholesaleRefund();
-
-                
-
-                         $hasInputTaxFile = $quotationModel->InputTaxVat()->whereNotNull('input_tax_file')->exists();
-
-                                if ($hasInputTaxFile) {
-                                    // กรณี input_tax_file !== NULL
-                                    $paymentInputtaxTotal = $withholdingTaxAmount - $getTotalInputTaxVat;
-                                } else {
-                                    // กรณี input_tax_file === NULL
-                                    $paymentInputtaxTotal = $withholdingTaxAmount + $getTotalInputTaxVat;
-                                }
+                        
+                        $hasInputTaxFile = $quotationModel->InputTaxVat()->whereNotNull('input_tax_file')->exists();
+                        if ($hasInputTaxFile) {
+                            $paymentInputtaxTotal = $withholdingTaxAmount - $getTotalInputTaxVat;
+                        } else {
+                            $paymentInputtaxTotal = $withholdingTaxAmount + $getTotalInputTaxVat;
+                        }
+                        
                         $TotalPayment = $quotationModel->GetDeposit() - $quotationModel->inputtaxTotalWholesale();
-                        $TotalGrand = $TotalPayment - ($paymentInputtaxTotal+$quotationModel->getTotalInputTaxVatType()) ;
-                        // 
-                        $GetDepositWholesale = $quotationModel->GetDepositWholesale() -  $quotationModel->GetDepositWholesaleRefund();
-                    @endphp
-                        {{-- {{$paymentInputtaxTotal}} --}}
-                        <h5 class="card-title">คำนวนกำไร</h5>
-                        <hr/>
-                        <span class="float-end"> ยอดรวมต้นทุนโฮลเซลล์: {{ number_format($GetDepositWholesale+$quotationModel->inputtaxTotalWholesale() - $wholesalePayment, 2) }}</span><br>
-                        <span class="float-end"> ชำระเงินโฮลเซลล์แล้ว: {{ number_format($wholesalePayment, 2) }}</span><br>
-                        <span class="float-end"> ค้างชำระเงินโฮลเซลล์: {{ number_format($quotationModel->inputtaxTotalWholesale() - $wholesalePayment, 2) }}</span><br>
-                        <span class="float-end"> ลูกค้าชำระแล้ว :  {{ number_format($quotationModel->GetDeposit(), 2) }} </span><br>
-                        <span class="float-end"> กำไร : {{$wholesalePayment <= 0 ?  0.00 : number_format($TotalPayment, 2)}}</span><br>      
-                        <span class="float-end"> ต้นทุนอื่นๆ : {{ number_format($paymentInputtaxTotal+$quotationModel->getTotalInputTaxVatType(), 2) }} </span><br>         
-                        <span class="float-end"> กำไรสุทธิ:  {{$wholesalePayment <= 0 ?  0.00 : number_format($TotalGrand, 2)}} </span><br>
-                      
-                        <hr />
+                        $TotalGrand = $TotalPayment - ($paymentInputtaxTotal+$quotationModel->getTotalInputTaxVatType());
+                        $GetDepositWholesale = $quotationModel->GetDepositWholesale() - $quotationModel->GetDepositWholesaleRefund();
+                        @endphp
+                        
+                        <h6><i data-feather="trending-up" class="feather-sm me-2"></i>สรุปกำไร</h6>
+                        
+                        <div class="profit-item">
+                            <span class="label">ลูกค้าชำระแล้ว</span>
+                            <span class="value">{{ number_format($quotationModel->GetDeposit(), 2) }}</span>
+                        </div>
+                        
+                        <div class="profit-item">
+                            <span class="label">ต้นทุนโฮลเซลล์</span>
+                            <span class="value">{{ number_format($GetDepositWholesale+$quotationModel->inputtaxTotalWholesale() - $wholesalePayment, 2) }}</span>
+                        </div>
+                        
+                        <div class="profit-item">
+                            <span class="label">ชำระโฮลเซลล์แล้ว</span>
+                            <span class="value">{{ number_format($wholesalePayment, 2) }}</span>
+                        </div>
+                        
+                        <div class="profit-item">
+                            <span class="label">ค้างชำระโฮลเซลล์</span>
+                            <span class="value">{{ number_format($quotationModel->inputtaxTotalWholesale() - $wholesalePayment, 2) }}</span>
+                        </div>
+                        
+                        <div class="profit-item">
+                            <span class="label">ต้นทุนอื่นๆ</span>
+                            <span class="value">{{ number_format($paymentInputtaxTotal+$quotationModel->getTotalInputTaxVatType(), 2) }}</span>
+                        </div>
+                        
+                        <div class="profit-item">
+                            <span class="label">กำไรสุทธิ</span>
+                            <span class="value">{{$wholesalePayment <= 0 ? '0.00' : number_format($TotalGrand, 2)}}</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <style>
-            .rotate {
-                transition: transform 0.3s;
-                transform: rotate(180deg);
-            }
-        </style>
-
-        <div class="row">
-            <div class="col-md-12" id="quote-centent">
-
-            </div>
-
-            <div class="col-md-12" id="quote-payment">
-
-            </div>
-
-            <div class="col-md-12" id="wholesale-payment">
-
-            </div>
-
-            <div class="col-md-12" id="files">
-
-            </div>
-            <div class="col-md-12" id="inputtax">
-
-            </div>
-
-            <div class="col-md-12" id="inputtax-wholesale-table">
-
-            </div>
-
+        <!-- Content Sections -->
+        <div class="row mt-4">
+            <div class="col-12" id="quote-centent"></div>
+            <div class="col-12" id="quote-payment"></div>
+            <div class="col-12" id="wholesale-payment"></div>
+            <div class="col-12" id="files"></div>
+            <div class="col-12" id="inputtax"></div>
+            <div class="col-12" id="inputtax-wholesale-table"></div>
         </div>
+    </div>
 
 
 

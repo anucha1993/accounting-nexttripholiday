@@ -24,7 +24,9 @@ class QuoteLogModel extends Model
         'quote_status','quote_updated_at','quote_created_by',
         'inv_status','inv_updated_at','inv_created_by',
         'depositslip_status','depositslip_updated_at','depositslip_created_by',
-        'fullslip_status','fullslip_updated_at','fullslip_created_by','wholesale_skip_status'
+        'fullslip_status','fullslip_updated_at','fullslip_created_by','wholesale_skip_status',
+        'customer_refund_status','customer_refund_updated_at','customer_refund_created_by',
+        'wholesale_refund_status','wholesale_refund_updated_at','wholesale_refund_created_by'
     ];
 
     public function quote()

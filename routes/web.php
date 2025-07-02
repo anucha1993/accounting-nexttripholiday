@@ -36,7 +36,7 @@ use App\Http\Controllers\invoices\taxInvoiceController;
 use App\Http\Controllers\MPDF\MPDF_DebitNoteController;
 use App\Http\Controllers\MPDF\MPDF_QuotationController;
 use App\Http\Controllers\exports\receiptExportControlle;
-use App\Http\Controllers\MPDF\MPDF_CreditNoteController;
+use App\Http\Controllers\MPDF\MPDF_creditNoteController;
 use App\Http\Controllers\MPDF\MPDF_taxReceiptController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
 use App\Http\Controllers\CreditNote\creditNoteController;
@@ -127,6 +127,8 @@ Route::put('invoice/update/{invoiceModel}',[invoiceController::class,'update'])-
 Route::post('invoice/store',[invoiceController::class,'store'])->name('invoice.store');
 Route::post('upload-invoice-image', [InvoiceController::class, 'uploadInvoiceImage'])->name('uploadInvoiceImage');
 Route::delete('delete-invoice-image', [InvoiceController::class, 'deleteInvoiceImage'])->name('deleteInvoiceImage');
+Route::put('invoice/mark-revised/{invoiceModel}', [invoiceController::class, 'markAsRevised'])->name('invoice.markRevised');
+Route::put('invoice/unmark-revised/{invoiceModel}', [invoiceController::class, 'unmarkRevised'])->name('invoice.unmarkRevised');
 
 
 //taxtinvoice
@@ -319,6 +321,7 @@ Route::post('withholding/store',[withholdingTaxController::class,'store'])->name
 Route::delete('withholding/delete/{id}',[withholdingTaxController::class,'destroy'])->name('withholding.destroy');
 Route::put('withholding/update/{id}',[withholdingTaxController::class,'update'])->name('withholding.update');
 Route::get('withholding/taxNumber',[withholdingTaxController::class,'taxNumber'])->name('withholding.taxNumber');
+Route::get('withholding/export/excel',[withholdingTaxController::class,'exportExcel'])->name('withholding.export.excel');
 // withholding MPDF
 Route::get('mpdf/withholding/doc/{WithholdingTaxDocument}',[MPDF_WithhodingDocumentController::class,'generatePDF'])->name('MPDF.withholding');
 Route::get('mpdf/printEnvelope/doc/{WithholdingTaxDocument}',[MPDF_WithhodingDocumentController::class,'printEnvelope'])->name('MPDF.printEnvelope');

@@ -1,25 +1,23 @@
 <div class="col-md-12">
-    <div class="card">
-        <div class="card-header bg-warning">
-            <h5 class="mb-0 text-white"><i class="fa fa-file"></i>
-                รายการต้นทุนโฮลเซลล์ <span class="float-end"></span>
-                &nbsp; <a href="javascript:void(0)" class="text-white float-end" onclick="toggleAccordion('table-inputtax', 'toggle-arrow-inputtax')">
-                    <span class="fas fa-chevron-down" id="toggle-arrow-inputtax"></span>
-                </a>
-            </h5>
+    <div class="card info-card">
+        <div class="card-header">
+            <i class="fa fa-receipt me-2"></i>รายการต้นทุนโฮลเซลล์
+            <a href="javascript:void(0)" class="float-end text-white" onclick="toggleAccordion('table-inputtax', 'toggle-arrow-inputtax')">
+                <i class="fas fa-chevron-down" id="toggle-arrow-inputtax"></i>
+            </a>
         </div>
 
         <div class="card-body" id="table-inputtax" style="display: block">
-            <div class="table table-responsive">
-                <table class="table product-overview">
+            <div class="table-responsive">
+                <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th style="width: 100px">ลำดับ</th>
+                            <th class="text-center" style="width: 60px;">#</th>
                             <th>ประเภท</th>
                             <th>วันที่</th>
-                            <th>ไฟล์แนบ</th>
-                            <th>ยอดทั้งสิ้น</th>
-                            <th>Actions</th>
+                            <th class="text-center">ไฟล์แนบ</th>
+                            <th class="text-end">ยอดทั้งสิ้น</th>
+                            <th class="text-center">จัดการ</th>
                         </tr>
                     </thead>
                     @php

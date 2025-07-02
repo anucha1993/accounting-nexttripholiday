@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\booking;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
 use App\Models\mumday\numDayModel;
@@ -149,6 +150,29 @@ class BookingController extends Controller
 
     public function convert(Request $request, bookingModel $bookingModel)
     {
+        // Validate dates if submitted
+        if ($request->isMethod('post')) {
+            $today = Carbon::today();
+            $fields = [
+                'quote_date' => 'วันที่เสนอราคา',
+                'quote_booking_create' => 'วันที่จองแพคเกจ',
+                'quote_date_start' => 'วันออกเดินทาง',
+                'quote_date_end' => 'วันเดินทางกลับ',
+            ];
+            
+            $invalidFields = [];
+            foreach ($fields as $field => $label) {
+                if (!empty($request->$field) && Carbon::parse($request->$field)->lt($today)) {
+                    $invalidFields[] = $label;
+                }
+            }
+            
+            if (count($invalidFields) > 0) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['date_error' => 'ไม่สามารถเลือกวันที่ย้อนหลังได้: ' . implode(', ', $invalidFields)]);
+            }
+        }
 
         //     $country_name = '';
         //     $array = json_decode($request->tour_country);
@@ -182,31 +206,35 @@ class BookingController extends Controller
         $quotationModel = [];
         $quoteProducts  = [];
 
+        // ตรวจสอบและดึงข้อมูล Product IDs จากฐานข้อมูล
+        $productIds = [189, 185, 187, 186]; // ผู้ใหญ่พักคู่, เดี่ยว, เด็กมีเตียง, เด็กไม่มีเตียง
+        $validProducts = productModel::whereIn('id', $productIds)->pluck('product_name', 'id')->toArray();
+
         $productBooking = [
             [
                 'product_id' => 189,
-                'product_name' => 'ผู้ใหญ่พักคู่',
+                'product_name' => $validProducts[189] ?? 'ผู้ใหญ่พักคู่',
                 'expense_type' => 'income',
                 'product_qty' => $bookingModel->num_twin,
                 'product_price' => $bookingModel->price1,
             ],
             [
                 'product_id' => 185,
-                'product_name' => 'ผู้ใหญ่พักเดี่ยว',
+                'product_name' => $validProducts[185] ?? 'ผู้ใหญ่พักเดี่ยว',
                 'expense_type' => 'income',
                 'product_qty' => $bookingModel->num_single,
                 'product_price' => $bookingModel->price2,
             ],
             [
                 'product_id' => 187,
-                'product_name' => 'เด็กมีเตียง',
+                'product_name' => $validProducts[187] ?? 'เด็กมีเตียง',
                 'expense_type' => 'income',
                 'product_qty' => $bookingModel->num_child,
-                'product_price' => $bookingModel->price3, // ลบช่องว่างออก
+                'product_price' => $bookingModel->price3,
             ],
             [
                 'product_id' => 186,
-                'product_name' => 'เด็กไม่มีเตียง',
+                'product_name' => $validProducts[186] ?? 'เด็กไม่มีเตียง',
                 'expense_type' => 'income',
                 'product_qty' => $bookingModel->num_childnb,
                 'product_price' => $bookingModel->price4,
@@ -216,7 +244,25 @@ class BookingController extends Controller
 
         $quoteProducts = array_merge($quoteProducts, $productBooking);
         $campaignSource = DB::table('campaign_source')->get();
-        return view('bookings.convert-booking', compact('campaignSource','productDiscount','products', 'checkCustomer', 'quotationModel', 'quoteProducts', 'sales', 'bookingModel', 'tour', 'numDays', 'country', 'wholesale', 'airline'));
+        
+        // เพิ่มตัวแปรที่จำเป็นสำหรับการทำงานของระบบ
+        $quotationModel = []; // ข้อมูลใบเสนอราคาเปล่า
+        
+        return view('bookings.convert-booking', compact(
+            'campaignSource',
+            'productDiscount', 
+            'products', 
+            'checkCustomer', 
+            'quotationModel', 
+            'quoteProducts', 
+            'sales', 
+            'bookingModel', 
+            'tour', 
+            'numDays', 
+            'country', 
+            'wholesale', 
+            'airline'
+        ));
     }
 
 

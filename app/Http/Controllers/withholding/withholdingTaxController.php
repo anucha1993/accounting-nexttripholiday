@@ -16,36 +16,70 @@ use App\Models\quotations\quotationModel;
 use App\Models\signTures\imageSigntureModel;
 use App\Models\withholding\WithholdingTaxItem;
 use App\Models\withholding\WithholdingTaxDocument;
+use App\Exports\WithholdingTaxExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class withholdingTaxController extends Controller
 {
     //
     public function index(Request $request)
     {
+        $query = WithholdingTaxDocument::with(['customer', 'wholesale', 'quote']);
+        
+        // Filter by document number
+        if($request->filled('document_number')){
+            $query->where('document_number', 'LIKE', '%' . trim($request->document_number) . '%');
+        }
+        
+        // Filter by reference number
+        if($request->filled('ref_number')){
+            $query->where('ref_number', 'LIKE', '%' . trim($request->ref_number) . '%');
+        }
+        
+        // Filter by withholding form
+        if($request->filled('withholding_form')){
+            $query->where('withholding_form', $request->withholding_form);
+        }
+        
+        // Filter by date range - handle individual dates too
+        if($request->filled('document_date_start') && $request->filled('document_date_end')){
+            $query->whereBetween('document_doc_date', [$request->document_date_start, $request->document_date_end]);
+        } elseif($request->filled('document_date_start')){
+            $query->whereDate('document_doc_date', '>=', $request->document_date_start);
+        } elseif($request->filled('document_date_end')){
+            $query->whereDate('document_doc_date', '<=', $request->document_date_end);
+        }
+        
+        // Filter by customer (customer or wholesale)
+        if($request->filled('customer')){
+            $query->where(function($q) use ($request) {
+                $q->where('customer_id', $request->customer)
+                  ->orWhere('wholesale_id', $request->customer);
+            });
+        }
 
-        $documents = WithholdingTaxDocument::with('customer');
-                     
-                     if($request->document_number){
-                        $documents->where('document_number','LIKE','%'.$request->document_number.'%');
-                     }
-                     if($request->ref_number){
-                        $documents->where('ref_number','LIKE','%'.$request->ref_number.'%');
-                     }
-                     if($request->withholding_form && $request->withholding_form !== 'all'){
-                        $documents->where('withholding_form',$request->withholding_form);
-                     }
-                     if($request->document_date_start && $request->document_date_end){
-                        $documents->orWhereBetween('document_date',[$request->document_date_start,$request->document_date_end]);
-                     }
+        // Order by latest document date, then by document number
+        $documents = $query->orderBy('document_doc_date', 'desc')
+                          ->orderBy('document_number', 'desc')
+                          ->paginate(20);
+        
+        // Get unique customers and wholesales for filter dropdown - optimized query
+        $customerWithholding = WithholdingTaxDocument::with(['customer', 'wholesale'])
+            ->select('customer_id', 'wholesale_id')
+            ->whereNotNull('customer_id')
+            ->orWhereNotNull('wholesale_id')
+            ->get()
+            ->filter(function($item) {
+                return $item->customer || $item->wholesale;
+            })
+            ->unique(function ($item) {
+                return $item->customer_id ?? $item->wholesale_id;
+            })
+            ->sortBy(function($item) {
+                return $item->customer->customer_name ?? $item->wholesale->wholesale_name_th ?? '';
+            });
 
-                     if($request->customer && $request->customer !== 'all'){
-                        $documents->where('customer_id',$request->customer);
-                     }
-
-        $documents = $documents->get();
-        $customerWithholding = WithholdingTaxDocument::with('customer')->get();
-
-        return view('withholding.index', compact('documents','customerWithholding'));
+        return view('withholding.index', compact('documents', 'customerWithholding'));
     }
 
     public function create()
@@ -266,5 +300,26 @@ class withholdingTaxController extends Controller
         $document->delete();
 
         return redirect()->route('withholding.index')->with('success', 'เอกสารถูกลบเรียบร้อยแล้ว');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        // Get filters from request
+        $filters = [
+            'document_number' => $request->document_number,
+            'ref_number' => $request->ref_number,
+            'withholding_form' => $request->withholding_form,
+            'document_date_start' => $request->document_date_start,
+            'document_date_end' => $request->document_date_end,
+            'customer' => $request->customer,
+        ];
+        
+        // Generate filename with current date
+        $filename = 'รายการใบหัก ณ ที่จ่าย_' . date('Y-m-d_H-i-s') . '.xlsx';
+        
+        // Check if specific documents are selected for export
+        $selectedIds = $request->selected_ids ? explode(',', $request->selected_ids) : null;
+        
+        return Excel::download(new WithholdingTaxExport($selectedIds, $filters), $filename);
     }
 }

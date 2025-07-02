@@ -242,12 +242,48 @@
                 {{ optional($quoteLog)->wholesale_tax_updated_at ? Carbon::parse($quoteLog->wholesale_tax_updated_at)->format('d-m-Y : H:m:s') : '' }}
                 โดย {{ optional($quoteLog)->withholding_tax_created_by ?? 'ไม่ทราบ' }}
             </small>
-
-            
-
-         
-
         </li>
+
+        <!-- คืนเงินลูกค้าสำเร็จ -->
+        <li class="list-group-item">
+            <input type="checkbox" class="form-check-input me-2" id="customer_refund_status"
+                onchange="updateOrCreateLog('customer_refund', this)"
+                {{ optional($quoteLog)->customer_refund_status === 'คืนเงินสำเร็จ' ? 'checked' : '' }}>
+            <i data-feather="{{ optional($quoteLog)->customer_refund_status === 'คืนเงินสำเร็จ' ? 'check-circle' : 'box' }}"
+                class="{{ optional($quoteLog)->customer_refund_status === 'คืนเงินสำเร็จ' ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
+            คืนเงินลูกค้าสำเร็จ :
+            <span
+                class="{{ optional($quoteLog)->customer_refund_status === 'คืนเงินสำเร็จ' ? 'text-success' : 'text-muted' }}">
+                {{ optional($quoteLog)->customer_refund_status ?? 'ยังไม่ได้คืนเงิน' }}
+            </span>
+            <br>
+            <small class="text-secondary">
+                อัปเดตล่าสุด:
+                {{ optional($quoteLog)->customer_refund_updated_at ? Carbon::parse($quoteLog->customer_refund_updated_at)->format('d-m-Y : H:m:s') : '' }}
+                โดย {{ optional($quoteLog)->customer_refund_created_by ?? 'ไม่ทราบ' }}
+            </small>
+        </li>
+
+        <!-- โฮลเซลล์คืนเงินสำเร็จ -->
+        <li class="list-group-item">
+            <input type="checkbox" class="form-check-input me-2" id="wholesale_refund_status"
+                onchange="updateOrCreateLog('wholesale_refund', this)"
+                {{ optional($quoteLog)->wholesale_refund_status === 'คืนเงินสำเร็จ' ? 'checked' : '' }}>
+            <i data-feather="{{ optional($quoteLog)->wholesale_refund_status === 'คืนเงินสำเร็จ' ? 'check-circle' : 'box' }}"
+                class="{{ optional($quoteLog)->wholesale_refund_status === 'คืนเงินสำเร็จ' ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
+            โฮลเซลล์คืนเงินสำเร็จ :
+            <span
+                class="{{ optional($quoteLog)->wholesale_refund_status === 'คืนเงินสำเร็จ' ? 'text-success' : 'text-muted' }}">
+                {{ optional($quoteLog)->wholesale_refund_status ?? 'ยังไม่ได้คืนเงิน' }}
+            </span>
+            <br>
+            <small class="text-secondary">
+                อัปเดตล่าสุด:
+                {{ optional($quoteLog)->wholesale_refund_updated_at ? Carbon::parse($quoteLog->wholesale_refund_updated_at)->format('d-m-Y : H:m:s') : '' }}
+                โดย {{ optional($quoteLog)->wholesale_refund_created_by ?? 'ไม่ทราบ' }}
+            </small>
+        </li>
+        
         <li>
        
 
@@ -333,6 +369,14 @@
                 wholesale_tax: {
                     true: 'ได้รับแล้ว',
                     false: 'ยังไม่ได้รับ'
+                },
+                customer_refund: {
+                    true: 'คืนเงินสำเร็จ',
+                    false: 'ยังไม่ได้คืนเงิน'
+                },
+                wholesale_refund: {
+                    true: 'คืนเงินสำเร็จ',
+                    false: 'ยังไม่ได้คืนเงิน'
                 }
             };
 
@@ -356,7 +400,7 @@
                 .then(data => {
                     if (data.message === 'Status updated successfully') {
                         const statusElement = checkbox.nextElementSibling;
-                        statusElement.className = status === 'ได้แล้ว' || status === 'ส่งแล้ว' || status === 'ออกแล้ว' || status === 'ได้รับแล้ว' ? 'text-success' : 'text-muted';
+                        statusElement.className = status === 'ได้แล้ว' || status === 'ส่งแล้ว' || status === 'ออกแล้ว' || status === 'ได้รับแล้ว' || status === 'คืนเงินสำเร็จ' ? 'text-success' : 'text-muted';
                         statusElement.innerText = status;
 
                         const updateInfo = checkbox.parentElement.querySelector('.text-secondary');

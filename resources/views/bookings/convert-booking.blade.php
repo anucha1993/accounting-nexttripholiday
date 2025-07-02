@@ -30,11 +30,21 @@
         <!-- Todo list-->
         <div class="todo-listing ">
             <div class="container border bg-white">
-                <h4 class="text-center my-4">สร้างใบเสนอราคา
+                <h4 class="text-center my-4">สร้างใบเสนอราคา</h4>
+                
+                {{-- แสดงข้อผิดพลาด --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <strong>ข้อผิดพลาด!</strong>
+                        <ul class="mb-0 mt-2">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
-
-
-                </h4>
                 <div class="">
                     @if ($checkCustomer)
                         <input type="hidden" name="customer_id" value="{{ $checkCustomer->customer_id ?: null }}">
@@ -76,14 +86,18 @@
                         </div>
                         <div class="col-md-2 ms-3">
                             <label>วันที่สั่งซื้อ,จองแพคเกจ:</label>
-                            <input type="text" id="displayDatepicker" class="form-control">
-                            <input type="hidden" id="submitDatepicker" name="quote_booking_create"
-                                value="{{ date('Y-m-d', strtotime($bookingModel->created_at)) }}">
+                            <input type="date" id="submitDatepicker" name="quote_booking_create" class="form-control" 
+                                value="{{ date('Y-m-d', strtotime($bookingModel->created_at)) }}" min="{{ date('Y-m-d') }}" required>
                         </div>
                         <div class="col-md-2">
                             <label>เลขที่ใบจองทัวร์</label>
                             <input type="text" name="quote_booking" value="{{ $bookingModel->code }}"
                                 class="form-control" readonly>
+                        </div>
+                        <div class="col-md-2">
+                            <label>วันที่เสนอราคา</label>
+                            <input type="date" id="submitDatepickerQuoteDate" name="quote_date" class="form-control" 
+                                value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required>
                         </div>
 
                     </div>
@@ -94,7 +108,7 @@
                         <div class="col-md-6">
                             <label>ชื่อแพคเกจทัวร์:</label>
                             <input type="text" id="tourSearch" class="form-control" name="quote_tour_name"
-                                placeholder="ค้นหาแพคเกจทัวร์...ENTER เพื่อค้นหา"
+                                placeholder="ค้นหาแพคเกจทัวร์...ENTER เพื่อค้นหา" required
                                 value="{{ $tour->code }}-{{ $tour->name }}">
                             <div id="tourResults" class="list-group" style="position: absolute; z-index: 1000; width: 35%;">
                             </div>
@@ -105,15 +119,14 @@
 
                         <div class="col-md-3">
                             <label>ระยะเวลาทัวร์ (วัน/คืน): </label>
-                            <select name="quote_numday" class="form-select" id="numday">
+                            <select name="quote_numday" class="form-select" id="numday" required>
                                 <option value="">--เลือกระยะเวลา--</option>
                                 @forelse ($numDays as $item)
                                     <option @if ($tour->num_day === $item->num_day_name) selected @endif
-                                        data-day="{{ $item->num_day_total }}" value="{{ $item->quote_numday }}">
+                                        data-day="{{ $item->num_day_total }}" value="{{ $item->num_day_name }}">
                                         {{ $item->num_day_name }}</option>
                                 @empty
                                 @endforelse
-
                             </select>
 
                         </div>
@@ -124,7 +137,7 @@
                         <div class="col-md-3">
                             <label>ประเทศที่เดินทาง: </label>
                             <select name="quote_country" class="form-select country-select select" id="country"
-                                style="width: 100%">
+                                style="width: 100%" required>
                                 <option value="">--เลือกประเทศที่เดินทาง--</option>
                                 @forelse ($country as $item)
                                     <option @if (in_array($item->id, $countryId)) selected @endif value="{{ $item->id }}">
@@ -140,7 +153,7 @@
                         <div class="col-md-3">
                             <label>โฮลเซลล์: </label>
                             <select name="quote_wholesale" class="form-select country-select select" style="width: 100%"
-                                id="wholesale">
+                                id="wholesale" required>
                                 <option value="">--เลือกโฮลเซลล์--</option>
                                 @forelse ($wholesale as $item)
                                     <option @if ($tour->wholesale_id === $item->id) selected @endif value="{{ $item->id }}">
@@ -152,7 +165,8 @@
                         </div>
                         <div class="col-md-3">
                             <label>สายการบิน:</label>
-                            <select name="quote_airline" class="form-select country-select select" style="width: 100%">
+                            <select name="quote_airline" class="form-select country-select select" style="width: 100%"
+                                id="airline" required>
                                 <option value="">--เลือกสายการบิน--</option>
                                 @forelse ($airline as $item)
                                     <option @if ($tour->airline_id === $item->id) selected @endif value="{{ $item->id }}">
@@ -164,17 +178,13 @@
                         </div>
                         <div class="col-md-3">
                             <label>วันออกเดินทาง:</label>
-                            <input type="text" class="form-control" id="date-start-display"
-                                placeholder="วันออกเดินทาง...">
-                            <input type="hidden" id="date-start" name="quote_date_start"
-                                value="{{ date('Y-m-d', strtotime($bookingModel->start_date)) }}">
+                            <input type="date" class="form-control" id="date-start" name="quote_date_start"
+                                value="{{ date('Y-m-d', strtotime($bookingModel->start_date)) }}" min="{{ date('Y-m-d') }}" required>
                         </div>
                         <div class="col-md-3">
                             <label>วันเดินทางกลับ: </label>
-                            <input type="text" class="form-control" id="date-end-display"
-                                placeholder="วันเดินทางกลับ...">
-                            <input type="hidden" id="date-end" name="quote_date_end"
-                                value="{{ date('Y-m-d', strtotime($bookingModel->end_date)) }}">
+                            <input type="date" class="form-control" id="date-end" name="quote_date_end"
+                                value="{{ date('Y-m-d', strtotime($bookingModel->end_date)) }}" min="{{ date('Y-m-d') }}" required>
                         </div>
                     </div>
                     <hr>
@@ -183,9 +193,11 @@
                     <div class="row table-custom">
                         <div class="col-md-3">
                             <label class="">ชื่อลูกค้า:</label>
-                            <input type="text" class="form-control" name="customer_name" placeholder="ชื่อลูกค้า"
-                                value="{{ $bookingModel->name . ' ' . $bookingModel->surname }}" required
-                                aria-describedby="basic-addon1">
+                            <input type="text" class="form-control" name="customer_name" id="customerSearch"
+                                placeholder="ชื่อลูกค้า...ENTER เพื่อค้นหา" required aria-describedby="basic-addon1" 
+                                value="{{ $bookingModel->name . ' ' . $bookingModel->surname }}">
+                            <div id="customerResults" class="list-group"
+                                style="position: absolute; z-index: 1000; width: 35%;"></div>
                             @if ($checkCustomer && $checkCustomer->customer_name !== $bookingModel->name)
                                 <small
                                     class="form-text text-muted text-danger check-customer">{{ $checkCustomer->customer_name }}</small>
@@ -265,7 +277,7 @@
                     <br>
 
 
-                    <h5 style="background: #e0e0e0; padding: 5px">ข้อมูลค่าบริการ</h5>
+                    <h5 style="background: #e0e0e0; padding: 5px">ข้อมูลค่าบริการ <span id="pax" class="float-end"></span></h5>
                     <hr>
                     <div id="quotation-table" class="table-custom text-center">
                         <div class="row header-row" style="padding: 5px">
@@ -301,8 +313,7 @@
 
                                         </div>
                                         <div class="col-md-1">
-
-                                            <input type="checkbox" name="vat3[]" class="vat-3" value="Y">
+                                            <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y">
                                         </div>
                                         <div class="col-md-1" style="display: none">
                                             <select name="expense_type[]" class="form-select">
@@ -566,7 +577,7 @@
                             
 
                     <div class="text-end mt-3">
-                        {{-- hidden --}}
+                        {{-- hidden fields เหมือน create.blade.php --}}
                         <input type="hidden" name="quote_vat_exempted_amount">
                         <input type="hidden" name="quote_pre_tax_amount">
                         <input type="hidden" name="quote_discount">
@@ -575,6 +586,7 @@
                         <input type="hidden" name="quote_include_vat">
                         <input type="hidden" name="quote_grand_total" id="quote-grand-total">
                         <input type="hidden" name="quote_withholding_tax">
+                        <input type="hidden" name="quote_pax_total" id="quote-pax-total">
 
 
 
@@ -609,9 +621,62 @@
         });
 
         $(document).ready(function() {
-            // เมื่อ form ถูก submit
-            $('form').on('submit', function() {
-                // loop ผ่าน checkbox แต่ละตัว
+            // เมื่อ form ถูก submit - ตรวจสอบวันที่ (ใช้โครงสร้างเดียวกับ create.blade.php)
+            $('#formQuote').on('submit', function(e) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); // ตัดเวลาออก เหลือแค่วัน
+
+                let errors = [];
+
+                // วันที่เสนอราคา (ใช้ selector เดียวกับ create.blade.php)
+                const quoteDateVal = $('#submitDatepickerQuoteDate').val();
+                if (quoteDateVal) {
+                    const quoteDate = new Date(quoteDateVal);
+                    if (quoteDate < today) {
+                        errors.push("❌ วันที่เสนอราคาต้องเป็นวันปัจจุบันหรืออนาคต");
+                    }
+                }
+
+                // วันที่จองแพคเกจ (ใช้ selector เดียวกับ create.blade.php)
+                const bookingDateVal = $('#submitDatepicker').val();
+                if (bookingDateVal) {
+                    const bookingDate = new Date(bookingDateVal);
+                    if (bookingDate < today) {
+                        errors.push("❌ วันที่จองแพคเกจต้องเป็นวันปัจจุบันหรืออนาคต");
+                    }
+                }
+
+                // วันออกเดินทาง (ใช้ selector เดียวกับ create.blade.php)
+                const startDateVal = $('#date-start').val();
+                if (startDateVal) {
+                    const startDate = new Date(startDateVal);
+                    if (startDate < today) {
+                        errors.push("❌ วันออกเดินทางต้องเป็นวันปัจจุบันหรืออนาคต");
+                    }
+                }
+
+                // วันเดินทางกลับ (ใช้ selector เดียวกับ create.blade.php)
+                const endDateVal = $('#date-end').val();
+                if (endDateVal) {
+                    const endDate = new Date(endDateVal);
+                    if (endDate < today) {
+                        errors.push("❌ วันเดินทางกลับต้องเป็นวันปัจจุบันหรืออนาคต");
+                    }
+
+                    // ตรวจสอบว่าวันกลับต้องมากกว่าวันออกเดินทาง
+                    if (startDateVal && endDate <= new Date(startDateVal)) {
+                        errors.push("❌ วันเดินทางกลับต้องมากกว่าวันออกเดินทาง");
+                    }
+                }
+
+                // แสดงข้อผิดพลาดหากมี (ใช้โครงสร้างเดียวกับ create.blade.php)
+                if (errors.length > 0) {
+                    e.preventDefault();
+                    alert("กรุณาแก้ไขข้อผิดพลาดต่อไปนี้:\n\n" + errors.join("\n"));
+                    return false;
+                }
+
+                // loop ผ่าน checkbox แต่ละตัว (ใช้โครงสร้างเดียวกับ create.blade.php)
                 $('.vat-3').each(function(index, element) {
                     // ตรวจสอบว่าถ้า checkbox ไม่ได้ถูกติ๊ก
                     if (!$(element).is(':checked')) {
@@ -1476,7 +1541,7 @@
                 e.preventDefault();
                 var selectedDate = $(this).data('date'); // ดึงค่าของวันที่ที่เลือก
                 var period1 = $(this).data('period1'); // ผู้ใหญ่พักคู่
-                var period2 = $(this).data('period2'); // ผู้ใหญ่พักเดียว
+                var period2 = $(this).data('period2'); // ผู้ใหญ่พักเดี่ยว
                 var period3 = $(this).data('period3'); // เด็กมีเตียง
                 var period4 = $(this).data('period4'); // เด็กไม่มีเตียง
                 var selectedNumday = $('#numday').data('day');
@@ -1670,74 +1735,4 @@
         });
     </script>
 
-    <script>
-        $(function() {
-            // ตั้งค่าภาษาไทยให้กับ Datepicker
-            $.datepicker.regional['th'] = {
-                closeText: 'ปิด',
-                prevText: 'ย้อน',
-                nextText: 'ถัดไป',
-                currentText: 'วันนี้',
-                monthNames: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
-                    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
-                ],
-                monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
-                    'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
-                ],
-                dayNames: ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'],
-                dayNamesShort: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
-                dayNamesMin: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
-                weekHeader: 'Wk',
-                dateFormat: 'dd MM yy', // รูปแบบการแสดงผลเป็นวัน เดือน ปี
-                firstDay: 0,
-                isRTL: false,
-                showMonthAfterYear: false,
-                yearSuffix: ''
-            };
-            $.datepicker.setDefaults($.datepicker.regional['th']);
-
-            // แปลงวันที่จากรูปแบบ Y-m-d เป็นรูปแบบภาษาไทย
-            function formatDateToThai(dateString) {
-                const date = new Date(dateString);
-                return $.datepicker.formatDate('dd MM yy', date, $.datepicker.regional['th']);
-            }
-
-            // ตั้งค่า Datepicker ให้แสดงผลภาษาไทยและจัดการเมื่อเลือกวันที่
-            $('#displayDatepicker').datepicker({
-                dateFormat: 'dd MM yy', // รูปแบบการแสดงผลใน Datepicker
-                onSelect: function(dateText, inst) {
-                    // แปลงวันที่ที่เลือกเป็นรูปแบบ Y-m-d และอัพเดต hidden input
-                    const selectedDate = new Date(inst.selectedYear, inst.selectedMonth, inst
-                        .selectedDay);
-                    const isoDate = $.datepicker.formatDate('yy-mm-dd', selectedDate);
-                    $('#submitDatepicker').val(isoDate);
-                }
-            });
-
-            // กำหนดค่าเริ่มต้นให้กับ Datepicker (แสดงเป็นภาษาไทย) และ hidden input
-            let defaultDate = '{{ date('Y-m-d') }}';
-            $('#submitDatepicker').val(defaultDate);
-            const thaiFormattedDate = formatDateToThai(defaultDate);
-            $('#displayDatepicker').val(thaiFormattedDate);
-
-            /// วันที่เสนอราคา
-            $('#displayDatepickerQuoteDate').datepicker({
-                dateFormat: 'dd MM yy', // รูปแบบการแสดงผลใน Datepicker
-                onSelect: function(dateText, inst) {
-                    // แปลงวันที่ที่เลือกเป็นรูปแบบ Y-m-d และอัพเดต hidden input
-                    const selectedDate = new Date(inst.selectedYear, inst.selectedMonth, inst
-                        .selectedDay);
-                    const isoDate = $.datepicker.formatDate('yy-mm-dd', selectedDate);
-                    $('#submitDatepickerQuoteDate').val(isoDate);
-                }
-            });
-
-            // กำหนดค่าเริ่มต้นให้กับ Datepicker quote_date
-            let defaultDateQuoteDate = '{{ date('Y-m-d') }}';
-            $('#submitDatepickerQuoteDate').val(defaultDateQuoteDate);
-            const thaiFormattedDateQuoteDate = formatDateToThai(defaultDateQuoteDate);
-            $('#displayDatepickerQuoteDate').val(thaiFormattedDateQuoteDate);
-
-        });
-    </script>
 @endsection

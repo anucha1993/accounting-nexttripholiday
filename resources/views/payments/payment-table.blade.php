@@ -1,30 +1,26 @@
 <div class="col-md-12">
-    <div class="card">
-        <div class="card-header bg-primary">
-            <h5 class="mb-0 text-white"><i class="fas fa-dollar-sign"></i>
-                รายการชำระเงิน / Payment information 
-
-                &nbsp; <a href="javascript:void(0)" class="text-white float-end" onclick="toggleAccordion('table-payment', 'toggle-arrow-payment')">
-                    <span class="fas fa-chevron-down" id="toggle-arrow-payment"></span>
-                </a>
-            
-            </h5>
+    <div class="card info-card">
+        <div class="card-header">
+            <i class="fas fa-credit-card me-2"></i>รายการชำระเงิน
+            <a href="javascript:void(0)" class="float-end text-white" onclick="toggleAccordion('table-payment', 'toggle-arrow-payment')">
+                <i class="fas fa-chevron-down" id="toggle-arrow-payment"></i>
+            </a>
         </div>
         <div class="card-body" id="table-payment" style="display: block">
-            <div class="table table-responsive">
-                <table class="table product-overview">
+            <div class="table-responsive">
+                <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>ลำดับ</th>
+                            <th class="text-center" style="width: 60px;">#</th>
                             <th>เลขที่ชำระ</th>
                             <th>วันที่ชำระ</th>
-                            <th>รายละเอียดการชำระเงิน</th>
-                            <th>จำนวนเงิน</th>
-                            <th>ไฟล์แนบ</th>
-                            <th>ประเภท</th>
-                            <th>ใบเสร็จรับเงิน</th>
-                            <th>Status</th>
-                            <th>จัดการ</th>
+                            <th>รายละเอียด</th>
+                            <th class="text-end">จำนวนเงิน</th>
+                            <th class="text-center">ไฟล์แนบ</th>
+                            <th class="text-center">ประเภท</th>
+                            <th class="text-center">ใบเสร็จ</th>
+                            <th class="text-center">สถานะ</th>
+                            <th class="text-center">จัดการ</th>
                         </tr>
                     </thead>
                     @php

@@ -1,30 +1,27 @@
 <div class="col-md-12">
-    <div class="card">
-        <div class="card-header bg-success">
-            <h5 class="mb-0 text-white"><i class="fa fa-file"></i>
-                รายการต้นทุน<span class="float-end"></span>
-                &nbsp; <a href="javascript:void(0)" class="text-white float-end"
-                    onclick="toggleAccordion('table-inputtax', 'toggle-arrow-inputtax')">
-                    <span class="fas fa-chevron-down" id="toggle-arrow-inputtax"></span>
-                </a>
-            </h5>
+    <div class="card info-card">
+        <div class="card-header">
+            <i class="fa fa-calculator me-2"></i>รายการต้นทุน
+            <a href="javascript:void(0)" class="float-end text-white" onclick="toggleAccordion('table-inputtax', 'toggle-arrow-inputtax')">
+                <i class="fas fa-chevron-down" id="toggle-arrow-inputtax"></i>
+            </a>
         </div>
 
         <div class="card-body" id="table-inputtax" style="display: block">
-            <div class="table table-responsive">
-                <table class="table product-overview">
+            <div class="table-responsive">
+                <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th style="width: 100px">ลำดับ</th>
+                            <th class="text-center" style="width: 60px;">#</th>
                             <th>ประเภท</th>
-                            <th>เลขที่เอกสารอ้างอิง</th>
-                            <th>ไฟล์แนบ</th>
-                            <th>ยอดค่าบริการ</th>
-                            <th>ใบหัก ณ ที่จ่าย</th>
-                            <th>จำนวน:ภาษีหัก</th>
-                            <th>จำนวน:ภาษี 7%</th>
-                            <th>ยอดทั้งสิ้น</th>
-                            <th>Actions</th>
+                            <th>เลขที่เอกสาร</th>
+                            <th class="text-center">ไฟล์แนบ</th>
+                            <th class="text-end">ค่าบริการ</th>
+                            <th class="text-center">ใบหัก ณ ที่จ่าย</th>
+                            <th class="text-end">ภาษีหัก</th>
+                            <th class="text-end">ภาษี 7%</th>
+                            <th class="text-end">ยอดรวม</th>
+                            <th class="text-center">จัดการ</th>
                         </tr>
                     </thead>
                     @php

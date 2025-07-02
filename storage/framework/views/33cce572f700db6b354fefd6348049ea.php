@@ -1,7 +1,51 @@
 <?php $__env->startSection('content'); ?>
+<style>
+    .table-sm td, .table-sm th {
+        padding: 0.4rem;
+        vertical-align: middle;
+    }
+    
+    .badge-sm {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .sticky-top {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+    
+    .table-dark th {
+        border-color: #495057;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    
+    .text-truncate-custom {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 150px;
+    }
+    
+    .status-badges .badge {
+        margin: 1px;
+        display: inline-block;
+    }
+    
+    .quote-summary {
+        background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+        border-radius: 8px;
+        padding: 0.5rem;
+    }
+</style>
 
-
-    <div class="email-app todo-box-container container-fluid">
+<div class="email-app todo-box-container container-fluid">
         <br>
         <?php if(session('success')): ?>
             <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
@@ -22,16 +66,22 @@
        
 
 
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">ใบเสนอราคา/ใบแจ้งหนี้
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-file-invoice"></i> ใบเสนอราคา/ใบแจ้งหนี้
+                    </h5>
                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('edit-quote')): ?>
-                     <a href="<?php echo e(route('quote.createNew')); ?>"
-                        class="btn btn-primary float-end">สร้างใบเสนอราคา</a></h4>
-                        <?php endif; ?>
-                <hr>
-
-                <form action="">
+                        <a href="<?php echo e(route('quote.createNew')); ?>" class="btn btn-light btn-sm">
+                            <i class="fas fa-plus"></i> สร้างใบเสนอราคา
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="collapse" id="searchCollapse">
+                    <form action="" class="border rounded p-3 bg-light mb-3">
                     <input type="hidden" name="search" value="Y">
                     <div class="row mb-3">
                         <div class="col-md-2">
@@ -151,21 +201,32 @@
                                 <option <?php echo e(request('search_not_check_list') === 'appointment_status' ? 'selected' : ''); ?> value="appointment_status">ยังไม่ส่งใบนัดหมายให้ลูกค้า</option>
                                 <option <?php echo e(request('search_not_check_list') === 'withholding_tax_status' ? 'selected' : ''); ?> value="withholding_tax_status">ยังไม่ออกใบหัก ณ ที่จ่าย</option>
                                 <option <?php echo e(request('search_not_check_list') === 'wholesale_tax_status' ? 'selected' : ''); ?> value="wholesale_tax_status">ยังไม่ได้รับใบกำกับภาษีโฮลเซลล์</option>
+                                <option <?php echo e(request('search_not_check_list') === 'customer_refund_status' ? 'selected' : ''); ?> value="customer_refund_status">ยังไม่คืนเงินลูกค้า</option>
+                                <option <?php echo e(request('search_not_check_list') === 'wholesale_refund_status' ? 'selected' : ''); ?> value="wholesale_refund_status">ยังไม่ได้รับเงินคืนจากโฮลเซลล์</option>
                             </select>
                         </div>
 
                         </div>
-                        <div class="row ">
-                        
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-success float-end mx-3" type="submit">ค้นหา</button>
-                                <a href="<?php echo e(route('quote.index')); ?>" class="btn btn-outline-danger float-end mx-3"
-                                    type="submit">ล้างข้อมูล</a>
-
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <button class="btn btn-primary btn-sm" type="submit">
+                                        <i class="fas fa-search"></i> ค้นหา
+                                    </button>
+                                    <a href="<?php echo e(route('quote.index')); ?>" class="btn btn-outline-secondary btn-sm">
+                                        <i class="fas fa-times"></i> ล้างข้อมูล
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
+                
+                <div class="mb-3">
+                    <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#searchCollapse" aria-expanded="false">
+                        <i class="fas fa-filter"></i> แสดง/ซ่อน ตัวกรอง
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -176,103 +237,162 @@
                     <div class="table-responsive">
                         
 
-                        <form action="<?php echo e(route('export.quote')); ?>" id="export-excel" method="post">
-                            <?php echo csrf_field(); ?>
-                            <?php echo method_field('POST'); ?>
-                            <input type="hidden" name="quote_ids" value="<?php echo e($quotations->pluck('quote_id')); ?>">
-                            <button class="btn btn-success" type="submit">EXCEL</button>
-                        </form>
-                        <br>
-                        <table class="table customize-table table-hover mb-0 v-middle table-striped table-bordered" id="quote-table"
-                            style="font-size: 12px">
-                            <thead class="table text-white bg-info">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <form action="<?php echo e(route('export.quote')); ?>" id="export-excel" method="post" class="d-inline">
+                                    <?php echo csrf_field(); ?>
+                                    <?php echo method_field('POST'); ?>
+                                    <input type="hidden" name="quote_ids" value="<?php echo e($quotations->pluck('quote_id')); ?>">
+                                    <button class="btn btn-success btn-sm" type="submit">
+                                        <i class="fas fa-file-excel"></i> Export Excel
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="text-muted">
+                                <small>พบข้อมูล <?php echo e(number_format($quotations->count())); ?> รายการ | รวม <?php echo e(number_format($SumPax)); ?> PAX | มูลค่า <?php echo e(number_format($SumTotal,2)); ?> บาท</small>
+                            </div>
+                        </div>
+                        
+                        <table class="table table-sm table-hover table-striped table-bordered" id="quote-table" style="font-size: 11px;">
+                            <thead class="table-dark sticky-top">
                                     <tr>
-                                        <th>ลำดับ</th>
-                                        <th>ใบเสนอราคา</th>
-                                        <th>เลขที่ใบจองทัวร์</th>
-                                        <th>โปรแกรมทัวร์</th>
-                                        <th>Booking Date</th>
-                                        <th>วันที่เดินทาง</th>
-                                        <th>ชื่อลูกค้า</th>
-                                        <th>Paxs</th>
-                                        <th>ประเทศ</th>
-                                        <th>สายการบิน</th>
-                                        <th>โฮลเซลล์</th>
-                                        <th>การชำระของลูกค้า</th>
-                                        <th>ยอดใบแจ้งหนี้</th>
-                                        <th>การชำระโฮลเซลล์</th>
-                                        <th>CheckLists</th>
-                                        <th>ผู้ขาย</th>
-                                        <th>การจัดการ</th>
+                                        <th style="width: 40px;" class="text-center">#</th>
+                                        <th style="width: 120px;">ใบเสนอราคา</th>
+                                        <th style="width: 100px;">เลขจองทัวร์</th>
+                                        <th style="width: 200px;">โปรแกรมทัวร์</th>
+                                        <th style="width: 80px;">วันที่จอง</th>
+                                        <th style="width: 120px;">วันเดินทาง</th>
+                                        <th style="width: 150px;">ลูกค้า</th>
+                                        <th style="width: 50px;" class="text-center">PAX</th>
+                                        <th style="width: 80px;">ประเทศ</th>
+                                        <th style="width: 60px;">สายการบิน</th>
+                                        <th style="width: 80px;">โฮลเซลล์</th>
+                                        <th style="width: 120px;">สถานะลูกค้า</th>
+                                        <th style="width: 100px;" class="text-end">ยอดเงิน</th>
+                                        <th style="width: 120px;">สถานะโฮลเซลล์</th>
+                                        <th style="width: 100px;">CheckList</th>
+                                        <th style="width: 80px;">ผู้ขาย</th>
+                                        <th style="width: 80px;" class="text-center">จัดการ</th>
                                     </tr>
                             </thead>
                             <tbody>
                                 <?php $__empty_1 = true; $__currentLoopData = $quotations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                                    <tr>
-                                        <td><?php echo e($key + 1); ?></td>
-                                        <td><?php echo e($item->quote_number); ?> <?php echo $item->debitNote ? '<span class="badge rounded-pill bg-success">DBN</span>' : ''; ?> <?php echo $item->creditNote ? '<span class="badge rounded-pill bg-danger">CDN</span>' : ''; ?> </td>
-                                        <td><?php echo e($item->quote_booking); ?></td>
-                                        <td><span data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="<?php echo e($item->quote_tour_name ? $item->quote_tour_name : $item->quote_tour_name1); ?>"><?php echo e($item->quote_tour_name ? mb_substr($item->quote_tour_name, 0, 20) . '...' : mb_substr($item->quote_tour_name1, 0, 20) . '...'); ?></span>
-                                    </td>
-                                        <td><?php echo e(date('d/m/Y', strtotime($item->created_at))); ?></td>
-                                        <td><?php echo e(date('d/m/Y', strtotime($item->quote_date_start)) . '-' . date('d/m/Y', strtotime($item->quote_date_end))); ?>
-
-                                        </td>
-                                        <td><?php echo e($item->quotecustomer->customer_name); ?></td>
-                                        <td><?php echo e($item->quote_pax_total); ?></td>
-                                        <td><?php echo e($item->airline->code); ?></td>
+                                    <tr class="align-middle">
+                                        <td class="text-center fw-bold"><?php echo e($key + 1); ?></td>
                                         <td>
-                                            <?php echo e($item->quoteCountry->country_name_th); ?>
-
+                                            <div class="d-flex flex-column">
+                                                <span class="fw-bold text-primary"><?php echo e($item->quote_number); ?></span>
+                                                <div>
+                                                    <?php if($item->debitNote): ?>
+                                                        <span class="badge bg-success badge-sm">DBN</span>
+                                                    <?php endif; ?>
+                                                    <?php if($item->creditNote): ?>
+                                                        <span class="badge bg-danger badge-sm">CDN</span>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td><?php echo e($item->quoteWholesale->code); ?></td>
-                                        
                                         <td>
-                                            <?php echo getQuoteStatusPayment($item); ?>
-
+                                            <span class="badge bg-light text-dark"><?php echo e($item->quote_booking); ?></span>
                                         </td>
-                                        
-
-                                        <td><?php echo e(number_format($item->quote_grand_total, 2, '.', ',')); ?></td>
-
                                         <td>
+                                            <div data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="<?php echo e($item->quote_tour_name ?: $item->quote_tour_name1); ?>">
+                                                <?php echo e(mb_substr($item->quote_tour_name ?: $item->quote_tour_name1, 0, 25)); ?><?php echo e(strlen($item->quote_tour_name ?: $item->quote_tour_name1) > 25 ? '...' : ''); ?>
 
-                                             <?php echo getQuoteStatusPayment($item); ?>
-
-                                            
+                                            </div>
                                         </td>
-
+                                        <td class="text-center">
+                                            <small class="text-muted"><?php echo e(date('d/m/y', strtotime($item->created_at))); ?></small>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex flex-column">
+                                                <small><?php echo e(date('d/m/y', strtotime($item->quote_date_start))); ?></small>
+                                                <small class="text-muted"><?php echo e(date('d/m/y', strtotime($item->quote_date_end))); ?></small>
+                                            </div>
+                                        </td>
                                         <td>
-                                           <?php echo getQuoteStatusQuotePayment($item); ?>
+                                            <div data-bs-toggle="tooltip" title="<?php echo e($item->quotecustomer->customer_name); ?>">
+                                                <?php echo e(mb_substr($item->quotecustomer->customer_name, 0, 20)); ?><?php echo e(strlen($item->quotecustomer->customer_name) > 20 ? '...' : ''); ?>
 
-                                           <?php echo getStatusPaymentWhosale($item); ?>
-
-                                           <?php echo getStatusWithholdingTax($item->quoteInvoice); ?>
-
-                                           <?php echo getQuoteStatusWithholdingTax($item->quoteLogStatus); ?>
-
-                                           <?php echo getStatusWhosaleInputTax($item->checkfileInputtax); ?>
-
-                                          
+                                            </div>
                                         </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-info"><?php echo e($item->quote_pax_total); ?></span>
+                                        </td>
+                                        <td>
+                                            <small><?php echo e($item->quoteCountry->country_name_th); ?></small>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-secondary badge-sm"><?php echo e($item->airline->code); ?></span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-warning text-dark badge-sm"><?php echo e($item->quoteWholesale->code); ?></span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                <?php echo getQuoteStatusPayment($item); ?>
 
-                                        <td> <?php echo e($item->Salename->name); ?></td>
-                                        <td><a href="<?php echo e(route('quote.editNew', $item->quote_id)); ?>"
-                                                class="btn btn-info btn-sm">จัดการข้อมูล</a>
-                                                
-                                            </td>
+                                            </div>
+                                        </td>
+                                        <td class="text-end">
+                                            <strong class="text-success"><?php echo e(number_format($item->quote_grand_total, 0)); ?></strong>
+                                            <small class="text-muted d-block">บาท</small>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                <?php echo getStatusPaymentWhosale($item); ?>
+
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-wrap gap-1" style="max-width: 100px;">
+                                                <?php echo getQuoteStatusQuotePayment($item); ?>
+
+                                                <?php echo getStatusWithholdingTax($item->quoteInvoice); ?>
+
+                                                <?php echo getQuoteStatusWithholdingTax($item->quoteLogStatus); ?>
+
+                                                <?php echo getStatusWhosaleInputTax($item->checkfileInputtax); ?>
+
+                                                <?php echo getStatusCustomerRefund($item->quoteLogStatus); ?>
+
+                                                <?php echo getStatusWholesaleRefund($item->quoteLogStatus); ?>
+
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <small><?php echo e($item->Salename->name); ?></small>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="<?php echo e(route('quote.editNew', $item->quote_id)); ?>" 
+                                               class="btn btn-primary btn-sm" 
+                                               data-bs-toggle="tooltip" 
+                                               title="จัดการข้อมูล">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </td>
                                     </tr>
-                                    
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                                    No data
+                                    <tr>
+                                        <td colspan="17" class="text-center py-4">
+                                            <div class="text-muted">
+                                                <i class="fas fa-search fa-2x mb-3"></i>
+                                                <p>ไม่พบข้อมูลตามเงื่อนไขที่ค้นหา</p>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 <?php endif; ?>
-                                <tr>
-                                    <td class="text-success">ข้อมูลผลรวม</td>
-                                    <td class="text-danger" colspan="12" align="right"> จำนวน <?php echo e(number_format($SumPax)); ?> (PAX) | จำนวนมูลค่าใบเสนอราคา <?php echo e(number_format($SumTotal,2)); ?> บาท </td>
-                                </tr>
-
                             </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <td colspan="7" class="text-end fw-bold">สรุปรวม:</td>
+                                    <td class="text-center fw-bold text-primary"><?php echo e(number_format($SumPax)); ?></td>
+                                    <td colspan="4"></td>
+                                    <td class="text-end fw-bold text-success"><?php echo e(number_format($SumTotal,2)); ?></td>
+                                    <td colspan="4" class="text-muted"><small>บาท</small></td>
+                                </tr>
+                            </tfoot>
                         </table>
                         
                     </div>
@@ -281,7 +401,134 @@
         </div>
 
 
-    <?php $__env->stopSection(); ?>
+<script>
+$(document).ready(function() {
+    // Initialize tooltips
+    $('[data-bs-toggle="tooltip"]').tooltip();
     
+    // Initialize Select2
+    $('.select2').select2({
+        placeholder: 'เลือก...',
+        allowClear: true,
+        width: '100%'
+    });
     
+    // Auto-submit form on select change for better UX
+    $('select[name^="search_"]').on('change', function() {
+        if ($(this).val() !== 'all' && $(this).val() !== '') {
+            $(this).closest('form').submit();
+        }
+    });
+    
+    // Highlight search keywords
+    var searchKeyword = $('input[name="search_keyword"]').val();
+    if (searchKeyword) {
+        $('#quote-table tbody').highlight(searchKeyword, {className: 'bg-warning'});
+    }
+    
+    // Enhanced table row click
+    $('#quote-table tbody tr').on('click', function(e) {
+        if (!$(e.target).closest('a, button').length) {
+            var editLink = $(this).find('a[href*="editNew"]').attr('href');
+            if (editLink) {
+                window.location.href = editLink;
+            }
+        }
+    });
+    
+    // Add loading state to form submission
+    $('form').on('submit', function() {
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalText = submitBtn.html();
+        submitBtn.html('<i class="fas fa-spinner fa-spin"></i> กำลังค้นหา...');
+        submitBtn.prop('disabled', true);
+        
+        setTimeout(function() {
+            submitBtn.html(originalText);
+            submitBtn.prop('disabled', false);
+        }, 3000);
+    });
+});
+
+// jQuery highlight plugin (lightweight version)
+jQuery.fn.highlight = function(pat, options) {
+    var opts = jQuery.extend({}, jQuery.fn.highlight.defaults, options);
+    return this.each(function() {
+        var regex = new RegExp('(' + pat + ')', 'gi');
+        $(this).html($(this).html().replace(regex, '<span class="' + opts.className + '">$1</span>'));
+    });
+};
+jQuery.fn.highlight.defaults = {
+    className: 'highlight'
+};
+</script>
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('scripts'); ?>
+<?php echo \Illuminate\View\Factory::parentPlaceholder('scripts'); ?>
+<script>
+$(document).ready(function() {
+    // Initialize tooltips
+    $('[data-bs-toggle="tooltip"]').tooltip();
+    
+    // Initialize Select2
+    $('.select2').select2({
+        placeholder: 'เลือก...',
+        allowClear: true,
+        width: '100%'
+    });
+    
+    // Auto-submit form on select change for better UX
+    $('select[name^="search_"]').on('change', function() {
+        if ($(this).val() !== 'all' && $(this).val() !== '') {
+            $(this).closest('form').submit();
+        }
+    });
+    
+    // Highlight search keywords
+    var searchKeyword = $('input[name="search_keyword"]').val();
+    if (searchKeyword) {
+        $('#quote-table tbody').highlight(searchKeyword, {className: 'bg-warning'});
+    }
+    
+    // Enhanced table row click
+    $('#quote-table tbody tr').on('click', function(e) {
+        if (!$(e.target).closest('a, button').length) {
+            var editLink = $(this).find('a[href*="editNew"]').attr('href');
+            if (editLink) {
+                window.location.href = editLink;
+            }
+        }
+    });
+    
+    // Add loading state to form submission
+    $('form').on('submit', function() {
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalText = submitBtn.html();
+        submitBtn.html('<i class="fas fa-spinner fa-spin"></i> กำลังค้นหา...');
+        submitBtn.prop('disabled', true);
+        
+        setTimeout(function() {
+            submitBtn.html(originalText);
+            submitBtn.prop('disabled', false);
+        }, 3000);
+    });
+});
+
+// jQuery highlight plugin (lightweight version)
+jQuery.fn.highlight = function(pat, options) {
+    var opts = jQuery.extend({}, jQuery.fn.highlight.defaults, options);
+    return this.each(function() {
+        var regex = new RegExp('(' + pat + ')', 'gi');
+        $(this).html($(this).html().replace(regex, '<span class="' + opts.className + '">$1</span>'));
+    });
+};
+jQuery.fn.highlight.defaults = {
+    className: 'highlight'
+};
+</script>
+<?php $__env->stopSection(); ?>
+
+
 <?php echo $__env->make('layouts.template', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\accounting-nexttripholiday\resources\views/quotations/index.blade.php ENDPATH**/ ?>

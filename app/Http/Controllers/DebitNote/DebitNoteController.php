@@ -25,47 +25,57 @@ class DebitNoteController extends Controller
 
     public function index(Request $request)
     {
-        $dateStart = $request->date_start;
-        $dateEnd = $request->date_end;
+        $query = debitNoteModel::with(['quote.customer', 'taxinvoice', 'invoice']);
 
-        $debitNote = debitNoteModel::with('quote', 'taxinvoice')
-            ->when($request->debitnote_number, function ($query) use ($request) {
-                return $query->where('debitnote_number', $request->debitnote_number);
-            })
+        // Filter by debit note number
+        if ($request->filled('debitnote_number')) {
+            $query->where('debitnote_number', 'LIKE', '%' . $request->debitnote_number . '%');
+        }
 
-            ->when($request->debitnote_quote, function ($query) use ($request) {
-                // แก้ไข closure
-                return $query->whereHas('quote', function ($q1) use ($request) {
-                    $q1->where('quote_number', $request->debitnote_quote);
-                });
-            })
-            ->when($request->customer_id, function ($query) use ($request) {
-                // แก้ไข closure
-                return $query->whereHas('quote', function ($q1) use ($request) {
-                    $q1->where('customer_id', $request->customer_id);
-                });
-            })
-            ->when($request->debitnote_tax, function ($query) use ($request) {
-                // แก้ไข closure
-                return $query->whereHas('taxinvoice', function ($q1) use ($request) {
-                    $q1->where('taxinvoice_number', $request->debitnote_tax);
-                });
-            })
+        // Filter by quote number
+        if ($request->filled('debitnote_quote')) {
+            $query->whereHas('quote', function ($q) use ($request) {
+                $q->where('quote_number', 'LIKE', '%' . $request->debitnote_quote . '%');
+            });
+        }
 
-            //Search Quote Date
-            ->when($dateStart && $dateEnd, function ($query) use ($dateStart, $dateEnd) {
-                return $query->where(function ($q) use ($dateStart, $dateEnd) {
-                    $q->whereBetween('debitnote_date', [$dateStart, $dateEnd])
-                        ->orWhereBetween('debitnote_date', [$dateStart, $dateEnd])
-                        ->orWhere(function ($q) use ($dateStart, $dateEnd) {
-                            $q->where('debitnote_date', '<=', $dateStart)->where('debitnote_date', '>=', $dateEnd);
-                        });
-                });
-            })
+        // Filter by customer
+        if ($request->filled('customer_id')) {
+            $query->whereHas('quote', function ($q) use ($request) {
+                $q->where('customer_id', $request->customer_id);
+            });
+        }
 
-            ->paginate(10);
+        // Filter by tax invoice number
+        if ($request->filled('debitnote_tax')) {
+            $query->whereHas('taxinvoice', function ($q) use ($request) {
+                $q->where('taxinvoice_number', 'LIKE', '%' . $request->debitnote_tax . '%');
+            });
+        }
 
-        $customers = customerModel::latest()->get();
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('debitnote_status', $request->status);
+        }
+
+        // Filter by date range
+        if ($request->filled('date_start') && $request->filled('date_end')) {
+            $query->whereBetween('debitnote_date', [
+                $request->date_start,
+                $request->date_end
+            ]);
+        } elseif ($request->filled('date_start')) {
+            $query->whereDate('debitnote_date', '>=', $request->date_start);
+        } elseif ($request->filled('date_end')) {
+            $query->whereDate('debitnote_date', '<=', $request->date_end);
+        }
+
+        // Order by latest
+        $query->orderBy('debitnote_date', 'desc');
+
+        $debitNote = $query->paginate(15);
+        $customers = customerModel::orderBy('customer_name')->get();
+        
         return view('debit-note.index', compact('debitNote', 'customers'));
     }
 

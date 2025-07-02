@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\inputTax\inputTaxModel;
 use App\Models\quotations\quotationModel;
 use App\Models\sales\saleModel;
+use Illuminate\Support\Facades\DB;
 
 class inputTaxReportController extends Controller
 {
@@ -18,6 +19,9 @@ class inputTaxReportController extends Controller
         $searchDateEnd = $request->input('date_end');
         $status = $request->input('status');
         $sellerId = $request->input('seller_id');
+        $documentNumber = $request->input('document_number');
+        $referenceNumber = $request->input('reference_number');
+        $sellerName = $request->input('seller_name');
 
         $inputTaxs = inputTaxModel::whereNotNull('input_tax_number_tax')
         ->when($searchDateStart && $searchDateEnd, function ($query) use ($searchDateStart, $searchDateEnd) {
@@ -33,6 +37,25 @@ class inputTaxReportController extends Controller
         ->when($sellerId, function ($query) use ($sellerId) {
             return $query->whereHas('quote', function ($q) use ($sellerId) {
                 $q->where('quote_sale', $sellerId);
+            });
+        })
+        ->when($documentNumber, function ($query) use ($documentNumber) {
+            return $query->where('input_tax_number_tax', 'like', '%' . $documentNumber . '%');
+        })
+        ->when($referenceNumber, function ($query) use ($referenceNumber) {
+            return $query->whereHas('invoice.taxinvoice', function ($q) use ($referenceNumber) {
+                $q->where('taxinvoice_number', 'like', '%' . $referenceNumber . '%');
+            });
+        })
+        ->when($sellerName, function ($query) use ($sellerName) {
+            // ดึง wholesale_id ที่ตรงกับชื่อผู้จำหน่ายจากฐานข้อมูล mysql2
+            $wholesaleIds = DB::connection('mysql2')->table('tb_wholesale')
+                ->where('wholesale_name_th', 'like', '%' . $sellerName . '%')
+                ->pluck('id');
+            
+            // หา quote_id ที่มี quote_wholesale ตรงกับ wholesale_id ที่หาได้
+            return $query->whereHas('quote', function ($q) use ($wholesaleIds) {
+                $q->whereIn('quote_wholesale', $wholesaleIds);
             });
         })
         ->get();

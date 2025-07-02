@@ -1,37 +1,26 @@
 <div class="col-md-12">
-   
-    {{-- <div class="accordion-content" id="quote-content">
-        <!-- เนื้อหาที่ต้องการแสดง/ซ่อน -->
-        <p>นี่คือเนื้อหาภายใน Accordion ของคุณ สามารถใส่ข้อมูลหรือฟอร์มที่ต้องการได้</p>
-    </div> --}}
-
-    <div class="card">
-        <div class="card-header bg-success" >
-         
-            <h5 class="mb-0 text-white">
-                <i class="fa fa-file"></i> รายละเอียดใบจองใบทัวร์ 
-                <span class="float-end">
-                    Booking No.: {{ $quotationModel->quote_booking }}
-                    &nbsp; <a href="javascript:void(0)" class="text-white" onclick="toggleAccordion('table-quote', 'toggle-arrow')">
-                        <span class="fas fa-chevron-down" id="toggle-arrow"></span>
-                    </a>
-                </span>
-            </h5>
+    <div class="card info-card">
+        <div class="card-header">
+            <i class="fa fa-file-text me-2"></i>รายละเอียดใบจองทัวร์
+            <div class="float-end">
+                <small class="me-3">Booking No.: {{ $quotationModel->quote_booking }}</small>
+                <a href="javascript:void(0)" class="text-white" onclick="toggleAccordion('table-quote', 'toggle-arrow')">
+                    <i class="fas fa-chevron-down" id="toggle-arrow"></i>
+                </a>
+            </div>
         </div>
 
         <div class="card-body" id="table-quote" style="display: block;">
-            <div class="table table-responsive">
-                <table class="table product-overview">
+            <div class="table-responsive">
+                <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th style="width: 100px">ลำดับ</th>
+                            <th class="text-center" style="width: 60px;">#</th>
                             <th>รายการ</th>
-                            <th>จำนวน</th>
-                            {{-- <th style="width: 500px">ชื่อลูกค้า</th> --}}
-                            <th style="text-align: center">ราคาต่อหน่วย/บาท	</th>
-                            <th style="text-align: center"> 3%</th>
-                            <th style="text-align: center">ราคารวม/บาท</th>
-                           
+                            <th class="text-center">จำนวน</th>
+                            <th class="text-end">ราคาต่อหน่วย</th>
+                            <th class="text-center">หัก 3%</th>
+                            <th class="text-end">ราคารวม</th>
                         </tr>
                     </thead>
                      
@@ -127,25 +116,22 @@
 
 
 <div class="col-md-12">
-    <div class="card">
-
-
-
-        <div class="card-header bg-dark">
-            <h5 class="mb-0 text-white"><i class="fa fa-file"></i>
+    <div class="info-card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fa fa-file me-2"></i>
                 รายละเอียดใบแจ้งหนี้ 
                 <span class="float-end">
                     invoice 
-                    &nbsp; <a href="javascript:void(0)" class="text-white" onclick="toggleAccordion('table-invoices', 'toggle-arrow-invoices')">
+                    &nbsp; <a href="javascript:void(0)" class="text-muted" onclick="toggleAccordion('table-invoices', 'toggle-arrow-invoices')">
                         <span class="fas fa-chevron-down" id="toggle-arrow-invoices"></span>
                     </a>
                 </span>
             </h5>
         </div>
         <div class="card-body" id="table-invoices"style="display: block;">
-            <div class="table table-responsive">
-                <table class="table product-overview">
-                    <thead>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-light">
                         <tr>
                             <th style="width: 100px">ปรเภท</th>
                             <th>วันที่</th>

@@ -513,6 +513,12 @@
                         <label>บันทึกเพิ่มเติม</label>
                         <textarea name="invoice_note" class="form-control" cols="30" rows="2">{{ $invoiceModel->invoice_note }}</textarea>
                     </div>
+                    
+                    <div class="col-md-12" style="padding-bottom: 10px">
+                        <label><i class="fas fa-edit text-warning"></i> เหตุผลในการแก้ไข (Revision Reason)</label>
+                        <textarea name="revision_reason" class="form-control" cols="30" rows="2" placeholder="ระบุเหตุผลในการแก้ไขใบแจ้งหนี้...">{{ $invoiceModel->revision_reason ?? '' }}</textarea>
+                        <small class="text-muted">หมายเหตุ: การแก้ไขจะทำให้เอกสารแสดงเป็น "Revised Invoice"</small>
+                    </div>
                 </div>
 
             </div>

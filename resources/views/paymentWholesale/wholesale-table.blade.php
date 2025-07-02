@@ -1,29 +1,26 @@
 <div class="col-md-12">
-    <div class="card">
-        <div class="card-header bg-info">
-            <h5 class="mb-0 text-white"><i class="fas fa-dollar-sign"></i>
-                รายการชำระเงินโฮลเซลล์ / Payment Wholesale 
-
-                &nbsp; <a href="javascript:void(0)" class="text-white float-end" onclick="toggleAccordion('table-payment-wholesale', 'toggle-arrow-payment-wholesale')">
-                    <span class="fas fa-chevron-down" id="toggle-arrow-payment-wholesale"></span>
-                </a>
-            </h5>
+    <div class="card info-card">
+        <div class="card-header">
+            <i class="fas fa-building me-2"></i>รายการชำระเงินโฮลเซลล์
+            <a href="javascript:void(0)" class="float-end text-white" onclick="toggleAccordion('table-payment-wholesale', 'toggle-arrow-payment-wholesale')">
+                <i class="fas fa-chevron-down" id="toggle-arrow-payment-wholesale"></i>
+            </a>
         </div>
         <div class="card-body">
-            <div class="table table-responsive" id="table-payment-wholesale" style="display: block">
-                <table class="table product-overview">
+            <div class="table-responsive" id="table-payment-wholesale" style="display: block">
+                <table class="table table-striped">
                     <thead>
-                        <tr class="custom-row-height" style="line-height: -500px;">
-                            <th>ลำดับ</th>
+                        <tr>
+                            <th class="text-center" style="width: 60px;">#</th>
                             <th>Payment No.</th>
                             <th>วันที่ทำรายการ</th>
                             <th>วันที่ชำระ</th>
-                            <th>จำนวนเงิน</th>
-                            <th>ยอดคืน</th>
-                            <th>สถานะการคืน</th>
-                            <th>ไฟล์แนบ</th>
-                            <th>ประเภทการชำระเงิน</th>
-                            <th>Action</th>
+                            <th class="text-end">จำนวนเงิน</th>
+                            <th class="text-end">ยอดคืน</th>
+                            <th class="text-center">สถานะการคืน</th>
+                            <th class="text-center">ไฟล์แนบ</th>
+                            <th class="text-center">ประเภท</th>
+                            <th class="text-center">จัดการ</th>
                         </tr>
                     </thead>
                     @php

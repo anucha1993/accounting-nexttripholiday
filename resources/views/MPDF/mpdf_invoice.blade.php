@@ -473,6 +473,7 @@
                                 <p>___________________________</p>
                                 <p><b>Sale / Operation</b></p>
                                 <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p>
+                               
                             </td>
                             <td style="border: none;"></td>
                             <td style="width: 276.6px; text-align: center;">
@@ -492,6 +493,9 @@
                         </tr>
                     </table>
                 </div>
+                 @if(isset($invoiceModel->revised) && $invoiceModel->revised && isset($invoiceModel->revision_date))
+                                    <p style="font-size: 12px; color: #222222; margin-top: 5px; text-align: right;"><b>Rev.date: {{ thaidate('j M Y', $invoiceModel->revision_date) }}</b></p>
+                                @endif
 
 
         </footer>

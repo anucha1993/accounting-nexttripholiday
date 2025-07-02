@@ -9,8 +9,8 @@
             <div class="col-md-12 mb-3">
                 <label>ประเภท</label>
                 <select name="input_tax_type" id="" class="form-select">
-                    <option {{$inputTaxModel->input_tax_type === 2 ? 'selected' : '' }}   value="2">ต้นทุนโฮลเซลล์</option>
                     <option {{$inputTaxModel->input_tax_type === 4 ? 'selected' : '' }}   value="4">ค่าทัวร์รวมทั้งหมด</option>
+                    <option {{$inputTaxModel->input_tax_type === 2 ? 'selected' : '' }}   value="2">ค่าห้อง</option>
                     <option {{$inputTaxModel->input_tax_type === 5 ? 'selected' : '' }}   value="5">ค่าอาหาร</option>
                     <option {{$inputTaxModel->input_tax_type === 6 ? 'selected' : '' }}   value="6">ค่าตั๋วเครื่องบิน</option>
                     <option {{$inputTaxModel->input_tax_type === 7 ? 'selected' : '' }}   value="7">อื่นๆ</option>
@@ -20,7 +20,10 @@
             <input type="hidden" name="input_tax_quote_number" class="form-control" value="{{$quotationModel->quote_number}}" >
             <input type="hidden" name="customer_id" class="form-control" value="{{$quotationModel->customer_id}}" >
 
-           
+            <div class="col-md-12 mb-3">
+                <label for="">วันที่บันทึกเอกสาร</label>
+                <input type="date-local" name="" class="form-control" placeholder="tax number" value="{{date('d-m-Y : H:m:s')}}" disabled >
+            </div>
 
             <div class="col-md-12 mb-3">
                 <label for="">ผลรวมต้นทุน</label>

@@ -38,14 +38,14 @@ class quoteLog extends Controller
         $quoteLog = QuoteLogModel::create([
             'quote_id' => $quoteId,
             "{$field}_status" => $status,
-            "{$field}_updated_at" => $status === 'ยังไม่ได้' || $status === 'ยังไม่ได้ส่ง' || $status === 'ยังไม่ได้ออก' || $status === 'ยังไม่ได้รับ' ? null : now(),
-            "{$field}_created_by" => $status === 'ยังไม่ได้' || $status === 'ยังไม่ได้ส่ง' || $status === 'ยังไม่ได้ออก' || $status === 'ยังไม่ได้รับ' ? null : $createdBy,
+            "{$field}_updated_at" => $status === 'ยังไม่ได้' || $status === 'ยังไม่ได้ส่ง' || $status === 'ยังไม่ได้ออก' || $status === 'ยังไม่ได้รับ' || $status === 'ยังไม่ได้คืนเงิน' ? null : now(),
+            "{$field}_created_by" => $status === 'ยังไม่ได้' || $status === 'ยังไม่ได้ส่ง' || $status === 'ยังไม่ได้ออก' || $status === 'ยังไม่ได้รับ' || $status === 'ยังไม่ได้คืนเงิน' ? null : $createdBy,
         ]);
     } else {
         $quoteLog->update([
             "{$field}_status" => $status,
-            "{$field}_updated_at" => $status === 'ยังไม่ได้' || $status === 'ยังไม่ได้ส่ง' || $status === 'ยังไม่ได้ออก' || $status === 'ยังไม่ได้รับ' ? null : now(),
-            "{$field}_created_by" => $status === 'ยังไม่ได้' || $status === 'ยังไม่ได้ส่ง' || $status === 'ยังไม่ได้ออก' || $status === 'ยังไม่ได้รับ' ? null : $createdBy,
+            "{$field}_updated_at" => $status === 'ยังไม่ได้' || $status === 'ยังไม่ได้ส่ง' || $status === 'ยังไม่ได้ออก' || $status === 'ยังไม่ได้รับ' || $status === 'ยังไม่ได้คืนเงิน' ? null : now(),
+            "{$field}_created_by" => $status === 'ยังไม่ได้' || $status === 'ยังไม่ได้ส่ง' || $status === 'ยังไม่ได้ออก' || $status === 'ยังไม่ได้รับ' || $status === 'ยังไม่ได้คืนเงิน' ? null : $createdBy,
         ]);
     }
 
@@ -53,8 +53,8 @@ class quoteLog extends Controller
         'message' => 'Status updated successfully',
         'status' => $status,
         'field' => $field,
-        'updated_at' => $status === 'ยังไม่ได้' || $status === 'ยังไม่ได้ส่ง' || $status === 'ยังไม่ได้ออก' || $status === 'ยังไม่ได้รับ' ? null : now()->format('d-m-Y H:i:s'),
-        'created_by' => $status === 'ยังไม่ได้' || $status === 'ยังไม่ได้ส่ง' || $status === 'ยังไม่ได้ออก' || $status === 'ยังไม่ได้รับ' ? null : $createdBy,
+        'updated_at' => $status === 'ยังไม่ได้' || $status === 'ยังไม่ได้ส่ง' || $status === 'ยังไม่ได้ออก' || $status === 'ยังไม่ได้รับ' || $status === 'ยังไม่ได้คืนเงิน' ? null : now()->format('d-m-Y H:i:s'),
+        'created_by' => $status === 'ยังไม่ได้' || $status === 'ยังไม่ได้ส่ง' || $status === 'ยังไม่ได้ออก' || $status === 'ยังไม่ได้รับ' || $status === 'ยังไม่ได้คืนเงิน' ? null : $createdBy,
     ]);
 }
 

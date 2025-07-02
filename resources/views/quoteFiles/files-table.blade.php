@@ -1,26 +1,26 @@
 <div class="col-md-12">
-    <div class="card">
-        <div class="card-header bg-danger">
-            <h5 class="mb-0 text-white"><i class="fas fa-file-alt"></i>
+    <div class="info-card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>
                 ไฟล์หนังสือเดินทาง / Passport Photo 
-                &nbsp; <a href="javascript:void(0)" class="text-white float-end" onclick="toggleAccordion('table-files', 'toggle-arrow-files')">
+                &nbsp; <a href="javascript:void(0)" class="text-muted float-end" onclick="toggleAccordion('table-files', 'toggle-arrow-files')">
                     <span class="fas fa-chevron-down" id="toggle-arrow-files"></span>
                 </a>
             </h5>
         </div>
         <div class="card-body" id="table-files" style="display: block">
-               <button class="btn btn-danger float-end" data-bs-toggle="modal" data-bs-target="#bs-example-modal-xlg">
-                              <i class="fa fa-file"></i>  เพิ่มไฟล์เอกสาร
+               <button class="btn btn-primary btn-sm float-end mb-3" data-bs-toggle="modal" data-bs-target="#bs-example-modal-xlg">
+                              <i class="fa fa-file me-1"></i>เพิ่มไฟล์เอกสาร
                             </button>
-            <div class="table table-responsive">
-                <table class="table product-overview">
-                    <thead>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-light">
                         <tr>
-                            <th>ลำดับ</th>
-                            <th>ตำแหน่งไฟล์</th>
-                            <th>วันที่</th>
-                            <th>ไฟล์</th>
-                            <th >Action</th>
+                            <th width="8%">ลำดับ</th>
+                            <th width="25%">ตำแหน่งไฟล์</th>
+                            <th width="20%">วันที่</th>
+                            <th width="25%">ไฟล์</th>
+                            <th width="22%">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,10 +36,9 @@
                                         href="{{ asset($item->quote_file_path) }}">{{ $item->quote_file_name }}</a>
                                 </td>
                                 <td>
-                                    <a href="" class="text-info py-3"><i  class="fa fa-edit mt-3"></i> แก้ไข</a> &nbsp;
-                                    <a class="mt-3 modal-mail-file" href="{{route('quotefile.modalMail',$item->quote_file_id)}}"><i class="fas fa-envelope text-info"></i> ส่งเมล</a> &nbsp; &nbsp;
-                                    <a href="{{ route('quotefile.delete', $item->quote_file_id) }}" onclick="return confirm('ยืนยันการลบ');" class="text-danger"><i class="fa fa-trash"></i> Delete</a>
-                                    
+                                    <a href="" class="btn btn-outline-primary btn-sm me-1"><i class="fa fa-edit me-1"></i>แก้ไข</a>
+                                    <a class="btn btn-outline-info btn-sm me-1 modal-mail-file" href="{{route('quotefile.modalMail',$item->quote_file_id)}}"><i class="fas fa-envelope me-1"></i>ส่งเมล</a>
+                                    <a href="{{ route('quotefile.delete', $item->quote_file_id) }}" onclick="return confirm('ยืนยันการลบ');" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash me-1"></i>Delete</a>
                                 </td>
                             </tr>
                         @empty
