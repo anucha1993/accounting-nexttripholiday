@@ -8,10 +8,17 @@ use App\Models\QuoteLogModel;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\quotations\quotationModel;
+use App\Services\NotificationService;
+use App\Models\User;
 
 class quoteLog extends Controller
 {
-    //
+    protected $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
 
     public function index(quotationModel $quotationModel)
     {
@@ -33,6 +40,7 @@ class quoteLog extends Controller
     $createdBy = Auth::user()->name;
 
     $quoteLog = QuoteLogModel::where('quote_id', $quoteId)->first();
+    $quotation = quotationModel::with('quoteCustomer')->find($quoteId);
 
     if (!$quoteLog) {
         $quoteLog = QuoteLogModel::create([
@@ -47,6 +55,34 @@ class quoteLog extends Controller
             "{$field}_updated_at" => $status === 'ยังไม่ได้' || $status === 'ยังไม่ได้ส่ง' || $status === 'ยังไม่ได้ออก' || $status === 'ยังไม่ได้รับ' || $status === 'ยังไม่ได้คืนเงิน' ? null : now(),
             "{$field}_created_by" => $status === 'ยังไม่ได้' || $status === 'ยังไม่ได้ส่ง' || $status === 'ยังไม่ได้ออก' || $status === 'ยังไม่ได้รับ' || $status === 'ยังไม่ได้คืนเงิน' ? null : $createdBy,
         ]);
+    }
+
+    // Create notifications based on the specific field and status
+    try {
+        if ($quotation) {
+            $customerName = $quotation->quoteCustomer->customer_name ?? 'ลูกค้า';
+            $tourName = $quotation->quote_tour_name ?? $quotation->quote_number;
+            $actionUrl = "/quote/edit/new/{$quoteId}";
+
+            // Notify for passport submission
+            if ($field === 'passport' && $status === 'ส่งแล้ว') {
+                $this->notifyPassportSubmission($quoteId, $customerName, $tourName, $quotation->quote_sale, $actionUrl);
+            } 
+            // Notify for appointment letter submission
+            elseif ($field === 'appointment' && $status === 'ส่งแล้ว') {
+                $this->notifyAppointmentSubmission($quoteId, $customerName, $tourName, $quotation->quote_sale, $actionUrl);
+            }
+            // Notify for customer refund
+            elseif ($field === 'customer_refund' && $status === 'คืนเงินสำเร็จ') {
+                $this->notifyCustomerRefund($quoteId, $customerName, $tourName, $actionUrl);
+            }
+            // Notify for wholesale refund
+            elseif ($field === 'wholesale_refund' && $status === 'คืนเงินสำเร็จ') {
+                $this->notifyWholesaleRefund($quoteId, $customerName, $tourName, $actionUrl);
+            }
+        }
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::error("ไม่สามารถสร้างการแจ้งเตือนได้: " . $e->getMessage());
     }
 
     return response()->json([
@@ -131,7 +167,7 @@ public function deleteFile(Request $request, $quote)
         // ลบไฟล์ออกจากโฟลเดอร์
         // ตัด 'storage/' ออกจากเส้นทางก่อนลบ
         $relativePath = str_replace(asset('storage/'), '', $filePath);
-        \Storage::disk('public')->delete($relativePath);
+        \Illuminate\Support\Facades\Storage::disk('public')->delete($relativePath);
 
         return response()->json(['message' => 'File deleted successfully', 'updated_files' => $uploadedFiles]);
     }
@@ -139,5 +175,123 @@ public function deleteFile(Request $request, $quote)
     return response()->json(['error' => 'File not found'], 404);
 }
 
+/**
+ * แจ้งเตือนเมื่อมีการส่งพาสปอร์ต
+ */
+private function notifyPassportSubmission($quoteId, $customerName, $tourName, $saleId, $actionUrl)
+{
+    // แจ้งเตือนให้ admin, accounting และ Super Admin
+    $notifyRoles = ['admin', 'accounting', 'Super Admin'];
+    $users = User::whereHas('roles', function ($query) use ($notifyRoles) {
+        $query->whereIn('name', $notifyRoles);
+    })->get();
 
+    // แจ้งเตือนให้ sales ที่รับผิดชอบ
+    $salesPerson = User::where('id', $saleId)->first();
+    if ($salesPerson && !$users->contains('id', $salesPerson->id)) {
+        $users->push($salesPerson);
+    }
+
+    $message = "ได้รับพาสปอร์ตของลูกค้า {$customerName} สำหรับทัวร์ {$tourName} แล้ว";
+    
+    foreach ($users as $user) {
+        // ไม่ส่งแจ้งเตือนให้ผู้ใช้ที่เป็นคนอัพเดทเอง
+        if ($user->id != Auth::id()) {
+            $this->notificationService->createForUser(
+                $user->id,
+                $message,
+                'quotation',
+                $quoteId,
+                $actionUrl
+            );
+        }
+    }
+}
+
+/**
+ * แจ้งเตือนเมื่อมีการส่งใบนัดหมาย
+ */
+private function notifyAppointmentSubmission($quoteId, $customerName, $tourName, $saleId, $actionUrl)
+{
+    // แจ้งเตือนให้ admin, accounting และ Super Admin
+    $notifyRoles = ['admin', 'accounting', 'Super Admin'];
+    $users = User::whereHas('roles', function ($query) use ($notifyRoles) {
+        $query->whereIn('name', $notifyRoles);
+    })->get();
+
+    // แจ้งเตือนให้ sales ที่รับผิดชอบ
+    $salesPerson = User::where('id', $saleId)->first();
+    if ($salesPerson && !$users->contains('id', $salesPerson->id)) {
+        $users->push($salesPerson);
+    }
+
+    $message = "ได้ส่งใบนัดหมายให้ลูกค้า {$customerName} สำหรับทัวร์ {$tourName} แล้ว";
+    
+    foreach ($users as $user) {
+        // ไม่ส่งแจ้งเตือนให้ผู้ใช้ที่เป็นคนอัพเดทเอง
+        if ($user->id != Auth::id()) {
+            $this->notificationService->createForUser(
+                $user->id,
+                $message,
+                'quotation',
+                $quoteId,
+                $actionUrl
+            );
+        }
+    }
+}
+
+/**
+ * แจ้งเตือนเมื่อมีการคืนเงินให้ลูกค้า
+ */
+private function notifyCustomerRefund($quoteId, $customerName, $tourName, $actionUrl)
+{
+    // แจ้งเตือนให้ admin, accounting, sales และ Super Admin
+    $notifyRoles = ['admin', 'accounting', 'sales', 'Super Admin'];
+    $users = User::whereHas('roles', function ($query) use ($notifyRoles) {
+        $query->whereIn('name', $notifyRoles);
+    })->get();
+
+    $message = "ได้คืนเงินให้ลูกค้า {$customerName} สำหรับทัวร์ {$tourName} เรียบร้อยแล้ว";
+    
+    foreach ($users as $user) {
+        // ไม่ส่งแจ้งเตือนให้ผู้ใช้ที่เป็นคนอัพเดทเอง
+        if ($user->id != Auth::id()) {
+            $this->notificationService->createForUser(
+                $user->id,
+                $message,
+                'quotation',
+                $quoteId,
+                $actionUrl
+            );
+        }
+    }
+}
+
+/**
+ * แจ้งเตือนเมื่อมีการคืนเงินกับโฮลเซล
+ */
+private function notifyWholesaleRefund($quoteId, $customerName, $tourName, $actionUrl)
+{
+    // แจ้งเตือนให้ admin, accounting และ Super Admin
+    $notifyRoles = ['admin', 'accounting', 'Super Admin'];
+    $users = User::whereHas('roles', function ($query) use ($notifyRoles) {
+        $query->whereIn('name', $notifyRoles);
+    })->get();
+
+    $message = "ได้คืนเงินกับโฮลเซลสำหรับทัวร์ {$tourName} ของลูกค้า {$customerName} เรียบร้อยแล้ว";
+    
+    foreach ($users as $user) {
+        // ไม่ส่งแจ้งเตือนให้ผู้ใช้ที่เป็นคนอัพเดทเอง
+        if ($user->id != Auth::id()) {
+            $this->notificationService->createForUser(
+                $user->id,
+                $message,
+                'quotation',
+                $quoteId,
+                $actionUrl
+            );
+        }
+    }
+}
 }

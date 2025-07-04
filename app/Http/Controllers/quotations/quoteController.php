@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\quotations;
 
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
+use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
 use App\Models\debits\debitModel;
@@ -27,11 +30,13 @@ require_once app_path('Helpers/statusPaymentHelper.php');
 
 class quoteController extends Controller
 {
-    public function __construct()
+    protected $notificationService;
+
+    public function __construct(NotificationService $notificationService)
     {
-        $this->middleware('auth');
-        $this->middleware('permission:create-quote|edit-booking|delete-quote|view-quote', ['only' => ['index', 'show']]);
-        $this->middleware('permission:create-quote', ['only' => ['create', 'store', 'createNew']]);
+        $this->notificationService = $notificationService;
+        $this->middleware('permission:view-quote', ['only' => ['index']]);
+        $this->middleware('permission:create-quote', ['only' => ['create', 'store']]);
         $this->middleware('permission:edit-quote', ['only' => ['edit', 'update', 'cancel']]);
         $this->middleware('permission:delete-quote', ['only' => ['destroy']]);
     }
@@ -220,7 +225,15 @@ class quoteController extends Controller
                 $quotations = $quotations->paginate(10);
             }
 
-       
+        // กรองสถานะใน PHP
+        // if ($searchCustomerPayment !== 'all') {
+        //     $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchCustomerPayment) {
+        //         return strip_tags(getQuoteStatusPayment($quotation)) === $searchCustomerPayment;
+        //     });
+
+        //     // กำหนด Collection ที่กรองแล้วกลับเข้าไปใน Paginator
+        //     $quotations->setCollection($filtered);
+        // }
 
         if ($searchCustomerPayment !== 'all') {
             $filtered = $quotations->filter(function ($quotation) use ($searchCustomerPayment) {
@@ -387,19 +400,6 @@ class quoteController extends Controller
             'created_by' => Auth::user()->name,
         ]);
 
-        // คำนวณ pax ฝั่ง server
-        $paxTotal = 0;
-        if ($request->has('product_id')) {
-            foreach ($request->product_id as $key => $productId) {
-                $product = \App\Models\products\productModel::find($productId);
-                if ($product && $product->product_pax === 'Y') {
-                    $qty = isset($request->quantity[$key]) ? (float)$request->quantity[$key] : 0;
-                    $paxTotal += $qty;
-                }
-            }
-        }
-        $request->merge(['quote_pax_total' => $paxTotal]);
-
         $quote = quotationModel::create($request->all());
 
         //ลงข้อมูลรายการสินค้า
@@ -561,26 +561,6 @@ class quoteController extends Controller
 
     public function update(quotationModel $quotationModel, Request $request)
     {
-        // --- Date validation: block past dates for key fields ---
-        $today = Carbon::today();
-        $fields = [
-            'quote_date' => 'วันที่เสนอราคา',
-            'quote_booking_create' => 'วันที่จองแพคเกจ',
-            'quote_date_start' => 'วันออกเดินทาง',
-            'quote_date_end' => 'วันเดินทางกลับ',
-        ];
-        $invalidFields = [];
-        foreach ($fields as $field => $label) {
-            if (!empty($request->$field) && Carbon::parse($request->$field)->lt($today)) {
-                $invalidFields[] = $label;
-            }
-        }
-        if (count($invalidFields) > 0) {
-            return redirect()->back()
-                ->withInput()
-                ->withErrors(['date_error' => 'ไม่สามารถเลือกวันที่ย้อนหลังได้: ' . implode(', ', $invalidFields)]);
-        }
-
         //dd($request);
         $country = DB::connection('mysql2')
             ->table('tb_country')
@@ -649,6 +629,36 @@ class quoteController extends Controller
                     'withholding_tax' => $request->withholding_tax[$key],
                 ]);
             }
+        }
+
+        // สร้างการแจ้งเตือนเมื่อมีการอัพเดทใบเสนอราคา
+        try {
+            // สร้างการแจ้งเตือนให้กับผู้ใช้ที่มีบทบาทเป็น admin, accounting, Super Admin
+            $notifyRoles = ['admin', 'accounting', 'Super Admin'];
+            $users = User::whereHas('roles', function ($query) use ($notifyRoles) {
+                $query->whereIn('name', $notifyRoles);
+            })->get();
+
+            if ($users->isNotEmpty()) {
+                $message = "ใบเสนอราคาเลขที่ {$quotationModel->quote_number} ได้รับการอัพเดทโดย " . Auth::user()->name;
+                $actionUrl = "/quote/edit/new/{$quotationModel->quote_id}";
+                
+                foreach ($users as $user) {
+                    // ไม่ส่งแจ้งเตือนให้ผู้ใช้ที่เป็นคนอัพเดทเอง
+                    if ($user->id != Auth::id()) {
+                        $this->notificationService->createForUser(
+                            $user->id,
+                            $message,
+                            'quotation',
+                            $quotationModel->quote_id,
+                            $actionUrl
+                        );
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // บันทึกข้อผิดพลาดแต่ไม่ให้กระทบกับการอัพเดท
+            \Illuminate\Support\Facades\Log::error("ไม่สามารถสร้างการแจ้งเตือนการอัพเดทใบเสนอราคาได้: " . $e->getMessage());
         }
 
         return redirect()

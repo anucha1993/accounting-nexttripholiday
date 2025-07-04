@@ -1,0 +1,39 @@
+/**
+ * CSS สำหรับระบบแจ้งเตือน
+ */
+
+.unread-notification {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+.notification-icon {
+    min-width: 40px;
+    height: 40px;
+}
+
+.notification-dropdown {
+    width: 320px !important;
+    max-height: 420px !important;
+    overflow-y: auto;
+}
+
+#notification-items {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* สไตล์สำหรับป้ายแสดงจำนวนการแจ้งเตือน */
+.notification-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 2px 5px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

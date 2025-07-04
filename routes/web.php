@@ -4,6 +4,7 @@ use App\Exports\invoiceExport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Models\quotations\quotationModel;
@@ -44,7 +45,7 @@ use App\Http\Controllers\exports\invoiceExportController;
 use App\Http\Controllers\exports\saleTaxExportController;
 use App\Http\Controllers\MPDF\MPDF_WithholdingController;
 use App\Http\Controllers\payments\paymentDebitController;
-use AppHttp\Controllers\quotefiles\QuoteFilesController;
+use App\Http\Controllers\quotefiles\QuoteFilesController;
 use App\Http\Controllers\reports\invoiceReportController;
 use App\Http\Controllers\reports\receiptReportController;
 use App\Http\Controllers\reports\saleTaxReportController;
@@ -379,3 +380,11 @@ Route::post('/commissions/store', [CommissionController::class, 'store'])->name(
 Route::post('/commissions/update', [CommissionController::class, 'update'])->name('commissions.update');
 Route::delete('/commissions/{id}', [CommissionController::class, 'destroy'])->name('commissions.destroy');
 
+// ระบบแจ้งเตือน (Notification)
+Route::prefix('notifications')->name('notifications.')->group(function () {
+    Route::get('/', [NotificationController::class, 'index'])->name('index');
+    Route::get('/api/recent', [NotificationController::class, 'getRecentNotifications'])->name('api.recent');
+    Route::post('/mark-as-read/{id}', [NotificationController::class, 'markAsRead'])->name('mark-as-read');
+    Route::post('/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-as-read');
+    Route::post('/api/mark-all-as-read', [NotificationController::class, 'apiMarkAllAsRead'])->name('api.mark-all-as-read');
+});

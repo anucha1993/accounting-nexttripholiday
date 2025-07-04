@@ -26,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrapFive();
+        
+        // We don't need to handle Vite here - the blade templates will handle this
+        
         \Illuminate\Support\Facades\Blade::directive('bathText', function ($expression) {
             return "<?php echo App\Helpers\BathTextHelper::convert($expression); ?>";
         });

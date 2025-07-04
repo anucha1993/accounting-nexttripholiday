@@ -24,17 +24,19 @@
             line-height: 31px !important;
         }
     </style>
+
+    </style>
     <div class="container-fluid page-content">
         <!-- Todo list-->
-
-             <div class="todo-listing ">
+        <div class="todo-listing ">
             <div class="container border bg-white">
                 <h4 class="text-center my-4">สร้างใบเสนอราคา
                 </h4>
                 <hr>
-            <div class="container border bg-white">
+
                 <form action="{{ route('quote.store') }}" id="formQuote" method="post">
                     @csrf
+
                     <div class="row table-custom ">
                         <div class="col-md-2 ms-auto">
                             <label><b>เซลล์ผู้ขายแพคเกจ:</b></label>
@@ -48,7 +50,9 @@
                         </div>
                         <div class="col-md-2 ms-3">
                             <label>วันที่สั่งซื้อ,จองแพคเกจ:</label>
-                            <input type="date" id="submitDatepicker" name="booking_date" class="form-control" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required>
+                            <input type="text" id="displayDatepicker" class="form-control" required>
+                            <input type="hidden" id="submitDatepicker" name="quote_booking_create">
+                            {{-- <input type="hidden" id="quote-date" name="quote_booking_create"> --}}
                         </div>
                         <div class="col-md-2">
                             <label>เลขที่ใบเสนอราคา</label>
@@ -56,8 +60,11 @@
                         </div>
                         <div class="col-md-2">
                             <label>วันที่เสนอราคา</label>
-                            <input type="date" id="submitDatepickerQuoteDate" name="quote_date" class="form-control" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required>
+                            <input type="text" id="displayDatepickerQuoteDate" class="form-control" required>
+
+                            <input type="hidden" id="submitDatepickerQuoteDate" name="quote_date" class="form-control">
                         </div>
+
                     </div>
                     <hr>
                     <h5 class="text-danger">รายละเอียดแพคเกจทัวร์:</h5>
@@ -135,8 +142,8 @@
                         <div class="col-md-3">
                             <label>วันออกเดินทาง: <a href="#" class="" id="list-period">เลือกวันที่</a></label>
 
-                            <input type="date" class="form-control" id="date-start"
-                                name="date_start" placeholder="วันออกเดินทาง..." min="{{ date('Y-m-d') }}" required>
+                            <input type="text" class="form-control" id="date-start-display"
+                                placeholder="วันออกเดินทาง..." required>
 
                             {{-- เพิ่มใหม่ --}}
                             <div id="date-list" class="list-group" style="position: absolute; z-index: 1000; width: 20%;">
@@ -149,11 +156,14 @@
                             <input type="hidden" id="period3" name="period3">
                             {{-- เด็กไม่มีเตียง --}}
                             <input type="hidden" id="period4" name="period4">
+
+                            <input type="hidden" id="date-start" name="quote_date_start">
                         </div>
                         <div class="col-md-3">
                             <label>วันเดินทางกลับ: </label>
-                            <input type="date" class="form-control" id="date-end"
-                                name="date_end" placeholder="วันเดินทางกลับ..." min="{{ date('Y-m-d') }}" required>
+                            <input type="text" class="form-control" id="date-end-display"
+                                placeholder="วันเดินทางกลับ..." required>
+                            <input type="hidden" id="date-end" name="quote_date_end">
                         </div>
                     </div>
                     <hr>
@@ -571,8 +581,8 @@
             const quoteDateVal = $('#submitDatepickerQuoteDate').val();
             if (quoteDateVal) {
                 const quoteDate = new Date(quoteDateVal);
-                if (quoteDate < today) {
-                    errors.push("❌ วันที่เสนอราคาต้องเป็นวันปัจจุบันหรืออนาคต");
+                if (quoteDate <= today) {
+                    errors.push("❌ วันที่เสนอราคาต้องมากกว่าวันปัจจุบัน");
                 }
             }
 
@@ -580,8 +590,8 @@
             const bookingDateVal = $('#submitDatepicker').val();
             if (bookingDateVal) {
                 const bookingDate = new Date(bookingDateVal);
-                if (bookingDate < today) {
-                    errors.push("❌ วันที่จองแพคเกจต้องเป็นวันปัจจุบันหรืออนาคต");
+                if (bookingDate <= today) {
+                    errors.push("❌ วันที่จองแพคเกจต้องมากกว่าวันปัจจุบัน");
                 }
             }
 
@@ -589,8 +599,8 @@
             const startDateVal = $('#date-start').val();
             if (startDateVal) {
                 const startDate = new Date(startDateVal);
-                if (startDate < today) {
-                    errors.push("❌ วันออกเดินทางต้องเป็นวันปัจจุบันหรืออนาคต");
+                if (startDate <= today) {
+                    errors.push("❌ วันออกเดินทางต้องมากกว่าวันปัจจุบัน");
                 }
             }
 
@@ -598,8 +608,8 @@
             const endDateVal = $('#date-end').val();
             if (endDateVal) {
                 const endDate = new Date(endDateVal);
-                if (endDate < today) {
-                    errors.push("❌ วันเดินทางกลับต้องเป็นวันปัจจุบันหรืออนาคต");
+                if (endDate <= today) {
+                    errors.push("❌ วันเดินทางกลับต้องมากกว่าวันปัจจุบัน");
                 }
             }
 
@@ -1490,7 +1500,7 @@
                 e.preventDefault();
                 var selectedDate = $(this).data('date'); // ดึงค่าของวันที่ที่เลือก
                 var period1 = $(this).data('period1'); // ผู้ใหญ่พักคู่
-                var period2 = $(this).data('period2'); // ผู้ใหญ่พักเดี่ยว
+                var period2 = $(this).data('period2'); // ผู้ใหญ่พักเดียว
                 var period3 = $(this).data('period3'); // เด็กมีเตียง
                 var period4 = $(this).data('period4'); // เด็กไม่มีเตียง
                 var selectedNumday = $('#numday').data('day');
@@ -1627,4 +1637,133 @@
 
         });
     </script>
+
+
+
+    <script>
+        $(function() {
+            // ตั้งค่าภาษาไทยให้กับ Datepicker
+            $.datepicker.regional['th'] = {
+                closeText: 'ปิด',
+                prevText: 'ย้อน',
+                nextText: 'ถัดไป',
+                currentText: 'วันนี้',
+                monthNames: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+                    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+                ],
+                monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+                    'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+                ],
+                dayNames: ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'],
+                dayNamesShort: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
+                dayNamesMin: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
+                weekHeader: 'Wk',
+                dateFormat: 'dd MM yy', // รูปแบบการแสดงผลเป็นวัน เดือน ปี
+                firstDay: 0,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+            };
+            $.datepicker.setDefaults($.datepicker.regional['th']);
+
+            // แปลงวันที่จากรูปแบบ Y-m-d เป็นรูปแบบภาษาไทย
+            function formatDateToThai(dateString) {
+                const date = new Date(dateString);
+                return $.datepicker.formatDate('dd MM yy', date, $.datepicker.regional['th']);
+            }
+
+            // ตั้งค่า Datepicker ให้แสดงผลภาษาไทยและจัดการเมื่อเลือกวันที่
+            $('#displayDatepicker').datepicker({
+                dateFormat: 'dd MM yy', // รูปแบบการแสดงผลใน Datepicker
+                onSelect: function(dateText, inst) {
+                    // แปลงวันที่ที่เลือกเป็นรูปแบบ Y-m-d และอัพเดต hidden input
+                    const selectedDate = new Date(inst.selectedYear, inst.selectedMonth, inst
+                        .selectedDay);
+                    const isoDate = $.datepicker.formatDate('yy-mm-dd', selectedDate);
+                    $('#submitDatepicker').val(isoDate);
+                    $('#quote-date').val(isoDate);
+                }
+            });
+
+            // กำหนดค่าเริ่มต้นให้กับ Datepicker (แสดงเป็นภาษาไทย) และ hidden input
+            let defaultDate = '{{ date('Y-m-d', strtotime(now())) }}';
+            $('#submitDatepicker').val(defaultDate);
+            const thaiFormattedDate = formatDateToThai(defaultDate);
+            $('#displayDatepicker').val(thaiFormattedDate);
+        });
+    </script>
+
+    <script>
+        $(function() {
+            // ตั้งค่าภาษาไทยให้กับ Datepicker
+            $.datepicker.regional['th'] = {
+                closeText: 'ปิด',
+                prevText: 'ย้อน',
+                nextText: 'ถัดไป',
+                currentText: 'วันนี้',
+                monthNames: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+                    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+                ],
+                monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+                    'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+                ],
+                dayNames: ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'],
+                dayNamesShort: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
+                dayNamesMin: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
+                weekHeader: 'Wk',
+                dateFormat: 'dd MM yy', // รูปแบบการแสดงผลเป็นวัน เดือน ปี
+                firstDay: 0,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+            };
+            $.datepicker.setDefaults($.datepicker.regional['th']);
+
+            // แปลงวันที่จากรูปแบบ Y-m-d เป็นรูปแบบภาษาไทย
+            function formatDateToThai(dateString) {
+                const date = new Date(dateString);
+                return $.datepicker.formatDate('dd MM yy', date, $.datepicker.regional['th']);
+            }
+
+            // ตั้งค่า Datepicker ให้แสดงผลภาษาไทยและจัดการเมื่อเลือกวันที่
+            $('#displayDatepicker').datepicker({
+                dateFormat: 'dd MM yy', // รูปแบบการแสดงผลใน Datepicker
+                onSelect: function(dateText, inst) {
+                    // แปลงวันที่ที่เลือกเป็นรูปแบบ Y-m-d และอัพเดต hidden input
+                    const selectedDate = new Date(inst.selectedYear, inst.selectedMonth, inst
+                        .selectedDay);
+                    const isoDate = $.datepicker.formatDate('yy-mm-dd', selectedDate);
+                    $('#submitDatepicker').val(isoDate);
+                }
+            });
+
+            // กำหนดค่าเริ่มต้นให้กับ Datepicker (แสดงเป็นภาษาไทย) และ hidden input
+            let defaultDate = '{{ date('Y-m-d') }}';
+            $('#submitDatepicker').val(defaultDate);
+            const thaiFormattedDate = formatDateToThai(defaultDate);
+            $('#displayDatepicker').val(thaiFormattedDate);
+
+            /// วันที่เสนอราคา
+            $('#displayDatepickerQuoteDate').datepicker({
+                dateFormat: 'dd MM yy', // รูปแบบการแสดงผลใน Datepicker
+                onSelect: function(dateText, inst) {
+                    // แปลงวันที่ที่เลือกเป็นรูปแบบ Y-m-d และอัพเดต hidden input
+                    const selectedDate = new Date(inst.selectedYear, inst.selectedMonth, inst
+                        .selectedDay);
+                    const isoDate = $.datepicker.formatDate('yy-mm-dd', selectedDate);
+                    $('#submitDatepickerQuoteDate').val(isoDate);
+                }
+            });
+
+            // กำหนดค่าเริ่มต้นให้กับ Datepicker quote_date
+            let defaultDateQuoteDate = '{{ date('Y-m-d') }}';
+            $('#submitDatepickerQuoteDate').val(defaultDateQuoteDate);
+            const thaiFormattedDateQuoteDate = formatDateToThai(defaultDateQuoteDate);
+            $('#displayDatepickerQuoteDate').val(thaiFormattedDateQuoteDate);
+
+        });
+    </script>
+
+
+
 @endsection

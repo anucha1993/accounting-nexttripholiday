@@ -85,12 +85,18 @@
 
                 <div class="col-md-2">
                     <label>วันที่เสนอราคา</label>
-                    <input type="date" id="quoteDate" name="quote_date" class="form-control" value="{{ $quotationModel->quote_date }}" min="{{ date('Y-m-d') }}">
+                    <input type="text" id="displayDatepickerQuoteDate" class="form-control">
 
+                    <input type="hidden" id="submitDatepickerQuoteDate" name="quote_date"
+                        value="{{ $quotationModel->quote_date }}" class="form-control">
                 </div>
+
+
                 <div class="col-md-2 ms-3">
-                    <label>วันที่สั่งซื้อ,จองแพคเกจ:</label>
-                    <input type="date" id="bookingDate" name="quote_booking_create" class="form-control" value="{{ $quotationModel->quote_booking_create }}" min="{{ date('Y-m-d') }}">
+                    <label>วันที่สั่งซื้อ,จองแพคเกจ:</label> 
+                    <input type="text" id="displayDatepicker" class="form-control">
+                    <input type="hidden" id="submitDatepicker" name="quote_booking_create"
+                        value="{{ $quotationModel->quote_booking_create }}">
                 </div>
 
                 <input type="hidden" id="tour-id">
@@ -188,7 +194,7 @@
                 </div>
                 <div class="col-md-3">
                     <label>วันออกเดินทาง: <a href="#" class="" id="list-period">เลือกวันที่</a></label>
-                    <input type="date" class="form-control" id="date-start" name="quote_date_start" value="{{ date('Y-m-d', strtotime($quotationModel->quote_date_start)) }}" min="{{ date('Y-m-d') }}" style="width: 100%">
+                    <input type="text" class="form-control" id="date-start-display" placeholder="วันออกเดินทาง..." style="width: 100%">
 
 
                     <div id="date-list" class="list-group" style="position: absolute; z-index: 1000; width: 20%;">
@@ -202,7 +208,10 @@
             
                 <div class="col-md-3">
                     <label>วันเดินทางกลับ: </label>
-                    <input type="date" class="form-control" id="date-end" name="quote_date_end" value="{{ date('Y-m-d', strtotime($quotationModel->quote_date_end)) }}" min="{{ date('Y-m-d') }}" style="width: 100%">
+                    <input type="text" class="form-control" id="date-end-display"  style="width: 100%"
+                        placeholder="วันเดินทางกลับ...">
+                    <input type="hidden" id="date-end" name="quote_date_end"
+                        value="{{ date('Y-m-d', strtotime($quotationModel->quote_date_end)) }}">
                 </div>
             </div>
         </fieldset>
@@ -1812,6 +1821,7 @@
             // กำหนดค่าเริ่มต้นให้กับ Datepicker (แสดงเป็นภาษาไทย) และ hidden input
             let defaultDate = '{{ $quotationModel->quote_booking_create }}';
             $('#submitDatepicker').val(defaultDate);
+            $('#quote-date').val(defaultDate);
             const thaiFormattedDate = formatDateToThai(defaultDate);
             $('#displayDatepicker').val(thaiFormattedDate);
         });

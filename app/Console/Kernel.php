@@ -13,6 +13,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        
+        // ตรวจสอบการแจ้งเตือนทุกวันตอน 8:00 น.
+        $schedule->command('notifications:check')
+                ->dailyAt('08:00')
+                ->appendOutputTo(storage_path('logs/notifications.log'));
     }
 
     /**

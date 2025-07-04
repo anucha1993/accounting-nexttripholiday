@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="keywords"
         content="wrappixel, admin dashboard, html css dashboard, web dashboard, bootstrap 5 admin, bootstrap 5, css3 dashboard, bootstrap 5 dashboard, ample admin admin bootstrap 5 dashboard, frontend, responsive bootstrap 5 admin template, material design, material dashboard bootstrap 5 dashboard template" />
     <meta name="description" content="Admin Pro is powerful and clean admin dashboard template" />
@@ -33,6 +35,7 @@
 
     <link href="{{ URL::asset('template/assets/libs/sweetalert2/dist/sweetalert2.min.css') }}" rel="stylesheet" />
     <link href="{{ URL::asset('template/dist/css/style.min.css') }}" rel="stylesheet" />
+    <link href="{{ URL::asset('css/notification.css') }}" rel="stylesheet" />
     <script src="{{ URL::asset('template/assets/libs/jquery/dist/jquery.min.js') }}"></script>
 
     <script src="{{ URL::asset('template/assets/libs/ckeditor/ckeditor.js') }}"></script>
@@ -200,7 +203,7 @@
                     <!-- ============================================================== -->
                     <!-- toggle and nav items -->
                     <!-- ============================================================== -->
-                    <ul class="navbar-nav me-auto">
+                    <ul class="navbar-nav ms-auto">
                         <li class="nav-item d-none d-md-block">
                             <a class="nav-link sidebartoggler waves-effect waves-light" href="javascript:void(0)"
                                 data-sidebartype="mini-sidebar"><i class="mdi mdi-menu fs-5"></i></a>
@@ -296,7 +299,7 @@
                                                     <span class="profile-status rounded-circle offline"></span>
                                                 </span>
                                                 <div class="w-75 d-inline-block v-middle ps-3">
-                                                    <h5 class="message-title mb-0 mt-1 fs-3 fw-bold">
+                                                    <h5 class="message-title mb-0 mt-1 fs-3 fw-bold>
                                                         Pavan kumar
                                                     </h5>
                                                     <span class="fs-2 text-nowrap d-block time text-truncate">Just see
@@ -318,6 +321,10 @@
                                 </ul>
                             </div>
                         </li>
+                        
+                        {{-- ระบบแจ้งเตือน --}}
+                        @include('notifications.dropdown')
+                        
                         <!-- ============================================================== -->
                         <!-- Comment -->
                         <!-- ============================================================== -->
@@ -1252,8 +1259,7 @@
                                 <li class="sidebar-item">
                                     <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                         href="{{ route('airline.index') }}" aria-expanded="false"><i
-                                            class="mdi mdi-border-style"></i><span
-                                            class="hide-menu">ข้อมูลสายการบิน</span></a>
+                                            class="mdi mdi-border-style"></i><span class="hide-menu">ข้อมูลสายการบิน</span></a>
                                 </li>
                                 <li class="sidebar-item">
                                     <a class="sidebar-link waves-effect waves-dark sidebar-link"
@@ -1632,6 +1638,18 @@
     <script src="{{ URL::asset('template/assets/libs/daterangepicker/daterangepicker.js') }}"></script>
     <script src="{{ URL::asset('template/assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 
+    {{-- ระบบแจ้งเตือน --}}
+    @auth
+    <script>
+        // กำหนดเส้นทาง URL สำหรับระบบแจ้งเตือน
+        var notificationRoutes = {
+            getRecent: "{{ route('notifications.api.recent') }}",
+            markAsRead: "{{ route('notifications.mark-as-read', 'ID_PLACEHOLDER') }}".replace('ID_PLACEHOLDER', ''),
+            markAllAsRead: "{{ route('notifications.api.mark-all-as-read') }}"
+        };
+    </script>
+    <script src="{{ URL::asset('js/notification.js') }}"></script>
+    @endauth
     
 
 </body>
