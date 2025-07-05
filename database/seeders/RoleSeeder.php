@@ -23,13 +23,20 @@ class RoleSeeder extends Seeder
             'delete-user',
             'create-product',
             'edit-product',
-            'delete-product'
+            'delete-product',
+            'report-quotation',
+            'report-invoice',
+            'report-payment',
+            'report-customer',
+            'quotation-export',
         ]);
 
         $productManager->givePermissionTo([
             'create-product',
             'edit-product',
-            'delete-product'
+            'delete-product',
+            'report-quotation',
+            'quotation-export',
         ]);
     }
 }

@@ -21,7 +21,7 @@
         <div class="card">
             <div class="card-header">Manage Roles</div>
             <div class="card-body">
-                @can('create-role')
+                @can('role-create')
                     <a href="{{ route('roles.create') }}" class="btn btn-success btn-sm my-2"><i class="bi bi-plus-circle"></i>
                         Add New Role</a>
                 @endcan
@@ -43,16 +43,18 @@
                                         @csrf
                                         @method('DELETE')
 
+                                        @can('role-view')
                                         <a href="{{ route('roles.show', $role->id) }}" class="btn btn-secondary btn-sm"><i
                                                 class="fas fa-eye"></i> Show</a>
+                                        @endcan
 
                                         @if ($role->name != 'Super Admin')
-                                            @can('edit-role')
+                                            @can('role-edit')
                                                 <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-primary btn-sm"><i
                                                         class="fas fa-pencil-alt"></i> Edit</a>
                                             @endcan
 
-                                            @can('delete-role')
+                                            @can('role-delete')
                                                 @if ($role->name != Auth::user()->hasRole($role->name))
                                                     <button type="submit" class="btn btn-danger btn-sm"
                                                         onclick="return confirm('Do you want to delete this role?');"><i

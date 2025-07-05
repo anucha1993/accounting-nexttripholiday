@@ -47,43 +47,20 @@
                             </div>
                         </div>
                         <hr>
-
-                        <div class="mb-3 row">
-                            <h6>ระบบสมาชิก</h6>
-
-                            <label for="permissions"
-                            class="col-md-4 col-form-label text-md-end text-start">สมาชิก</label>
-
-                        <div class="col-md-6">
-                            @forelse ($permissionsUser as $role)
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input success" name="permissions[]" type="checkbox"
-                                        id="success-check" value="{{ $role->id }}">
-                                    <label class="form-check-label" for="success-check">{{ $role->label }}</label>
+                        @foreach ($permissions as $group => $perms)
+                            <div class="mb-3 row">
+                                <h6 class="text-primary">{{ __(ucfirst($group)) }}</h6>
+                                <div class="col-md-12">
+                                    @forelse ($perms as $perm)
+                                        <div class="form-check form-check-inline mb-1">
+                                            <input class="form-check-input" name="permissions[]" type="checkbox" id="perm-{{ $perm->id }}" value="{{ $perm->id }}">
+                                            <label class="form-check-label" for="perm-{{ $perm->id }}">{{ $perm->label ?? $perm->name }}</label>
+                                        </div>
+                                    @empty
+                                    @endforelse
                                 </div>
-
-                            @empty
-                            @endforelse
-                        </div>
-
-
-                            <label for="permissions"
-                                class="col-md-4 col-form-label text-md-end text-start">กำหนดสิทธิ์</label>
-                            <div class="col-md-6">
-                                @forelse ($permissionsRole as $role)
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input success" name="permissions[]" type="checkbox"
-                                            id="success-check" value="{{ $role->id }}">
-                                        <label class="form-check-label" for="success-check">{{ $role->label }}</label>
-                                    </div>
-                                @empty
-                                @endforelse
                             </div>
-                      
-                          
-                  
-
-                        </div>
+                        @endforeach
                         <hr>
                         
 

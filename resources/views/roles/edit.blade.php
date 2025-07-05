@@ -38,171 +38,30 @@
                     @method("PUT")
 
                     <div class="mb-3 row">
-                        <label for="name" class="col-md-4 col-form-label text-md-end text-start">Name</label>
+                        <label for="name" class="col-md-4 col-form-label text-md-end text-start">ชื่อสิทธิ์</label>
                         <div class="col-md-6">
-                          <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ $role->name }}">
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ $role->name }}">
                             @if ($errors->has('name'))
                                 <span class="text-danger">{{ $errors->first('name') }}</span>
                             @endif
                         </div>
                     </div>
-
                     <hr>
-                    <div class="mb-3 row">
-                        <h6>ระบบสมาชิก</h6>
-
-                        <label for="permissions"
-                        class="col-md-4 col-form-label text-md-end text-start">สมาชิก</label>
-
-                    <div class="col-md-6">
-                        @forelse ($permissionsUser as $role)
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input success" name="permissions[]" type="checkbox"  {{ in_array($role->id, $rolePermissions ?? []) ? 'checked' : '' }}
-                                    id="success-check" value="{{ $role->id }}">
-                                <label class="form-check-label" for="success-check">{{ $role->label }}</label>
-                            </div>
-
-                        @empty
-                        @endforelse
-                    </div>
-
-
-                        <label for="permissions"
-                            class="col-md-4 col-form-label text-md-end text-start">กำหนดสิทธิ์</label>
-                        <div class="col-md-6">
-                            @forelse ($permissionsRole as $role)
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input success" name="permissions[]" type="checkbox"   {{ in_array($role->id, $rolePermissions ?? []) ? 'checked' : '' }}
-                                        id="success-check" value="{{ $role->id }}">
-                                    <label class="form-check-label" for="success-check">{{ $role->label }}</label>
-                                </div>
-                            @empty
-                            @endforelse
-                        </div>
-
-                  
-                      
-              
-
-                    </div>
-                    <hr>
-                    <div class="mb-3 row">
-                        <h6>ข้อมูลระบบ</h6>
-
-                        <label for="permissions"
-                        class="col-md-4 col-form-label text-md-end text-start">ข้อมูลโฮลเซลล์</label>
-
-                    <div class="col-md-6">
-                        @forelse ($permissionsWholesale as $wholesale)
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input success" name="permissions[]" type="checkbox"  {{ in_array($wholesale->id, $rolePermissions ?? []) ? 'checked' : '' }}
-                                    id="success-check" value="{{ $wholesale->id }}">
-                                <label class="form-check-label" for="success-check">{{ $wholesale->label }}</label>
-                            </div>
-
-                        @empty
-                        @endforelse
-                    </div>
-
-                    <label for="permissions"
-                    class="col-md-4 col-form-label text-md-end text-start">ข้อมูลสายการบิน</label>
-                    <div class="col-md-6">
-                        @forelse ($permissionsAirline as $airline)
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input success" name="permissions[]" type="checkbox"  {{ in_array($airline->id, $rolePermissions ?? []) ? 'checked' : '' }}
-                                    id="success-check" value="{{ $airline->id }}">
-                                <label class="form-check-label" for="success-check">{{ $airline->label }}</label>
-                            </div>
-
-                        @empty
-                        @endforelse
-                    </div>
-
-                    </div>
-                    <hr>
-                    <div class="mb-3 row">
-                        <h6>ใบจองทัวร์</h6>
-                        <label for="permissions"
-                        class="col-md-4 col-form-label text-md-end text-start">ข้อมูลโฮลเซลล์</label>
-                    <div class="col-md-6">
-                        @forelse ($permissionsBooking as $Booking)
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input success" name="permissions[]" type="checkbox"  {{ in_array($Booking->id, $rolePermissions ?? []) ? 'checked' : '' }}
-                                    id="success-check" value="{{ $Booking->id }}">
-                                <label class="form-check-label" for="success-check">{{ $Booking->label }}</label>
-                            </div>
-                        @empty
-                        @endforelse
-                    </div>
-                    </div>
-                    <hr>
-                    <div class="mb-3 row">
-                        <h6>Quotations</h6>
-
-                        <label for="permissions"
-                        class="col-md-4 col-form-label text-md-end text-start">ใบเสนอราคา</label>
-                    <div class="col-md-6">
-                        @forelse ($permissionsQuote as $quote)
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input success" name="permissions[]" type="checkbox"  {{ in_array($quote->id, $rolePermissions ?? []) ? 'checked' : '' }}
-                                    id="success-check" value="{{ $quote->id }}">
-                                <label class="form-check-label" for="success-check">{{ $quote->label }}</label>
-                            </div>
-                        @empty
-                        @endforelse
-                    </div>
-
-                    <label for="permissions"
-                    class="col-md-4 col-form-label text-md-end text-start">ใบแจ้งหนี้</label>
-                <div class="col-md-6">
-                    @forelse ($permissionsInvoice as $invoice)
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input success" name="permissions[]" type="checkbox"  {{ in_array($invoice->id, $rolePermissions ?? []) ? 'checked' : '' }}
-                                id="success-check" value="{{ $invoice->id }}">
-                            <label class="form-check-label" for="success-check">{{ $invoice->label }}</label>
-                        </div>
-                    @empty
-                    @endforelse
-                </div>
-
-
-                    <label for="permissions"
-                    class="col-md-4 col-form-label text-md-end text-start">รายการค่าบริการ</label>
-                    <div class="col-md-6">
-                        @forelse ($permissionsProducts as $product)
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input success" name="permissions[]" type="checkbox"  {{ in_array($product->id, $rolePermissions ?? []) ? 'checked' : '' }}
-                                    id="success-check" value="{{ $product->id }}">
-                                <label class="form-check-label" for="success-check">{{ $product->label }}</label>
-                            </div>
-                        @empty
-                        @endforelse
-                    </div>
-
-                    </div>
-
-                    
-                    
-
-{{-- 
-                    <div class="mb-3 row">
-                        <label for="permissions" class="col-md-4 col-form-label text-md-end text-start">Permissions</label>
-                        <div class="col-md-6">           
-                            <select class="form-select @error('permissions') is-invalid @enderror" multiple aria-label="Permissions" id="permissions" name="permissions[]" style="height: 210px;">
-                                @forelse ($permissions as $permission)
-                                    <option value="{{ $permission->id }}" {{ in_array($permission->id, $rolePermissions ?? []) ? 'selected' : '' }}>
-                                        {{ $permission->name }}
-                                    </option>
+                    @foreach ($permissions as $group => $perms)
+                        <div class="mb-3 row">
+                            <h6 class="text-primary">{{ __(ucfirst($group)) }}</h6>
+                            <div class="col-md-12">
+                                @forelse ($perms as $perm)
+                                    <div class="form-check form-check-inline mb-1">
+                                        <input class="form-check-input" name="permissions[]" type="checkbox" id="perm-{{ $perm->id }}" value="{{ $perm->id }}" {{ in_array($perm->id, $rolePermissions ?? []) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="perm-{{ $perm->id }}">{{ $perm->label ?? $perm->name }}</label>
+                                    </div>
                                 @empty
-
                                 @endforelse
-                            </select>
-                            @if ($errors->has('permissions'))
-                                <span class="text-danger">{{ $errors->first('permissions') }}</span>
-                            @endif
+                            </div>
                         </div>
-                    </div> --}}
-                    
+                    @endforeach
+                    <hr>
                     <div class="mb-3 row">
                         <input type="submit" class="col-md-3 offset-md-5 btn btn-primary" value="Update Role">
                     </div>

@@ -35,13 +35,19 @@ class RoleController extends Controller
      */
     public function create(): View
     {
-
-        $permissionsRole = Permission::where('group','role')->get();
-        $permissionsUser = Permission::where('group','user')->get();
-        return view('roles.create',compact('permissionsRole','permissionsUser'));
-        // return view('roles.create', [
-        //     'permissions' => Permission::get()
-        // ]);
+        $permissions = [
+            'quotation' => Permission::where('name', 'like', 'quotation-%')->get(),
+            'user' => Permission::where('name', 'like', 'user-%')->get(),
+            'product' => Permission::where('name', 'like', 'product-%')->get(),
+            'invoice' => Permission::where('name', 'like', 'invoice-%')->get(),
+            'payment' => Permission::where('name', 'like', 'payment-%')->get(),
+            'notification' => Permission::where('name', 'like', 'notification-%')->get(),
+            'setting' => Permission::where('name', 'like', 'setting-%')->get(),
+            'role' => Permission::where('name', 'like', 'role-%')->get(),
+            'report' => Permission::where('name', 'like', 'report-%')->get(),
+            'export' => Permission::where('name', 'like', 'quotation-export')->get(),
+        ];
+        return view('roles.create', compact('permissions'));
     }
 
     /**
@@ -82,25 +88,25 @@ class RoleController extends Controller
      */
     public function edit(Role $role): View
     {
-        $permissionsRole = Permission::where('group','role')->get();
-        $permissionsUser = Permission::where('group','user')->get();
-        $permissionsWholesale = Permission::where('group','wholesale')->get();
-        $permissionsAirline = Permission::where('group','airline')->get();
-        $permissionsBooking = Permission::where('group','booking')->get();
-        $permissionsQuote = Permission::where('group','quote')->get();
-        $permissionsProducts = Permission::where('group','product')->get();
-        $permissionsInvoice = Permission::where('group','invoice')->get();
-
         if($role->name=='Super Admin'){
             abort(403, 'SUPER ADMIN ROLE CAN NOT BE EDITED');
         }
-
-        $permissions = Permission::get();
+        $permissions = [
+            'quotation' => Permission::where('name', 'like', 'quotation-%')->get(),
+            'user' => Permission::where('name', 'like', 'user-%')->get(),
+            'product' => Permission::where('name', 'like', 'product-%')->get(),
+            'invoice' => Permission::where('name', 'like', 'invoice-%')->get(),
+            'payment' => Permission::where('name', 'like', 'payment-%')->get(),
+            'notification' => Permission::where('name', 'like', 'notification-%')->get(),
+            'setting' => Permission::where('name', 'like', 'setting-%')->get(),
+            'role' => Permission::where('name', 'like', 'role-%')->get(),
+            'report' => Permission::where('name', 'like', 'report-%')->get(),
+            'export' => Permission::where('name', 'like', 'quotation-export')->get(),
+        ];
         $rolePermissions = DB::table("role_has_permissions")->where("role_id",$role->id)
             ->pluck('permission_id')
             ->all();
-       return view('roles.edit',compact('permissionsInvoice','permissionsProducts','permissionsQuote','role','permissionsBooking','rolePermissions','permissions','permissionsRole','permissionsUser','permissionsWholesale','permissionsAirline'));
-     
+        return view('roles.edit', compact('role', 'permissions', 'rolePermissions'));
     }
 
 

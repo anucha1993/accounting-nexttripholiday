@@ -72,7 +72,7 @@
                     <h5 class="mb-0">
                         <i class="fas fa-file-invoice"></i> ใบเสนอราคา/ใบแจ้งหนี้
                     </h5>
-                    @can('edit-quote')
+                    @can('quotation-create')
                         <a href="{{ route('quote.createNew') }}" class="btn btn-light btn-sm">
                             <i class="fas fa-plus"></i> สร้างใบเสนอราคา
                         </a>
@@ -272,6 +272,7 @@
 
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
+                                @can('quotation-export')
                                 <form action="{{route('export.quote')}}" id="export-excel" method="post" class="d-inline">
                                     @csrf
                                     @method('POST')
@@ -280,6 +281,12 @@
                                         <i class="fas fa-file-excel"></i> Export Excel
                                     </button>
                                 </form>
+                                @endcan
+                
+                                <a href="{{route('quote.index')}}" class="btn btn-info btn-sm ms-2">
+                                    <i class="fas fa-chart-bar"></i> รายงานใบเสนอราคา
+                                </a>
+                            
                             </div>
                             <div class="text-muted">
                                 <small>พบข้อมูล {{number_format($quotations->count())}} รายการ | รวม {{number_format($SumPax)}} PAX | มูลค่า {{number_format($SumTotal,2)}} บาท</small>
@@ -388,12 +395,14 @@
                                             <small>{{ $item->Salename->name }}</small>
                                         </td>
                                         <td class="text-center">
+                                            @can('quotation-edit')
                                             <a href="{{ route('quote.editNew', $item->quote_id) }}" 
                                                class="btn btn-primary btn-sm" 
                                                data-bs-toggle="tooltip" 
                                                title="จัดการข้อมูล">
                                                 <i class="fas fa-edit"></i>
                                             </a>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @empty
