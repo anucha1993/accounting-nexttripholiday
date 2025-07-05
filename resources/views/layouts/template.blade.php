@@ -164,22 +164,22 @@
                         <b class="logo-icon">
                             <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                             <!-- Dark Logo icon -->
-                            <img src="{{ URL::asset('template/assets/images/logos/logo-icon.png') }}" alt="homepage"
+                            <img src="{{ URL::asset('logo/Logo-docs.png') }}" alt="homepage" style="width: 150px; "
                                 class="dark-logo" />
                             <!-- Light Logo icon -->
-                            <img src="{{ URL::asset('template/assets/images/logos/logo-light-icon.png') }}"
-                                alt="homepage" class="light-logo" />
+                            {{-- <img src="{{ URL::asset('template/assets/images/logos/logo-light-icon.png') }}"
+                                alt="homepage" class="light-logo" /> --}}
                         </b>
                         <!--End Logo icon -->
                         <!-- Logo text -->
-                        <span class="logo-text">
+                        {{-- <span class="logo-text">
                             <!-- dark Logo text -->
                             <img src="{{ URL::asset('template/assets/images/logos/logo-text.png') }}" alt="homepage"
                                 class="dark-logo" />
                             <!-- Light Logo text -->
                             <img src="{{ URL::asset('template/assets/images/logos/logo-light-text.png') }}"
                                 class="light-logo" alt="homepage" />
-                        </span>
+                        </span> --}}
                     </a>
                     <!-- ============================================================== -->
                     <!-- End Logo -->
@@ -260,45 +260,35 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle waves-effect waves-dark" href="#"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="{{ URL::asset('template/assets/images/users/1.jpg') }}" alt="user"
-                                    class="rounded-circle" width="36" />
-                                <span class="ms-2 font-weight-medium">Steve</span><span
+                                
+                                <span class="ms-2 font-weight-medium">{{auth::user()->name}}</span><span
                                     class="fas fa-angle-down ms-2"></span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end user-dd animated flipInY">
                                 <div class="d-flex no-block align-items-center p-3 bg-info text-white mb-2">
                                     <div class="">
-                                        <img src="{{ URL::asset('template/assets/images/users/1.jpg') }}"
-                                            alt="user" class="rounded-circle" width="60" />
+                                      
                                     </div>
                                     <div class="ms-2">
                                         <h4 class="mb-0 text-white">
-                                            Steave Jobs
+                                           {{auth::user()->name}}
                                         </h4>
-                                        <p class="mb-0">varun@gmail.com</p>
+                                        <p class="mb-0">{{auth::user()->email}}</p>
                                     </div>
                                 </div>
-                                <a class="dropdown-item" href="#"><i data-feather="user"
-                                        class="feather-sm text-info me-1 ms-1"></i>
-                                    My Profile</a>
-                                <a class="dropdown-item" href="#"><i data-feather="credit-card"
-                                        class="feather-sm text-info me-1 ms-1"></i>
-                                    My Balance</a>
-                                <a class="dropdown-item" href="#"><i data-feather="mail"
-                                        class="feather-sm text-success me-1 ms-1"></i>
-                                    Inbox</a>
+                               
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#"><i data-feather="settings"
-                                        class="feather-sm text-warning me-1 ms-1"></i>
-                                    Account Setting</a>
+                               <a class="dropdown-item" href="{{ route('logout') }}"
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+                                    </a>
+
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                        @csrf
+                                    </form>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#"><i data-feather="log-out"
-                                        class="feather-sm text-danger me-1 ms-1"></i>
-                                    Logout</a>
-                                <div class="dropdown-divider"></div>
-                                <div class="ps-4 p-2">
-                                    <a href="#" class="btn d-block w-100 btn-info rounded-pill">View Profile</a>
-                                </div>
+                                
                             </div>
                         </li>
                         <!-- ============================================================== -->
