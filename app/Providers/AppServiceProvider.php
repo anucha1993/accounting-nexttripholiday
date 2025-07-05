@@ -26,11 +26,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrapFive();
+        // Register PaymentWholesaleObserver
+        // \App\Models\payments\paymentWholesaleModel::observe(\App\Observers\PaymentWholesaleObserver::class);
         
         // We don't need to handle Vite here - the blade templates will handle this
         
         \Illuminate\Support\Facades\Blade::directive('bathText', function ($expression) {
-            return "<?php echo App\Helpers\BathTextHelper::convert($expression); ?>";
+            return "<?php echo App\\Helpers\\BathTextHelper::convert($expression); ?>";
         });
     }
 }

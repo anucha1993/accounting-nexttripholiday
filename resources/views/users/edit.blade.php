@@ -73,6 +73,22 @@
                         </div>
                     </div>
 
+                     <div class="mb-3 row">
+                        <label class="col-md-4 col-form-label text-md-end text-start">ชื่อพนักงานขายจาก Web booking</label>
+                        <div class="col-md-6">
+                            <select name="sale_id" class="form-select" >
+                                <option >-- เลือกพนักงานขาย --</option>
+                                @foreach ($sales as $sale)
+                                    <option value="{{ $sale->id }}" {{$user->sale_id == $sale->id ? 'selected' : '' }}>
+                                        {{ $sale->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                    </div>
+
+
                     <div class="mb-3 row">
                         <label class="col-md-4 col-form-label text-md-end text-start">สถานะ</label>
                         <div class="col-md-6">

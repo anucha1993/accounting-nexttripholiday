@@ -73,11 +73,13 @@ $(function() {
         // วนลูปแสดงรายการแจ้งเตือน
         notifications.forEach(function(item) {
             let icon = getNotificationIcon(item.related_type);
-            
+            // เงื่อนไข: ถ้า user_id ของ notify ไม่ตรงกับ user ที่ login (response.user_id) ให้ซ่อนปุ่ม mark-as-read
+            const isOwnNotify = (item.user_id == response.user_id);
+            const markAsReadBtn = isOwnNotify && item.status === 'unread' ? '<span class="badge rounded-pill bg-danger ms-1">ใหม่</span>' : '';
             // สร้าง HTML สำหรับแต่ละรายการ
             const itemHtml = `
                 <a href="javascript:void(0)" class="notification-item message-item d-flex align-items-center border-bottom px-3 py-2 ${item.status === 'unread' ? 'unread-notification' : ''}" 
-                   data-id="${item.id}" data-url="${item.action_url || '#'}">
+                   data-id="${item.id}" data-url="${item.action_url || '#'}" data-user-id="${item.user_id}">
                     <div class="notification-icon rounded-circle d-flex align-items-center justify-content-center me-3 ${getNotificationClass(item.related_type)}" style="width: 40px; height: 40px;">
                         ${icon}
                     </div>
@@ -85,19 +87,21 @@ $(function() {
                         <h5 class="message-title mb-0 mt-1 font-weight-medium">${truncateText(item.message, 60)}</h5>
                         <span class="fs-3 text-nowrap d-block time text-muted">${item.time_ago}</span>
                     </div>
-                    ${item.status === 'unread' ? '<span class="badge rounded-pill bg-danger ms-1">ใหม่</span>' : ''}
+                    ${markAsReadBtn}
                 </a>
             `;
-            
             $container.append(itemHtml);
         });
 
-        // กำหนดการคลิกที่รายการแจ้งเตือน
+        // กำหนดการคลิกที่รายการแจ้งเตือน (เฉพาะของตัวเองเท่านั้น)
         $('.notification-item').on('click', function() {
             const notificationId = $(this).data('id');
             const url = $(this).data('url');
-            
-            markAsRead(notificationId, url);
+            const notifyUserId = $(this).data('user-id');
+            // ต้องมี id จริงเท่านั้นถึงจะเรียก markAsRead
+            if (notifyUserId == response.user_id && notificationId) {
+                markAsRead(notificationId, url);
+            }
         });
     }
 

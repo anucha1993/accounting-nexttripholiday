@@ -4,7 +4,6 @@ use App\Exports\invoiceExport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Models\quotations\quotationModel;
@@ -380,11 +379,9 @@ Route::post('/commissions/store', [CommissionController::class, 'store'])->name(
 Route::post('/commissions/update', [CommissionController::class, 'update'])->name('commissions.update');
 Route::delete('/commissions/{id}', [CommissionController::class, 'destroy'])->name('commissions.destroy');
 
-// ระบบแจ้งเตือน (Notification)
-Route::prefix('notifications')->name('notifications.')->group(function () {
-    Route::get('/', [NotificationController::class, 'index'])->name('index');
-    Route::get('/api/recent', [NotificationController::class, 'getRecentNotifications'])->name('api.recent');
-    Route::post('/mark-as-read/{id}', [NotificationController::class, 'markAsRead'])->name('mark-as-read');
-    Route::post('/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-as-read');
-    Route::post('/api/mark-all-as-read', [NotificationController::class, 'apiMarkAllAsRead'])->name('api.mark-all-as-read');
-});
+// notifications
+Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+Route::get('/notifications/fetch-latest', [App\Http\Controllers\NotificationController::class, 'fetchLatest'])->name('notifications.fetchLatest');
+Route::post('/notifications/mark-as-read/{id}', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+Route::post('/notifications/mark-all-as-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+

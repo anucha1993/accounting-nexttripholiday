@@ -5,7 +5,7 @@ namespace App\Http\Controllers\quotations;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use App\Models\User;
-use App\Services\NotificationService;
+
 use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
 use App\Models\debits\debitModel;
@@ -30,11 +30,10 @@ require_once app_path('Helpers/statusPaymentHelper.php');
 
 class quoteController extends Controller
 {
-    protected $notificationService;
 
-    public function __construct(NotificationService $notificationService)
+
+    public function __construct()
     {
-        $this->notificationService = $notificationService;
         $this->middleware('permission:view-quote', ['only' => ['index']]);
         $this->middleware('permission:create-quote', ['only' => ['create', 'store']]);
         $this->middleware('permission:edit-quote', ['only' => ['edit', 'update', 'cancel']]);
@@ -631,35 +630,7 @@ class quoteController extends Controller
             }
         }
 
-        // สร้างการแจ้งเตือนเมื่อมีการอัพเดทใบเสนอราคา
-        try {
-            // สร้างการแจ้งเตือนให้กับผู้ใช้ที่มีบทบาทเป็น admin, accounting, Super Admin
-            $notifyRoles = ['admin', 'accounting', 'Super Admin'];
-            $users = User::whereHas('roles', function ($query) use ($notifyRoles) {
-                $query->whereIn('name', $notifyRoles);
-            })->get();
 
-            if ($users->isNotEmpty()) {
-                $message = "ใบเสนอราคาเลขที่ {$quotationModel->quote_number} ได้รับการอัพเดทโดย " . Auth::user()->name;
-                $actionUrl = "/quote/edit/new/{$quotationModel->quote_id}";
-                
-                foreach ($users as $user) {
-                    // ไม่ส่งแจ้งเตือนให้ผู้ใช้ที่เป็นคนอัพเดทเอง
-                    if ($user->id != Auth::id()) {
-                        $this->notificationService->createForUser(
-                            $user->id,
-                            $message,
-                            'quotation',
-                            $quotationModel->quote_id,
-                            $actionUrl
-                        );
-                    }
-                }
-            }
-        } catch (\Exception $e) {
-            // บันทึกข้อผิดพลาดแต่ไม่ให้กระทบกับการอัพเดท
-            \Illuminate\Support\Facades\Log::error("ไม่สามารถสร้างการแจ้งเตือนการอัพเดทใบเสนอราคาได้: " . $e->getMessage());
-        }
 
         return redirect()
             ->route('quote.editNew', $quotationModel->quote_id)

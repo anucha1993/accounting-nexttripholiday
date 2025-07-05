@@ -2,137 +2,123 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Notification;
-use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
+use App\Models\NotificationSA;
+use App\Models\NotificationSale;
+use App\Models\NotificationAcc;
+use App\Models\NotificationUserReadSA;
+use App\Models\NotificationUserReadAcc;
 
 class NotificationController extends Controller
 {
-    /**
-     * @var NotificationService
-     */
-    protected $notificationService;
-    
-    /**
-     * NotificationController constructor.
-     *
-     * @param NotificationService $notificationService
-     */
-    public function __construct(NotificationService $notificationService)
-    {
-        $this->middleware('auth');
-        $this->notificationService = $notificationService;
-    }
-    
-    /**
-     * แสดงหน้ารายการแจ้งเตือนทั้งหมดของผู้ใช้
-     *
-     * @return \Illuminate\Contracts\View\View
-     */
     public function index()
     {
-        $notifications = Notification::where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
-            
+        $group = getUserGroup();
+        $user = Auth::user();
+        if ($group === 'admin') {
+            $notifications = NotificationSA::with(['reads' => function($q) use ($user) {
+                $q->where('user_id', $user->id);
+            }])->orderByDesc('created_at')->get();
+        } elseif ($group === 'sale') {
+            $notifications = NotificationSale::where('sale_id', $user->sale_id)->orderByDesc('created_at')->get();
+        } elseif ($group === 'accounting') {
+            $notifications = NotificationAcc::with(['reads' => function($q) use ($user) {
+                $q->where('user_id', $user->id);
+            }])->orderByDesc('created_at')->get();
+        } else {
+            $notifications = collect();
+        }
         return view('notifications.index', compact('notifications'));
     }
-    
-    /**
-     * API สำหรับดึงข้อมูลการแจ้งเตือนล่าสุดของผู้ใช้
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getRecentNotifications()
+
+    public function fetchLatest()
     {
+        $group = getUserGroup();
         $user = Auth::user();
-        \Illuminate\Support\Facades\Log::info("User requesting notifications: " . $user->name . " (ID: " . $user->id . ")");
-        \Illuminate\Support\Facades\Log::info("User roles: " . implode(", ", $user->getRoleNames()->toArray()));
-        
-        $notifications = $this->notificationService->getRecentNotificationsForCurrentUser(20);
-        \Illuminate\Support\Facades\Log::info("Found " . $notifications->count() . " notifications for user");
-        
-        $unreadCount = $this->notificationService->countUnreadNotificationsForCurrentUser();
-        \Illuminate\Support\Facades\Log::info("Unread count: " . $unreadCount);
-        
-        // เพิ่มข้อมูล time_ago เข้าไปในแต่ละรายการ
-        $notifications->transform(function($notification) {
-            $notification->time_ago = $notification->getTimeAgoAttribute();
-            return $notification;
-        });
-        
-        return Response::json([
-            'notifications' => $notifications,
-            'unreadCount' => $unreadCount,
-            'user_id' => $user->id,
-            'user_roles' => $user->getRoleNames()
-        ]);
+        if ($group === 'admin') {
+            $notifications = NotificationSA::with(['reads' => function($q) use ($user) {
+                $q->where('user_id', $user->id);
+            }])->orderByDesc('created_at')->limit(20)->get();
+        } elseif ($group === 'sale') {
+            $notifications = NotificationSale::where('sale_id', $user->sale_id)->orderByDesc('created_at')->limit(20)->get();
+        } elseif ($group === 'accounting') {
+            $notifications = NotificationAcc::with(['reads' => function($q) use ($user) {
+                $q->where('user_id', $user->id);
+            }])->orderByDesc('created_at')->limit(20)->get();
+        } else {
+            $notifications = collect();
+        }
+        return response()->json($notifications);
     }
-    
-    /**
-     * ทำเครื่องหมายว่าอ่านแล้วและเปลี่ยนเส้นทางไปยัง URL ที่เกี่ยวข้อง
-     *
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
-     */
+
     public function markAsRead($id)
     {
-        $notification = Notification::findOrFail($id);
-        
-        // ตรวจสอบว่าผู้ใช้ปัจจุบันเป็นเจ้าของการแจ้งเตือนนี้
-        if ($notification->user_id !== Auth::id()) {
-            if (request()->ajax()) {
-                return Response::json([
-                    'success' => false,
-                    'message' => 'คุณไม่มีสิทธิ์เข้าถึงการแจ้งเตือนนี้'
-                ], 403);
+        $group = getUserGroup();
+        $user = Auth::user();
+        if ($group === 'admin') {
+            $notification = NotificationSA::find($id);
+            if ($notification) {
+                \App\Models\NotificationUserReadSA::firstOrCreate([
+                    'user_id' => $user->id,
+                    'notification_id' => $notification->id
+                ], [
+                    'read_at' => now()
+                ]);
+                return back();
             }
-            
-            return redirect()->route('home')
-                ->with('error', 'คุณไม่มีสิทธิ์เข้าถึงการแจ้งเตือนนี้');
+        } elseif ($group === 'sale') {
+            $notification = NotificationSale::where('sale_id', $user->sale_id)->find($id);
+            if ($notification) {
+                $notification->is_read = true;
+                $notification->save();
+                return back();
+            }
+        } elseif ($group === 'accounting') {
+            $notification = NotificationAcc::find($id);
+            if ($notification) {
+                \App\Models\NotificationUserReadAcc::firstOrCreate([
+                    'user_id' => $user->id,
+                    'notification_id' => $notification->id
+                ], [
+                    'read_at' => now()
+                ]);
+                return back();
+            }
         }
-        
-        $notification->markAsRead();
-        $redirectUrl = $notification->action_url;
-        
-        if (request()->ajax()) {
-            return Response::json([
-                'success' => true,
-                'redirectUrl' => $redirectUrl
-            ]);
-        }
-        
-        if ($redirectUrl) {
-            return redirect()->to($redirectUrl);
-        }
-        
-        return back()->with('success', 'ทำเครื่องหมายเป็นอ่านแล้ว');
+        return back();
     }
-    
-    /**
-     * ทำเครื่องหมายว่าอ่านแล้วทั้งหมด
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
+
     public function markAllAsRead()
     {
-        $this->notificationService->markAllAsReadForCurrentUser();
-        return back()->with('success', 'ทำเครื่องหมายเป็นอ่านแล้วทั้งหมด');
-    }
-    
-    /**
-     * API สำหรับทำเครื่องหมายว่าอ่านแล้วทั้งหมด
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function apiMarkAllAsRead()
-    {
-        $count = $this->notificationService->markAllAsReadForCurrentUser();
-        return Response::json([
-            'success' => true,
-            'count' => $count
-        ]);
+        $group = getUserGroup();
+        $user = Auth::user();
+        if ($group === 'admin') {
+            $notifications = NotificationSA::all();
+            foreach ($notifications as $notification) {
+                \App\Models\NotificationUserReadSA::firstOrCreate([
+                    'user_id' => $user->id,
+                    'notification_id' => $notification->id
+                ], [
+                    'read_at' => now()
+                ]);
+            }
+            return back();
+        } elseif ($group === 'sale') {
+            NotificationSale::where('sale_id', $user->sale_id)->update(['is_read' => true]);
+            return back();
+        } elseif ($group === 'accounting') {
+            $notifications = NotificationAcc::all();
+            foreach ($notifications as $notification) {
+                \App\Models\NotificationUserReadAcc::firstOrCreate([
+                    'user_id' => $user->id,
+                    'notification_id' => $notification->id
+                ], [
+                    'read_at' => now()
+                ]);
+            }
+            return back();
+        }
+        return back();
     }
 }

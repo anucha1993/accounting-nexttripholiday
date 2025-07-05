@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
+use App\Models\sales\saleModel;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
@@ -52,8 +53,13 @@ class UserController extends Controller
      */
     public function create(): View
     {
+         $sales = saleModel::select('name', 'id')
+            ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+            ->get();
+            
         return view('users.create', [
-            'roles' => Role::pluck('name')->all()
+            'roles' => Role::pluck('name')->all(),
+            'sales' => $sales,
         ]);
     }
 
@@ -93,11 +99,15 @@ class UserController extends Controller
                 abort(403, 'USER DOES NOT HAVE THE RIGHT PERMISSIONS');
             }
         }
+          $sales = saleModel::select('name', 'id')
+            ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+            ->get();
 
         return view('users.edit', [
             'user' => $user,
             'roles' => Role::pluck('name')->all(),
-            'userRoles' => $user->roles->pluck('name')->all()
+            'userRoles' => $user->roles->pluck('name')->all(),
+            'sales' => $sales,
         ]);
     }
 

@@ -1,77 +1,53 @@
 @extends('layouts.template')
 
 @section('content')
-<div class="container">
+<div class="container-fluid py-4">
     <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fas fa-bell me-2"></i> รายการแจ้งเตือน</h5>
-                    
-                    @if($notifications->isNotEmpty())
-                        <form action="{{ route('notifications.mark-all-as-read') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn btn-sm btn-outline-secondary">
-                                <i class="fas fa-check-double me-1"></i> อ่านทั้งหมด
-                            </button>
-                        </form>
-                    @endif
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">การแจ้งเตือนทั้งหมด</h4>
                 </div>
-
-                <div class="card-body">
-                    @if($notifications->isEmpty())
-                        <div class="text-center py-5">
-                            <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
-                            <h5>ไม่มีการแจ้งเตือน</h5>
-                            <p class="text-muted">คุณจะได้รับการแจ้งเตือนเกี่ยวกับกิจกรรมสำคัญที่นี่</p>
-                        </div>
-                    @else
-                        <div class="list-group">
-                            @foreach($notifications as $notification)
-                                <div class="list-group-item list-group-item-action {{ $notification->status === 'unread' ? 'list-group-item-light' : '' }}">
-                                    <div class="d-flex w-100 justify-content-between align-items-center">
-                                        <div>
-                                            <p class="mb-1 fw-{{ $notification->status === 'unread' ? 'bold' : 'normal' }}">
-                                                @switch($notification->related_type)
-                                                    @case('refund')
-                                                        <i class="fas fa-money-bill-wave text-danger me-2"></i>
-                                                        @break
-                                                    @case('wholesale_refund')
-                                                        <i class="fas fa-money-check-alt text-warning me-2"></i>
-                                                        @break
-                                                    @case('wholesale_payment')
-                                                        <i class="fas fa-hand-holding-usd text-success me-2"></i>
-                                                        @break
-                                                    @case('booking')
-                                                        <i class="fas fa-calendar-alt text-primary me-2"></i>
-                                                        @break
-                                                    @default
-                                                        <i class="fas fa-bell text-info me-2"></i>
-                                                @endswitch
-                                                {{ $notification->message }}
-                                            </p>
-                                            <small class="text-muted">
-                                                <i class="far fa-clock me-1"></i> {{ $notification->time_ago }}
-                                            </small>
-                                        </div>
-                                        
-                                        <div>
-                                            <form action="{{ route('notifications.mark-as-read', $notification->id) }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="btn btn-primary btn-sm">
-                                                    {{ $notification->action_url ? 'ดูรายละเอียด' : 'ทำเครื่องหมายว่าอ่านแล้ว' }}
-                                                </button>
-                                            </form>
-                                        </div>
+                <div class="card-body p-0">
+                    @php
+                        $group = getUserGroup();
+                        $user = Auth::user();
+                    @endphp
+                    <ul class="list-group list-group-flush">
+                        @forelse($notifications as $notification)
+                            @php
+                                $isRead = ($group === 'admin' || $group === 'accounting') ? !$notification->reads->isEmpty() : $notification->is_read;
+                            @endphp
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-3 py-3 {{ !$isRead ? 'bg-danger bg-opacity-10' : 'bg-white' }}">
+                                <div class="w-100">
+                                    <a href="{{ $notification->url ? url($notification->url) : '#' }}" class="text-decoration-none text-dark fw-bold">
+                                        {{ $notification->message }}
+                                    </a>
+                                    <div class="fs-2 text-nowrap subtext text-muted" style="font-size: 0.85rem;">
+                                        {{ $notification->created_at->diffForHumans() }}
                                     </div>
                                 </div>
-                            @endforeach
-                        </div>
-                        
-                        <div class="d-flex justify-content-center mt-4">
-                            {{ $notifications->links() }}
-                        </div>
-                    @endif
+                                <div class="ms-2">
+                                    @if(!$isRead)
+                                        <form method="POST" action="{{ route('notifications.markAsRead', $notification->id) }}" class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-outline-success">อ่านแล้ว</button>
+                                        </form>
+                                    @else
+                                        <span class="badge bg-success">อ่านแล้ว</span>
+                                    @endif
+                                </div>
+                            </li>
+                        @empty
+                            <li class="list-group-item text-center text-muted">ไม่มีการแจ้งเตือน</li>
+                        @endforelse
+                    </ul>
+                    <div class="text-end px-3 py-2">
+                        <form method="POST" action="{{ route('notifications.markAllAsRead') }}" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-link btn-sm text-primary">ทำเครื่องหมายอ่านแล้วทั้งหมด</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
