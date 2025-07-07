@@ -18,6 +18,7 @@ class NotificationSA extends Model
         'notify_for',
         'reference_id',
         'url',
+        'sale_id',
     ];
 
     public function reads()

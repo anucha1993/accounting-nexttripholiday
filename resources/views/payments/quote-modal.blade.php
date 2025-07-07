@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-header">
-        <h4>แจ้งชำระเงิน</h4>
+        <h4>แจ้งชำระเงิน/คืนเงิน</h4>
     </div>
     <div class="card-body">
         <form action="{{route('payment.payment')}}" method="post" enctype="multipart/form-data">
@@ -99,7 +99,7 @@
             <div class="row mt-3" id="payment-file">
                 <div class="col-md-3">
                     <label for="">แนบไฟล์เอกสาร</label>
-                    <input type="file" name="payment_file" required>
+                    <input type="file" name="payment_file" >
                 </div>
             </div>
             

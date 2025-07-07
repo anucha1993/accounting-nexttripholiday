@@ -13,6 +13,7 @@ use App\Models\payments\paymentModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use App\Models\quotations\quotationModel;
+use App\Services\NotificationService;
 
 class paymentController extends Controller
 {
@@ -145,6 +146,30 @@ class paymentController extends Controller
             'quote_status' => $quoteStatus,
             'quote_payment_status' => $quotePayment,
         ]);
+        // ===== แจ้งเตือน refund =====
+        if ($request->payment_type === 'refund') {
+            $notificationService = new NotificationService();
+            $quoteUrl = route('quote.editNew', $quotationModel->quote_id);
+            $saleId = $quotationModel->quote_sale;
+            $quoteNumber = $quotationModel->quote_number;
+            $refundAmount = $request->payment_total;
+            $customerName = $quotationModel->quoteCustomer ? $quotationModel->quoteCustomer->customer_name : '';
+            // 1. มีคำขอคืนเงินลูกค้า → แจ้งบัญชี
+            $msgAcc = "มีคำขอคืนเงินลูกค้า {$customerName} จำนวนเงิน: " . number_format($refundAmount,2) . " บาท เลขที่ใบเสนอราคา #{$quoteNumber}";
+            $notificationService->sendToAccounting($msgAcc, $quoteUrl, $quotationModel->quote_id, 'refund-request');
+            // 2. แจ้ง sale (ถ้ามีการแนบสลิป)
+            if ($file && $saleId) {
+                $msgSale = "บัญชีแนบสลิปคืนเงินให้ลูกค้า {$customerName} จำนวนเงิน: " . number_format($refundAmount,2) . " บาท เลขที่ใบเสนอราคา #{$quoteNumber}";
+                $notificationService->sendToSale($saleId, $msgSale, $quoteUrl, $quotationModel->quote_id, 'refund-slip');
+            }
+            // 3. แจ้ง SA ทั้งสองกรณี
+            $msgSA = $file
+                ? "บัญชีแนบสลิปคืนเงินให้ลูกค้า {$customerName} จำนวนเงิน: " . number_format($refundAmount,2) . " บาท เลขที่ใบเสนอราคา #{$quoteNumber}"
+                : "มีคำขอคืนเงินลูกค้า {$customerName} จำนวนเงิน: " . number_format($refundAmount,2) . " บาท เลขที่ใบเสนอราคา #{$quoteNumber}";
+            $notificationService->sendToSuperAdmin($msgSA, $quoteUrl, $quotationModel->quote_id, 'refund');
+        }
+        // ===== END แจ้งเตือน =====
+
         return redirect()->back()->with('success', 'Payment processed successfully.');
     }
 
@@ -197,18 +222,15 @@ class paymentController extends Controller
             File::makeDirectory($absolutePath, 0775, true);
         }
         $file = $request->file('payment_cancel_file_path');
-
         if ($file) {
             $extension = $file->getClientOriginalExtension(); // นามสกุลไฟล์
             $uniqueName = $paymentModel->payment_id . '_' . $paymentModel->payment_doc_number . '_cancel_' . date('Ymd') . '.' . $extension;
             $filePath = $quotationModel->customer_id . '/' . $quotationModel->quote_number . '/' . $uniqueName;
-
-            // ย้ายไฟล์ไปยังตำแหน่งที่ต้องการ
             $file->move($absolutePath, $uniqueName);
-
-            // อัปเดตพาธไฟล์ในฐานข้อมูล
             $paymentModel->update(['payment_cancel_file_path' => $filePath]);
         }
+
+       
         return redirect()->back();
     }
 
@@ -222,6 +244,7 @@ class paymentController extends Controller
 
     public function update(paymentModel $paymentModel, Request $request)
 {
+    //dd($request->payment_type);
     $totalOld = $request->payment_total_old;
     $totalNew = $request->payment_total;
 
@@ -306,6 +329,24 @@ class paymentController extends Controller
         'quote_status' => $quoteStatus,
         'quote_payment_status' => $quotePayment,
     ]);
+
+    // แจ้งเตือน refund กรณีแนบไฟล์ที่หลัง (update)
+    if ($request->payment_type === 'refund' && $file) {
+        $notificationService = new NotificationService();
+        $quoteUrl = route('quote.editNew', $quotationModel->quote_id);
+        $saleId = $quotationModel->quote_sale;
+        $quoteNumber = $quotationModel->quote_number;
+        $refundAmount = $request->payment_total;
+        $customerName = $quotationModel->quoteCustomer ? $quotationModel->quoteCustomer->customer_name : '';
+        // 1. แจ้ง sale (แนบสลิป)
+        if ($saleId) {
+            $msgSale = "บัญชีแนบสลิปคืนเงินให้ลูกค้า {$customerName} จำนวนเงิน: " . number_format($refundAmount,2) . " บาท เลขที่ใบเสนอราคา #{$quoteNumber}";
+            $notificationService->sendToSale($saleId, $msgSale, $quoteUrl, $quotationModel->quote_id, 'refund-slip');
+        }
+        // 2. แจ้ง SA
+        $msgSA = "บัญชีแนบสลิปคืนเงินให้ลูกค้า {$customerName} จำนวนเงิน: " . number_format($refundAmount,2) . " บาท เลขที่ใบเสนอราคา #{$quoteNumber}";
+        $notificationService->sendToSuperAdmin($msgSA, $quoteUrl, $quotationModel->quote_id, 'refund');
+    }
 
     return redirect()->back();
 }
