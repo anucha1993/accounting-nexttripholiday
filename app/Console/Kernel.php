@@ -26,6 +26,13 @@ class Kernel extends ConsoleKernel
         $schedule->command('notify:passport-checklist')
             ->timezone('Asia/Bangkok')
             ->dailyAt('16:00');
+
+             $schedule->command('notify:appointment-checklist')
+            ->timezone('Asia/Bangkok')
+            ->dailyAt('07:00');
+        $schedule->command('notify:appointment-checklist')
+            ->timezone('Asia/Bangkok')
+            ->dailyAt('16:00');
     }
 
     /**
