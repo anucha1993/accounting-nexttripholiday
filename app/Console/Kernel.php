@@ -18,6 +18,14 @@ class Kernel extends ConsoleKernel
         $schedule->command('notifications:check')
                 ->dailyAt('08:00')
                 ->appendOutputTo(storage_path('logs/notifications.log'));
+
+        // รันแจ้งเตือน passport checklist ทุกวัน 07:00 และ 16:00 (เวลาไทย)
+        $schedule->command('notify:passport-checklist')
+            ->timezone('Asia/Bangkok')
+            ->dailyAt('07:00');
+        $schedule->command('notify:passport-checklist')
+            ->timezone('Asia/Bangkok')
+            ->dailyAt('16:00');
     }
 
     /**
