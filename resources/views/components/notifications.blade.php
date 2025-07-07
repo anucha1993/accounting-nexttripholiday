@@ -38,8 +38,10 @@
                 <div class="d-flex align-items-center border-bottom px-3 py-2 notification-item {{ !$isRead ? 'bg-danger bg-opacity-10' : 'bg-white' }}"
                     data-id="{{ $notification->id }}">
                     <div class="w-100 d-inline-block v-middle ps-1">
+                         <a href="{{ $notification->url ? url($notification->url) : '#' }}" class="text-decoration-none text-dark fw-bold">
                         <span class="mb-0 mt-1 fs-2 fw-bold text-dark">
                             {{ $notification->message }}</span>
+                         </a>
                         <span class="fs-2 text-nowrap d-block subtext text-muted"
                             style="font-size: 0.85rem;">{{ $notification->created_at->diffForHumans() }}</span>
                     </div>
