@@ -197,36 +197,29 @@
                                 data-sidebartype="mini-sidebar"><i class="mdi mdi-menu fs-5"></i></a>
                         </li>
                         <?php
-                            // ดึงข้อมูล notification สำหรับ navbar (ตัวอย่าง logic, ปรับตาม controller จริง)
                             $user = Auth::user();
-                            $group = null;
-                            // Debug: show user roles
-                            // echo '<pre>Roles: '.print_r($user->getRoleNames(), true).'</pre>';
-                            $roles = $user ? $user->getRoleNames() : collect();
-                            if ($roles->contains('Super Admin')) {
-                                $group = 'Super Admin';
-                            } elseif ($roles->contains('sale')) {
-                                $group = 'sale';
-                            } elseif ($roles->contains('accounting')) {
-                                $group = 'accounting';
-                            }
-                            // Debug: show group
-                            // echo '<pre>Group: '.print_r($group, true).'</pre>';
-                            if ($group === 'Super Admin') {
-                                $notifications = \App\Models\NotificationSA::orderByDesc('created_at')->limit(20)->get();
-                                $unreadCount = \App\Models\NotificationSA::where('is_read', false)->count();
+                            $group = getUserGroup();
+                            if ($group === 'admin') {
+                                $notifications = \App\Models\NotificationSA::with(['reads' => function($q) use ($user) {
+                                    $q->where('user_id', $user->id);
+                                }])->orderByDesc('created_at')->limit(20)->get();
+                                $unreadCount = $notifications->filter(function($n) use ($user) {
+                                    return $n->reads->isEmpty();
+                                })->count();
                             } elseif ($group === 'sale') {
-                                $notifications = \App\Models\NotificationSale::where('user_id', $user->id)->orderByDesc('created_at')->limit(20)->get();
-                                $unreadCount = \App\Models\NotificationSale::where('user_id', $user->id)->where('is_read', false)->count();
+                                $notifications = \App\Models\NotificationSale::where('sale_id', $user->sale_id)->orderByDesc('created_at')->limit(20)->get();
+                                $unreadCount = $notifications->where('is_read', false)->count();
                             } elseif ($group === 'accounting') {
-                                $notifications = \App\Models\NotificationAcc::orderByDesc('created_at')->limit(20)->get();
-                                $unreadCount = \App\Models\NotificationAcc::where('is_read', false)->count();
+                                $notifications = \App\Models\NotificationAcc::with(['reads' => function($q) use ($user) {
+                                    $q->where('user_id', $user->id);
+                                }])->orderByDesc('created_at')->limit(20)->get();
+                                $unreadCount = $notifications->filter(function($n) use ($user) {
+                                    return $n->reads->isEmpty();
+                                })->count();
                             } else {
                                 $notifications = collect();
                                 $unreadCount = 0;
                             }
-                            // Debug: show notifications
-                            // echo '<pre>Notifications: '.print_r($notifications, true).'</pre>';
                         ?>
                         <?php echo $__env->make('components.notifications', ['unreadCount' => $unreadCount, 'notifications' => $notifications], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 

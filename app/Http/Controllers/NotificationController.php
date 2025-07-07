@@ -10,6 +10,7 @@ use App\Models\NotificationAcc;
 use App\Models\NotificationUserReadSA;
 use App\Models\NotificationUserReadAcc;
 
+
 class NotificationController extends Controller
 {
     public function index()
@@ -120,5 +121,43 @@ class NotificationController extends Controller
             return back();
         }
         return back();
+    }
+
+    public function goToNotification($id)
+    {
+        $group = getUserGroup();
+        $user = Auth::user();
+        $url = '#';
+        if ($group === 'admin') {
+            $notification = NotificationSA::find($id);
+            if ($notification) {
+                \App\Models\NotificationUserReadSA::firstOrCreate([
+                    'user_id' => $user->id,
+                    'notification_id' => $notification->id
+                ], [
+                    'read_at' => now()
+                ]);
+                $url = $notification->url ?: '#';
+            }
+        } elseif ($group === 'sale') {
+            $notification = NotificationSale::where('sale_id', $user->sale_id)->find($id);
+            if ($notification) {
+                $notification->is_read = true;
+                $notification->save();
+                $url = $notification->url ?: '#';
+            }
+        } elseif ($group === 'accounting') {
+            $notification = NotificationAcc::find($id);
+            if ($notification) {
+                \App\Models\NotificationUserReadAcc::firstOrCreate([
+                    'user_id' => $user->id,
+                    'notification_id' => $notification->id
+                ], [
+                    'read_at' => now()
+                ]);
+                $url = $notification->url ?: '#';
+            }
+        }
+        return redirect($url);
     }
 }

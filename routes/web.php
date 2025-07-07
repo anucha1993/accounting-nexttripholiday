@@ -433,5 +433,6 @@ Route::middleware(['auth', 'permission:notification-view'])->group(function () {
     Route::get('/notifications/fetch-latest', [App\Http\Controllers\NotificationController::class, 'fetchLatest'])->name('notifications.fetchLatest');
     Route::post('/notifications/mark-as-read/{id}', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::post('/notifications/mark-all-as-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+    Route::get('/notifications/go/{id}', [App\Http\Controllers\NotificationController::class, 'goToNotification'])->name('notifications.goTo');
 });
 
