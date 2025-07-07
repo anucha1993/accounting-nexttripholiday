@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         
-        // ตรวจสอบการแจ้งเตือนทุกวันตอน 8:00 น.
+        // ตรวจสอบการแจ้งเตือนทุกวันตอน 8:00 น.ssss
         $schedule->command('notifications:check')
                 ->dailyAt('08:00')
                 ->appendOutputTo(storage_path('logs/notifications.log'));

@@ -29,7 +29,8 @@ class NotifyAppointmentChecklist extends Command
         // วนลูปใบเสนอราคาที่เข้าเงื่อนไข
         foreach ($quotations as $quotation) {
             // ดึง quote log ที่สัมพันธ์กับ quotation นี้
-            $quoteLog = \App\Models\QuoteLogModel::where('quote_id', $quotation->quote_id)->first();
+            $quoteLog = \App\Models\QuoteLogModel::where('quote_id', $quotation->quote_id)->
+            first();
             // ถ้าไม่มี log หรือ appointment_status ยังไม่ติ๊ก (ไม่ใช่ 'ส่งแล้ว') ให้แจ้งเตือน
             if (!$quoteLog || $quoteLog->appointment_status !== 'ส่งแล้ว') {
                 $saleId = $quotation->quote_sale;
