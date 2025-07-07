@@ -23,6 +23,7 @@ class NotifyPassportChecklist extends Command
         // ดึงใบเสนอราคาที่วันเดินทาง <= อีก 15 วัน, สถานะชำระเงินครบ
         $quotations = quotationModel::whereDate('quote_date_start', '<=', $targetDate)
             ->where('quote_status', 'success')
+            ->where('quote_payment_status', 'success')
             ->get();
 
         // วนลูปใบเสนอราคาที่เข้าเงื่อนไข
