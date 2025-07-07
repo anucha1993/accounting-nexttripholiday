@@ -17,10 +17,14 @@
         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fs-5 mdi mdi-bell"></i>
         @if ($unreadCount > 0)
-            <div class="notify">
+            {{-- <div class="notify">
                 <span class="heartbit"></span>
-                <span class="point"></span>
-            </div>
+                <span class="point">{{$unreadCount }}</span>
+                
+            </div> --}}
+            
+            <span class="text-white badge bg-danger"><b>{{$unreadCount }}</b></span>
+           
         @endif
     </a>
     <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="notificationDropdown"
