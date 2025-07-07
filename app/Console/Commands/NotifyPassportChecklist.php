@@ -35,7 +35,7 @@ class NotifyPassportChecklist extends Command
                 $quoteNumber = $quotation->quote_number; // เลขที่ใบเสนอราคา
                 $customerName = $quotation->quoteCustomer ? $quotation->quoteCustomer->customer_name : '';
                 $dateStart = $quotation->quote_date_start;
-                $url = route('quote.editNew', $quotation->quote_id); // ใช้ลิงก์นี้แทน route ที่ไม่มี
+                $url = url('/quote/edit/new/' . $quotation->quote_id); // ใช้ลิงก์นี้แทน route ที่ไม่มี
                 $msg = "ใบเสนอราคา #{$quoteNumber} ลูกค้า {$customerName} วันเดินทาง {$dateStart} เหลือน้อยกว่า 15 วัน กรุณาส่งพาสปอร์ตให้โฮลเซลล์";
                 // ป้องกันการแจ้งซ้ำ: ตรวจสอบว่ามี notification เดิมหรือยัง (สำหรับ sale)
                 $saleNotified = \App\Models\NotificationSale::where('reference_id', $quotation->quote_id)

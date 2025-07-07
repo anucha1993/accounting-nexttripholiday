@@ -83,7 +83,7 @@ class paymentWholesaleController extends Controller
             $user = Auth::user();
             $message = 'มีการชำระเงินโฮลเซลล์ใหม่จำนวนเงิน:'.number_format($paymentWholesale->payment_wholesale_total,2).'บาท เลขที่ใบเสนอราคา #' . ($quote->quote_number ?? '-');
             // สร้าง url แบบ manual ให้เป็น /quote/edit/new/{id}
-            $url = route('quote.editNew', $quote->quote_id); // เพิ่ม / ข้างหน้าเสมอ
+            $url = url('/quote/edit/new/' . $quote->quote_id); // เพิ่ม / ข้างหน้าเสมอ
             $relatedId = $quote->quote_id ?? null;
             $relatedType = 'payment_wholesale';
             $notifyService = app(\App\Services\NotificationService::class);
@@ -198,7 +198,7 @@ class paymentWholesaleController extends Controller
             $refundType = $request->payment_wholesale_refund_type;
             $refundTypeText = $refundType === 'full' ? 'คืนเงินเต็มจำนวน' : 'คืนเงินบางส่วน';
             $message = 'มีการ' . $refundTypeText . 'สำหรับโฮลเซลล์  เลขที่ใบเสนอราคา #' . ($quote->quote_number ?? '-') . ' จำนวนเงิน: ' . number_format($paymentWholesaleModel->payment_wholesale_refund_total,2) . ' บาท';
-            $url = route('quote.editNew', $quote->quote_id);
+            $url = url('/quote/edit/new/' . $quote->quote_id);
             $relatedId = $quote->quote_id ?? null;
             $relatedType = 'payment_wholesale_refund';
             $notifyService = app(\App\Services\NotificationService::class);
@@ -210,7 +210,7 @@ class paymentWholesaleController extends Controller
         // แจ้งเตือนถ้ามีแนบสลิป refund (แจ้ง sale, super admin)
         if ($hasRefundSlip) {
             $message = 'มีการแนบสลิปคืนเงินโฮลเซลล์ เลขที่ใบเสนอราคา #' . ($quote->quote_number ?? '-') . ' กรุณาตรวจสอบ'. ' จำนวนเงิน: ' . number_format($paymentWholesaleModel->payment_wholesale_refund_total,2) . ' บาท';
-            $url = route('quote.editNew', $quote->quote_id);
+            $url = url('/quote/edit/new/' . $quote->quote_id);
             $relatedId = $quote->quote_id ?? null;
             $relatedType = 'payment_wholesale_refund_slip';
             $notifyService = app(\App\Services\NotificationService::class);
