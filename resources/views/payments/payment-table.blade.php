@@ -27,6 +27,7 @@
                         $paymentTotal = 0;
                         $paymentDebitTotal = 0;
                     @endphp
+                   
                     <tbody>
                         
                         @forelse ($payments as $key => $item)
@@ -160,8 +161,8 @@
 
                     
                         <tr>
-                             {{$quotation->GetDeposit()}}
-                             {{$quotation->Refund()}}
+                             {{-- {{$quotation->GetDeposit()}}
+                             {{$quotation->Refund()}} --}}
 
                             <td align="right" class="text-success" colspan="7"><b>(@bathText($quotation->GetDeposit()- $quotation->Refund()))</b></td>
                             <td align="center" class="text-success" ><b>{{number_format($quotation->GetDeposit()- $quotation->Refund(),2)}}</b></td>

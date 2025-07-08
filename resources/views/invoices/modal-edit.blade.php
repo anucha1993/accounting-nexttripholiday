@@ -93,7 +93,12 @@
                     <label>ยอดยกมา:</label>
                     <input type="text" class="form-control bg-success text-white" id="quote-grand-total-old" value="{{$quotationModel->quote_grand_total}}" readonly >
                 </div>
+                 <div class="col-md-2">
+                     <label>วันที่ออกใบกำกับภาษี:</label>
+                     <input type="date" class="form-control" name="taxinvoice_date" value="{{ $taxinvoice->taxinvoice_date }}" required>
+                 </div>
             </div>
+            
             
 
 

@@ -1612,8 +1612,6 @@
                                 var thaiFormattedDate = $.datepicker.formatDate(
                                     'dd MM yy', dateObject);
 
-                                    'dd MM yy', dateObject);
-
                                 // แสดงวันที่ในรูปแบบภาษาไทย
                                 $('#date-list').append(`
                                <a href="#" class="list-group-item  period-select" data-period1="${period.price1}" data-period2="${period.price2}"  data-period3="${period.price3}" data-period4="${period.price4}" data-date="${period.start_date}">
@@ -1630,6 +1628,8 @@
 
 
             // เมื่อคลิกเลือกวันที่จาก list
+            $(document).on('click', '.period-select', function(e) {
+                e.preventDefault();
                 var selectedDate = $(this).data('date'); // ดึงค่าของวันที่ที่เลือก
                 var period1 = $(this).data('period1'); // ผู้ใหญ่พักคู่
                 var period2 = $(this).data('period2'); // ผู้ใหญ่พักเดียว

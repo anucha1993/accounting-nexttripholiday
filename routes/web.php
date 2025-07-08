@@ -44,7 +44,8 @@ use App\Http\Controllers\exports\invoiceExportController;
 use App\Http\Controllers\exports\saleTaxExportController;
 use App\Http\Controllers\MPDF\MPDF_WithholdingController;
 use App\Http\Controllers\payments\paymentDebitController;
-use AppHttp\Controllers\quotefiles\QuoteFilesController;
+
+use App\Http\Controllers\quotefiles\QuoteFilesController;
 use App\Http\Controllers\reports\invoiceReportController;
 use App\Http\Controllers\reports\receiptReportController;
 use App\Http\Controllers\reports\saleTaxReportController;
@@ -63,8 +64,8 @@ use App\Http\Controllers\invoices\invoiceDashboardController;
 use App\Http\Controllers\withholding\withholdingTaxController;
 use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\MPDF\MPDF_WithhodingDocumentController;
-use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
 use App\Http\Controllers\reports\paymentWholesaleReportController;
+use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
 
 /*
 |--------------------------------------------------------------------------

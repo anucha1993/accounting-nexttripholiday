@@ -181,6 +181,10 @@
                                         <td class="label">เลขเสียภาษี:</td>
                                         <td class="value">{{ $customer->customer_texid ?: '-' }}</td>
                                     </tr>
+                                     <tr>
+                                        <td class="label">ที่อยู่:</td>
+                                        <td class="value">{{ $customer->customer_address ?: '-' }}</td>
+                                    </tr>
                                     <tr>
                                         <td class="label">อีเมล:</td>
                                         <td class="value">{{ $customer->customer_email ?: '-' }}</td>
@@ -224,6 +228,10 @@
                                     <tr>
                                         <td class="label">แก้ไขล่าสุด:</td>
                                         <td class="value">{{ date('d/m/Y H:i', strtotime($quotationModel->updated_at)) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">แก้ไขล่าสุดโดย:</td>
+                                        <td class="value">{{ $quotationModel->updated_by }}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -320,22 +328,22 @@
                     <div class="card-body">
                         <a href="{{ route('quote.modalEditCopy', $quotationModel->quote_id) }}"
                             class="d-flex align-items-center action-btn modal-quote-copy">
-                            <i data-feather="copy"></i>คัดลอกใบเสนอราคา
+                            <i data-feather="copy"></i> คัดลอกใบเสนอราคา
                         </a>
                         
                         <a href="{{ route('payment.quotation', $quotationModel->quote_id) }}"
                             class="d-flex align-items-center action-btn invoice-modal">
-                            <i data-feather="credit-card"></i>แจ้งชำระเงิน
+                            <i data-feather="credit-card"></i> แจ้งชำระเงิน / แจ้งคืนเงิน
                         </a>
                         
                         <a href="{{ route('paymentWholesale.quote', $quotationModel->quote_id) }}"
                             class="d-flex align-items-center action-btn payment-wholesale">
-                            <i data-feather="dollar-sign"></i>ชำระเงินโฮลเซลล์
+                            <i data-feather="dollar-sign"></i> ชำระเงินโฮลเซลล์
                         </a>
                         
                         <a href="{{ route('inputtax.createWholesale', $quotationModel->quote_id) }}"
                             class="d-flex align-items-center action-btn modal-input-tax">
-                            <i data-feather="file-minus"></i>บันทึกภาษีซื้อ
+                            <i data-feather="file-minus"></i> บันทึกภาษีซื้อ / ต้นทุนอืนๆ
                         </a>
                         
                         @php
@@ -344,17 +352,17 @@
                         @endphp
                         <a href="{{ route('quotationView.index', $encryptedId) }}" id="shareLinkButton"
                             class="d-flex align-items-center action-btn">
-                            <i data-feather="share-2"></i>แชร์ลิงก์
+                            <i data-feather="share-2"></i> แชร์ลิงก์
                         </a>
                         
                         <a href="{{ route('quoteLog.index', $quotationModel->quote_id) }}"
                             class="d-flex align-items-center action-btn modal-quote-check">
-                            <i data-feather="check-circle"></i>เช็คลิสต์
+                            <i data-feather="check-circle"></i> เช็คลิสต์
                         </a>
                         
                         <a href="{{ route('inputtax.inputtaxCreateWholesale', $quotationModel->quote_id) }}"
                             class="d-flex align-items-center action-btn modal-inputtax-wholesale">
-                            <i data-feather="percent"></i>ต้นทุนโฮลเซลล์
+                            <i data-feather="percent"></i> ต้นทุนโฮลเซลล์
                         </a>
                     </div>
                     

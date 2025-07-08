@@ -13,6 +13,7 @@ use App\Models\invoices\invoiceModel;
 use App\Models\products\productModel;
 use App\Models\customers\customerModel;
 use Illuminate\Support\Facades\Storage;
+use App\Models\invoices\taxinvoiceModel;
 use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
 use App\Models\quotations\quoteProductModel;
@@ -144,7 +145,8 @@ class invoiceController extends Controller
         $invoiceProductsDiscount = invoicePorductsModel::where('invoice_id', $invoiceModel->invoice_id)->where('expense_type', 'discount')->get();
         $campaignSource = DB::table('campaign_source')->get();
         $mode = $request->get('mode', 'view'); // ค่าเริ่มต้นเป็น 'view'
-        return view('invoices.modal-edit', compact('mode', 'invoiceModel', 'campaignSource', 'customer', 'invoiceProducts', 'quotationModel', 'sales', 'country', 'airline', 'numDays', 'wholesale', 'products', 'productDiscount', 'invoiceProductsDiscount'));
+        $taxinvoice = taxinvoiceModel::where('invoice_number',$invoiceModel->invoice_number)->first();
+        return view('invoices.modal-edit', compact('mode', 'invoiceModel', 'campaignSource','taxinvoice','customer', 'invoiceProducts', 'quotationModel', 'sales', 'country', 'airline', 'numDays', 'wholesale', 'products', 'productDiscount', 'invoiceProductsDiscount'));
     }
 
     public function update(invoiceModel $invoiceModel, Request $request)
@@ -163,6 +165,9 @@ class invoiceController extends Controller
                 'customer_campaign_source' => $request->customer_campaign_source,
             ]);
         }
+         taxinvoiceModel::where('invoice_number',$invoiceModel->invoice_number)->update([
+            'taxinvoice_date' => $request->taxinvoice_date,
+        ]);
 
 
         $request->merge([

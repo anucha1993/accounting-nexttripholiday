@@ -476,22 +476,23 @@
                             </td>
                             <td style="border: none;"></td>
                             <td style="width: 276.6px; text-align: center;">
-                                <b style="color: #fff">ว่าง</b></br>
+                             <b >{{$invoiceModel->created_by}}</b></br>
                                 <p>___________________________</p>
-                                <p><b>Sale / Operation</b></p>
+                                <p><b>ผู้วางบิล</b></p>
                                 <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p>
                             </td>
                             <td style="border: none;"></td>
                             <td style="width: 277px; text-align: right; text-align: center;">
-                                <b style="color: #fff">ว่าง</b></br>
-                                <p style="color: #fff">ว่าง</p></br>
-                                <p style="color: #fff">ว่าง</p></br>
+                                <img src="{{URL::asset('signature/next_signature_01.png')}}" alt="Image" class="image" style="width: 90px; ">
                                 <p><b>ผู้อนุมัติ</b></p>
                                 <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p>
                             </td>
                         </tr>
                     </table>
                 </div>
+                 @if(isset($invoiceModel->revised) && $invoiceModel->revised && isset($invoiceModel->revision_date))
+                                    <p style="font-size: 12px; color: #222222; margin-top: -15px; text-align: right;"><b>Rev.date: {{ thaidate('j M Y', $invoiceModel->revision_date) }}</b></p>
+                                @endif
 
 
         </footer>

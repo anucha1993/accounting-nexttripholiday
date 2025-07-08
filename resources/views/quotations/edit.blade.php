@@ -38,10 +38,8 @@
                             <a class="btn btn-sm btn-info float-start" href="{{route('quote.editNew',$quotationModel->quote_id)}}"> Back</a>
 
                             ใบเสนอราคา(แก้ไข) #{{ $quotationModel->quote_number }}
-                            @can('quotation-export')
                             <a target="_blank" href="{{ route('mpdf.quote', $quotationModel->quote_id) }}"
                                 class="float-end">พิมพ์ <i class="text-danger fa fa-print"></i></a>
-                            @endcan
                         </h4>
                         <hr>
                         <form action="{{ route('quote.update', $quotationModel->quote_id) }}" id="formQuote" method="post">
@@ -790,9 +788,9 @@
                                 <input type="hidden" name="quote_grand_total" id="quote-grand-total">
                                 <input type="hidden" name="quote_withholding_tax">
                                 <a class="btn btn-sm btn-info text-left" href="{{route('quote.editNew',$quotationModel->quote_id)}}"> Back</a>
-                                @can('quotation-edit')
                                 <button type="submit" class="btn btn-primary btn-sm  mx-3" form="formQuote"><i class="fa fa-save"></i> Update</button>
-                                @endcan
+                                
+                                    
                             </div>
                             <br>
                     </div>
@@ -1056,14 +1054,13 @@
                     <select name="product_id[]" class="form-select product-select" style="width: 100%;">
                         <option value="">--เลือกส่วนลด--</option>
                         @foreach ($productDiscount as $product)
-                            <option @if ($itemD->product_id === $product->id) selected @endif
-                                value="{{ $product->id }}">{{ $product->product_name }}</option>
+                            <option value="{{ $product->id }}">{{ $product->product_name }}{{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
                         @endforeach
                     </select>
                 </div>
                             
                 <div class="col-md-1">
-                    <input type="checkbox" name="withholding_tax[]" class="vat-3" disabled>
+                    <input type="checkbox" name="vat3[]" class="vat-3" disabled>
                 </div>
                  <div class="col-md-1" style="display: none">
                                         <select name="expense_type[]" class="form-select" >
@@ -1672,8 +1669,7 @@
                                 var dateObject = new Date(period.start_date);
 
                                 // แปลงวันที่เป็นรูปแบบภาษาไทย
-                                var thaiFormattedDate = $.datepicker.formatDate(
-                                    'dd MM yy', dateObject);
+                                var thaiFormattedDate = $.datepicker.formatDate('dd MM yy', dateObject);
 
                                 // แสดงวันที่ในรูปแบบภาษาไทย
                                 $('#date-list').append(`
@@ -1695,7 +1691,7 @@
                 e.preventDefault();
                 var selectedDate = $(this).data('date'); // ดึงค่าของวันที่ที่เลือก
                 var period1 = $(this).data('period1'); // ผู้ใหญ่พักคู่
-                var period2 = $(this).data('period2'); // ผู้ใหญ่พักเดี่ยว
+                var period2 = $(this).data('period2'); // ผู้ใหญ่พักเดียว
                 var period3 = $(this).data('period3'); // เด็กมีเตียง
                 var period4 = $(this).data('period4'); // เด็กไม่มีเตียง
                 var selectedNumday = $('#numday').data('day');
@@ -1882,6 +1878,7 @@
             // กำหนดค่าเริ่มต้นให้กับ Datepicker (แสดงเป็นภาษาไทย) และ hidden input
             let defaultDate = '{{ date('Y-m-d', strtotime(now())) }}';
             $('#submitDatepicker').val(defaultDate);
+            $('#quote-date').val(defaultDate);
             const thaiFormattedDate = formatDateToThai(defaultDate);
             $('#displayDatepicker').val(thaiFormattedDate);
         });
@@ -1924,7 +1921,8 @@
                 dateFormat: 'dd MM yy', // รูปแบบการแสดงผลใน Datepicker
                 onSelect: function(dateText, inst) {
                     // แปลงวันที่ที่เลือกเป็นรูปแบบ Y-m-d และอัพเดต hidden input
-                    const selectedDate = new Date(inst.selectedYear, inst.selectedMonth, inst.selectedDay);
+                    const selectedDate = new Date(inst.selectedYear, inst.selectedMonth, inst
+                        .selectedDay);
                     const isoDate = $.datepicker.formatDate('yy-mm-dd', selectedDate);
                     $('#submitDatepicker').val(isoDate);
                 }

@@ -152,6 +152,7 @@
                         <p><span>{{ thaidate('j M Y', $invoiceModel->invoice_date) }}</span></p>
                     </td>
                 </tr>
+
                 <tr>
                     <td
                         style="padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
@@ -450,10 +451,6 @@
                 <br>
                 
             </div>
-            
-            
-
-            
 
                 <div style="margin-top: -10px">
                       <table style="margin-right: -41px; margin-left: -37px;">
@@ -468,20 +465,19 @@
                             <td style="width: 276.6px; text-align: center;">
                                 <b style="color: #fff">ว่าง</b></br>
                                 <p>___________________________</p>
-                                <p><b>Sale / Operation</b></p>
+                                <p><b>ผู้รับเงิน / Collector</b></p>
                                 <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p>
                             </td>
                             <td style="border: none;"></td>
                             <td style="width: 277px; text-align: right; text-align: center;">
-                                <b style="color: #fff">ว่าง</b></br>
-                                <p style="color: #fff">ว่าง</p></br>
-                                <p style="color: #fff">ว่าง</p></br>
+                                <img src="{{URL::asset('signature/next_signature_01.png')}}" alt="Image" class="image" style="width: 90px; ">
                                 <p><b>ผู้อนุมัติ</b></p>
                                 <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p>
                             </td>
                         </tr>
                     </table>
                 </div>
+
 
 
         </footer>

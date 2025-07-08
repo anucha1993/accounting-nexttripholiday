@@ -209,12 +209,12 @@
                 <tr>
                     <td
                         style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><b>Fax:</span></p>
+                        <p><b>Tax ID:<p></p></p>
                     </td>
 
                     <td
                         style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{ $customer->customer_fax ? $customer->customer_fax : '-' }}</span></p>
+                        <p><span>{{ $customer->customer_texid ? $customer->customer_texid : '-' }}</span></p>
                     </td>
 
                     <td style="border: none;"></td>
@@ -486,23 +486,25 @@
                 <table style="margin-right: -35px; margin-left: -35px;">
                     <tr style="border-right: none;">
                         <td style="width: 276.6px; padding: 5x; text-align: center;">
-                            <b>{{ $sale->name }}</b></br>
+                          <b style="color: #fff">ว่าง</b></br>
                             <p>___________________________</p>
-                            <p><b>Sale / Operation</b></p>
+                            <p><b>Customer</b></p>
+                            <p><b></b></p>
                             <p><b>{{ thaidate('j F Y', $quotationModel->quote_date) }}</b></p>
                         </td>
                         <td style="border: none;"></td>
                         <td style="width: 276.6px; text-align: center;">
-                            <b style="color: #fff">ว่าง</b></br>
+
+                           <b>{{ $sale->name }}</b></br>
                             <p>___________________________</p>
                             <p><b>Sale / Operation</b></p>
                             <p><b>{{ thaidate('j F Y', $quotationModel->quote_date) }}</b></p>
                         </td>
                         <td style="border: none;"></td>
                         <td style="width: 277px; text-align: right; text-align: center;">
-                            <b style="color: #fff">ว่าง</b></br>
-                            <p style="color: #fff">ว่าง</p></br>
-                            <p style="color: #fff">ว่าง</p></br>
+                           
+                            <img src="{{URL::asset('signature/next_signature_01.png')}}" alt="Image" class="image" style="width: 100px; ">
+                        
                             <p><b>ผู้อนุมัติ</b></p>
                             <p><b>{{ thaidate('j F Y', $quotationModel->quote_date) }}</b></p>
                         </td>
