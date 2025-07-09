@@ -379,6 +379,7 @@ class quoteController extends Controller
                 'customer_fax' => $request->customer_fax,
                 'customer_date' => $request->customer_date,
                 'customer_campaign_source' => $request->customer_campaign_source,
+                'customer_social_id' => $request->customer_social_id,
             ]);
             $customerModel = customerModel::where('customer_id', $request->customer_id)->first();
         }
@@ -599,6 +600,7 @@ class quoteController extends Controller
             'customer_fax' => $request->customer_fax,
             'customer_date' => $request->customer_date,
             'customer_campaign_source' => $request->customer_campaign_source,
+            'customer_social_id' => $request->customer_social_id,
         ]);
 
         $quotationModel->update($request->all());

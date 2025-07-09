@@ -21,7 +21,7 @@
             </div>
             <div class="col-md-3">
                 <label for="">วันที่ชำระ</label>
-                <input type="date" name="payment_wholesale_date" class="form-control" value="{{$paymentWholesaleModel->payment_wholesale_date}}">
+                <input type="datetime-local" name="payment_wholesale_date" class="form-control" value="{{$paymentWholesaleModel->payment_wholesale_date}}">
             </div>
 
             <div class="col-md-3">

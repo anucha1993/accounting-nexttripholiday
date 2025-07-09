@@ -195,7 +195,17 @@
                                     </tr>
                                     <tr>
                                         <td class="label">ที่มา:</td>
-                                        <td class="value">{{ $customer->campaign_source_name ?: '-' }}</td>
+                                        <td class="value">
+                                            @if(!empty($customer->campaign_source_name) && !empty($customer->customer_social_id))
+                                                {{ $customer->campaign_source_name }} : {{ $customer->customer_social_id }}
+                                            @elseif(!empty($customer->campaign_source_name))
+                                                {{ $customer->campaign_source_name }}
+                                            @elseif(!empty($customer->customer_social_id))
+                                                {{ $customer->customer_social_id }}
+                                            @else
+                                                None
+                                            @endif
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
