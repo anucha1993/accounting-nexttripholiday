@@ -70,7 +70,12 @@ class creditNoteModel extends Model
     
     public function customer()
     {
-        return $this->quote->customer();
+        // ป้องกัน error ถ้าไม่มี quote
+        if ($this->quote) {
+            return $this->quote->belongsTo(\App\Models\customers\customerModel::class, 'customer_id', 'customer_id');
+        }
+        // คืนค่า relationship ว่าง ๆ เพื่อไม่ให้เกิด error
+        return $this->belongsTo(\App\Models\customers\customerModel::class, 'customer_id', 'customer_id')->whereRaw('1=0');
     }
 
     public function invoice()

@@ -773,6 +773,7 @@
                                     <th>ชื่อลูกค้า</th>
                                     <th>ประเทศ</th>
                                     <th>แพคเกจทัวร์ที่ซื้อ</th>
+                                    <th>ที่มา</th>
                                     <th>เซลล์ผู้ขาย</th>
                                     <th>PAX</th>
                                     <th>ค่าบริการ</th>
@@ -785,6 +786,7 @@
                                     <th>กำไรเฉลี่ย:คน</th>
                                     <th>คอมมิชชั่นทั้งสิ้น</th>
                                     <th>CommissionGroup</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -853,6 +855,16 @@
                                         <td>{{ date('d/m/Y', strtotime($item->invoice->quote->quote_date_start)) }} -
                                             {{ date('d/m/Y', strtotime($item->invoice->quote->quote_date_end)) }}</td>
                                         <td>{{ $item->invoice->quote->quoteWholesale->code }}</td>
+                                        <td>
+                                            @php
+                                                $sourceName = '';
+                                                if(isset($item->invoice->customer->customer_campaign_source) && !empty($item->invoice->customer->customer_campaign_source) && isset($campaignSource)) {
+                                                    $source = $campaignSource->firstWhere('campaign_source_id', $item->invoice->customer->customer_campaign_source);
+                                                    $sourceName = $source ? $source->campaign_source_name : '';
+                                                }
+                                            @endphp
+                                            {{ $sourceName ?: 'none' }}
+                                        </td>
                                         <td>{{ $item->invoice->customer->customer_name }}</td>
                                         <td>{{ $item->invoice->quote->quoteCountry->iso2 }}</td>
                                         <td><span data-bs-toggle="tooltip" data-bs-placement="top"
@@ -870,6 +882,7 @@
                                         <td>{{ number_format($profitPerPerson, 2) }}</td>
                                         <td>{{ number_format($result['calculated'], 2) }}</td>
                                         <td>({{ number_format($result['amount'], 2) }}) {{ $result['group_name'] }}</td>
+                                        
                                     </tr>
                                 @empty
                                     <tr>

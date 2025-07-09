@@ -20,56 +20,65 @@
                 <h4 class="text-info">รายงานภาษีขาย ตามเอกสาร </h4>
             </div>
             <div class="card-body">
-                <form action="">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="row">
-
-                                <div class="col-md-2">
-                                    <label for="">ช่วงเวลา</label>
-                                    <input type="text" name="daterange" id="rangDate" class="form-control rangDate" autocomplete="off" value="" placeholder="Search by Range Date" />
-
-                                    <input type="hidden" name="date_start">
-                                    <input type="hidden" name="date_end">
-                                </div>
-
-                            <div class="col-md-2">
-                                <label for="">สถานะ</label>
-                                <select name="status" id="" class="form-select" >
-                                    <option value="">---กรุณาเลือก---</option>
-                                    <option value="success">สำเร็จ</option>
-                                    <option value="cancel">ยกเลิก</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label for="">เงือนไข</label>
-                                <select name="column_name" class="form-select">
-       
-                                    <option @if($request->column_name === 'all') selected @endif value="all">ทั้งหมด</option>
-                                    <option @if($request->column_name === 'taxinvoice_number') selected @endif value="taxinvoice_number">เลขที่ใบกำกับภาษี</option>
-                                    <option @if($request->column_name === 'invoice_number') selected @endif value="invoice_number">เลขที่ใบแจ้งหนี้</option>
-                                    <option @if($request->column_name === 'invoice_booking') selected @endif value="invoice_booking">เลขที่ใบจองทัวร์</option>
-                                    <option @if($request->column_name === 'customer_name') selected @endif value="customer_name">ชื่อลูกค้า</option>
-                                    <option @if($request->column_name === 'customer_texid') selected @endif value="customer_texid">เลขประจำตัวผู้เสียภาษี</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label for="">คียร์เวิร์ด</label>
-                                <input type="text" name="keyword" class="form-control" placeholder="คียร์เวิร์ด" value="{{$request->keyword}}">
-                            </div>
-
-                            <div class="col-md-2">
-                               <br>
-                                <button type="submit" class="btn  btn-info float-end ml-2">แสดงรายงาน</button>
-                            </div>
-                            <div class="col-md-1">
-                                <br>
-                                 <a href="{{route('report.saletax')}}"  class="btn  btn-danger float-end ml-2">ล้างการค้นหา</a>
-                             </div>
+                <form action="" method="GET">
+                    <div class="row g-3">
+                        <div class="col-lg-2 col-md-4 col-sm-6">
+                            <label class="form-label"><i class="fas fa-calendar me-1"></i>ช่วงเวลา</label>
+                            <input type="text" name="daterange" id="rangDate" class="form-control rangDate" 
+                                   autocomplete="off" value="{{request('daterange')}}" 
+                                   placeholder="เลือกช่วงวันที่" />
+                            <input type="hidden" name="date_start" value="{{request('date_start')}}">
+                            <input type="hidden" name="date_end" value="{{request('date_end')}}">
                         </div>
-                     
+                        <div class="col-lg-2 col-md-4 col-sm-6">
+                            <label class="form-label"><i class="fas fa-flag me-1"></i>สถานะ</label>
+                            <select name="status" class="form-select">
+                                <option value="">ทั้งหมด</option>
+                                <option value="success" {{request('status') == 'success' ? 'selected' : ''}}>สำเร็จ</option>
+                                <option value="cancel" {{request('status') == 'cancel' ? 'selected' : ''}}>ยกเลิก</option>
+                            </select>
                         </div>
-                       
+                        <div class="col-lg-2 col-md-4 col-sm-6">
+                            <label class="form-label"><i class="fas fa-user me-1"></i>เซลผู้ขาย</label>
+                            <select name="seller_id" class="form-select">
+                                <option value="">ทั้งหมด</option>
+                                @foreach($sellers as $seller)
+                                    <option value="{{ $seller->id }}" {{ request('seller_id') == $seller->id ? 'selected' : '' }}>
+                                        {{ $seller->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-6">
+                            <label class="form-label"><i class="fas fa-file-text me-1"></i>เลขที่เอกสาร</label>
+                            <input type="text" name="document_number" class="form-control" 
+                                   value="{{request('document_number')}}" 
+                                   placeholder="เลขที่เอกสาร">
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-6">
+                            <label class="form-label"><i class="fas fa-link me-1"></i>เลขที่เอกสารอ้างอิง</label>
+                            <input type="text" name="reference_number" class="form-control" 
+                                   value="{{request('reference_number')}}" 
+                                   placeholder="เลขที่เอกสารอ้างอิง">
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-6">
+                            <label class="form-label"><i class="fas fa-building me-1"></i>ชื่อลูกค้า</label>
+                            <input type="text" name="customer_name" class="form-control" 
+                                   value="{{request('customer_name')}}" 
+                                   placeholder="ชื่อลูกค้า">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-info">
+                                    <i class="fas fa-search me-1"></i>แสดงรายงาน
+                                </button>
+                                <a href="{{route('report.saletax')}}" class="btn btn-danger">
+                                    <i class="fas fa-eraser me-1"></i>ล้างการค้นหา
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -154,7 +163,25 @@
                 autoUpdateInput: false,
                 locale: {
                     format: "DD/MM/YYYY",
+                    separator: " - ",
+                    applyLabel: "ตกลง",
+                    cancelLabel: "ยกเลิก",
+                    fromLabel: "จาก",
+                    toLabel: "ถึง",
+                    customRangeLabel: "กำหนดเอง",
+                    daysOfWeek: ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"],
+                    monthNames: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+                                "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
+                    firstDay: 1
                 },
+                ranges: {
+                    'วันนี้': [moment(), moment()],
+                    'เมื่อวาน': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    '7 วันที่แล้ว': [moment().subtract(6, 'days'), moment()],
+                    '30 วันที่แล้ว': [moment().subtract(29, 'days'), moment()],
+                    'เดือนนี้': [moment().startOf('month'), moment().endOf('month')],
+                    'เดือนที่แล้ว': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                }
             });
     
             $(".rangDate").on("apply.daterangepicker", function(ev, picker) {
@@ -164,7 +191,6 @@
                     picker.endDate.format("DD/MM/YYYY")
                 );
     
-                // แปลงวันที่และใส่ลงใน input date_start และ date_end
                 $("input[name='date_start']").val(picker.startDate.format("YYYY-MM-DD"));
                 $("input[name='date_end']").val(picker.endDate.format("YYYY-MM-DD"));
             });
@@ -175,6 +201,6 @@
                 $("input[name='date_end']").val("");
             });
         });
-    </script>
+        </script>
 
 @endsection

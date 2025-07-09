@@ -232,14 +232,11 @@
             <div class="card-body">
                 <form method="GET" action="{{ route('report.payment-wholesale') }}" class="row g-3">
                     <div class="col-md-3">
-                        <label for="start_date" class="form-label">วันที่เริ่มต้น</label>
-                        <input type="date" id="start_date" name="start_date" class="form-control"
-                            value="{{ request('start_date') }}">
-                    </div>
-                    <div class="col-md-3">
-                        <label for="end_date" class="form-label">วันที่สิ้นสุด</label>
-                        <input type="date" id="end_date" name="end_date" class="form-control"
-                            value="{{ request('end_date') }}">
+                        <label for="daterange" class="form-label">ช่วงเวลา</label>
+                        <input type="text" name="daterange" id="rangDate" class="form-control rangDate"
+                            autocomplete="off" value="{{ request('daterange') }}" placeholder="เลือกช่วงวันที่" />
+                        <input type="hidden" name="start_date" value="{{ request('start_date') }}">
+                        <input type="hidden" name="end_date" value="{{ request('end_date') }}">
                     </div>
                     <div class="col-md-3">
                         <label for="wholesale_name" class="form-label">ชื่อโฮลเซลล์</label>
@@ -254,9 +251,17 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label for="quote_number" class="form-label">เลขที่ใบเสนอราคา</label>
+                        <label for="quote_number" class="form-label">Quotation No.</label>
                         <input type="text" id="quote_number" name="quote_number" class="form-control"
-                            placeholder="เลขที่ใบเสนอราคา" value="{{ request('quote_number') }}">
+                            placeholder="Quotation No." value="{{ request('quote_number') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="payment_type" class="form-label">ประเภทการชำระ</label>
+                        <select name="payment_type" id="payment_type" class="form-select">
+                            <option value="">-- เลือกประเภท --</option>
+                            <option value="full" {{ request('payment_type') == 'full' ? 'selected' : '' }}>ชำระเงินเต็มจำนวน</option>
+                            <option value="deposit" {{ request('payment_type') == 'deposit' ? 'selected' : '' }}>ชำระมัดจำ</option>
+                        </select>
                     </div>
                     <div class="col-md-12 text-end">
                         <button type="submit" class="btn btn-primary">ค้นหา</button>
@@ -383,6 +388,9 @@
 
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
 <script>
 $(document).ready(function() {
@@ -400,6 +408,48 @@ $(document).ready(function() {
                 return "กำลังค้นหา...";
             }
         }
+    });
+
+    // Daterangepicker แบบ preset เหมือน input-tax-form
+    $(".rangDate").daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            format: "DD/MM/YYYY",
+            separator: " - ",
+            applyLabel: "ตกลง",
+            cancelLabel: "ยกเลิก",
+            fromLabel: "จาก",
+            toLabel: "ถึง",
+            customRangeLabel: "กำหนดเอง",
+            daysOfWeek: ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"],
+            monthNames: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+                        "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
+            firstDay: 1
+        },
+        ranges: {
+            'วันนี้': [moment(), moment()],
+            'เมื่อวาน': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            '7 วันที่แล้ว': [moment().subtract(6, 'days'), moment()],
+            '30 วันที่แล้ว': [moment().subtract(29, 'days'), moment()],
+            'เดือนนี้': [moment().startOf('month'), moment().endOf('month')],
+            'เดือนที่แล้ว': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    });
+
+    $(".rangDate").on("apply.daterangepicker", function(ev, picker) {
+        $(this).val(
+            picker.startDate.format("DD/MM/YYYY") +
+            " - " +
+            picker.endDate.format("DD/MM/YYYY")
+        );
+        $("input[name='start_date']").val(picker.startDate.format("YYYY-MM-DD"));
+        $("input[name='end_date']").val(picker.endDate.format("YYYY-MM-DD"));
+    });
+
+    $(".rangDate").on("cancel.daterangepicker", function(ev, picker) {
+        $(this).val("");
+        $("input[name='start_date']").val("");
+        $("input[name='end_date']").val("");
     });
 });
 </script>

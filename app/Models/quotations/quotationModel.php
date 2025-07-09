@@ -76,6 +76,14 @@ class quotationModel extends Model
         'quote_payment_status',
     ];
 
+
+    // ความสัมพันธ์กับ CampaignSource (customer_campaign_source)
+    public function campaignSource()
+    {
+        // This is a placeholder. Actual campaign source name will be joined in controller or accessed via $campaignSource array in the view.
+        return null;
+    }
+
     public function airline()
     {
         return $this->belongsTo(airlineModel::class, 'quote_airline', 'id');
@@ -344,5 +352,11 @@ public function checkfileInputtax()
     public function creditNote()
     {
         return $this->belongsTo(creditNoteModel::class, 'quote_id', 'quote_id');
+    }
+
+    // Accessor สำหรับสถานะการชำระของลูกค้า (plain text)
+    public function getCustomerPaymentStatusAttribute()
+    {
+        return trim(strip_tags(getQuoteStatusPayment($this)));
     }
 }

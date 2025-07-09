@@ -136,24 +136,34 @@
                             <label>สถานะชำระโฮลเซลล์</label>
                             <select name="search_wholesale_payment" class="form-select">
                                 <option value="all" {{ request('search_wholesale_payment') === 'all' ? 'selected' : '' }}>ทั้งหมด</option>
-                                <option value="NULL" {{ request('search_wholesale_payment') === 'NULL' ? 'selected' : '' }}>รอชำระเงิน</option>
-                                <option value="deposit" {{ request('search_wholesale_payment') == 'deposit' ? 'selected' : '' }}>รอชำระเงินเต็มจำนวน</option>
-                                <option value="full" {{ request('search_wholesale_payment') == 'full' ? 'selected' : '' }}>ชำระเงินครบแล้ว</option>
-                                <option value="wait-payment-wholesale" {{ request('search_wholesale_payment') == 'wait-payment-wholesale' ? 'selected' : '' }}>รอโฮลเซลล์คืนเงิน</option>
+                                <option value="รอชำระเงินมัดจำ" {{ request('search_wholesale_payment') == 'รอชำระเงินมัดจำ' ? 'selected' : '' }}>รอชำระเงินมัดจำ</option>
+                                <option value="รอชำระเงินส่วนที่เหลือ" {{ request('search_wholesale_payment') == 'รอชำระเงินส่วนที่เหลือ' ? 'selected' : '' }}>รอชำระเงินส่วนที่เหลือ</option>
+                                <option value="ชำระเงินครบแล้ว" {{ request('search_wholesale_payment') == 'ชำระเงินครบแล้ว' ? 'selected' : '' }}>ชำระเงินครบแล้ว</option>
+                                <option value="รอโฮลเซลคืนเงิน" {{ request('search_wholesale_payment') == 'รอโฮลเซลคืนเงิน' ? 'selected' : '' }}>รอโฮลเซลคืนเงิน</option>
+                                <option value="โฮลเซลคืนเงินแล้ว" {{ request('search_wholesale_payment') == 'โฮลเซลคืนเงินแล้ว' ? 'selected' : '' }}>โฮลเซลคืนเงินแล้ว</option>
                             </select>
                             </select>
                         </div>
                         <div class="col-md-2">
                             <label>สถานะการชำระของลูกค้า</label>
+                            @php
+                            // ดึงสถานะที่ใช้จริงจาก Helper (ต้องตรงกับที่ getQuoteStatusPayment คืนค่า)
+                            $customerPaymentStatuses = [
+                                'รอคืนเงิน',
+                                'ยกเลิกการสั่งซื้อ',
+                                'ชำระเงินครบแล้ว',
+                                'ชำระเงินเกิน',
+                                'เกินกำหนดชำระเงิน',
+                                'รอชำระเงินเต็มจำนวน',
+                                'รอชำระเงินมัดจำ',
+                                'รอชำระเงิน',
+                            ];
+                            @endphp
                             <select name="search_customer_payment" class="form-select" style="width: 100%">
                                 <option {{ request('search_customer_payment') === 'all' ? 'selected' : '' }} value="all">ทั้งหมด</option>
-                                <option {{ request('search_customer_payment') === 'รอคืนเงิน' ? 'selected' : '' }} value="รอคืนเงิน">รอคืนเงิน</option>
-                                <option {{ request('search_customer_payment') === 'รอชำระเงินมัดจำ' ? 'selected' : '' }} value="รอชำระเงินมัดจำ">รอชำระเงินมัดจำ</option>
-                                <option {{ request('search_customer_payment') === 'รอชำระเงินเต็มจำนวน' ? 'selected' : '' }} value="รอชำระเงินเต็มจำนวน">รอชำระเงินเต็มจำนวน</option>
-                                <option {{ request('search_customer_payment') === 'ชำระเงินครบแล้ว' ? 'selected' : '' }} value="ชำระเงินครบแล้ว">ชำระเงินครบแล้ว</option>
-                                <option {{ request('search_customer_payment') === 'เกินกำหนดชำระเงิน' ? 'selected' : '' }} value="เกินกำหนดชำระเงิน">เกินกำหนดชำระเงิน</option>
-                                <option {{ request('search_customer_payment') === 'ยกเลิกการสั่งซื้อ' ? 'selected' : '' }} value="ยกเลิกการสั่งซื้อ">ยกเลิกการสั่งซื้อ</option>
-
+                                @foreach($customerPaymentStatuses as $status)
+                                    <option {{ request('search_customer_payment') === $status ? 'selected' : '' }} value="{{ $status }}">{{ $status }}</option>
+                                @endforeach
                             </select>
                         </div>
 
@@ -231,6 +241,7 @@
                         </div>
 
                         </div>
+                        <br>
                         <div class="row">
                             <div class="col-12">
                                 <div class="d-flex justify-content-between align-items-center">
@@ -279,8 +290,7 @@
                                     <input type="hidden" name="quote_ids" value="{{$quotations->pluck('quote_id')}}">
                                     <button class="btn btn-success btn-sm" type="submit">
                                         <i class="fas fa-file-excel"></i> Export Excel
-                                    </button>
-                                </form>
+                                    </form>
                                 @endcan
                 
                                 <a href="{{route('quote.index')}}" class="btn btn-info btn-sm ms-2">
@@ -292,33 +302,36 @@
                                 <small>พบข้อมูล {{number_format($quotations->count())}} รายการ | รวม {{number_format($SumPax)}} PAX | มูลค่า {{number_format($SumTotal,2)}} บาท</small>
                             </div>
                         </div>
-                        
+                        {!! $quotations->withQueryString()->links('pagination::bootstrap-5') !!} 
                         <table class="table table-sm table-hover table-striped table-bordered" id="quote-table" style="font-size: 11px;">
                             <thead class="table-dark sticky-top">
-                                    <tr>
-                                        <th style="width: 40px;" class="text-center">#</th>
-                                        <th style="width: 120px;">ใบเสนอราคา</th>
-                                        <th style="width: 100px;">เลขจองทัวร์</th>
-                                        <th style="width: 200px;">โปรแกรมทัวร์</th>
-                                        <th style="width: 80px;">วันที่จอง</th>
-                                        <th style="width: 120px;">วันเดินทาง</th>
-                                        <th style="width: 150px;">ลูกค้า</th>
-                                        <th style="width: 50px;" class="text-center">PAX</th>
-                                        <th style="width: 80px;">ประเทศ</th>
-                                        <th style="width: 60px;">สายการบิน</th>
-                                        <th style="width: 80px;">โฮลเซลล์</th>
-                                        <th style="width: 120px;">สถานะลูกค้า</th>
-                                        <th style="width: 100px;" class="text-end">ยอดเงิน</th>
-                                        <th style="width: 120px;">สถานะโฮลเซลล์</th>
-                                        <th style="width: 100px;">CheckList</th>
-                                        <th style="width: 80px;">ผู้ขาย</th>
-                                        <th style="width: 80px;" class="text-center">จัดการ</th>
-                                    </tr>
+                                <tr>
+                                    <th style="width: 40px;" class="text-center">#</th>
+                                    <th style="width: 80px;">วันที่จอง</th>
+                                    <th style="width: 120px;">ใบเสนอราคา</th>
+                                    <th style="width: 100px;">เลขจองทัวร์</th>
+                                    <th style="width: 200px;">โปรแกรมทัวร์</th>
+                                    <th style="width: 120px;">วันเดินทาง</th>
+                                    <th style="width: 150px;">ลูกค้า</th>
+                                    <th style="width: 50px;" class="text-center">PAX</th>
+                                    <th style="width: 80px;">ประเทศ</th>
+                                    <th style="width: 60px;">สายการบิน</th>
+                                    <th style="width: 80px;">โฮลเซลล์</th>
+                                    <th style="width: 120px;">สถานะลูกค้า</th>
+                                    <th style="width: 100px;" class="text-end">ยอดเงิน</th>
+                                    <th style="width: 120px;">สถานะโฮลเซลล์</th>
+                                    <th style="width: 100px;">CheckList</th>
+                                    <th style="width: 80px;">ผู้ขาย</th>
+                                    <th style="width: 80px;" class="text-center">จัดการ</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 @forelse ($quotations as $key => $item)
                                     <tr class="align-middle">
                                         <td class="text-center fw-bold">{{ $key + 1 }}</td>
+                                        <td class="text-center">
+                                            <small class="text-muted">{{ date('d/m/y', strtotime($item->created_at)) }}</small>
+                                        </td>
                                         <td>
                                             <div class="d-flex flex-column">
                                                 <span class="fw-bold text-primary">{{ $item->quote_number }}</span>
@@ -341,12 +354,10 @@
                                                 {{ mb_substr($item->quote_tour_name ?: $item->quote_tour_name1, 0, 25) }}{{ strlen($item->quote_tour_name ?: $item->quote_tour_name1) > 25 ? '...' : '' }}
                                             </div>
                                         </td>
-                                        <td class="text-center">
-                                            <small class="text-muted">{{ date('d/m/y', strtotime($item->created_at)) }}</small>
-                                        </td>
+                                      
                                         <td class="text-center">
                                             <div class="d-flex flex-column">
-                                                <small>{{ date('d/m/y', strtotime($item->quote_date_start)) }}</small>
+                                                <small>{{ date('d/m/y', strtotime($item->quote_date_start)) }}</small> ถึง
                                                 <small class="text-muted">{{ date('d/m/y', strtotime($item->quote_date_end)) }}</small>
                                             </div>
                                         </td>
@@ -452,6 +463,15 @@ $(document).ready(function() {
         }
     });
     
+    // รีเซ็ต filter อื่นๆ เป็น all เมื่อเลือก 'ทั้งหมด' ใน search_customer_payment
+    $('select[name="search_customer_payment"]').on('change', function() {
+        if ($(this).val() === 'all') {
+            // รีเซ็ต filter อื่นๆ ที่ขึ้นต้นด้วย search_ (ยกเว้นตัวเอง) เป็น all
+            $('select[name^="search_"]').not(this).val('all');
+        }
+        $(this).closest('form').submit();
+    });
+    
     // Highlight search keywords
     var searchKeyword = $('input[name="search_keyword"]').val();
     if (searchKeyword) {
@@ -516,6 +536,15 @@ $(document).ready(function() {
         if ($(this).val() !== 'all' && $(this).val() !== '') {
             $(this).closest('form').submit();
         }
+    });
+    
+    // รีเซ็ต filter อื่นๆ เป็น all เมื่อเลือก 'ทั้งหมด' ใน search_customer_payment
+    $('select[name="search_customer_payment"]').on('change', function() {
+        if ($(this).val() === 'all') {
+            // รีเซ็ต filter อื่นๆ ที่ขึ้นต้นด้วย search_ (ยกเว้นตัวเอง) เป็น all
+            $('select[name^="search_"]').not(this).val('all');
+        }
+        $(this).closest('form').submit();
     });
     
     // Highlight search keywords

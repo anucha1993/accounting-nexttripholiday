@@ -27,10 +27,10 @@
 
                                 <div class="col-md-2">
                                     <label for="">ช่วงเวลา</label>
-                                    <input type="text" name="daterange" id="rangDate" class="form-control rangDate" autocomplete="off" value="" placeholder="Search by Range Date" />
+                                    <input type="text" name="daterange" id="rangDate" class="form-control rangDate" autocomplete="off" value="{{ request('daterange') }}" placeholder="เลือกช่วงวันที่" />
 
-                                    <input type="hidden" name="date_start">
-                                    <input type="hidden" name="date_end">
+                                    <input type="hidden" name="date_start" value="{{ request('date_start') }}">
+                                    <input type="hidden" name="date_end" value="{{ request('date_end') }}">
                                 </div>
 
                             <div class="col-md-2">
@@ -154,7 +154,25 @@
                 autoUpdateInput: false,
                 locale: {
                     format: "DD/MM/YYYY",
+                    separator: " - ",
+                    applyLabel: "ตกลง",
+                    cancelLabel: "ยกเลิก",
+                    fromLabel: "จาก",
+                    toLabel: "ถึง",
+                    customRangeLabel: "กำหนดเอง",
+                    daysOfWeek: ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"],
+                    monthNames: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+                                "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
+                    firstDay: 1
                 },
+                ranges: {
+                    'วันนี้': [moment(), moment()],
+                    'เมื่อวาน': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    '7 วันที่แล้ว': [moment().subtract(6, 'days'), moment()],
+                    '30 วันที่แล้ว': [moment().subtract(29, 'days'), moment()],
+                    'เดือนนี้': [moment().startOf('month'), moment().endOf('month')],
+                    'เดือนที่แล้ว': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                }
             });
     
             $(".rangDate").on("apply.daterangepicker", function(ev, picker) {
@@ -164,7 +182,6 @@
                     picker.endDate.format("DD/MM/YYYY")
                 );
     
-                // แปลงวันที่และใส่ลงใน input date_start และ date_end
                 $("input[name='date_start']").val(picker.startDate.format("YYYY-MM-DD"));
                 $("input[name='date_end']").val(picker.endDate.format("YYYY-MM-DD"));
             });
@@ -175,6 +192,6 @@
                 $("input[name='date_end']").val("");
             });
         });
-    </script>
+        </script>
 
 @endsection

@@ -155,7 +155,8 @@ class withholdingTaxController extends Controller
             'total_payable' => $totalPayable,
             'image_signture_id' => $request->image_signture_id,
             'book_no' => date('Y-m'),
-            'document_no' => $documentNumberNo
+            'document_no' => $documentNumberNo,
+            'document_doc_date' => $document_doc_date,
         ]);
 
         // บันทึกรายการ
@@ -262,7 +263,8 @@ class withholdingTaxController extends Controller
             'total_amount' => $totalAmount,
             'total_withholding_tax' => $totalWithholdingTax,
             'total_payable' => $totalPayable,
-            'image_signture_id' => $request->image_signture_id
+            'image_signture_id' => $request->image_signture_id,
+            'document_doc_date' => $request->document_doc_date,
         ]);
     
         // ลบรายการเก่าที่เกี่ยวข้องกับเอกสาร

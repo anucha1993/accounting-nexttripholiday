@@ -198,12 +198,12 @@
                 <tr>
                     <td
                         style="padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><b>แฟกซ์/Fax:</span></p>
+                        <p><b>เลขประจำตัวผู้เสียภาษี:</span></p>
                     </td>
 
                     <td
                         style="padding-left: 5px; border-left: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{ $customer->customer_fax ? $customer->customer_fax : '-' }}</span></p>
+                        <p><span>{{ $customer->customer_texid ? $customer->customer_texid : '-' }}</span></p>
                     </td>
 
                     <td style="border: none;"></td>
@@ -494,7 +494,7 @@
                             <td style="width: 276.6px; text-align: center;">
                                 <b style="color: #fff">ว่าง</b></br>
                                 <p>___________________________</p>
-                                <p><b>Sale / Operation</b></p>
+                                <p><b>ผู้วางบิล</b></p>
                                 <p><b>{{ thaidate('j F Y', $creditNoteModel->creditnote_date) }}</b></p>
                             </td>
                             <td style="border: none;"></td>

@@ -31,25 +31,22 @@ class creditNoteController extends Controller
          $dateStart = $request->date_start;
          $dateEnd = $request->date_end;
  
-         $creditNote = creditNoteModel::with('quote', 'taxinvoice')
+         $creditNote = creditNoteModel::with(['quote.customer', 'taxinvoice'])
              ->when($request->creditnote_number, function ($query) use ($request) {
                  return $query->where('creditnote_number', $request->creditnote_number);
              })
- 
              ->when($request->creditnote_quote, function ($query) use ($request) {
-                 // แก้ไข closure
                  return $query->whereHas('quote', function ($q1) use ($request) {
                      $q1->where('quote_number', $request->creditnote_quote);
                  });
              })
+             // filter customer_id ผ่าน quote->customer_id
              ->when($request->customer_id, function ($query) use ($request) {
-                 // แก้ไข closure
-                 return $query->whereHas('quote', function ($q1) use ($request) {
+                 return $query->whereHas('quote.customer', function ($q1) use ($request) {
                      $q1->where('customer_id', $request->customer_id);
                  });
              })
              ->when($request->creditnote_tax, function ($query) use ($request) {
-                 // แก้ไข closure
                  return $query->whereHas('taxinvoice', function ($q1) use ($request) {
                      $q1->where('taxinvoice_number', $request->creditnote_tax);
                  });
@@ -68,8 +65,18 @@ class creditNoteController extends Controller
  
              ->paginate(10);
  
-         $customers = customerModel::latest()->get();
-         return view('credit-note.index', compact('creditNote', 'customers'));
+        // ดึง customer เฉพาะที่มีใบลดหนี้ (unique ด้วย customer_id)
+        $customers = creditNoteModel::with('quote.customer')
+            ->get()
+            ->map(function($item) {
+                return optional(optional($item->quote)->customer);
+            })
+            ->filter(function($customer) {
+                return $customer && $customer->customer_id;
+            })
+            ->unique('customer_id')
+            ->values();
+        return view('credit-note.index', compact('creditNote', 'customers'));
      }
  
      public function create()

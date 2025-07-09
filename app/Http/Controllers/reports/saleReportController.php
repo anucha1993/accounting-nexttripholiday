@@ -77,7 +77,8 @@ class saleReportController extends Controller
         $sales = saleModel::select('name', 'id')
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
             ->get();
+        $campaignSource = DB::table('campaign_source')->get();
 
-        return view('reports.sales-form', compact('taxinvoices', 'request', 'grandTotalSum', 'vat', 'wholesales', 'country', 'sales'));
+        return view('reports.sales-form', compact('taxinvoices', 'request', 'grandTotalSum', 'vat', 'wholesales', 'country', 'sales', 'campaignSource'));
     }
 }

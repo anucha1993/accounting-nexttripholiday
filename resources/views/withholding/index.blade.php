@@ -269,7 +269,17 @@
                                     @endif
                                 </td>
                                 <td>{{ $document->customer->customer_name ?? '-' }}</td>
-                                <td>{{ $document->customer->customer_name ?? $document->wholesale->wholesale_name_th ?? '-' }}</td>
+                                <td>
+                                    @if(isset($document->quote) && isset($document->quote->wholesale))
+                                        {{ $document->quote->wholesale->wholesale_name_th }}
+                                    @elseif(isset($document->customer))
+                                        {{ $document->customer->customer_name }}
+                                    @elseif(isset($document->wholesale))
+                                        {{ $document->wholesale->wholesale_name_th }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                 <td class="text-center">
                                     @if($document->document_doc_date)
                                         <span class="badge bg-light text-dark">

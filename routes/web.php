@@ -66,6 +66,7 @@ use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\MPDF\MPDF_WithhodingDocumentController;
 use App\Http\Controllers\reports\paymentWholesaleReportController;
 use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
+use App\Http\Controllers\quotations\QuoteListController;
 
 /*
 |--------------------------------------------------------------------------
@@ -156,8 +157,8 @@ Route::post('/product/store',[productController::class,'store'])->name('product.
 
 
 // quote
-Route::get('quotations/',[quoteController::class,'index'])->name('quote.index');
-Route::get('/',[quoteController::class,'index'])->name('quote.index');
+Route::get('quotations/',[QuoteListController::class,'index'])->name('quote.index');
+Route::get('/',[QuoteListController::class,'index'])->name('quote.index');
 Route::post('quote/store',[quoteController::class,'store'])->name('quote.store');
 Route::get('quote/edit/{quotationModel}',[quoteController::class,'edit'])->name('quote.edit');
 Route::put('quote/update/{quotationModel}',[quoteController::class,'update'])->name('quote.update');//
@@ -391,8 +392,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/product/store', [productController::class, 'store'])->name('product.store')->middleware('permission:product-create');
 
     // Quotes
-    Route::get('quotations/', [quoteController::class, 'index'])->name('quote.index')->middleware('permission:quotation-view');
-    Route::get('/', [quoteController::class, 'index'])->name('quote.index')->middleware('permission:quotation-view');
+    Route::get('quotations/', [QuoteListController::class, 'index'])->name('quote.index')->middleware('permission:quotation-view');
+    Route::get('/', [QuoteListController::class, 'index'])->name('quote.index')->middleware('permission:quotation-view');
     Route::post('quote/store', [quoteController::class, 'store'])->name('quote.store')->middleware('permission:quotation-create');
     Route::get('quote/edit/{quotationModel}', [quoteController::class, 'edit'])->name('quote.edit')->middleware('permission:quotation-edit');
     Route::put('quote/update/{quotationModel}', [quoteController::class, 'update'])->name('quote.update')->middleware('permission:quotation-edit');
@@ -436,4 +437,6 @@ Route::middleware(['auth', 'permission:notification-view'])->group(function () {
     Route::post('/notifications/mark-all-as-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
     Route::get('/notifications/go/{id}', [App\Http\Controllers\NotificationController::class, 'goToNotification'])->name('notifications.goTo');
 });
+
+Route::get('quotelist', [QuoteListController::class, 'index'])->name('quotelist.index');
 

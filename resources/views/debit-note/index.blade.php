@@ -120,8 +120,8 @@
                                 <label for="">สถานะ</label>
                                 <select name="status" class="form-select">
                                     <option value="">ทั้งหมด</option>
-                                    <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>ใช้งาน</option>
-                                    <option value="cancel" {{ request('status') == 'cancel' ? 'selected' : '' }}>ยกเลิก</option>
+                                    <option value="Y" {{ request('status') == 'Y' ? 'selected' : '' }}>ใช้งาน</option>
+                                    <option value="N" {{ request('status') == 'N' ? 'selected' : '' }}>ยกเลิก</option>
                                 </select>
                             </div>
 
