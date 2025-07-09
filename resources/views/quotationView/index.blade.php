@@ -275,8 +275,8 @@
                     <td class="data-cell">091-091-6364</td>
                 </tr>
                 <tr>
-                    <td class="label-cell"><b>Fax:</b></td>
-                    <td class="data-cell">{{ $customer->customer_fax ? $customer->customer_fax : '-' }}</td>
+                    <td class="label-cell"><b>Tax ID:</b></td>
+                    <td class="data-cell">{{ $customer->customer_texid ? $customer->customer_texid : '-' }}</td>
                     <td class="empty-cell"></td>
                     <td class="label-cell"><b>Tour Code:</b></td>
                     <td class="data-cell">{{ $quotationModel->quote_tour ?: $quotationModel->quote_tour_code }}</td>
@@ -399,22 +399,23 @@
         <table class="signature-table">
             <tr>
                 <td>
-                    <b>{{ $sale->name }}</b><br>
+                     <span style="color: transparent;">ว่าง</span><br>
+                    <div class="signature-line"></div>
+                    <b>Customer</b><br>
+                    <b>{{ thaidate('j F Y', $quotationModel->quote_date) }}</b>
+                </td>
+                <td style="border: none; width: 20px;"></td>
+                <td>
+                     <b>{{ $sale->name }}</b><br>
+                    <span style="color: transparent;">ว่าง</span><br>
+                   
                     <div class="signature-line"></div>
                     <b>Sale / Operation</b><br>
                     <b>{{ thaidate('j F Y', $quotationModel->quote_date) }}</b>
                 </td>
                 <td style="border: none; width: 20px;"></td>
                 <td>
-                    <span style="color: transparent;">ว่าง</span><br>
-                    <div class="signature-line"></div>
-                    <b>Sale / Operation</b><br>
-                    <b>{{ thaidate('j F Y', $quotationModel->quote_date) }}</b>
-                </td>
-                <td style="border: none; width: 20px;"></td>
-                <td>
-                    <span style="color: transparent;">ว่าง</span><br>
-                    <span style="color: transparent;">ว่าง</span><br>
+<img src="{{URL::asset('signature/next_signature_01.png')}}" alt="Image" class="image" style="width: 100px; ">
                     <span style="color: transparent;">ว่าง</span><br>
                     <b>ผู้อนุมัติ</b><br>
                     <b>{{ thaidate('j F Y', $quotationModel->quote_date) }}</b>

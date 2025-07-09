@@ -151,12 +151,12 @@
                     <td style="border: none;"></td>
                     <td
                         style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <h4><b>Tel:</b></h4>
+                        <h4><b>Booking:</b></h4>
                     </td>
 
                     <td
                         style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>091-0916364</span></p>
+                        <p><span>{{$quotationModel->quote_number}}</span></p>
                     </td>
                 </tr>
                 <tr>
@@ -172,23 +172,23 @@
                     <td style="border: none;"></td>
                     <td
                         style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <h4><b>Email:</b></h4>
+                        <h4><b>Sale:</b></h4>
                     </td>
 
                     <td
                         style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{ $sale->email }}</span></p>
+                        <p><span>{{ $sale->name }}</span></p>
                     </td>
                 </tr>
                 <tr>
                     <td
                         style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><b>Fax:</span></p>
+                        <p><b>Tax ID:</span></p>
                     </td>
 
                     <td
                         style="width: 400px; padding-left: 5px; border-left: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{ $customer->customer_fax ? $customer->customer_fax : '-' }}</span></p>
+                        <p><span>{{ $customer->customer_texid ? $customer->customer_texid : '-' }}</span></p>
                     </td>
 
                     <td style="border: none;"></td>
@@ -287,11 +287,11 @@
                         @if ($paymentModel->payment_method === 'transfer-money')
                             โอนเงินผ่านธนาคาร<br>
                             วันที่โอน : @if ($paymentModel->payment_date_time) {{ thaidate('j F Y', $paymentModel->payment_date_time) .' เวลา : '.date('H:m', strtotime($paymentModel->payment_date_time)) }} น. @else - @endif <br>
-                            เช็คธนาคาร : {{ $bank->bank_name}}
+                            เข้าบัญชี : {{ $bank->bank_name}}
                         @endif
                         @if ($paymentModel->payment_method === 'check')
                             วิธีการชำระเงิน : เช็ค<br>
-                            โอนเข้าบัญชี : {{ $paymentModel->payment_bank }} <br>
+                            เข้าบัญชี : {{ $paymentModel->payment_bank }} <br>
                             เลขที่เช็ค : {{ $paymentModel->payment_check_number }} <br>
                             วันที่ : {{ thaidate('j F Y', $paymentModel->payment_date_time) .' เวลา : '.date('H:m', strtotime($paymentModel->payment_date_time)) }} น.<br>
                         @endif

@@ -254,7 +254,7 @@
                             <tr class="align-middle">
                                 <td class="text-center fw-bold">{{ $key + 1 }}</td>
                                 <td class="text-center">
-                                    <small class="text-muted">{{ date('d/m/y', strtotime($item->quote_date)) }}</small>
+                                    <small class="text-muted">{{ date('d/m/y', strtotime($item->quote_booking_create)) }}</small>
                                 </td>
                                 <td>
                                     <div class="d-flex flex-column">
