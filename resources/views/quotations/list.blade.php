@@ -115,7 +115,7 @@
                                 'เกินกำหนดชำระเงิน',
                                 'รอชำระเงินเต็มจำนวน',
                                 'รอชำระเงินมัดจำ',
-                                'รอชำระเงิน',
+                                'คืนเงินแล้ว',
                             ];
                             @endphp
                             <select name="search_customer_payment" class="form-select" style="width: 100%">

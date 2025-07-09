@@ -160,7 +160,7 @@ class QuoteListController extends Controller
             'เกินกำหนดชำระเงิน',
             'รอชำระเงินเต็มจำนวน',
             'รอชำระเงินมัดจำ',
-            'รอชำระเงิน',
+            'คืนเงินแล้ว',
         ];
 
         return view('quotations.list', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'customerPaymentStatuses', 'campaignSource'));
