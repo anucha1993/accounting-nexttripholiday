@@ -71,7 +71,7 @@ class QuoteListController extends Controller
                 });
             })
             ->when($searchQuoteDateStart && $searchQuoteDateEnd, function ($query) use ($searchQuoteDateStart, $searchQuoteDateEnd) {
-                return $query->whereBetween('quote_date', [$searchQuoteDateStart, $searchQuoteDateEnd]);
+                return $query->whereBetween('quote_booking_create', [$searchQuoteDateStart, $searchQuoteDateEnd]);
             })
             ->when($searchAirline && $searchAirline != 'all', function ($query) use ($searchAirline) {
                 return $query->where('quote_airline', $searchAirline);
