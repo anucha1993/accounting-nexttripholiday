@@ -12,6 +12,14 @@ use Illuminate\Support\Facades\DB;
 
 class QuoteListController extends Controller
 {
+    
+    public function __construct()
+    {
+        $this->middleware('permission:view-quote', ['only' => ['index']]);
+        $this->middleware('permission:create-quote', ['only' => ['create', 'store']]);
+        $this->middleware('permission:edit-quote', ['only' => ['edit', 'update', 'cancel']]);
+        $this->middleware('permission:delete-quote', ['only' => ['destroy']]);
+    }
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', 50);
@@ -72,7 +80,7 @@ class QuoteListController extends Controller
                 return $query->where('quote_pax_total', $searchPax);
             })
             ->when($searchLogStatus && $searchLogStatus === 'allCheck', function ($query, $searchLogStatus) {
-                return $query->whereHas('quoteLogStatus', function ($q1) use ($searchLogStatus) {
+                return $query->whereHas('quoteLog', function ($q1) use ($searchLogStatus) {
                     $q1->where('booking_email_status', 'ส่งแล้ว');
                     $q1->where('invoice_status', 'ได้แล้ว');
                     $q1->where('slip_status', 'ส่งแล้ว');
@@ -83,7 +91,7 @@ class QuoteListController extends Controller
                 });
             })
             ->when($searchLogStatus, function ($query, $searchLogStatus) {
-                return $query->whereHas('quoteLogStatus', function ($q1) use ($searchLogStatus) {
+                return $query->whereHas('quoteLog', function ($q1) use ($searchLogStatus) {
                     switch ($searchLogStatus) {
                         case 'booking_email_status': $q1->where('booking_email_status', 'ส่งแล้ว'); break;
                         case 'invoice_status': $q1->where('invoice_status', 'ได้แล้ว'); break;
@@ -95,8 +103,8 @@ class QuoteListController extends Controller
                     }
                 });
             })
-            ->when($searchNotLogStatus, function ($query, $searchNotLogStatus) {
-                return $query->whereHas('quoteLogStatus', function ($q1) use ($searchNotLogStatus) {
+            ->when(!empty($searchNotLogStatus) && $searchNotLogStatus !== 'all', function ($query) use ($searchNotLogStatus) {
+                return $query->whereHas('quoteLog', function ($q1) use ($searchNotLogStatus) {
                     switch ($searchNotLogStatus) {
                         case 'booking_email_status': $q1->where('booking_email_status', 'ยังไม่ได้ส่ง')->orWhereNull('booking_email_status'); break;
                         case 'invoice_status': $q1->where('invoice_status','ยังไม่ได้')->orWhereNull('invoice_status'); break;
@@ -117,37 +125,114 @@ class QuoteListController extends Controller
             ->when($searchWholesale && $searchWholesale != 'all', function ($query) use ($searchWholesale) {
                 return $query->where('quote_wholesale', $searchWholesale);
             })
+            ->when($request->input('search_campaign_source') && $request->input('search_campaign_source') != 'all', function ($query) use ($request) {
+                return $query->whereHas('quoteCustomer', function ($q) use ($request) {
+                    $q->where('customer_campaign_source', $request->input('search_campaign_source'));
+                });
+            })
+            // กรองสถานะชำระโฮลเซลล์ที่ SQL (ใช้ aggregate จาก relation)
+            ->when(!empty($searchPaymentWholesaleStatus) && $searchPaymentWholesaleStatus !== 'all', function ($query) use ($searchPaymentWholesaleStatus) {
+                switch ($searchPaymentWholesaleStatus) {
+                    case 'รอชำระเงินมัดจำ':
+                        // inputtax > 0, payment_wholesale = 0
+                        return $query->whereHas('inputtax', function ($q) {
+                            $q->where('input_tax_grand_total', '>', 0);
+                        })->whereDoesntHave('paymentWholesale', function ($q) {
+                            $q->where('payment_wholesale_total', '>', 0);
+                        });
+                    case 'รอชำระเงินส่วนที่เหลือ':
+                        // inputtax > 0, payment_wholesale > 0, payment_wholesale < inputtax, และยอดค้าง > 0, ไม่ใช่ cancel
+                        return $query->whereHas('inputtax', function ($q) {
+                                $q->where('input_tax_grand_total', '>', 0);
+                            })
+                            ->whereHas('paymentWholesale', function ($q) {
+                                $q->where('payment_wholesale_total', '>', 0);
+                            })
+                            ->whereRaw('(
+                                SELECT SUM(payment_wholesale_total) FROM payment_wholesale WHERE payment_wholesale_quote_id = quotation.quote_id
+                            ) < (
+                                SELECT input_tax_grand_total FROM input_tax WHERE input_tax_quote_id = quotation.quote_id LIMIT 1
+                            )')
+                            ->whereRaw('(
+                                (
+                                    SELECT input_tax_grand_total FROM input_tax WHERE input_tax_quote_id = quotation.quote_id LIMIT 1
+                                ) - (
+                                    SELECT SUM(payment_wholesale_total) FROM payment_wholesale WHERE payment_wholesale_quote_id = quotation.quote_id
+                                ) > 0
+                            )')
+                            ->where('quote_status', '!=', 'cancel');
+                    case 'ชำระเงินครบแล้ว':
+                        // payment_wholesale >= inputtax, inputtax > 0
+                        return $query->whereHas('inputtax', function ($q) {
+                            $q->where('input_tax_grand_total', '>', 0);
+                        })->whereRaw('(
+                            SELECT SUM(payment_wholesale_total) FROM payment_wholesale WHERE payment_wholesale_quote_id = quotation.quote_id
+                        ) >= (
+                            SELECT input_tax_grand_total FROM input_tax WHERE input_tax_quote_id = quotation.quote_id LIMIT 1
+                        )');
+                    case 'โอนเงินให้โฮลเซลล์เกิน':
+                        // payment_wholesale > inputtax, inputtax > 0
+                        return $query->whereHas('inputtax', function ($q) {
+                            $q->where('input_tax_grand_total', '>', 0);
+                        })->whereRaw('(
+                            SELECT SUM(payment_wholesale_total) FROM payment_wholesale WHERE payment_wholesale_quote_id = quotation.quote_id
+                        ) > (
+                            SELECT input_tax_grand_total FROM input_tax WHERE input_tax_quote_id = quotation.quote_id LIMIT 1
+                        )');
+                    case 'รอโฮลเซลคืนเงิน':
+                        // payment_wholesale > inputtax, refund = 0 หรือ null
+                        return $query->whereHas('inputtax', function ($q) {
+                            $q->where('input_tax_grand_total', '>', 0);
+                        })->whereRaw('(
+                            SELECT SUM(payment_wholesale_total) FROM payment_wholesale WHERE payment_wholesale_quote_id = quotation.quote_id
+                        ) > (
+                            SELECT input_tax_grand_total FROM input_tax WHERE input_tax_quote_id = quotation.quote_id LIMIT 1
+                        )')
+                        ->whereRaw('(
+                            SELECT SUM(payment_wholesale_refund_total) FROM payment_wholesale WHERE payment_wholesale_quote_id = quotation.quote_id
+                        ) IS NULL OR (
+                            SELECT SUM(payment_wholesale_refund_total) FROM payment_wholesale WHERE payment_wholesale_quote_id = quotation.quote_id
+                        ) = 0');
+                    case 'โฮลเซลคืนเงินแล้ว':
+                        // payment_wholesale > inputtax, refund >= (payment_wholesale - inputtax)
+                        return $query->whereHas('inputtax', function ($q) {
+                            $q->where('input_tax_grand_total', '>', 0);
+                        })->whereRaw('(
+                            SELECT SUM(payment_wholesale_total) FROM payment_wholesale WHERE payment_wholesale_quote_id = quotation.quote_id
+                        ) > (
+                            SELECT input_tax_grand_total FROM input_tax WHERE input_tax_quote_id = quotation.quote_id LIMIT 1
+                        )')
+                        ->whereRaw('(
+                            SELECT SUM(payment_wholesale_refund_total) FROM payment_wholesale WHERE payment_wholesale_quote_id = quotation.quote_id
+                        ) >= (
+                            SELECT SUM(payment_wholesale_total) FROM payment_wholesale WHERE payment_wholesale_quote_id = quotation.quote_id
+                            ) - (
+                            SELECT input_tax_grand_total FROM input_tax WHERE input_tax_quote_id = quotation.quote_id LIMIT 1
+                        )');
+                    default:
+                        return $query;
+                }
+            })
             ->orderBy('created_at', 'desc');
 
         $quotations = $quotationsQuery->paginate($perPage)->withQueryString();
 
-        // กรองสถานะลูกค้าด้วย PHP (ถ้าจำเป็น)
-        if ($searchCustomerPayment !== 'all') {
-            $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchCustomerPayment) {
-                return $quotation->customer_payment_status === $searchCustomerPayment;
-            })->values();
-            $quotations->setCollection($filtered);
-        }
-
-        // กรองสถานะโฮลเซลล์ด้วย PHP (filter เฉพาะค่าที่ตรงกับ dropdown)
-        if ($searchPaymentWholesaleStatus && $searchPaymentWholesaleStatus !== 'all') {
+        // Filter ด้วย getStatusPaymentWhosale หลัง paginate เฉพาะกรณีเลือกสถานะ (เพื่อให้ตรงกับ Blade)
+        if (!empty($searchPaymentWholesaleStatus) && $searchPaymentWholesaleStatus !== 'all') {
             $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchPaymentWholesaleStatus) {
                 $status = strip_tags(getStatusPaymentWhosale($quotation));
-                // รองรับสถานะ "โอนเงินให้โฮลเซลล์เกิน" ด้วย
                 return $status === $searchPaymentWholesaleStatus;
             })->values();
             $quotations->setCollection($filtered);
         }
-
-        // เพิ่มตัวเลือกสถานะโอนเงินให้โฮลเซลล์เกินใน dropdown
-        $wholesalePaymentStatuses = [
-            'รอชำระเงินมัดจำ',
-            'รอชำระเงินส่วนที่เหลือ',
-            'ชำระเงินครบแล้ว',
-            'รอโฮลเซลคืนเงิน',
-            'โฮลเซลคืนเงินแล้ว',
-            'โอนเงินให้โฮลเซลล์เกิน',
-        ];
+        // Filter ด้วย getQuoteStatusPayment หลัง paginate เฉพาะกรณีเลือกสถานะ (เพื่อให้ตรงกับ Blade)
+        if (!empty($searchCustomerPayment) && $searchCustomerPayment !== 'all') {
+            $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchCustomerPayment) {
+                $status = strip_tags(getQuoteStatusPayment($quotation));
+                return $status === $searchCustomerPayment;
+            })->values();
+            $quotations->setCollection($filtered);
+        }
 
         $SumPax = $quotations->sum('quote_pax_total');
         $SumTotal = $quotations->sum('quote_grand_total');
@@ -162,6 +247,15 @@ class QuoteListController extends Controller
             'รอชำระเงินมัดจำ',
             'คืนเงินแล้ว',
         ];
+
+        // ลบ PHP filter สถานะโฮลเซลล์ออก (filter ที่ SQL แล้ว)
+        // if ($searchPaymentWholesaleStatus && $searchPaymentWholesaleStatus !== 'all') {
+        //     $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchPaymentWholesaleStatus) {
+        //         $status = strip_tags(getStatusPaymentWhosale($quotation));
+        //         return $status === $searchPaymentWholesaleStatus;
+        //     })->values();
+        //     $quotations->setCollection($filtered);
+        // }
 
         return view('quotations.list', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'customerPaymentStatuses', 'campaignSource'));
     }

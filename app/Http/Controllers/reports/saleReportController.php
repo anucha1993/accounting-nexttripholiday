@@ -52,6 +52,11 @@ class saleReportController extends Controller
             })
             ->when($saleId, function ($q) use ($saleId) {
                 return $q->whereHas('invoice.quotation', fn($q1) => $q1->where('quote_sale', $saleId));
+            })
+            ->when($request->input('campaign_source_id'), function ($q) use ($request) {
+                return $q->whereHas('invoice.quotation.quoteCustomer', function ($q1) use ($request) {
+                    $q1->where('customer_campaign_source', $request->input('campaign_source_id'));
+                });
             });
 
         if ($mode === 'total') {

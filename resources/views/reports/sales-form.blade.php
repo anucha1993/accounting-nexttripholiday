@@ -481,6 +481,18 @@
                                 </div>
 
                                 <div class="col-md-2">
+                                    <label class="form-label"><i class="fas fa-bullhorn me-1"></i>ที่มาของลูกค้า</label>
+                                    <select name="campaign_source_id" class="form-select select2-dropdown" data-placeholder="เลือกที่มา">
+                                        <option value="">ทั้งหมด</option>
+                                        @foreach ($campaignSource as $source)
+                                            <option value="{{ $source->campaign_source_id }}" @if ($request->campaign_source_id == $source->campaign_source_id) selected @endif>
+                                                {{ $source->campaign_source_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2">
                                     <label class="form-label"><i class="fas fa-calculator me-1"></i>ประเภทคำนวนค่าคอมมิชชั่น</label>
                                     <select name="commission_mode" class="form-select">
                                         <option @if ($request->commission_mode == 'qt') selected @endif value="qt">แบบ QT</option>

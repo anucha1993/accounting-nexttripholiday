@@ -137,6 +137,17 @@
                                 @endforelse
                             </select>
                         </div>
+                        <div class="col-md-2">
+                            <label>ที่มาของลูกค้า</label>
+                            <select name="search_campaign_source" class="form-select select2" style="width: 100%">
+                                <option value="all">ทั้งหมด</option>
+                                @foreach($campaignSource as $source)
+                                    <option value="{{ $source->campaign_source_id }}" {{ request('search_campaign_source') == $source->campaign_source_id ? 'selected' : '' }}>
+                                        {{ $source->campaign_source_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-2">
@@ -229,6 +240,7 @@
                             <th style="width: 120px;">สถานะลูกค้า</th>
                             <th style="width: 100px;" class="text-end">ยอดเงิน</th>
                             <th style="width: 120px;">สถานะโฮลเซลล์</th>
+                            <th style="width: 100px;">ค้างชำระโฮลเซล</th>
                             <th style="width: 100px;">CheckList</th>
                             <th style="width: 80px;">ผู้ขาย</th>
                             <th style="width: 80px;" class="text-center">จัดการ</th>
@@ -309,6 +321,25 @@
                                     <div class="d-flex flex-wrap gap-1">
                                         {!! getStatusPaymentWhosale($item) !!}
                                     </div>
+                                </td>
+                                <td class="text-end">
+                                    @php
+                                        $totalWholesale = $item->inputtaxTotalWholesale() ?? 0;
+                                        $wholesalePaid = $item->GetDepositWholesale() - $item->GetDepositWholesaleRefund();
+                                        $wholesaleOutstanding = $totalWholesale - $wholesalePaid;
+                                    @endphp
+                                    @if ($wholesaleOutstanding != 0)
+                                         <span class="text-danger fw-bold">{{ number_format($wholesaleOutstanding, 2) }}</span>
+                                    @else
+                                        
+                                    @endif
+
+                                   
+                                    {{-- @if(($item->GetDeposit() > 0) && $item->quote_status != 'cancel' && $totalWholesale > 0 && $wholesaleOutstanding != 0)
+                                        <span class="text-danger fw-bold">{{ number_format($wholesaleOutstanding, 2) }}</span>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif --}}
                                 </td>
                                 <td>
                                     <div class="d-flex flex-wrap gap-1" style="max-width: 100px;">
