@@ -868,6 +868,12 @@
                                         <td>{{ date('d/m/Y', strtotime($item->invoice->quote->quote_date_start)) }} -
                                             {{ date('d/m/Y', strtotime($item->invoice->quote->quote_date_end)) }}</td>
                                         <td>{{ $item->invoice->quote->quoteWholesale->code }}</td>
+                                        
+                                        <td>{{ $item->invoice->customer->customer_name }}</td>
+                                        <td>{{ $item->invoice->quote->quoteCountry->iso2 }}</td>
+                                        <td><span data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="{{ $item->invoice->quote->quote_tour_name ?? $item->invoice->quote->quote_tour_name1 }}">{{ Str::limit($item->invoice->quote->quote_tour_name ?? $item->invoice->quote->quote_tour_name1, 20) }}</span>
+                                        </td>
                                         <td>
                                             @php
                                                 $sourceName = '';
@@ -877,11 +883,6 @@
                                                 }
                                             @endphp
                                             {{ $sourceName ?: 'none' }}
-                                        </td>
-                                        <td>{{ $item->invoice->customer->customer_name }}</td>
-                                        <td>{{ $item->invoice->quote->quoteCountry->iso2 }}</td>
-                                        <td><span data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="{{ $item->invoice->quote->quote_tour_name ?? $item->invoice->quote->quote_tour_name1 }}">{{ Str::limit($item->invoice->quote->quote_tour_name ?? $item->invoice->quote->quote_tour_name1, 20) }}</span>
                                         </td>
                                         <td>{{ $item->invoice->quote->Salename->name }}</td>
                                         <td>{{ $people }}</td>

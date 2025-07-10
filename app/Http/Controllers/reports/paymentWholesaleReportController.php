@@ -33,11 +33,30 @@ public function index(Request $request)
         $query->whereIn('payment_wholesale_quote_id', $quoteIds);
     }
 
+
+    // Payment No.
+    if ($request->filled('payment_wholesale_number')) {
+        $query->where('payment_wholesale_number', 'like', '%' . $request->payment_wholesale_number . '%');
+    }
+
     // เลขใบเสนอราคา
     if ($request->filled('quote_number')) {
         $query->whereHas('quote', function ($q) use ($request) {
             $q->where('quote_number', 'like', '%' . $request->quote_number . '%');
         });
+    }
+
+    // ประเภทการชำระ
+    if ($request->filled('payment_type')) {
+        $query->where('payment_wholesale_type', $request->payment_type);
+    }
+
+    // วันที่ชำระ
+    if ($request->filled('payment_start_date') && $request->filled('payment_end_date')) {
+        $query->whereBetween('payment_wholesale_date', [
+            $request->payment_start_date . ' 00:00:00',
+            $request->payment_end_date . ' 23:59:59'
+        ]);
     }
 
     // 👉 แสดงผลลัพธ์แบบแบ่งหน้า
