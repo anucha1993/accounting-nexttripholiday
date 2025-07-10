@@ -42,210 +42,6 @@ class quoteController extends Controller
         $this->middleware('permission:delete-quote', ['only' => ['destroy']]);
     }
 
-    // public function index(Request $request)
-    // {
-    //     $perPage = $request->input('per_page', 50);
-    //     $searchKeyword = $request->input('search_keyword');
-    //     $searchPeriodDateStart = $request->input('search_period_start');
-    //     $searchPeriodDateEnd = $request->input('search_period_end');
-    //     $searchQuoteDateStart = $request->input('search_booking_start');
-    //     $searchQuoteDateEnd = $request->input('search_booking_end');
-
-    //     $searchDateStartCreated = $request->input('search_tour_date_start_created');
-    //     $searchDateEndCreated = $request->input('search_tour_date_end_created');
-    //     $searchSale = $request->input('search_sale');
-    //     $searchCountry = $request->input('search_country');
-    //     $searchWholesale = $request->input('search_wholesale');
-    //     $searchAirline = $request->input('search_airline');
-    //     $searchPax = $request->input('search_pax');
-    //     $searchLogStatus = $request->input('search_check_list');
-    //     $searchNotLogStatus = $request->input('search_not_check_list');
-    //     $searchPaymentWholesaleStatus = $request->input('search_wholesale_payment');
-    //     $searchCustomerPayment = $request->input('search_customer_payment', 'all');
-
-    //     $sales = saleModel::select('name', 'id')
-    //         ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
-    //         ->get();
-    //     $airlines = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
-
-    //     $country = countryModel::get();
-    //     $wholesales = wholesaleModel::get();
-
-    //     $quotationsQuery = quotationModel::with('Salename', 'quoteCustomer', 'quoteWholesale', 'paymentWholesale', 'quoteInvoice', 'quoteLogStatus')
-    //         // Search คียร์เวิร์ด
-    //         ->when($searchKeyword, function ($query, $searchKeyword) {
-    //             return $query->where(function ($q) use ($searchKeyword) {
-    //                 $q->whereHas('quoteCustomer', function ($q1) use ($searchKeyword) {
-    //                     $q1->where('customer_name', 'LIKE', '%' . $searchKeyword . '%');
-    //                 })
-    //                     ->orWhere('quote_number', 'LIKE', '%' . $searchKeyword . '%')
-    //                     ->orWhere('quote_tour_name', 'LIKE', '%' . $searchKeyword . '%')
-    //                     ->orWhere('quote_tour_name1', 'LIKE', '%' . $searchKeyword . '%')
-    //                     ->orWhere('quote_booking', 'LIKE', '%' . $searchKeyword . '%')
-    //                     ->orWhereHas('quoteInvoice', function ($q2) use ($searchKeyword) {
-    //                         $q2->where('invoice_number', 'LIKE', '%' . $searchKeyword . '%');
-    //                     });
-    //             });
-    //         })
-    //         //Search Quote Date
-    //         ->when($searchPeriodDateStart && $searchPeriodDateEnd, function ($query) use ($searchPeriodDateStart, $searchPeriodDateEnd) {
-    //             return $query->where(function ($q) use ($searchPeriodDateStart, $searchPeriodDateEnd) {
-    //                 $q->whereBetween('quote_date_start', [$searchPeriodDateStart, $searchPeriodDateEnd])
-    //                     ->orWhereBetween('quote_date_end', [$searchPeriodDateStart, $searchPeriodDateEnd])
-    //                     ->orWhere(function ($q) use ($searchPeriodDateStart, $searchPeriodDateEnd) {
-    //                         $q->where('quote_date_start', '<=', $searchPeriodDateStart)->where('quote_date_end', '>=', $searchPeriodDateEnd);
-    //                     });
-    //             });
-    //         })
-
-    //         // Searchs Quote Date
-    //         ->when($searchQuoteDateStart && $searchQuoteDateEnd, function ($query) use ($searchQuoteDateStart, $searchQuoteDateEnd) {
-    //             return $query->whereBetween('quote_date', [$searchQuoteDateStart, $searchQuoteDateEnd]);
-    //         })
-
-    //         // Search Airline
-    //         ->when($searchAirline && $searchAirline != 'all', function ($query) use ($searchAirline) {
-    //             return $query->where('quote_airline', $searchAirline);
-    //         })
-    //         // Search Pax
-    //         ->when($searchPax && $searchPax != null, function ($query) use ($searchPax) {
-    //             return $query->where('quote_pax_total', $searchPax);
-    //         })
-
-    //          // Search Quote Log Status ทำหมดแล้ว
-    //          ->when($searchLogStatus && $searchLogStatus === 'allCheck', function ($query, $searchLogStatus) {
-    //             return $query->whereHas('quoteLogStatus', function ($q1) use ($searchLogStatus) {
-    //                    $q1->where('booking_email_status', 'ส่งแล้ว');
-    //                    $q1->where('invoice_status', 'ได้แล้ว');
-    //                    $q1->where('slip_status', 'ส่งแล้ว');
-    //                    $q1->where('passport_status', 'ส่งแล้ว');
-    //                    $q1->where('appointment_status', 'ส่งแล้ว');
-    //                    $q1->where('withholding_tax_status', 'ออกแล้ว');
-    //                    $q1->where('wholesale_tax_status', 'ได้รับแล้ว');
-    //             });
-    //         })
-
-    //         // Search Quote Log Status
-    //         ->when($searchLogStatus, function ($query, $searchLogStatus) {
-    //             return $query->whereHas('quoteLogStatus', function ($q1) use ($searchLogStatus) {
-    //                 switch ($searchLogStatus) {
-    //                     case 'booking_email_status':
-    //                         $q1->where('booking_email_status', 'ส่งแล้ว');
-    //                         break;
-    //                     case 'invoice_status':
-    //                         $q1->where('invoice_status', 'ได้แล้ว');
-    //                         break;
-    //                     case 'slip_status':
-    //                         $q1->where('slip_status', 'ส่งแล้ว');
-    //                         break;
-    //                     case 'passport_status':
-    //                         $q1->where('passport_status', 'ส่งแล้ว');
-    //                         break;
-    //                     case 'appointment_status':
-    //                         $q1->where('appointment_status', 'ส่งแล้ว');
-    //                         break;
-    //                     case 'withholding_tax_status':
-    //                         $q1->where('withholding_tax_status', 'ออกแล้ว');
-    //                         break;
-    //                     case 'wholesale_tax_status':
-    //                         $q1->where('wholesale_tax_status', 'ได้รับแล้ว');
-    //                         break;
-    //                 }
-    //             });
-    //         })
-
-    //          // Search Quote Log Status Not
-    //          ->when($searchNotLogStatus, function ($query, $searchNotLogStatus) {
-    //             return $query->whereHas('quoteLogStatus', function ($q1) use ($searchNotLogStatus) {
-    //                 switch ($searchNotLogStatus) {
-    //                     case 'booking_email_status':
-    //                         $q1->where('booking_email_status', 'ยังไม่ได้ส่ง')->orWhereNull('booking_email_status');
-    //                         break;
-    //                     case 'invoice_status':
-    //                         $q1->where('invoice_status','ยังไม่ได้')->orWhereNull('invoice_status');
-    //                         break;
-    //                     case 'slip_status':
-    //                         $q1->where('slip_status','ยังไม่ได้ส่ง')->orWhereNull('slip_status');
-    //                         break;
-    //                     case 'passport_status':
-    //                         $q1->where('passport_status','ยังไม่ได้ส่ง')->orWhereNull('passport_status');
-    //                         break;
-    //                     case 'appointment_status':
-    //                         $q1->where('appointment_status','ยังไม่ได้ส่ง')->orWhereNull('appointment_status');
-    //                         break;
-    //                     case 'withholding_tax_status':
-    //                         $q1->where('withholding_tax_status','ยังไม่ได้ออก')->orWhereNull('withholding_tax_status');
-    //                         break;
-    //                     case 'wholesale_tax_status':
-    //                         $q1->where('wholesale_tax_status','ยังไม่ได้รับ')->orWhereNull('wholesale_tax_status');
-    //                         break;
-    //                 }
-    //             });
-    //         })
-
-    //         ->when($searchDateStartCreated && $searchDateEndCreated, function ($query) use ($searchDateStartCreated, $searchDateEndCreated) {
-    //             return $query->whereBetween('quote_booking_create', [$searchDateStartCreated, $searchDateEndCreated]);
-    //         })
-    //         ->when($searchSale && $searchSale != 'all', function ($query) use ($searchSale) {
-    //             return $query->where('quote_sale', $searchSale);
-    //         })
-    //         ->when($searchCountry && $searchCountry != 'all', function ($query) use ($searchCountry) {
-    //             return $query->where('quote_country', $searchCountry);
-    //         })
-    //         ->when($searchWholesale && $searchWholesale != 'all', function ($query) use ($searchWholesale) {
-    //             return $query->where('quote_wholesale', $searchWholesale);
-    //         })
-
-    //         ->when($searchPaymentWholesaleStatus === 'NULL', function ($query) {
-    //             // "รอชำระเงิน" ไม่มี paymentWholesale
-    //             $query->whereDoesntHave('paymentWholesale');
-    //         })
-    //         ->when($searchPaymentWholesaleStatus === 'deposit', function ($query) {
-    //             // "รอชำระเงินเต็มจำนวน" แถวล่าสุดของ paymentWholesale เป็น deposit
-    //             $query->whereHas('paymentWholesale', function ($q) {
-    //                 $q->where('payment_wholesale_id', function ($subquery) {
-    //                     $subquery->select('payment_wholesale_id')->from('payment_wholesale')->whereColumn('payment_wholesale.payment_wholesale_quote_id', 'quotation.quote_id')->orderBy('payment_wholesale_id', 'desc')->limit(1);
-    //                 })->where('payment_wholesale_type', 'deposit');
-    //             });
-    //         })
-    //         ->when($searchPaymentWholesaleStatus === 'full', function ($query) {
-    //             // "ชำระเงินแล้ว" แถวล่าสุดของ paymentWholesale เป็น full
-    //             $query->whereHas('paymentWholesale', function ($q) {
-    //                 $q->where('payment_wholesale_id', function ($subquery) {
-    //                     $subquery->select('payment_wholesale_id')->from('payment_wholesale')->whereColumn('payment_wholesale.payment_wholesale_quote_id', 'quotation.quote_id')->orderBy('payment_wholesale_id', 'desc')->limit(1);
-    //                 })->where('payment_wholesale_type', 'full');
-    //             });
-    //         })
-    //         // Customer Payment Status (PHP-side, as it's computed)
-    //         ->orderBy('created_at', 'desc');
-
-    //     // Always use paginate for correct pagination and links
-    //     $quotations = $quotationsQuery->paginate($perPage)->withQueryString();
-
-    //     // กรองสถานะลูกค้าด้วย PHP (ถ้าจำเป็น)
-    //     if ($searchCustomerPayment !== 'all') {
-    //         $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchCustomerPayment) {
-    //             // ใช้ accessor ที่เพิ่มใน model
-    //             return $quotation->customer_payment_status === $searchCustomerPayment;
-    //         })->values();
-    //         $quotations->setCollection($filtered);
-    //     }
-
-    //     // กรองสถานะโฮลเซลล์ (wholesale payment) ด้วย PHP (ถ้าจำเป็น)
-    //     if ($searchPaymentWholesaleStatus && !in_array($searchPaymentWholesaleStatus, ['NULL', 'deposit', 'full'])) {
-    //         $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchPaymentWholesaleStatus) {
-    //             // สมมติใช้ helper getQuoteStatusPaymentWholesale (หรือชื่อที่ใช้จริง)
-    //             $status = strip_tags(getStatusPaymentWhosale($quotation));
-    //             return $status === $searchPaymentWholesaleStatus;
-    //         });
-    //         $quotations->setCollection($filtered);
-    //     }
-
-    //     $SumPax = $quotations->sum('quote_pax_total');
-    //     $SumTotal = $quotations->sum('quote_grand_total');
-
-    //     return view('quotations.index', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request'));
-    // }
 
     public function generateRunningBooking()
     {
@@ -364,10 +160,32 @@ class quoteController extends Controller
         $runningCode = $this->generateRunningCodeIV();
 
         if ($request->customer_type_new !== 'customerold') {
-            $runningCodeCus = $this->generateRunningCodeCUS();
-            $request->merge(['customer_number' => $runningCodeCus]);
-            //customerNew
-            $customerModel = customerModel::create($request->all());
+            // ตรวจสอบลูกค้าซ้ำตามเงื่อนไขที่กำหนด
+            $customerName = trim($request->customer_name);
+            $customerEmail = trim($request->customer_email);
+            $customerByName = customerModel::where('customer_name', $customerName)->first();
+            $customerByEmail = customerModel::where('customer_email', $customerEmail)->first();
+
+            if ($customerByName && $customerByEmail && $customerByName->customer_id === $customerByEmail->customer_id) {
+                // กรณีชื่อและอีเมลตรงกัน ให้ update
+                $customerByName->update([
+                    'customer_name' => $customerName,
+                    'customer_email' => $customerEmail,
+                    'customer_address' => $request->customer_address,
+                    'customer_texid' => $request->customer_texid,
+                    'customer_tel' => $request->customer_tel,
+                    'customer_fax' => $request->customer_fax,
+                    'customer_date' => $request->customer_date,
+                    'customer_campaign_source' => $request->customer_campaign_source,
+                    'customer_social_id' => $request->customer_social_id,
+                ]);
+                $customerModel = $customerByName;
+            } else {
+                // insert ใหม่ (กรณีชื่อซ้ำแต่ email ไม่ตรง หรือ email ซ้ำแต่ชื่อไม่ตรง หรือไม่ซ้ำทั้งคู่)
+                $runningCodeCus = $this->generateRunningCodeCUS();
+                $request->merge(['customer_number' => $runningCodeCus]);
+                $customerModel = customerModel::create($request->all());
+            }
         } else {
             //customerOld
             customerModel::where('customer_id', $request->customer_id)->update([

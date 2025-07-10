@@ -57,7 +57,7 @@ use App\Http\Controllers\payments\paymentCreditController;
 use App\Http\Controllers\reports\inputTaxReportController;
 use App\Http\Controllers\Invoices\InvoiceBookingController;
 use App\Http\Controllers\MPDF\MPDF_CreditReceiptController;
-use App\Http\Controllers\exports\taxinvoiceExportController;
+use AppHttp\Controllers\exports\taxinvoiceExportController;
 use App\Http\Controllers\quotations\quotationViewController;
 use App\Http\Controllers\reports\taxinvoiceReportController;
 use App\Http\Controllers\invoices\invoiceDashboardController;
@@ -439,4 +439,22 @@ Route::middleware(['auth', 'permission:notification-view'])->group(function () {
 });
 
 Route::get('quotelist', [QuoteListController::class, 'index'])->name('quotelist.index');
+
+Route::prefix('customers')->group(function () {
+    Route::get('/', [\App\Http\Controllers\customers\CustomerController::class, 'index'])->name('customers.index');
+    Route::get('/create', [\App\Http\Controllers\customers\CustomerController::class, 'create'])->name('customers.create');
+    Route::post('/', [\App\Http\Controllers\customers\CustomerController::class, 'store'])->name('customers.store');
+    Route::get('/{id}/edit', [\App\Http\Controllers\customers\CustomerController::class, 'edit'])->name('customers.edit');
+    Route::put('/{id}', [\App\Http\Controllers\customers\CustomerController::class, 'update'])->name('customers.update');
+    Route::delete('/{id}', [\App\Http\Controllers\customers\CustomerController::class, 'destroy'])->name('customers.destroy');
+});
+
+Route::prefix('cus')->group(function () {
+    Route::get('/', [\App\Http\Controllers\cus\cusController::class, 'index'])->name('cus.index');
+    Route::get('/create', [\App\Http\Controllers\cus\cusController::class, 'create'])->name('cus.create');
+    Route::post('/', [\App\Http\Controllers\cus\cusController::class, 'store'])->name('cus.store');
+    Route::get('/{id}/edit', [\App\Http\Controllers\cus\cusController::class, 'edit'])->name('cus.edit');
+    Route::put('/{id}', [\App\Http\Controllers\cus\cusController::class, 'update'])->name('cus.update');
+    Route::delete('/{id}', [\App\Http\Controllers\cus\cusController::class, 'destroy'])->name('cus.destroy');
+});
 

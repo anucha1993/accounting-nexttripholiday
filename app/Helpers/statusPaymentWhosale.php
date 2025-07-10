@@ -1,6 +1,6 @@
 <?php
 
-
+use Illuminate\Support\Facades\Log;
 
 if (!function_exists('getStatusPaymentWhosale')) {
     function getStatusPaymentWhosale($quotationModel)
@@ -29,8 +29,17 @@ if (!function_exists('getStatusPaymentWhosale')) {
         // 4. ต้นทุนโฮลเซลล์ (ใช้ inputtaxTotalWholesale)
         $wholesaleCost = $quotationModel->inputtaxTotalWholesale() ?? 0;
 
-        // 5. ยอดที่ลูกค้าชำระมาแล้ว
-        $customerPaid = $quotationModel->customer_paid ?? 0;
+        // 5. ยอดที่ลูกค้าชำระมาแล้ว (ควรใช้ GetDeposit() แทน customer_paid)
+        $customerPaid = $quotationModel->GetDeposit() ?? 0;
+
+        // Debug: Log or dump key values for investigation
+        // \Log::debug('[DEBUG] getStatusPaymentWhosale', [
+        //     'depositTotal' => $depositTotal,
+        //     'refundSuccessTotal' => $refundSuccessTotal,
+        //     'refundPendingTotal' => $refundPendingTotal,
+        //     'wholesaleCost' => $wholesaleCost,
+        //     'customerPaid' => $customerPaid,
+        // ]);
 
         // 📌 แสดงสถานะเฉพาะเมื่อมีการ "โอนเกิน" (refund)
         if ($depositTotal > 0 && $refundSuccessTotal + $refundPendingTotal > 0) {
@@ -64,5 +73,4 @@ if (!function_exists('getStatusPaymentWhosale')) {
 
         return ''; // ไม่แสดงอะไรหากไม่มีสถานะ
     }
-
 }
