@@ -120,10 +120,10 @@
                             <select name="customer" id="customer-select" class="form-select select2" style="width: 100%">
                                 <option value="">-- เลือกผู้ถูกหัก --</option>
                                 @forelse ($customerWithholding as $item)
-                                    <option value="{{ $item->customer->customer_id ?? $item->wholesale_id }}" 
-                                        {{ request('customer') == ($item->customer->customer_id ?? $item->wholesale_id) ? 'selected' : '' }}>
-                                        {{ $item->customer->customer_name ?? $item->wholesale->wholesale_name_th }}
-                                    </option>
+                                <option value="{{ $item->wholesale->wholesale_id ?? $item->customer->customer_id }}"
+                                    {{ request('customer') == ($item->wholesale->wholesale_id ?? $item->customer->customer_id) ? 'selected' : '' }}>
+                                    {{ $item->wholesale->wholesale_name_th ?? $item->customer->customer_name }}
+                                </option>
                                 @empty
                                     
                                 @endforelse
@@ -135,25 +135,14 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label for="document_date_start" class="form-label">วันที่ออกเอกสาร (เริ่มต้น)</label>
-                            <input type="date" 
-                                   id="document_date_start"
-                                   name="document_date_start" 
-                                   class="form-control" 
-                                   value="{{ request('document_date_start') }}">
+                            <label for="daterange" class="form-label">ช่วงวันที่ออกเอกสาร</label>
+                            <input type="text" name="daterange" id="rangDate" class="form-control rangDate"
+                                autocomplete="off" value="{{ request('daterange') }}" placeholder="เลือกช่วงวันที่" />
+                            <input type="hidden" name="date_start" value="{{ request('date_start') }}">
+                            <input type="hidden" name="date_end" value="{{ request('date_end') }}">
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="document_date_end" class="form-label">วันที่ออกเอกสาร (สิ้นสุด)</label>
-                            <input type="date" 
-                                   id="document_date_end"
-                                   name="document_date_end" 
-                                   class="form-control" 
-                                   value="{{ request('document_date_end') }}">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
+                    <div class="col-md-9">
                         <div class="form-group">
                             <label class="form-label">&nbsp;</label>
                             <div class="d-flex gap-2">
@@ -270,12 +259,18 @@
                                 </td>
                                 <td>{{ $document->customer->customer_name ?? '-' }}</td>
                                 <td>
-                                    @if(isset($document->quote) && isset($document->quote->wholesale))
-                                        {{ $document->quote->wholesale->wholesale_name_th }}
+                                    @php
+                                        $wholesaleName = null;
+                                        if(isset($document->quote) && isset($document->quote->wholesale)) {
+                                            $wholesaleName = $document->quote->wholesale->wholesale_name_th;
+                                        } elseif(isset($document->wholesale)) {
+                                            $wholesaleName = $document->wholesale->wholesale_name_th;
+                                        }
+                                @endphp
+                                    @if($wholesaleName)
+                                        <span class="text-primary">{{ $wholesaleName }}</span>
                                     @elseif(isset($document->customer))
-                                        {{ $document->customer->customer_name }}
-                                    @elseif(isset($document->wholesale))
-                                        {{ $document->wholesale->wholesale_name_th }}
+                                        <span class="text-success">{{ $document->customer->customer_name }}</span>
                                     @else
                                         -
                                     @endif
@@ -389,6 +384,19 @@
 
 
 
+
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<!-- Daterangepicker CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<!-- Moment JS -->
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
+<!-- Daterangepicker JS -->
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
 <script>
 $(document).ready(function() {
     // Initialize Select2 for customer dropdown
@@ -399,60 +407,79 @@ $(document).ready(function() {
             width: '100%'
         });
     }
-    
+
+    // Daterangepicker for document date
+    $(".rangDate").daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            format: "DD/MM/YYYY",
+            separator: " - ",
+            applyLabel: "ตกลง",
+            cancelLabel: "ยกเลิก",
+            fromLabel: "จาก",
+            toLabel: "ถึง",
+            customRangeLabel: "กำหนดเอง",
+            daysOfWeek: ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"],
+            monthNames: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+                        "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
+            firstDay: 1
+        },
+        ranges: {
+            'วันนี้': [moment(), moment()],
+            'เมื่อวาน': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            '7 วันที่แล้ว': [moment().subtract(6, 'days'), moment()],
+            '30 วันที่แล้ว': [moment().subtract(29, 'days'), moment()],
+            'เดือนนี้': [moment().startOf('month'), moment().endOf('month')],
+            'เดือนที่แล้ว': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    });
+
+    $(".rangDate").on("apply.daterangepicker", function(ev, picker) {
+        $(this).val(
+            picker.startDate.format("DD/MM/YYYY") +
+            " - " +
+            picker.endDate.format("DD/MM/YYYY")
+        );
+        $("input[name='date_start']").val(picker.startDate.format("YYYY-MM-DD"));
+        $("input[name='date_end']").val(picker.endDate.format("YYYY-MM-DD"));
+    });
+
+    $(".rangDate").on("cancel.daterangepicker", function(ev, picker) {
+        $(this).val("");
+        $("input[name='date_start']").val("");
+        $("input[name='date_end']").val("");
+    });
+
     // Select All Checkbox functionality
     $('#select-all').on('change', function() {
         $('.document-checkbox').prop('checked', $(this).is(':checked'));
         updateSelectedCount();
     });
-    
+
     // Individual checkbox change
     $('.document-checkbox').on('change', function() {
         updateSelectedCount();
-        
         // Update select all checkbox
         var totalCheckboxes = $('.document-checkbox').length;
         var checkedCheckboxes = $('.document-checkbox:checked').length;
-        
         $('#select-all').prop('indeterminate', checkedCheckboxes > 0 && checkedCheckboxes < totalCheckboxes);
         $('#select-all').prop('checked', checkedCheckboxes === totalCheckboxes);
     });
-    
+
     // Auto-submit form when customer is selected
     $('#customer-select').on('change', function() {
         if ($(this).val()) {
             $('#search').submit();
         }
     });
-    
-    // Date range validation
-    $('#document_date_start, #document_date_end').on('change', function() {
-        var startDate = $('#document_date_start').val();
-        var endDate = $('#document_date_end').val();
-        
-        if (startDate && endDate && startDate > endDate) {
-            alert('วันที่เริ่มต้นต้องไม่มากกว่าวันที่สิ้นสุด');
-            $(this).val('');
-        }
-    });
-    
-    // Auto-submit when date range is complete
-    $('#document_date_end').on('change', function() {
-        var startDate = $('#document_date_start').val();
-        var endDate = $(this).val();
-        
-        if (startDate && endDate) {
-            $('#search').submit();
-        }
-    });
-    
+
     // Enhanced search on Enter key
     $('#document_number, #ref_number').on('keypress', function(e) {
         if (e.which == 13) { // Enter key
             $('#search').submit();
         }
     });
-    
+
     // Show loading state on form submit
     $('#search').on('submit', function() {
         var submitBtn = $(this).find('button[type="submit"]');

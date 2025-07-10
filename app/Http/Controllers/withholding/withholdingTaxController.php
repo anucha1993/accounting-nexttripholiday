@@ -41,13 +41,13 @@ class withholdingTaxController extends Controller
             $query->where('withholding_form', $request->withholding_form);
         }
         
-        // Filter by date range - handle individual dates too
-        if($request->filled('document_date_start') && $request->filled('document_date_end')){
-            $query->whereBetween('document_doc_date', [$request->document_date_start, $request->document_date_end]);
-        } elseif($request->filled('document_date_start')){
-            $query->whereDate('document_doc_date', '>=', $request->document_date_start);
-        } elseif($request->filled('document_date_end')){
-            $query->whereDate('document_doc_date', '<=', $request->document_date_end);
+        // Filter by date range - new style (date_start/date_end from daterangepicker)
+        if($request->filled('date_start') && $request->filled('date_end')){
+            $query->whereBetween('document_doc_date', [$request->date_start, $request->date_end]);
+        } elseif($request->filled('date_start')){
+            $query->whereDate('document_doc_date', '>=', $request->date_start);
+        } elseif($request->filled('date_end')){
+            $query->whereDate('document_doc_date', '<=', $request->date_end);
         }
         
         // Filter by customer (customer or wholesale)
