@@ -226,7 +226,7 @@
 
         <!-- ใบแจ้งหนี้โฮลเซลล์ -->
         <li class="list-group-item">
-            <input type="checkbox" class="form-check-input me-2" id="wholesale_tax_status"
+            <input type="checkbox" class="form-check-input me-2" id="wholesale_tax_status" disabled
                 onchange="updateOrCreateLog('wholesale_tax', this)"
                 {{ optional($quoteLog)->wholesale_tax_status === 'ได้รับแล้ว' ? 'checked' : '' }}>
             <i data-feather="{{ optional($quoteLog)->wholesale_tax_status === 'ได้รับแล้ว' ? 'check-circle' : 'box' }}"
@@ -246,7 +246,7 @@
 
         <!-- คืนเงินลูกค้าสำเร็จ -->
         <li class="list-group-item">
-            <input type="checkbox" class="form-check-input me-2" id="customer_refund_status"
+            <input type="checkbox" class="form-check-input me-2" id="customer_refund_status" disabled
                 onchange="updateOrCreateLog('customer_refund', this)"
                 {{ optional($quoteLog)->customer_refund_status === 'คืนเงินสำเร็จ' ? 'checked' : '' }}>
             <i data-feather="{{ optional($quoteLog)->customer_refund_status === 'คืนเงินสำเร็จ' ? 'check-circle' : 'box' }}"
@@ -266,7 +266,7 @@
 
         <!-- โฮลเซลล์คืนเงินสำเร็จ -->
         <li class="list-group-item">
-            <input type="checkbox" class="form-check-input me-2" id="wholesale_refund_status"
+            <input type="checkbox" class="form-check-input me-2" id="wholesale_refund_status" disabled
                 onchange="updateOrCreateLog('wholesale_refund', this)"
                 {{ optional($quoteLog)->wholesale_refund_status === 'คืนเงินสำเร็จ' ? 'checked' : '' }}>
             <i data-feather="{{ optional($quoteLog)->wholesale_refund_status === 'คืนเงินสำเร็จ' ? 'check-circle' : 'box' }}"

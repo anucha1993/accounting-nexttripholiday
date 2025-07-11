@@ -52,7 +52,7 @@
                             <label>วันที่สั่งซื้อ,จองแพคเกจ:</label>
                             <input type="text" id="displayDatepicker" class="form-control" required>
                             <input type="hidden" id="submitDatepicker" name="quote_booking_create">
-                            {{-- <input type="hidden" id="quote-date" name="quote_booking_create"> --}}
+                            <input type="hidden" id="quote-date" name="quote_booking_create">
                         </div>
                         <div class="col-md-2">
                             <label>เลขที่ใบเสนอราคา</label>
@@ -567,62 +567,6 @@
     </div>
 
     </div>
-
-    
-    <script>
-    $(document).ready(function () {
-        $('#formQuote').on('submit', function (e) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0); // ตัดเวลาออก เหลือแค่วัน
-
-            let errors = [];
-
-            // วันที่เสนอราคา
-            const quoteDateVal = $('#submitDatepickerQuoteDate').val();
-            if (quoteDateVal) {
-                const quoteDate = new Date(quoteDateVal);
-                if (quoteDate <= today) {
-                    errors.push("❌ วันที่เสนอราคาต้องมากกว่าวันปัจจุบัน");
-                }
-            }
-
-            // วันที่จองแพคเกจ
-            const bookingDateVal = $('#submitDatepicker').val();
-            if (bookingDateVal) {
-                const bookingDate = new Date(bookingDateVal);
-                if (bookingDate <= today) {
-                    errors.push("❌ วันที่จองแพคเกจต้องมากกว่าวันปัจจุบัน");
-                }
-            }
-
-            // วันออกเดินทาง
-            const startDateVal = $('#date-start').val();
-            if (startDateVal) {
-                const startDate = new Date(startDateVal);
-                if (startDate <= today) {
-                    errors.push("❌ วันออกเดินทางต้องมากกว่าวันปัจจุบัน");
-                }
-            }
-
-            // วันเดินทางกลับ
-            const endDateVal = $('#date-end').val();
-            if (endDateVal) {
-                const endDate = new Date(endDateVal);
-                if (endDate <= today) {
-                    errors.push("❌ วันเดินทางกลับต้องมากกว่าวันปัจจุบัน");
-                }
-            }
-
-            // ถ้ามี error ให้แสดง alert และไม่ submit
-            if (errors.length > 0) {
-                e.preventDefault(); // ยกเลิก submit
-                alert(errors.join("\n"));
-            }
-        });
-    });
-</script>
-
-
 
     <script>
         $(document).ready(function() {
@@ -1688,6 +1632,7 @@
             // กำหนดค่าเริ่มต้นให้กับ Datepicker (แสดงเป็นภาษาไทย) และ hidden input
             let defaultDate = '{{ date('Y-m-d', strtotime(now())) }}';
             $('#submitDatepicker').val(defaultDate);
+            $('#quote-date').val(defaultDate);
             const thaiFormattedDate = formatDateToThai(defaultDate);
             $('#displayDatepicker').val(thaiFormattedDate);
         });
@@ -1763,7 +1708,4 @@
 
         });
     </script>
-
-
-
 @endsection

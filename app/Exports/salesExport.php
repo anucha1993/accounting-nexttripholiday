@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\invoices\taxinvoiceModel;
+use App\Models\commissions\CommissionRule;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -26,12 +27,31 @@ class salesExport implements FromCollection, WithHeadings, WithMapping, WithColu
 
     public function collection()
     {
-        //
-        if (is_array($this->taxinvoiceIdsArray) && count($this->taxinvoiceIdsArray) > 0) {
-            $query = taxinvoiceModel::whereIn('taxinvoice_id', $this->taxinvoiceIdsArray)->get();
+        // รับทั้ง array, string, หรือ collection
+        $ids = $this->taxinvoiceIdsArray;
+        if (is_string($ids)) {
+            $ids = trim($ids);
+            if (str_starts_with($ids, '[') && str_ends_with($ids, ']')) {
+                $ids = json_decode($ids, true);
+            } else {
+                $ids = explode(',', $ids);
+            }
+        }
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        $ids = array_filter($ids, function($v) { return !empty($v) && is_numeric($v); });
+        if (count($ids) > 0) {
+            $query = taxinvoiceModel::with([
+                'invoice.quote',
+                'invoice.customer',
+                'invoice.quote.quoteWholesale',
+                'invoice.quote.quoteCountry',
+                'invoice.quote.Salename',
+            ])->whereIn('taxinvoice_id', $ids)->get();
             $this->taxinvoices = $query;
         } else {
-            $this->taxinvoices = collect(); // กำหนดค่าเริ่มต้นเป็น empty collection
+            $this->taxinvoices = collect();
         }
         return $this->taxinvoices;
     }
@@ -51,71 +71,57 @@ class salesExport implements FromCollection, WithHeadings, WithMapping, WithColu
     private $paxTotal = 0;
     public function map($taxinvoices): array
     {
+        // เตรียมข้อมูลเหมือนในตาราง blade
+        $quote = $taxinvoices->invoice->quote;
+        $customer = $taxinvoices->invoice->customer;
+        $wholesale = $quote->quoteWholesale;
+        $country = $quote->quoteCountry;
+        $sale = $quote->Salename;
+
         $withholdingTaxAmount = $taxinvoices->invoice?->getWithholdingTaxAmountAttribute() ?? 0;
-        $getTotalInputTaxVat = $taxinvoices->invoice->quote?->getTotalInputTaxVat() ?? 0;
-        $hasInputTaxFile = $taxinvoices->invoice->quote->InputTaxVat()->whereNotNull('input_tax_file')->exists();
+        $getTotalInputTaxVat = $quote?->getTotalInputTaxVat() ?? 0;
+        $hasInputTaxFile = $quote->InputTaxVat()->whereNotNull('input_tax_file')->exists();
+        $paymentInputtaxTotal = $hasInputTaxFile ? $withholdingTaxAmount - $getTotalInputTaxVat : $withholdingTaxAmount + $getTotalInputTaxVat;
 
-        if ($hasInputTaxFile) {
-            // กรณี input_tax_file !== NULL
-            $paymentInputtaxTotal = $withholdingTaxAmount - $getTotalInputTaxVat;
-        } else {
-            // กรณี input_tax_file === NULL
-            $paymentInputtaxTotal = $withholdingTaxAmount + $getTotalInputTaxVat;
-        }
+        $serviceAmount = $quote->quote_grand_total;
+        $discountAmount = $quote->quote_discount;
+        $netAmount = $serviceAmount - $discountAmount;
+        $wholesalePayment = $quote->GetDepositWholesale() - $quote->GetDepositWholesaleRefund();
+        $totalCost = $wholesalePayment + $paymentInputtaxTotal;
+        $profit = $netAmount - $totalCost;
+        $people = $quote->quote_pax_total;
+        $profitPerPerson = $people > 0 ? $profit / $people : 0;
 
-        $profit = $taxinvoices->invoice->quote->GetDepositWholesale() - ($taxinvoices->invoice->quote->GetDepositWholesaleRefund() - $paymentInputtaxTotal);
+        // ใช้ฟังก์ชัน calculateCommission จาก Helper เพื่อให้ตรงกับตารางหน้าเว็บ
+        $saleId = $sale->id ?? null;
+        $commissionQt = $saleId ? calculateCommission($profitPerPerson, $saleId, 'qt', $people) : ['amount'=>0,'calculated'=>0,'type'=>'','percent'=>0];
+        $commissionTotal = $saleId ? calculateCommission($profit, $saleId, 'total', $people) : ['amount'=>0,'calculated'=>0,'type'=>'','percent'=>0];
 
-        $totalSale = $taxinvoices->invoice->quote->quote_grand_total - $profit;
-        $this->totalSales += $totalSale;
-        $this->WhosaleTotal += $profit;
-        $this->granTotal += $taxinvoices->invoice->quote->quote_grand_total;
-        $this->discountTotal += $taxinvoices->invoice->quote->quote_discount;
-        $this->serviceTotal += $taxinvoices->invoice->quote->quote_grand_total + $taxinvoices->invoice->quote->quote_discount;
-        $this->paxTotal += $taxinvoices->invoice->quote->quote_pax_total;
+        // แสดงผลลัพธ์แบบเดียวกับตาราง blade
+        $step = str_starts_with($commissionQt['type'] ?? '', 'step') ? number_format($commissionQt['amount'], 2).'฿/คน' : '';
+        $percent = str_starts_with($commissionQt['type'] ?? '', 'percent') ? number_format($commissionQt['percent'], 2).'%' : '';
 
-        $commission = $totalSale - $paymentInputtaxTotal;
-        // 1) กำไรรวม (total profit) — ใช้เป็นฐานคูณ %
-        $people = $taxinvoices->invoice->quote->quote_pax_total;
-        $totalProfit = $totalSale - $paymentInputtaxTotal;
-        // 2) กำไร “ต่อคน” (profit per person) — ใช้จับช่วง Step
-        $profitPerPerson = $people > 0 ? $totalProfit / $people : 0;
-
-        $this->totalPeople += $profitPerPerson;
-        $this->InputtaxTotal += $paymentInputtaxTotal;
-
-        /// คำนวนค่าคมมิซชั่น
-        $matches = \App\Models\CommissionRule::matchBoth($profitPerPerson, $totalProfit);
-
-        $this->totalMath += $matches['step']['commission'] * $taxinvoices->invoice->quote->quote_pax_total;
-
-        $step = '';
-        $percent = '';
-
-        if($matches['step']['rule'])
-        {
-            $matches['step']['rule']->name;
-            $step = number_format($matches['step']['commission'], 2).'฿/คน';
-        }
-        if($matches['percent']['rule'])
-        {
-            $matches['percent']['rule']->value.'%';
-            $percent = number_format($matches['percent']['commission'], 2).'฿/คน';
-        }
-
-        return array_merge([$taxinvoices->invoice->quote->quote_number ? $taxinvoices->invoice->quote->quote_number : 'ใบเสนอราคาถูกลบ', 
-        date('d/m/Y', strtotime($taxinvoices->invoice->quote->quote_date_start)) . ' - ' . date('d/m/Y', strtotime($taxinvoices->invoice->quote->quote_date_start)),
-         $taxinvoices->invoice->quote->quoteWholesale->code, $taxinvoices->invoice->customer->customer_name, $taxinvoices->invoice->quote->quoteCountry->iso2,
-          $taxinvoices->invoice->quote->quote_tour_name ? $taxinvoices->invoice->quote->quote_tour_name : $taxinvoices->invoice->quote->quote_tour_name1, $taxinvoices->invoice->quote->Salename->name, $taxinvoices->invoice->quote->quote_pax_total, $taxinvoices->invoice->quote->quote_grand_total + $taxinvoices->invoice->quote->quote_discount, 
-          number_format($taxinvoices->invoice->quote->quote_discount, 2), 
-          number_format($taxinvoices->invoice->quote->quote_grand_total, 2),
-          number_format($profit, 2),
-          number_format($paymentInputtaxTotal, 2),
-          number_format($matches['step']['commission']*$taxinvoices->invoice->quote->quote_pax_total , 2),
-          number_format($totalSale, 2),
-          number_format($commission, 2),
-          $step,
-          $percent,
-        ]);
+        return [
+            $quote->quote_number ?? 'ใบเสนอราคาถูกลบ',
+            date('d/m/Y', strtotime($quote->quote_date_start)) . ' - ' . date('d/m/Y', strtotime($quote->quote_date_end)),
+            $wholesale->code ?? '',
+            $customer->customer_name ?? '',
+            $country->iso2 ?? '',
+            $quote->quote_tour_name ?? $quote->quote_tour_name1 ?? '',
+            $sale->name ?? '',
+            $people,
+            number_format($serviceAmount - $discountAmount, 2),
+            number_format($discountAmount, 2),
+            number_format($netAmount, 2),
+            number_format($wholesalePayment, 2),
+            number_format($paymentInputtaxTotal, 2),
+            number_format($totalCost, 2),
+            number_format($profit, 2),
+            number_format($profitPerPerson, 2),
+            number_format($commissionQt['calculated'], 2),
+            $step,
+            $percent,
+        ];
     }
 
     public function columnWidths(): array

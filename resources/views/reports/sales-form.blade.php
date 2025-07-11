@@ -764,10 +764,21 @@
                 <!-- ปุ่ม Export และ Header ตาราง -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5><i class="fas fa-table me-2"></i>Sales Report</h5>
+                    {{-- Debug taxinvoice_ids (flatMap for groupBy/collection of collections) --}}
+                    @php
+                        $allIds = $taxinvoices->flatMap(function($group) {
+                            return is_array($group) || $group instanceof \Illuminate\Support\Collection ? collect($group)->pluck('taxinvoice_id') : [$group->taxinvoice_id];
+                        })->filter()->unique();
+                    @endphp
+                    {{-- <div class="mb-2">
+                        <strong>DEBUG taxinvoice_ids:</strong>
+                        <span style="color: #e53e3e; font-weight: bold;">{{ $allIds->implode(',') }}</span>
+                        <strong> | Count:</strong> <span style="color: #3182ce; font-weight: bold;">{{ $allIds->count() }}</span>
+                    </div> --}}
                     <form action="{{ route('export.sales') }}" method="post" class="d-inline">
                         @csrf
                         @method('post')
-                        <input type="hidden" name="taxinvoice_ids" value="{{ $taxinvoices->pluck('taxinvoice_id') }}">
+                        <input type="hidden" name="taxinvoice_ids" value="{{ $allIds->implode(',') }}">
                         <button type="submit" class="btn btn-success">
                             <i class="fas fa-file-excel me-1"></i>Export Excel
                         </button>
@@ -825,9 +836,9 @@
                                         $people = $item->invoice->quote->quote_pax_total;
                                         
                                         // 1. ยอดสุทธิ = ค่าบริการ + ส่วนลด  
-                                        $serviceAmount = $item->invoice->quote->quote_grand_total + $item->invoice->quote->quote_discount;
+                                        $serviceAmount = $item->invoice->quote->quote_grand_total;
                                         $discountAmount = $item->invoice->quote->quote_discount;
-                                        $netAmount = $serviceAmount; // ยอดสุทธิ
+                                        $netAmount = $serviceAmount - $discountAmount; // ยอดสุทธิ = ค่าบริการ - ส่วนลด
                                         
                                         // 2. ต้นทุนรวม = ยอดชำระโฮลเซลล์ + ต้นทุนอื่นๆ
                                         $wholesalePayment = $item->invoice->quote->GetDepositWholesale() - $item->invoice->quote->GetDepositWholesaleRefund();
@@ -976,9 +987,9 @@
                                         $paxTotal = $groupedQuotes->sum(fn($i) => $i->invoice->quote->quote_pax_total ?? 0);
                                         
                                         // 1. ยอดสุทธิ = ค่าบริการ + ส่วนลด
-                                        $serviceTotal = $groupedQuotes->sum(fn($i) => ($i->invoice->quote->quote_grand_total ?? 0) + ($i->invoice->quote->quote_discount ?? 0));
+                                        $serviceTotal = $groupedQuotes->sum(fn($i) => $i->invoice->quote->quote_grand_total ?? 0);
                                         $discountTotal = $groupedQuotes->sum(fn($i) => $i->invoice->quote->quote_discount ?? 0);
-                                        $netTotal = $serviceTotal; // ยอดสุทธิ
+                                        $netTotal = $serviceTotal - $discountTotal; // ยอดสุทธิ = ค่าบริการ - ส่วนลด
                                         
                                         // 2. ต้นทุนรวม = ยอดชำระโฮลเซลล์ + ต้นทุนอื่นๆ
                                         $wholesaleTotal = $groupedQuotes->sum(function ($i) {
@@ -1018,7 +1029,7 @@
                                         <td>{{ $saleName }}</td>
                                         <td>{{ number_format($paxTotal) }}</td>
                                         <td>{{ number_format($serviceTotal, 2) }}</td>
-                                        <td>{{ number_format($serviceTotal, 2) }}</td> {{-- ค่าบริการซ้ำ ตามที่คุณระบุ --}}
+                                        <td>{{ number_format($serviceTotal - $discountTotal, 2) }}</td> {{-- ค่าบริการสุทธิหลังหักส่วนลด --}}
                                         <td>{{ number_format($discountTotal, 2) }}</td>
                                         <td>{{ number_format($netTotal, 2) }}</td>
                                         <td>{{ number_format($wholesaleTotal, 2) }}</td>
@@ -1058,9 +1069,9 @@
                                 $paxTotal = $groupedQuotes->sum(fn($i) => $i->invoice->quote->quote_pax_total ?? 0);
                                 
                                 // 1. ยอดสุทธิ = ค่าบริการ + ส่วนลด
-                                $serviceTotal = $groupedQuotes->sum(fn($i) => ($i->invoice->quote->quote_grand_total ?? 0) + ($i->invoice->quote->quote_discount ?? 0));
+                                $serviceTotal = $groupedQuotes->sum(fn($i) => $i->invoice->quote->quote_grand_total ?? 0);
                                 $discountTotal = $groupedQuotes->sum(fn($i) => $i->invoice->quote->quote_discount ?? 0);
-                                $netTotal = $serviceTotal; // ยอดสุทธิ
+                                $netTotal = $serviceTotal - $discountTotal; // ยอดสุทธิ = ค่าบริการ - ส่วนลด
                                 
                                 // 2. ต้นทุนรวม = ยอดชำระโฮลเซลล์ + ต้นทุนอื่นๆ
                                 $wholesaleTotal = $groupedQuotes->sum(function ($i) {
@@ -1101,7 +1112,7 @@
                                 $pax = $quotes->sum(fn($i) => $i->invoice->quote->quote_pax_total ?? 0);
                                 
                                 // 1. ยอดสุทธิ = ค่าบริการ + ส่วนลด
-                                $service = $quotes->sum(fn($i) => ($i->invoice->quote->quote_grand_total ?? 0) + ($i->invoice->quote->quote_discount ?? 0));
+                                $service = $quotes->sum(fn($i) => $i->invoice->quote->quote_grand_total ?? 0);
                                 
                                 // 2. ต้นทุนรวม = ยอดชำระโฮลเซลล์ + ต้นทุนอื่นๆ
                                 $wholesale = $quotes->sum(function ($i) {
@@ -1118,7 +1129,8 @@
                                 $totalCost = $wholesale + $otherCost;
 
                                 // 3. กำไร = ยอดสุทธิ - ต้นทุนรวม
-                                $profit = $service - $totalCost;
+                                $discount = $quotes->sum(fn($i) => $i->invoice->quote->quote_discount ?? 0);
+                                $profit = ($service - $discount) - $totalCost;
 
                                 return $pax > 0 ? $profit / $pax : 0;
                             });

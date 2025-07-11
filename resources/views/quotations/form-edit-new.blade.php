@@ -272,9 +272,14 @@
                                     <tr>
                                         <td class="label">วันเดินทาง:</td>
                                         <td class="value">
-                                            {{ thaidate('j M Y', $quotationModel->quote_date_start) }} -
+                                            @if ($quotationModel->quote_date_start && $quotationModel->quote_date_end)
+                                                {{ thaidate('j M Y', $quotationModel->quote_date_start) }} -
                                             {{ thaidate('j M Y', $quotationModel->quote_date_end) }}
                                             <small class="text-muted">({{ $quotationModel->quote_numday }})</small>
+                                            @else
+                                                -
+                                            @endif
+                                            
                                         </td>
                                     </tr>
                                     <tr>

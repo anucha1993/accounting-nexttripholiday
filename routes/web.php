@@ -439,15 +439,16 @@ Route::middleware(['auth', 'permission:notification-view'])->group(function () {
 });
 
 Route::get('quotelist', [QuoteListController::class, 'index'])->name('quotelist.index');
+Route::delete('quotelist/destroy/{id}', [QuoteListController::class, 'destroy'])->name('quotelist.destroy');
 
-Route::prefix('customers')->group(function () {
-    Route::get('/', [\App\Http\Controllers\customers\CustomerController::class, 'index'])->name('customers.index');
-    Route::get('/create', [\App\Http\Controllers\customers\CustomerController::class, 'create'])->name('customers.create');
-    Route::post('/', [\App\Http\Controllers\customers\CustomerController::class, 'store'])->name('customers.store');
-    Route::get('/{id}/edit', [\App\Http\Controllers\customers\CustomerController::class, 'edit'])->name('customers.edit');
-    Route::put('/{id}', [\App\Http\Controllers\customers\CustomerController::class, 'update'])->name('customers.update');
-    Route::delete('/{id}', [\App\Http\Controllers\customers\CustomerController::class, 'destroy'])->name('customers.destroy');
-});
+// Route::prefix('customers')->group(function () {
+//     Route::get('/', [\App\Http\Controllers\customers\CustomerController::class, 'index'])->name('customers.index');
+//     Route::get('/create', [\App\Http\Controllers\customers\CustomerController::class, 'create'])->name('customers.create');
+//     Route::post('/', [\App\Http\Controllers\customers\CustomerController::class, 'store'])->name('customers.store');
+//     Route::get('/{id}/edit', [\App\Http\Controllers\customers\CustomerController::class, 'edit'])->name('customers.edit');
+//     Route::put('/{id}', [\App\Http\Controllers\customers\CustomerController::class, 'update'])->name('customers.update');
+//     Route::delete('/{id}', [\App\Http\Controllers\customers\CustomerController::class, 'destroy'])->name('customers.destroy');
+// });
 
 Route::prefix('cus')->group(function () {
     Route::get('/', [\App\Http\Controllers\cus\cusController::class, 'index'])->name('cus.index');

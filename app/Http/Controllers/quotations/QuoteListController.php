@@ -259,4 +259,12 @@ class QuoteListController extends Controller
 
         return view('quotations.list', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'customerPaymentStatuses', 'campaignSource'));
     }
+
+    public function destroy($id)
+    {
+        $quotation = \App\Models\quotations\quotationModel::findOrFail($id);
+        // สามารถเพิ่ม logic ตรวจสอบสิทธิ์/soft delete/ลบข้อมูลที่เกี่ยวข้องได้ที่นี่
+        $quotation->delete();
+        return redirect()->route('quotelist.index')->with('success', 'ลบใบเสนอราคาเรียบร้อยแล้ว');
+    }
 }

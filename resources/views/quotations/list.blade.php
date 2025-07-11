@@ -220,9 +220,23 @@
                             <i class="fas fa-chart-bar"></i> รายงานใบเสนอราคา
                         </a>
                     </div>
-                    <div class="text-muted">
-                        <small>พบข้อมูล {{number_format($quotations->count())}} รายการ | รวม {{number_format($SumPax)}} PAX | มูลค่า {{number_format($SumTotal,2)}} บาท</small>
-                    </div>
+                    <div class="d-flex align-items-center gap-2">
+        <form method="GET" id="page" class="mb-0">
+            <label for="per_page" class="me-1">แสดงจำนวน:</label>
+            <select name="per_page" id="per_page" class="form-select form-select-sm d-inline-block w-auto" onchange="this.form.submit()">
+                <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50</option>
+                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                <option value="150" {{ request('per_page') == 150 ? 'selected' : '' }}>150</option>
+                <option value="200" {{ request('per_page') == 200 ? 'selected' : '' }}>200</option>
+            </select>
+            @foreach(request()->except('per_page','page') as $k=>$v)
+                <input type="hidden" name="{{ $k }}" value="{{ $v }}">
+            @endforeach
+        </form>
+        <div class="text-muted ms-2">
+            <small>พบข้อมูล {{number_format($quotations->total())}} รายการ | รวม {{number_format($SumPax)}} PAX | มูลค่า {{number_format($SumTotal,2)}} บาท</small>
+        </div>
+    </div>
                 </div>
                 {!! $quotations->withQueryString()->links('pagination::bootstrap-5') !!}
                 <table class="table table-sm table-hover table-striped table-bordered" id="quote-table" style="font-size: 11px;">
@@ -252,7 +266,9 @@
                     <tbody>
                         @forelse ($quotations as $key => $item)
                             <tr class="align-middle">
-                                <td class="text-center fw-bold">{{ $key + 1 }}</td>
+                                <td class="text-center fw-bold">
+                                            {{ ($quotations->total() - $quotations->firstItem() + 1) - $key }}
+                                        </td>
                                 <td class="text-center">
                                     <small class="text-muted">{{ date('d/m/y', strtotime($item->quote_booking_create)) }}</small>
                                 </td>
@@ -358,14 +374,26 @@
                                     <small>{{ $item->Salename->name }}</small>
                                 </td>
                                 <td class="text-center">
-                                    @can('quotation-edit')
-                                    <a href="{{ route('quote.editNew', $item->quote_id) }}" 
-                                       class="btn btn-primary btn-sm" 
-                                       data-bs-toggle="tooltip" 
-                                       title="จัดการข้อมูล">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    @endcan
+                                      @can('quotation-edit')
+    <a href="{{ route('quote.editNew', $item->quote_id) }}" 
+       class="btn btn-primary btn-sm mb-1" 
+       data-bs-toggle="tooltip" 
+       title="จัดการข้อมูล">
+        <i class="fas fa-edit"></i>
+    </a>
+    @endcan
+
+                                    @can('quotation-delete')
+    <form action="{{ route('quotelist.destroy', $item->quote_id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('ยืนยันการลบข้อมูลใบเสนอราคานี้?');">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-danger btn-sm " title="ลบข้อมูล">
+            <i class="fas fa-trash-alt"></i>
+        </button>
+    </form>
+    <br>
+    @endcan
+  
                                 </td>
                             </tr>
                         @empty

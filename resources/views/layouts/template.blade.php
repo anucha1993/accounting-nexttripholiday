@@ -467,7 +467,7 @@
                         </li>
 
                         <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark" href="{{ route('customers.index') }}"
+                            <a class="sidebar-link waves-effect waves-dark" href="{{ route('cus.index') }}"
                                 aria-expanded="false"><i class="fas fa-users"></i><span
                                     class="hide-menu">ลูกค้า</span></a>
                         </li>
