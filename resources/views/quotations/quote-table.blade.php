@@ -231,12 +231,13 @@
                                 </td>
 
                                 <td>
+                                  
                                     @can('edit-quote')
                                       @if ($quotationModel->quote_status === 'cancel')
                                       <a class="modal-quote-cancel" href="{{ route('quote.modalCancel', $quotationModel->quote_id) }}"><i
-                                        class="fas fa-minus-circle text-danger"></i> เหตุผลยกเลิกใบงาน</a>
+                                        class="fas fa-minus-circle text-danger"></i> เหตุผลยกเลิกใบงานsss</a>
                                         <br>
-                                        <a href="{{route('quote.recancel',$quotationModel->quote_id)}}" class="text-white" onclick="return confirm('คุณต้องการนำใบเสนอราคากลับมาใช้ใหม่ใช่ไหม!');" > <i class=" far fa-share-square"></i> นำกลับมาใช้ใหม่</a>
+                                        <a href="{{route('quote.recancel',$quotationModel->quote_id)}}" class="text-black" onclick="return confirm('คุณต้องการนำใบเสนอราคากลับมาใช้ใหม่ใช่ไหม!');" > <i class=" far fa-share-square"></i> นำกลับมาใช้ใหม่</a>
                                       @else
                                       <a class="modal-quote-cancel" href="{{ route('quote.modalCancel', $quotationModel->quote_id) }}"><i
                                         class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
@@ -313,6 +314,7 @@
                                 <td>
                                     @can('cancel-invoice')
                                     @if ($itemInvoice->invoice_status === 'cancel')
+                                    
                                     <a class="modal-invoice-cancel" href="{{ route('invoice.modalCancel', $itemInvoice->invoice_id) }}"><i
                                         class="fas fa-minus-circle text-danger"></i>เหตุผลยกเลิกใบงาน</a>
                                         <br>
