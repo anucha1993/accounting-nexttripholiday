@@ -724,6 +724,7 @@ $(function() {
     // เรียกฟังก์ชันคำนวณและอัปเดตเลขลำดับ row ทันทีเมื่อโหลดหน้า
     if (typeof calculatePaymentCondition === 'function') {
         calculatePaymentCondition();
+         syncDepositAndFullPayment();
     }
     if (typeof updateRowNumbers === 'function') {
         updateRowNumbers();
