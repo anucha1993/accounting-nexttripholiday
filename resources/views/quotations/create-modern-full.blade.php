@@ -431,7 +431,8 @@
                      <hr>
                      {{-- <div class="row discount-row mb-1 align-items-center" data-row-id="${rowId}" style="background:#fffbe7;border-radius:8px;padding:8px 0;"> --}}
                     <div class="row item-row table-income" id="table-income" style="background:#55ffb848;border-radius:8px;padding:8px 0;">
-                        <div class="row align-items-center">
+                        <div class="row align-items-center row item-row">
+                            
                             
                             <div class="col-md-1 "><span class="row-number"></span></div>
                             <div class="col-md-3">
@@ -1079,40 +1080,38 @@ $(function() {
 
 
         // คำนวณแต่ละแถวสินค้าและส่วนลด (ใช้โครงสร้างเดียวกัน)
-        // Service rows
-        $('#table-income .item-row.table-income').each(function() {
-            var $row = $(this);
-            var qty = parseFloat($row.find('input[name="quantity[]"]').val()) || 0;
-            var price = parseFloat($row.find('input[name="price_per_unit[]"]').val()) || 0;
-            var isVat = $row.find('select[name="vat_status[]"]').val() === 'vat';
-            var isPax = $row.find('select[name="product_id[]"] option:selected').data('pax') === 'Y';
-            var isWithholding = $row.find('input.vat-3').is(':checked');
-            var rowTotal = qty * price;
-            if (isWithholding) {
-                var plus3 = rowTotal * 0.03;
-                $row.find('input[name="total_amount[]"]').val((rowTotal + plus3).toFixed(2));
-                rowTotal = rowTotal + plus3;
-            } else {
-                $row.find('input[name="total_amount[]"]').val(rowTotal.toFixed(2));
-            }
-            if (isVat) {
-                sumTotalVat += rowTotal;
-            } else {
-                sumTotalNonVat += rowTotal;
-            }
-            if (isPax) {
-                paxTotal += qty;
-            }
-        });
-        // Discount rows (ใช้โครงสร้างเดียวกับ service row)
+        // รวม service row และ discount row ใน .each() เดียว
         sumDiscount = 0;
-        $('#discount-list .item-row.table-discount').each(function() {
+        $('.item-row.table-income, #discount-list .item-row.table-discount').each(function() {
             var $row = $(this);
             var qty = parseFloat($row.find('input[name="quantity[]"]').val()) || 0;
             var price = parseFloat($row.find('input[name="price_per_unit[]"]').val()) || 0;
-            var total = qty * price;
-            $row.find('input[name="total_amount[]"]').val(total.toFixed(2));
-            sumDiscount += total;
+            var isDiscount = $row.hasClass('table-discount');
+            if (isDiscount) {
+                var total = qty * price;
+                $row.find('input[name="total_amount[]"]').val(total.toFixed(2));
+                sumDiscount += total;
+            } else {
+                var isVat = $row.find('select[name="vat_status[]"]').val() === 'vat';
+                var isPax = $row.find('select[name="product_id[]"] option:selected').data('pax') === 'Y';
+                var isWithholding = $row.find('input.vat-3').is(':checked');
+                var rowTotal = qty * price;
+                if (isWithholding) {
+                    var plus3 = rowTotal * 0.03;
+                    $row.find('input[name="total_amount[]"]').val((rowTotal + plus3).toFixed(2));
+                    rowTotal = rowTotal + plus3;
+                } else {
+                    $row.find('input[name="total_amount[]"]').val(rowTotal.toFixed(2));
+                }
+                if (isVat) {
+                    sumTotalVat += rowTotal;
+                } else {
+                    sumTotalNonVat += rowTotal;
+                }
+                if (isPax) {
+                    paxTotal += qty;
+                }
+            }
         });
 
         // --- VAT Calculation ---
@@ -1190,11 +1189,11 @@ $(function() {
 
     // เพิ่มรายการบริการ (row)
     $('#add-row-service').on('click', function() {
-        // สร้าง row ใหม่แบบ discount-row (ไม่ clone)
+        // สร้าง row ใหม่โดยใช้โครงสร้างเดียวกับ Blade (มีคลาส item-row table-income)
         var rowCount = $('#table-income > .row').length + 1;
         var rowId = 'service-row-' + Date.now();
         var rowHtml = `
-            <div class="row align-items-center">
+            <div class="row item-row table-income align-items-center">
                 <div class="col-md-1"><span class="row-number"></span></div>
                 <div class="col-md-3">
                     <select name="product_id[]" class="form-select product-select select2" style="width: 100%;">
@@ -1205,7 +1204,6 @@ $(function() {
                         @endforelse
                     </select>
                 </div>
-               
                 <div class="col-md-1" style="display: none">
                     <select name="expense_type[]" class="form-select">
                         <option selected value="income"> รายได้ </option>
