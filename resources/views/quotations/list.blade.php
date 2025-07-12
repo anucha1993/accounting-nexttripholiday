@@ -39,6 +39,11 @@
                         <i class="fas fa-plus"></i> สร้างใบเสนอราคา
                     </a>
                 @endcan
+                 @can('quotation-create')
+                    <a href="{{ route('quote.createModern') }}" class="btn btn-light btn-sm">
+                        <i class="fas fa-plus"></i> สร้างใบเสนอราคา-ใหม่
+                    </a>
+                @endcan
             </div>
         </div>
         <div class="card-body">

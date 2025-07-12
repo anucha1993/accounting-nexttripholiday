@@ -165,6 +165,7 @@ Route::put('quote/update/{quotationModel}',[quoteController::class,'update'])->n
 Route::put('quote/update/ajax/{quotationModel}',[quoteController::class,'AjaxUpdate'])->name('quote.AjaxUpdate');//
 Route::put('quote/cancel/{quotationModel}',[quoteController::class,'cancel'])->name('quote.cancel');
 Route::get('quote/create/new',[quoteController::class,'createNew'])->name('quote.createNew');
+Route::get('quote/create/new/modern',[quoteController::class,'createModern'])->name('quote.createModern');
 
 Route::get('quote/edit/new/{quotationModel}',[quoteController::class,'editNew'])->name('quote.editNew');
 

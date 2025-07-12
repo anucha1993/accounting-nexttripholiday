@@ -504,6 +504,25 @@ class quoteController extends Controller
         return view('quotations.modal-cancel', compact('quotationModel'));
     }
 
+
+     public function createModern()
+    {
+        $products = productModel::where('product_type', '!=', 'discount')->get();
+        $customers = DB::table('customer')->get();
+        $sales = saleModel::select('name', 'id')
+            ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+            ->get();
+        $tours = DB::connection('mysql2')->table('tb_tour')->where('status', 'on')->get();
+        $numDays = numDayModel::orderBy('num_day_total')->get();
+        $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
+        $wholesale = wholesaleModel::where('status', 'on')->get();
+        $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
+        $campaignSource = DB::table('campaign_source')->get();
+        $productDiscount = productModel::where('product_type', 'discount')->get();
+        return view('quotations.create-modern-full', compact('productDiscount', 'campaignSource', 'airline', 'wholesale', 'country', 'numDays', 'products', 'customers', 'sales', 'tours'));
+    }
+
+
     public function createNew()
     {
         $products = productModel::where('product_type', '!=', 'discount')->get();
