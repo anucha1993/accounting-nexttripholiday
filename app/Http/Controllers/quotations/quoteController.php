@@ -213,21 +213,21 @@ class quoteController extends Controller
 
         $quote = quotationModel::create($request->all());
 
-        //ลงข้อมูลรายการสินค้า
-        $sum = 0;
-        foreach ($request->product_id as $key => $product) {
-            $productName = productModel::where('id', $request->product_id[$key])->first();
-            if ($request->product_id) {
+        // ลงข้อมูลรายการสินค้าและส่วนลด (unified row)
+        if ($request->product_id && is_array($request->product_id)) {
+            foreach ($request->product_id as $key => $productId) {
+                if (!$productId) continue;
+                $productName = productModel::where('id', $productId)->first();
                 quoteProductModel::create([
                     'quote_id' => $quote->quote_id,
-                    'product_id' => $request->product_id[$key],
-                    'product_name' => $productName->product_name,
-                    'product_qty' => $request->quantity[$key],
-                    'product_price' => $request->price_per_unit[$key],
-                    'product_sum' => $request->total_amount[$key],
-                    'expense_type' => $request->expense_type[$key],
-                    'vat_status' => $request->vat_status[$key],
-                    'withholding_tax' => $request->withholding_tax[$key],
+                    'product_id' => $productId,
+                    'product_name' => $productName ? $productName->product_name : '',
+                    'product_qty' => $request->quantity[$key] ?? 1,
+                    'product_price' => $request->price_per_unit[$key] ?? 0,
+                    'product_sum' => $request->total_amount[$key] ?? 0,
+                    'expense_type' => $request->expense_type[$key] ?? 'income',
+                    'vat_status' => $request->vat_status[$key] ?? 'nonvat',
+                    'withholding_tax' => $request->withholding_tax[$key] ?? 'N',
                 ]);
             }
         }
@@ -425,20 +425,21 @@ class quoteController extends Controller
 
         // Delete Product old
         quoteProductModel::where('quote_id', $quotationModel->quote_id)->delete();
-        // Create product lits
-        foreach ($request->product_id as $key => $value) {
-            if ($request->product_id[$key]) {
-                $productName = productModel::where('id', $request->product_id[$key])->first();
+        // Create product & discount rows (unified)
+        if ($request->product_id && is_array($request->product_id)) {
+            foreach ($request->product_id as $key => $productId) {
+                if (!$productId) continue;
+                $productName = productModel::where('id', $productId)->first();
                 quoteProductModel::create([
                     'quote_id' => $quotationModel->quote_id,
-                    'product_id' => $request->product_id[$key],
-                    'product_name' => $productName->product_name,
-                    'product_qty' => $request->quantity[$key],
-                    'product_price' => $request->price_per_unit[$key],
-                    'product_sum' => $request->total_amount[$key],
-                    'expense_type' => $request->expense_type[$key],
-                    'vat_status' => $request->vat_status[$key],
-                    'withholding_tax' => $request->withholding_tax[$key],
+                    'product_id' => $productId,
+                    'product_name' => $productName ? $productName->product_name : '',
+                    'product_qty' => $request->quantity[$key] ?? 1,
+                    'product_price' => $request->price_per_unit[$key] ?? 0,
+                    'product_sum' => $request->total_amount[$key] ?? 0,
+                    'expense_type' => $request->expense_type[$key] ?? 'income',
+                    'vat_status' => $request->vat_status[$key] ?? 'nonvat',
+                    'withholding_tax' => $request->withholding_tax[$key] ?? 'N',
                 ]);
             }
         }

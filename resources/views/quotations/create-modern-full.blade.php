@@ -255,7 +255,7 @@
 <div class="container-fluid page-content">
     <div class="todo-listing">
         <div class="container border bg-white">
-            <h2 class="text-center my-4"><i class="fa fa-file-invoice-dollar" style="color:#1976d2;margin-right:8px;"></i>สร้างใบเสนอราคา <span style="font-weight:400;font-size:1.1rem;color:#1976d2;">(UI Edit New)</span></h2>
+            <h2 class="text-center my-4"><i class="fa fa-file-invoice-dollar" style="color:#1976d2;margin-right:8px;"></i>สร้างใบเสนอราคา </h2>
             <form action="{{ route('quote.store') }}" id="formQuoteModern" method="post">
                 @csrf
                 <div class="section-card">
@@ -275,7 +275,7 @@
                         <label>วันที่สั่งซื้อ/จองแพคเกจ:</label>
                         <input type="date" id="displayDatepicker" class="form-control" required value="{{ date('Y-m-d') }}">
                         <input type="hidden" id="submitDatepicker" name="quote_booking_create" value="{{ date('Y-m-d') }}">
-                        <input type="hidden" id="quote-date" name="quote_booking_create">
+                        {{-- <input type="hidden" id="quote-date" name="quote_booking_create"> --}}
                     </div>
                     <div class="col-md-2">
                         <label>เลขที่ใบเสนอราคา</label>
@@ -668,7 +668,10 @@
                     <input type="hidden" name="quote_grand_total" id="quote-grand-total">
                     <input type="hidden" name="quote_withholding_tax">
                     <input type="hidden" name="quote_pax_total" id="quote-pax-total">
+                    
+
                     <button type="submit" class="btn btn-primary btn-sm mx-3" form="formQuoteModern"><i class="fa fa-save"></i> สร้างใบเสนอราคา</button>
+                    
                 </div>
                 <br>
             </form>
@@ -869,24 +872,75 @@ $(function() {
             $('#quote-payment-date').val(formattedDate);
             $('#quote-payment-date-new').val(formattedDate);
 
-            // set full payment date = 30 วันก่อนวันเดินทาง
+            // set full payment date ตาม logic ใหม่
             var travelDateStr = $('#date-start').val();
             if (travelDateStr) {
                 var travelDate = new Date(travelDateStr);
-                travelDate.setDate(travelDate.getDate() - 30);
-                travelDate.setHours(13,0,0,0);
-                var y = travelDate.getFullYear();
-                var m = ('0' + (travelDate.getMonth() + 1)).slice(-2);
-                var d = ('0' + travelDate.getDate()).slice(-2);
-                var h = ('0' + travelDate.getHours()).slice(-2);
-                var min = ('0' + travelDate.getMinutes()).slice(-2);
+                var now = new Date();
+                now.setHours(0,0,0,0);
+                var diffDays = (travelDate - now) / (1000 * 60 * 60 * 24);
+                var fullPayDateObj;
+                if (diffDays > 30) {
+                    // มากกว่า 30 วันก่อนเดินทาง: set full payment date = 30 วันก่อนวันเดินทาง
+                    travelDate.setDate(travelDate.getDate() - 30);
+                    travelDate.setHours(13,0,0,0);
+                    fullPayDateObj = travelDate;
+                } else {
+                    // น้อยกว่าหรือเท่ากับ 30 วัน: set full payment date = วันถัดไปของวันปัจจุบัน
+                    fullPayDateObj = new Date();
+                    fullPayDateObj.setDate(fullPayDateObj.getDate() + 1);
+                    fullPayDateObj.setHours(13,0,0,0);
+                }
+                var y = fullPayDateObj.getFullYear();
+                var m = ('0' + (fullPayDateObj.getMonth() + 1)).slice(-2);
+                var d = ('0' + fullPayDateObj.getDate()).slice(-2);
+                var h = ('0' + fullPayDateObj.getHours()).slice(-2);
+                var min = ('0' + fullPayDateObj.getMinutes()).slice(-2);
                 var fullPayDate = y + '-' + m + '-' + d + 'T' + h + ':' + min;
                 $('input[name="quote_payment_date_full"]').val(fullPayDate);
                 $('#quote-payment-date-full').val(fullPayDate);
+            } else {
+                // If no travel date, clear full payment date
+                $('input[name="quote_payment_date_full"]').val('');
+                $('#quote-payment-date-full').val('');
             }
 
             // recalculate and set deposit total immediately
             syncDepositAndFullPayment();
+        }
+    });
+
+    // Ensure that when travel date changes and deposit is selected, full payment date is always 30 days before travel date
+    $('#date-start').on('change input', function() {
+        if ($('#quote-payment-deposit').is(':checked')) {
+            var travelDateStr = $('#date-start').val();
+            if (travelDateStr) {
+                var travelDate = new Date(travelDateStr);
+                var now = new Date();
+                now.setHours(0,0,0,0);
+                var diffDays = (travelDate - now) / (1000 * 60 * 60 * 24);
+                var fullPayDateObj;
+                if (diffDays > 30) {
+                    travelDate.setDate(travelDate.getDate() - 30);
+                    travelDate.setHours(13,0,0,0);
+                    fullPayDateObj = travelDate;
+                } else {
+                    fullPayDateObj = new Date();
+                    fullPayDateObj.setDate(fullPayDateObj.getDate() + 1);
+                    fullPayDateObj.setHours(13,0,0,0);
+                }
+                var y = fullPayDateObj.getFullYear();
+                var m = ('0' + (fullPayDateObj.getMonth() + 1)).slice(-2);
+                var d = ('0' + fullPayDateObj.getDate()).slice(-2);
+                var h = ('0' + fullPayDateObj.getHours()).slice(-2);
+                var min = ('0' + fullPayDateObj.getMinutes()).slice(-2);
+                var fullPayDate = y + '-' + m + '-' + d + 'T' + h + ':' + min;
+                $('input[name="quote_payment_date_full"]').val(fullPayDate);
+                $('#quote-payment-date-full').val(fullPayDate);
+            } else {
+                $('input[name="quote_payment_date_full"]').val('');
+                $('#quote-payment-date-full').val('');
+            }
         }
     });
     // เมื่อจำนวน pax เปลี่ยน (triggered จาก calculatePaymentCondition)
@@ -1024,23 +1078,23 @@ $(function() {
         var vatRate = 0.07;
         var withholdingRows = [];
 
-        // คำนวณแต่ละแถวสินค้า (เฉพาะรายได้)
-        $('#table-income .row').each(function() {
+
+        // คำนวณแต่ละแถวสินค้าและส่วนลด (ใช้โครงสร้างเดียวกัน)
+        // Service rows
+        $('#table-income .item-row.table-income').each(function() {
             var $row = $(this);
-            var qty = parseFloat($row.find('.quantity').val()) || 0;
-            var price = parseFloat($row.find('.price-per-unit').val()) || 0;
-            var isVat = $row.find('.vat-status').val() === 'vat';
-            var isPax = $row.find('.product-select option:selected').data('pax') === 'Y';
-            var isWithholding = $row.find('.vat-3').is(':checked');
+            var qty = parseFloat($row.find('input[name="quantity[]"]').val()) || 0;
+            var price = parseFloat($row.find('input[name="price_per_unit[]"]').val()) || 0;
+            var isVat = $row.find('select[name="vat_status[]"]').val() === 'vat';
+            var isPax = $row.find('select[name="product_id[]"] option:selected').data('pax') === 'Y';
+            var isWithholding = $row.find('input.vat-3').is(':checked');
             var rowTotal = qty * price;
-            var withholding = 0;
-            // รวม 3% (ถ้ามี) เฉพาะแสดงผล ไม่เกี่ยวกับภาษีหัก ณ ที่จ่าย
             if (isWithholding) {
                 var plus3 = rowTotal * 0.03;
-                $row.find('.total-amount').val((rowTotal + plus3).toFixed(2));
+                $row.find('input[name="total_amount[]"]').val((rowTotal + plus3).toFixed(2));
                 rowTotal = rowTotal + plus3;
             } else {
-                $row.find('.total-amount').val(rowTotal.toFixed(2));
+                $row.find('input[name="total_amount[]"]').val(rowTotal.toFixed(2));
             }
             if (isVat) {
                 sumTotalVat += rowTotal;
@@ -1051,15 +1105,14 @@ $(function() {
                 paxTotal += qty;
             }
         });
-
-        // ส่วนลด (discount-list)
+        // Discount rows (ใช้โครงสร้างเดียวกับ service row)
         sumDiscount = 0;
-        $('#discount-list .discount-row').each(function() {
+        $('#discount-list .item-row.table-discount').each(function() {
             var $row = $(this);
-            var qty = parseFloat($row.find('.discount-qty').val()) || 0;
-            var price = parseFloat($row.find('.discount-price').val()) || 0;
+            var qty = parseFloat($row.find('input[name="quantity[]"]').val()) || 0;
+            var price = parseFloat($row.find('input[name="price_per_unit[]"]').val()) || 0;
             var total = qty * price;
-            $row.find('.discount-total').val(total.toFixed(2));
+            $row.find('input[name="total_amount[]"]').val(total.toFixed(2));
             sumDiscount += total;
         });
 
@@ -1221,44 +1274,47 @@ $(function() {
         var qty = rowData && rowData.qty ? rowData.qty : 1;
         var price = rowData && rowData.price ? rowData.price : 0;
         var vat = rowData && rowData.vat ? rowData.vat : 'nonvat';
+        var isWithholding = rowData && rowData.withholding_tax === 'Y' ? 'checked' : '';
         var total = qty * price;
         var rowHtml = `
             <div class="row item-row table-discount mb-1 align-items-center discount-row" data-row-id="${rowId}" style="background:#fffbe7;border-radius:8px;padding:8px 0;">
                 <div class="col-md-1 text-center discount-row-number">${rowCount}</div>
                 <div class="col-md-3">
-                    <select class="form-select discount-product-select select2" name="discount_product_id[]" style="width:100%">
+                    <select name="product_id[]" class="form-select product-select select2 discount-product-select" style="width: 100%;">
                         <option value="">--เลือกส่วนลด--</option>
                         @foreach ($productDiscount as $product)
                             <option value="{{ $product->id }}">{{ $product->product_name }}</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-1 text-center"><!-- รวม 3% (placeholder)--></div>
-                <div class="col-md-1 text-center">
-                    <select class="form-select discount-vat" name="discount_vat[]">
-                        <option value="nonvat" ${vat==='nonvat'?'selected':''}>nonVat</option>
+                <div class="col-md-1" style="display: none">
+                    <select name="expense_type[]" class="form-select">
+                        <option value="discount" selected> ส่วนลด </option>
                     </select>
                 </div>
                 <div class="col-md-1 text-center">
-                    <input type="number" class="form-control discount-qty text-center" name="discount_qty[]" min="1" value="${qty}">
-                </div>
-                <div class="col-md-2 text-center">
-                    <input type="number" class="form-control discount-price text-end" name="discount_price[]" step="0.01" value="${price}">
-                </div>
-                <div class="col-md-2 text-center">
-                    <input type="number" class="form-control discount-total text-end" name="discount_total[]" value="${total.toFixed(2)}" readonly>
+                    <input type="hidden" name="withholding_tax[]" value="N">
+                    <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y" ${isWithholding}>
                 </div>
                 <div class="col-md-1 text-center">
-                    <button type="button" class="btn btn-warning btn-sm remove-discount-row" title="ลบแถว"><i class="fa fa-trash"></i></button>
+                    <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
+                        <option value="nonvat" ${vat==='nonvat'?'selected':''}>nonVat</option>
+                        <option value="vat" ${vat==='vat'?'selected':''}>Vat</option>
+                    </select>
+                </div>
+                <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="${qty}"></div>
+                <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01" value="${price}"></div>
+                <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end" value="${total.toFixed(2)}" readonly></div>
+                <div class="col-md-1 text-center">
+                    <button type="button" class="btn btn-danger btn-sm remove-row-btn" title="ลบแถว"><i class="fa fa-trash"></i></button>
                 </div>
             </div>
         `;
         $('#discount-list').append(rowHtml);
         // init select2 เฉพาะแถวใหม่ (ใช้ element ที่ render จริง)
-        var $select = $('#discount-list .discount-row:last .discount-product-select');
+        var $select = $('#discount-list .discount-row:last .product-select.select2');
         $select.select2({
-            width: '100%',
-            dropdownParent: $('#discount-list'),
+            width: '100%'
         });
         if (selectedProduct) {
             $select.val(selectedProduct).trigger('change');

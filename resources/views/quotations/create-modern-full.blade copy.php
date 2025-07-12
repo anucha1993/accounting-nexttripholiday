@@ -1,330 +1,269 @@
 @extends('layouts.template')
-<style>
-/* --- QUOTATION PAGE GLOBAL --- */
-body, .main-quote-bg {
-    background: #f3f6fb !important;
-}
-.quote-main-box {
-    background: #fff;
-    border-radius: 18px;
-    box-shadow: 0 4px 32px 0 rgba(59,130,246,0.10);
-    padding: 32px 24px 24px 24px;
-    margin-top: 24px;
-    margin-bottom: 24px;
-    border: 1.5px solid #e0e7ef;
-    max-width: 1200px;
-}
-.quote-title {
-    color: #2563eb;
-    font-weight: 700;
-    font-size: 1.6rem;
-    letter-spacing: 1px;
-}
-.quote-hr {
-    border-top: 2px solid #e0e7ef;
-    margin: 18px 0 24px 0;
-}
-.quote-section-title {
-    color: #fff;
-    background: linear-gradient(90deg, #0ea5e9 0%, #6366f1 100%);
-    border-radius: 10px 10px 0 0;
-    padding: 10px 20px 10px 15px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 0;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
-}
-.quote-section-box {
-    background: #f8fafc;
-    border-radius: 12px;
-    border: 1.5px solid #e0e7ef;
-    box-shadow: 0 2px 12px 0 rgba(59,130,246,0.06);
-    padding: 24px 18px 18px 18px;
-    margin-bottom: 18px;
-}
-.quote-label {
-    color: #2563eb;
-    font-weight: 600;
-    font-size: 1rem;
-    margin-bottom: 4px;
-}
-.quote-input {
-    border: 1.5px solid #60a5fa !important;
-    background: #fff !important;
-    border-radius: 7px !important;
-    font-size: 1rem;
-    font-weight: 500;
-    color: #222;
-    box-shadow: 0 1px 2px 0 rgba(59,130,246,0.03);
-}
-.quote-input:focus {
-    border-color: #2563eb !important;
-    box-shadow: 0 0 0 2px #93c5fd33;
-}
-/* Customer Section */
-.customer-section-title {
-    color: #fff;
-    background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
-    border-radius: 10px 10px 0 0;
-    padding: 10px 20px 10px 15px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 0;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
-}
-.customer-section-box {
-    background: #f8fafc;
-    border-radius: 0 0 12px 12px;
-    border: 1.5px solid #e0e7ef;
-    box-shadow: 0 2px 12px 0 rgba(59,130,246,0.06);
-    padding: 24px 18px 18px 18px;
-}
-.customer-label {
-    color: #2563eb;
-    font-weight: 600;
-    font-size: 1rem;
-    margin-bottom: 4px;
-}
-.customer-label-sub {
-    color: #64748b;
-    font-weight: 500;
-    font-size: 0.98rem;
-}
-.customer-input {
-    border: 1.5px solid #60a5fa !important;
-    background: #fff !important;
-    border-radius: 7px !important;
-    font-size: 1rem;
-    font-weight: 500;
-    color: #222;
-    box-shadow: 0 1px 2px 0 rgba(59,130,246,0.03);
-}
-.customer-input:focus {
-    border-color: #2563eb !important;
-    box-shadow: 0 0 0 2px #93c5fd33;
-}
-.customer-input-icon {
-    background: #e0e7ef !important;
-    color: #2563eb !important;
-    border: none !important;
-}
-.customer-input-sub {
-    border: 1.5px solid #e0e7ef !important;
-    background: #f1f5f9 !important;
-    border-radius: 7px !important;
-    font-size: 0.98rem;
-    color: #334155;
-}
-.customer-input-sub:focus {
-    border-color: #60a5fa !important;
-    box-shadow: 0 0 0 2px #bae6fd33;
-}
-/* Service Section (Green theme like discount) */
-.service-section-title {
-    color: #fff;
-    background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
-    border-radius: 10px 10px 0 0;
-    padding: 10px 20px 10px 15px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 0;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 8px 0 rgba(34,197,94,0.08);
-}
-.service-section-box {
-    background: #f0fdf4;
-    border-radius: 10px;
-    border: 1.5px solid #bbf7d0;
-    box-shadow: 0 2px 12px 0 rgba(34,197,94,0.06);
-    padding: 20px 14px 14px 14px;
-    margin-bottom: 18px;
-}
-.service-header-row {
-    background: #bbf7d0;
-    border-radius: 7px;
-    font-weight: 600;
-    color: #166534;
-    font-size: 1rem;
-    margin-bottom: 8px;
-}
-.service-row {
-    align-items: center;
-    margin-bottom: 8px;
-}
-.service-row-number {
-    font-weight: 600;
-    color: #16a34a;
-    font-size: 1.05rem;
-}
-.service-product-select {
-    border: 1.5px solid #22c55e !important;
-    background: #fff !important;
-    border-radius: 7px !important;
-    font-size: 1rem;
-    color: #166534;
-}
-.service-qty, .service-price, .service-total {
-    border: 1.5px solid #bbf7d0 !important;
-    background: #fff !important;
-    border-radius: 7px !important;
-    font-size: 1rem;
-    color: #166534;
-    text-align: right;
-}
-.service-vat {
-    border: 1.5px solid #bbf7d0 !important;
-    background: #fff !important;
-    border-radius: 7px !important;
-    font-size: 1rem;
-    color: #166534;
-}
-.remove-service-row {
-    background: #f0fdf4 !important;
-    color: #16a34a !important;
-    border: 1.5px solid #bbf7d0 !important;
-    border-radius: 7px !important;
-    padding: 4px 10px !important;
-    font-size: 1.1rem;
-    transition: background 0.2s;
-}
-.remove-service-row:hover {
-    background: #bbf7d0 !important;
-    color: #fff !important;
-}
-.service-input {
-    border: 1.5px solid #22c55e !important;
-    background: #fff !important;
-    border-radius: 7px !important;
-    font-size: 1rem;
-    font-weight: 500;
-    color: #166534;
-    box-shadow: 0 1px 2px 0 rgba(34,197,94,0.03);
-}
-.service-input:focus {
-    border-color: #16a34a !important;
-    box-shadow: 0 0 0 2px #bbf7d0;
-}
-/* Discount Section */
-.discount-label {
-    color: #e11d48;
-    font-weight: 600;
-    font-size: 1.05rem;
-    margin-bottom: 6px;
-    margin-top: 10px;
-}
-.discount-list-box {
-    background: #fef2f2;
-    border-radius: 8px;
-    border: 1.5px solid #fecaca;
-    padding: 12px 10px 10px 10px;
-    margin-bottom: 10px;
-}
-.discount-row {
-    align-items: center;
-    margin-bottom: 8px;
-}
-.discount-row-number {
-    font-weight: 600;
-    color: #e11d48;
-    font-size: 1.05rem;
-}
-.discount-product-select {
-    border: 1.5px solid #e11d48 !important;
-    background: #fff !important;
-    border-radius: 7px !important;
-    font-size: 1rem;
-    color: #b91c1c;
-}
-.discount-qty, .discount-price, .discount-total {
-    border: 1.5px solid #fecaca !important;
-    background: #fff !important;
-    border-radius: 7px !important;
-    font-size: 1rem;
-    color: #b91c1c;
-    text-align: right;
-}
-.discount-vat {
-    border: 1.5px solid #fecaca !important;
-    background: #fff !important;
-    border-radius: 7px !important;
-    font-size: 1rem;
-    color: #b91c1c;
-}
-.remove-discount-row {
-    background: #fff0f1 !important;
-    color: #e11d48 !important;
-    border: 1.5px solid #fecaca !important;
-    border-radius: 7px !important;
-    padding: 4px 10px !important;
-    font-size: 1.1rem;
-    transition: background 0.2s;
-}
-.remove-discount-row:hover {
-    background: #fecaca !important;
-    color: #fff !important;
-}
-/* Summary Section */
-.summary-section-box {
-    background: #f8fafc;
-    border-radius: 12px;
-    border: 1.5px solid #e0e7ef;
-    box-shadow: 0 2px 12px 0 rgba(59,130,246,0.06);
-    padding: 24px 18px 18px 18px;
-    margin-bottom: 18px;
-}
-.summary-row {
-    border-bottom: 1px dashed #e0e7ef;
-    padding: 4px 0;
-}
-.summary-row:last-child {
-    border-bottom: none;
-}
-.summary {
-    font-size: 1.05rem;
-}
-.bg-warning {
-    background: #fef08a !important;
-    color: #b45309 !important;
-    border-radius: 6px;
-    padding: 2px 8px;
-}
-/* Payment Section */
-.payment-section-box {
-    background: #f8fafc;
-    border-radius: 12px;
-    border: 1.5px solid #e0e7ef;
-    box-shadow: 0 2px 12px 0 rgba(59,130,246,0.06);
-    padding: 24px 18px 18px 18px;
-    margin-bottom: 18px;
-}
-.btn-primary {
-    background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
-    border: none;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    border-radius: 7px;
-    box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
-}
-.btn-primary:hover, .btn-primary:focus {
-    background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 100%);
-}
-</style>
 @section('content')
-<div class="container-fluid page-content main-quote-bg">
+<style>
+    body, .page-content, .container, .form-control, .form-select, .select2-selection {
+        font-family: 'Sarabun', 'Prompt', 'Segoe UI', sans-serif;
+    }
+    .container.border.bg-white {
+        background: #f7fafd;
+        border-radius: 18px;
+        box-shadow: 0 2px 16px 0 rgba(0,0,0,0.07);
+        padding: 32px 28px 24px 28px;
+        margin-top: 24px;
+    }
+    .section-card {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 1px 8px 0 rgba(25,118,210,0.07);
+        margin-bottom: 28px;
+        padding: 24px 18px 18px 18px;
+        border-top: 5px solid #1976d2;
+        position: relative;
+    }
+    .section-card .section-title {
+        font-size: 1.18rem;
+        font-weight: 700;
+        margin-bottom: 18px;
+        color: #fff;
+        background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+        border-radius: 8px 8px 8px 8px;
+        padding: 10px 18px 10px 44px;
+        position: relative;
+        box-shadow: 0 2px 8px 0 rgba(25,118,210,0.08);
+        letter-spacing: 0.5px;
+    }
+    .section-title .fa {
+        position: absolute;
+        left: 16px;
+        top: 13px;
+        font-size: 1.2em;
+        opacity: 0.85;
+    }
+    .divider {
+        border: none;
+        border-top: 2px dashed #90caf9;
+        margin: 24px 0 18px 0;
+    }
+    h4, h5 {
+        font-weight: 700;
+        color: #1a237e;
+        letter-spacing: 0.5px;
+    }
+    h5.section-inline {
+        background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+        color: #fff!important;
+        border-radius: 8px;
+        padding: 7px 16px 7px 38px;
+        margin-bottom: 18px;
+        position: relative;
+        font-size: 1.08rem;
+    }
+    h5.section-inline .fa {
+        position: absolute;
+        left: 14px;
+        top: 10px;
+        font-size: 1.1em;
+        opacity: 0.85;
+    }
+    label {
+        font-weight: 600;
+        color: #222;
+        margin-bottom: 4px;
+    }
+    .form-control, .form-select, .select2-selection {
+        border-radius: 8px !important;
+        border: 1.5px solid #d1d5db;
+        box-shadow: 0 1px 2px 0 rgba(0,0,0,0.03);
+        font-size: 1.08rem;
+        padding: 10px 14px;
+        background: #fafdff;
+        transition: border 0.2s, box-shadow 0.2s;
+    }
+    .form-control:focus, .form-select:focus, .select2-selection:focus {
+        border: 2px solid #42a5f5 !important;
+        background: #fff;
+        outline: none;
+        box-shadow: 0 2px 8px 0 rgba(25,118,210,0.13);
+    }
+    .form-control:focus, .form-select:focus, .select2-selection:focus {
+        border: 1.5px solid #1976d2 !important;
+        background: #fff;
+        outline: none;
+        box-shadow: 0 2px 8px 0 rgba(25,118,210,0.07);
+    }
+    .select2-container--default .select2-selection--single {
+        height: 38px;
+        padding: 4px 8px;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        background: #fafbfc;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 30px;
+    }
+    .row.table-custom {
+        margin-bottom: 18px;
+    }
+    .header-row, .summary-row {
+        background: #e3f2fd;
+        border-radius: 8px;
+        margin-bottom: 6px;
+        padding: 8px 0;
+        border-left: 4px solid #1976d2;
+    }
+    .header-row > div, .summary-row > div {
+        font-weight: 600;
+        color: #374151;
+    }
+    .item-row {
+        background: #fafdff;
+        border-radius: 10px;
+        margin-bottom: 18px;
+        box-shadow: 0 1px 4px 0 rgba(25,118,210,0.04);
+        transition: box-shadow 0.2s, background 0.2s;
+        padding: 10px 0 10px 0;
+    }
+    .item-row.table-income {
+        background: #fafdff;
+    }
+    .item-row.table-discount {
+        background: #fffbe7;
+    }
+    .item-row:hover {
+        box-shadow: 0 4px 16px 0 rgba(25,118,210,0.13);
+        background: #e3f2fd;
+    }
+    .item-row.table-discount:hover {
+        background: #fff3c0;
+    }
+    .row.item-row > .row {
+        margin-bottom: 10px;
+    }
+    .add-row {
+        margin: 10px 0 10px 0;
+        font-size: 1.08rem;
+        color: #1976d2;
+        cursor: pointer;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        background: #e3f2fd;
+        border-radius: 8px;
+        padding: 7px 12px;
+        width: fit-content;
+        transition: background 0.2s;
+    }
+    .add-row:hover {
+        background: #bbdefb;
+        color: #0d47a1;
+    }
+    .add-row i {
+        margin-right: 6px;
+    }
+    .btn-primary, .btn-danger, .btn-link {
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1.05rem;
+        padding: 7px 18px;
+        transition: background 0.2s, color 0.2s;
+    }
+    .btn-primary {
+        background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+        border: none;
+        color: #fff;
+        box-shadow: 0 2px 8px 0 rgba(25,118,210,0.08);
+    }
+    .btn-primary:hover {
+        background: linear-gradient(90deg, #0d47a1 60%, #1976d2 100%);
+        color: #fff;
+    }
+    .btn-danger {
+        background: linear-gradient(90deg, #e53935 60%, #ff7043 100%);
+        border: none;
+        color: #fff;
+    }
+    .btn-danger:hover {
+        background: linear-gradient(90deg, #b71c1c 60%, #e53935 100%);
+        color: #fff;
+    }
+    .btn-link {
+        color: #1976d2;
+        text-decoration: underline;
+        background: none;
+        border: none;
+    }
+    .list-group-item, .period-select {
+        border-radius: 6px !important;
+        margin-bottom: 2px;
+        transition: background 0.15s;
+    }
+    .list-group-item:hover, .period-select:hover {
+        background: #e3f2fd !important;
+        color: #1976d2;
+    }
+    .summary {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 18px 12px 10px 12px;
+        box-shadow: 0 1px 8px 0 rgba(25,118,210,0.07);
+        border-left: 5px solid #1976d2;
+    }
+    #grand-total, #sum-include-vat {
+        font-size: 1.18rem;
+        font-weight: 700;
+        color: #d84315;
+        background: linear-gradient(90deg, #fff3e0 60%, #ffe0b2 100%);
+        border-radius: 6px;
+        padding: 2px 8px;
+        box-shadow: 0 1px 4px 0 rgba(255,152,0,0.07);
+    }
+    #pax {
+        font-size: 1.08rem;
+        color: #1976d2;
+        font-weight: 600;
+    }
+    textarea.form-control {
+        min-height: 60px;
+        border-radius: 8px;
+    }
+    .input-group-text {
+        background: #e3eafc;
+        border-radius: 8px 0 0 8px;
+        font-weight: 600;
+        color: #1a237e;
+    }
+    .discount-row {
+        background: #f9f9fb;
+        border-radius: 8px;
+        margin-bottom: 6px;
+        box-shadow: 0 1px 4px 0 rgba(25,118,210,0.04);
+        border-left: 4px solid #42a5f5;
+    }
+    .discount-row .btn-danger {
+        padding: 4px 10px;
+        font-size: 1rem;
+    }
+    @media (max-width: 991px) {
+        .container.border.bg-white {
+            padding: 12px 4px 8px 4px;
+        }
+        .summary {
+            padding: 10px 4px 6px 4px;
+        }
+    }
+</style>
+<div class="container-fluid page-content">
     <div class="todo-listing">
-        <div class="container quote-main-box">
-            <h4 class="text-center quote-title">สร้างใบเสนอราคา (UI ปรับปรุง)</h4>
-            <hr class="quote-hr">
+        <div class="container border bg-white">
+            <h2 class="text-center my-4"><i class="fa fa-file-invoice-dollar" style="color:#1976d2;margin-right:8px;"></i>สร้างใบเสนอราคา <span style="font-weight:400;font-size:1.1rem;color:#1976d2;">(UI Edit New)</span></h2>
             <form action="{{ route('quote.store') }}" id="formQuoteModern" method="post">
                 @csrf
-                <!-- SECTION: ข้อมูลทั่วไป -->
-                <div class="quote-section-box mb-4">
-                  <div class="row g-3 align-items-end">
-                    <div class="col-md-2">
-                        <label class="form-label quote-label">เซลล์ผู้ขายแพคเกจ</label>
-                        <select name="quote_sale" class="form-select quote-input select2" required>
+                <div class="section-card">
+                    <div class="section-title"><i class="fa fa-user-tie"></i> ข้อมูลทั่วไป</div>
+                    <div class="row table-custom ">
+                    <div class="col-md-2 ms-auto">
+                        <label>เซลล์ผู้ขายแพคเกจ:</label>
+                        <select name="quote_sale" class="form-select select2" required>
                             @forelse ($sales as $item)
                                 <option value="{{ $item->id }}">{{ $item->name }}</option>
                             @empty
@@ -332,40 +271,39 @@ body, .main-quote-bg {
                             @endforelse
                         </select>
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label quote-label">วันที่สั่งซื้อ/จองแพคเกจ</label>
-                        <input type="date" id="displayDatepicker" class="form-control quote-input" required value="{{ date('Y-m-d') }}">
-                        <input type="hidden" id="submitDatepicker" name="quote_booking_create">
-                        <input type="hidden" id="quote-date" name="quote_booking_create">
+                    <div class="col-md-2 ms-3">
+                        <label>วันที่สั่งซื้อ/จองแพคเกจ:</label>
+                        <input type="date" id="displayDatepicker" class="form-control" required value="{{ date('Y-m-d') }}">
+                        <input type="hidden" id="submitDatepicker" name="quote_booking_create" value="{{ date('Y-m-d') }}">
+                        {{-- <input type="hidden" id="quote-date" name="quote_booking_create"> --}}
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label quote-label">เลขที่ใบเสนอราคา</label>
-                        <input type="text" class="form-control quote-input" placeholder="???????" disabled>
+                        <label>เลขที่ใบเสนอราคา</label>
+                        <input type="text" class="form-control" placeholder="???????" disabled>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label quote-label">วันที่เสนอราคา</label>
-                        <input type="date" id="displayDatepickerQuoteDate" class="form-control quote-input" required value="{{ date('Y-m-d') }}">
-                        <input type="hidden" id="submitDatepickerQuoteDate" name="quote_date" class="form-control">
+                        <label>วันที่เสนอราคา</label>
+                        <input type="date" id="displayDatepickerQuoteDate"  name="quote_date"  class="form-control" required value="{{ date('Y-m-d') }}">
+     
                     </div>
-                  </div>
                 </div>
-                <div class="quote-section-box mb-4">
-                  <h5 class="quote-section-title"><i class="fa fa-suitcase-rolling me-2"></i>รายละเอียดแพคเกจทัวร์</h5>
-                  <div class="row g-3 align-items-end">
+                </div>
+                <hr class="divider">
+                <div class="section-card">
+                    <div class="section-title" style="background:linear-gradient(90deg,#d84315 60%,#ff7043 100%)"><i class="fa fa-suitcase-rolling"></i> รายละเอียดแพคเกจทัวร์</div>
+                    <div class="row table-custom">
                     <div class="col-md-6 position-relative">
-                        <label class="form-label quote-label">ชื่อแพคเกจทัวร์</label>
-                        <div class="input-group">
-                          <input type="text" id="tourSearch" class="form-control quote-input" name="quote_tour_name" placeholder="ค้นหาแพคเกจทัวร์...ENTER เพื่อค้นหา" required autocomplete="off">
-                          <button type="button" id="resetTourSearch" class="btn btn-link btn-sm position-absolute end-0 top-0" style="z-index:1100;right:10px;top:30px"><i class="fa fa-times"></i></button>
-                        </div>
+                        <label>ชื่อแพคเกจทัวร์:</label>
+                        <input type="text" id="tourSearch" class="form-control" name="quote_tour_name" placeholder="ค้นหาแพคเกจทัวร์...ENTER เพื่อค้นหา" required autocomplete="off">
+                        <button type="button" id="resetTourSearch" class="btn btn-link btn-sm position-absolute end-0 top-0" style="z-index:1100;right:10px;top:30px"><i class="fa fa-times"></i></button>
                         <div id="tourResults" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
                     </div>
                     <input type="hidden" id="tourSearch1" class="form-control" name="quote_tour_name1">
                     <input type="hidden" id="tour-code" name="quote_tour">
                     <input type="hidden" id="tour-id">
                     <div class="col-md-3">
-                        <label class="form-label quote-label">ระยะเวลาทัวร์ (วัน/คืน)</label>
-                        <select name="quote_numday" class="form-select quote-input" id="numday" required>
+                        <label>ระยะเวลาทัวร์ (วัน/คืน): </label>
+                        <select name="quote_numday" class="form-select" id="numday" required>
                             <option value="">--เลือกระยะเวลา--</option>
                             @forelse ($numDays as $item)
                                 <option data-day="{{ $item->num_day_total }}" value="{{ $item->num_day_name }}">{{ $item->num_day_name }}</option>
@@ -374,8 +312,8 @@ body, .main-quote-bg {
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label quote-label">ประเทศที่เดินทาง</label>
-                        <select name="quote_country" class="form-select quote-input select2" id="country" style="width: 100%" required>
+                        <label>ประเทศที่เดินทาง: </label>
+                        <select name="quote_country" class="form-select select2" id="country" style="width: 100%" required>
                             <option value="">--เลือกประเทศที่เดินทาง--</option>
                             @forelse ($country as $item)
                                 <option value="{{ $item->id }}">{{ $item->iso2 }}-{{ $item->country_name_th }}</option>
@@ -383,11 +321,11 @@ body, .main-quote-bg {
                             @endforelse
                         </select>
                     </div>
-                  </div>
-                  <div class="row g-3 align-items-end mt-2">
+                </div>
+                    <div class="row table-custom">
                     <div class="col-md-3">
-                        <label class="form-label quote-label">โฮลเซลล์</label>
-                        <select name="quote_wholesale" class="form-select quote-input select2" style="width: 100%" id="wholesale" required>
+                        <label>โฮลเซลล์: </label>
+                        <select name="quote_wholesale" class="form-select select2" style="width: 100%" id="wholesale" required>
                             <option value="">--เลือกโฮลเซลล์--</option>
                             @forelse ($wholesale as $item)
                                 <option value="{{ $item->id }}">{{ $item->code }}-{{ $item->wholesale_name_th }}</option>
@@ -396,8 +334,8 @@ body, .main-quote-bg {
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label quote-label">สายการบิน</label>
-                        <select name="quote_airline" class="form-select quote-input select2" style="width: 100%" id="airline" required>
+                        <label>สายการบิน:</label>
+                        <select name="quote_airline" class="form-select select2" style="width: 100%" id="airline" required>
                             <option value="">--เลือกสายการบิน--</option>
                             @forelse ($airline as $item)
                                 <option value="{{ $item->id }}">{{ $item->code }}-{{ $item->travel_name }}</option>
@@ -406,8 +344,8 @@ body, .main-quote-bg {
                         </select>
                     </div>
                     <div class="col-md-3 position-relative">
-                        <label class="form-label quote-label">วันออกเดินทาง <a href="#" class="ms-1" id="list-period">เลือกวันที่</a></label>
-                        <input type="date" class="form-control quote-input" id="date-start-display" placeholder="วันออกเดินทาง..." required autocomplete="off">
+                        <label>วันออกเดินทาง: <a href="#" class="" id="list-period" style="color:#1976d2;font-weight:500;">เลือกวันที่</a></label>
+                        <input type="date" class="form-control" id="date-start-display" placeholder="วันออกเดินทาง..." required autocomplete="off">
                         <div id="date-list" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
                         <input type="hidden" id="period1" name="period1">
                         <input type="hidden" id="period2" name="period2">
@@ -416,299 +354,88 @@ body, .main-quote-bg {
                         <input type="hidden" id="date-start" name="quote_date_start">
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label quote-label">วันเดินทางกลับ</label>
-                        <input type="date" class="form-control quote-input" id="date-end-display" placeholder="วันเดินทางกลับ..." required>
+                        <label>วันเดินทางกลับ: </label>
+                        <input type="date" class="form-control" id="date-end-display" placeholder="วันเดินทางกลับ..." required>
                         <input type="hidden" id="date-end" name="quote_date_end">
                     </div>
-                  </div>
                 </div>
-                <h5 class="customer-section-title"><i class="fa fa-user-circle me-2"></i>ข้อมูลลูกค้า</h5>
-                <div class="customer-section-box mb-4">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-3 position-relative">
-                            <label class="form-label customer-label">ชื่อลูกค้า</label>
-                            <div class="input-group">
-                                <span class="input-group-text customer-input-icon"><i class="fa fa-user"></i></span>
-                                <input type="text" class="form-control customer-input" name="customer_name" id="customerSearch" placeholder="ชื่อลูกค้า...ENTER เพื่อค้นหา" required autocomplete="off">
+                </div>
+                <hr class="divider">
+                <div class="section-card">
+                    <div class="section-title" style="background:linear-gradient(90deg,#43a047 60%,#81c784 100%)"><i class="fa fa-users"></i> ข้อมูลลูกค้า</div>
+                    <div class="row table-custom">
+                    <div class="col-md-3 position-relative">
+                        <label class="">ชื่อลูกค้า:</label>
+                        <input type="text" class="form-control" name="customer_name" id="customerSearch" placeholder="ชื่อลูกค้า...ENTER เพื่อค้นหา" required aria-describedby="basic-addon1" autocomplete="off">
+                        <div id="customerResults" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
+                    </div>
+                    <input type="hidden" id="customer-id" name="customer_id">
+                    <input type="hidden" id="customer-new" name="customer_type_new" value="customerNew">
+                    <div class="col-md-3">
+                        <label>อีเมล์:</label>
+                        <input type="email" class="form-control" name="customer_email" placeholder="Email" aria-describedby="basic-addon1" id="customer_email">
+                    </div>
+                    <div class="col-md-3">
+                        <label>เลขผู้เสียภาษี:</label>
+                        <input type="text" id="texid" class="form-control" name="customer_texid" mix="13" placeholder="เลขประจำตัวผู้เสียภาษี" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="col-md-3">
+                        <label>เบอร์โทรศัพท์ :</label>
+                        <input type="text" class="form-control" name="customer_tel" id="customer_tel" placeholder="เบอร์โทรศัพท์" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="col-md-12">
+                                    <label>เบอร์โทรสาร :</label>
+                                    <input type="text" class="form-control" id="fax" name="customer_fax" placeholder="เบอร์โทรศัพท์" aria-describedby="basic-addon1">
+                                </div>
+                                <div class="col-md-12">
+                                    <label>ลูกค้าจาก :</label>
+                                    <select name="customer_campaign_source" class="form-select">
+                                        @forelse ($campaignSource as $item)
+                                            <option value="{{ $item->campaign_source_id }}">{{ $item->campaign_source_name }}</option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+                                </div>
+                                <div class="col-md-12">
+                                    <label>Social id</label>
+                                    <input type="text" class="form-control" name="customer_social_id" placeholder="Social id">
+                                </div>
                             </div>
-                            <div id="customerResults" class="list-group position-absolute w-100 mt-1 shadow" style="z-index: 1000;"></div>
-                            <input type="hidden" id="customer-id" name="customer_id">
-                            <input type="hidden" id="customer-new" name="customer_type_new" value="customerNew">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label customer-label">อีเมล์</label>
-                            <div class="input-group">
-                                <span class="input-group-text customer-input-icon"><i class="fa fa-envelope"></i></span>
-                                <input type="email" class="form-control customer-input" name="customer_email" placeholder="Email" id="customer_email">
+                            <div class="col-md-9">
+                                <div class="col-md-12">
+                                    <label>ที่อยู่:</label>
+                                    <textarea name="customer_address" class="form-control" id="customer_address" cols="30" rows="7" placeholder="ที่อยู่"></textarea>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label customer-label">เลขผู้เสียภาษี</label>
-                            <div class="input-group">
-                                <span class="input-group-text customer-input-icon"><i class="fa fa-id-card"></i></span>
-                                <input type="text" id="texid" class="form-control customer-input" name="customer_texid" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label customer-label">เบอร์โทรศัพท์</label>
-                            <div class="input-group">
-                                <span class="input-group-text customer-input-icon"><i class="fa fa-phone"></i></span>
-                                <input type="text" class="form-control customer-input" name="customer_tel" id="customer_tel" placeholder="เบอร์โทรศัพท์">
-                            </div>
-                        </div>
-                        <div class="col-md-3 mt-3">
-                            <label class="form-label customer-label-sub">เบอร์โทรสาร</label>
-                            <input type="text" class="form-control customer-input-sub" id="fax" name="customer_fax" placeholder="เบอร์โทรสาร">
-                        </div>
-                        <div class="col-md-3 mt-3">
-                            <label class="form-label customer-label-sub">ลูกค้าจาก</label>
-                            <select name="customer_campaign_source" class="form-select customer-input-sub">
-                                @forelse ($campaignSource as $item)
-                                    <option value="{{ $item->campaign_source_id }}">{{ $item->campaign_source_name }}</option>
-                                @empty
-                                @endforelse
-                            </select>
-                        </div>
-                        <div class="col-md-3 mt-3">
-                            <label class="form-label customer-label-sub">Social id</label>
-                            <input type="text" class="form-control customer-input-sub" name="customer_social_id" placeholder="Social id">
-                        </div>
-                        <div class="col-md-3 mt-3">
-                            <label class="form-label customer-label-sub">&nbsp;</label>
-                            <!-- empty for spacing -->
-                        </div>
-                        <div class="col-md-12 mt-3">
-                            <label class="form-label customer-label">ที่อยู่</label>
-                            <textarea name="customer_address" class="form-control customer-input" id="customer_address" cols="30" rows="3" placeholder="ที่อยู่ลูกค้า..." style="resize: vertical;"></textarea>
                         </div>
                     </div>
                 </div>
-                <style>
-                body, .main-quote-bg {
-                    background: #f3f6fb !important;
-                }
-                .quote-main-box {
-                    background: #fff;
-                    border-radius: 18px;
-                    box-shadow: 0 4px 32px 0 rgba(59,130,246,0.10);
-                    padding: 32px 24px 24px 24px;
-                    margin-top: 24px;
-                    margin-bottom: 24px;
-                    border: 1.5px solid #e0e7ef;
-                }
-                .quote-title {
-                    color: #2563eb;
-                    font-weight: 700;
-                    font-size: 1.6rem;
-                    letter-spacing: 1px;
-                }
-                .quote-hr {
-                    border-top: 2px solid #e0e7ef;
-                    margin: 18px 0 24px 0;
-                }
-                .quote-section-title {
-                    color: #fff;
-                    background: linear-gradient(90deg, #0ea5e9 0%, #6366f1 100%);
-                    border-radius: 10px 10px 0 0;
-                    padding: 10px 20px 10px 15px;
-                    font-size: 1.1rem;
-                    font-weight: 600;
-                    margin-bottom: 0;
-                    letter-spacing: 0.5px;
-                    box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
-                }
-                .quote-section-box {
-                    background: #f8fafc;
-                    border-radius: 12px;
-                    border: 1.5px solid #e0e7ef;
-                    box-shadow: 0 2px 12px 0 rgba(59,130,246,0.06);
-                    padding: 24px 18px 18px 18px;
-                    margin-bottom: 18px;
-                }
-                .quote-label {
-                    color: #2563eb;
-                    font-weight: 600;
-                    font-size: 1rem;
-                    margin-bottom: 4px;
-                }
-                .quote-input {
-                    border: 1.5px solid #60a5fa !important;
-                    background: #fff !important;
-                    border-radius: 7px !important;
-                    font-size: 1rem;
-                    font-weight: 500;
-                    color: #222;
-                    box-shadow: 0 1px 2px 0 rgba(59,130,246,0.03);
-                }
-                .quote-input:focus {
-                    border-color: #2563eb !important;
-                    box-shadow: 0 0 0 2px #93c5fd33;
-                }
-                /* Customer Section */
-                .customer-section-title {
-                    color: #fff;
-                    background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
-                    border-radius: 10px 10px 0 0;
-                    padding: 10px 20px 10px 15px;
-                    font-size: 1.2rem;
-                    font-weight: 600;
-                    margin-bottom: 0;
-                    letter-spacing: 0.5px;
-                    box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
-                }
-                .customer-section-box {
-                    background: #f8fafc;
-                    border-radius: 0 0 12px 12px;
-                    border: 1.5px solid #e0e7ef;
-                    box-shadow: 0 2px 12px 0 rgba(59,130,246,0.06);
-                    padding: 24px 18px 18px 18px;
-                }
-                .customer-label {
-                    color: #2563eb;
-                    font-weight: 600;
-                    font-size: 1rem;
-                    margin-bottom: 4px;
-                }
-                .customer-label-sub {
-                    color: #64748b;
-                    font-weight: 500;
-                    font-size: 0.98rem;
-                }
-                .customer-input {
-                    border: 1.5px solid #60a5fa !important;
-                    background: #fff !important;
-                    border-radius: 7px !important;
-                    font-size: 1rem;
-                    font-weight: 500;
-                    color: #222;
-                    box-shadow: 0 1px 2px 0 rgba(59,130,246,0.03);
-                }
-                .customer-input:focus {
-                    border-color: #2563eb !important;
-                    box-shadow: 0 0 0 2px #93c5fd33;
-                }
-                .customer-input-icon {
-                    background: #e0e7ef !important;
-                    color: #2563eb !important;
-                    border: none !important;
-                }
-                .customer-input-sub {
-                    border: 1.5px solid #e0e7ef !important;
-                    background: #f1f5f9 !important;
-                    border-radius: 7px !important;
-                    font-size: 0.98rem;
-                    color: #334155;
-                }
-                .customer-input-sub:focus {
-                    border-color: #60a5fa !important;
-                    box-shadow: 0 0 0 2px #bae6fd33;
-                }
-                /* Service Section */
-                .service-section-title {
-                    color: #fff;
-                    background: linear-gradient(90deg, #6366f1 0%, #60a5fa 100%);
-                    border-radius: 10px 10px 0 0;
-                    padding: 10px 20px 10px 15px;
-                    font-size: 1.2rem;
-                    font-weight: 600;
-                    margin-bottom: 0;
-                    letter-spacing: 0.5px;
-                    box-shadow: 0 2px 8px 0 rgba(99,102,241,0.08);
-                }
-                .service-section-box {
-                    background: #f1f5f9;
-                    border-radius: 0 0 12px 12px;
-                    border: 1.5px solid #e0e7ef;
-                    box-shadow: 0 2px 12px 0 rgba(99,102,241,0.06);
-                    padding: 24px 18px 18px 18px;
-                }
-                .service-header-row {
-                    background: #e0e7ef;
-                    border-radius: 7px;
-                    font-weight: 600;
-                    color: #374151;
-                    font-size: 1rem;
-                    margin-bottom: 8px;
-                }
-                .service-input {
-                    border: 1.5px solid #6366f1 !important;
-                    background: #fff !important;
-                    border-radius: 7px !important;
-                    font-size: 1rem;
-                    font-weight: 500;
-                    color: #222;
-                    box-shadow: 0 1px 2px 0 rgba(99,102,241,0.03);
-                }
-                .service-input:focus {
-                    border-color: #2563eb !important;
-                    box-shadow: 0 0 0 2px #a5b4fc33;
-                }
-                /* Summary Section */
-                .summary-section-box {
-                    background: #f8fafc;
-                    border-radius: 12px;
-                    border: 1.5px solid #e0e7ef;
-                    box-shadow: 0 2px 12px 0 rgba(59,130,246,0.06);
-                    padding: 24px 18px 18px 18px;
-                    margin-bottom: 18px;
-                }
-                .summary-row {
-                    border-bottom: 1px dashed #e0e7ef;
-                    padding: 4px 0;
-                }
-                .summary-row:last-child {
-                    border-bottom: none;
-                }
-                .summary {
-                    font-size: 1.05rem;
-                }
-                .bg-warning {
-                    background: #fef08a !important;
-                    color: #b45309 !important;
-                    border-radius: 6px;
-                    padding: 2px 8px;
-                }
-                /* Payment Section */
-                .payment-section-box {
-                    background: #f8fafc;
-                    border-radius: 12px;
-                    border: 1.5px solid #e0e7ef;
-                    box-shadow: 0 2px 12px 0 rgba(59,130,246,0.06);
-                    padding: 24px 18px 18px 18px;
-                    margin-bottom: 18px;
-                }
-                .btn-primary {
-                    background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
-                    border: none;
-                    font-weight: 600;
-                    letter-spacing: 0.5px;
-                    border-radius: 7px;
-                    box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
-                }
-                .btn-primary:hover, .btn-primary:focus {
-                    background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 100%);
-                }
-                </style>
-                <br>
-                <h5 class="service-section-title"><i class="fa fa-list-alt me-2"></i>ข้อมูลค่าบริการ <span id="pax" class="float-end"></span></h5>
-                <div class="service-section-box mb-4">
+                </div>
+                <hr class="divider">
+                <div class="section-card">
+                    <h5 class="section-inline"><i class="fa fa-coins"></i> ข้อมูลค่าบริการ <span id="pax" class="float-end"></span></h5>
                     <div id="quotation-table" class="table-custom text-center">
-                        <div class="row header-row service-header-row">
-                            <div class="col-md-1">ลำดับ</div>
-                            <div class="col-md-3">รายการสินค้า</div>
-                            <div class="col-md-1">รวม 3%</div>
-                            <div class="col-md-1">NonVat</div>
-                            <div class="col-md-1">จำนวน</div>
-                            <div class="col-md-1">ราคา/หน่วย</div>
-                            <div class="col-md-2">ยอดรวม</div>
-                            <div class="col-md-1"></div>
-                        </div>
-                        @php $key = 0; @endphp
-                        <div id="table-income">
-                            <div class="row item-row service-row">
-                            <div class="col-md-1 service-row-number">{{ $key + 1 }}</div>
+                      <div class="row header-row" style="padding: 5px">
+                        <div class="col-md-1">ลำดับ</div>
+                        <div class="col-md-3">รายการสินค้า</div>
+                      
+                        <div class="col-md-1">รวม 3%</div>
+                        <div class="col-md-1">NonVat</div>
+                        <div class="col-md-1">จำนวน</div>
+                        <div class="col-md-2">ราคา/หน่วย</div>
+                        <div class="col-md-2">ยอดรวม</div>
+                      </div>
+                     <hr>
+                     {{-- <div class="row discount-row mb-1 align-items-center" data-row-id="${rowId}" style="background:#fffbe7;border-radius:8px;padding:8px 0;"> --}}
+                    <div class="row item-row table-income" id="table-income" style="background:#55ffb848;border-radius:8px;padding:8px 0;">
+                        <div class="row align-items-center">
+                            
+                            <div class="col-md-1 "><span class="row-number"></span></div>
                             <div class="col-md-3">
-                                <select name="product_id[]" class="form-select product-select select2 service-product-select" id="product-select" style="width: 100%;">
+                                <select name="product_id[]" class="form-select product-select select2" id="product-select" style="width: 100%;">
                                     <option value="">--เลือกสินค้า--</option>
                                     @forelse ($products as $product)
                                         <option data-pax="{{ $product->product_pax }}" value="{{ $product->id }}">{{ $product->product_name }}{{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
@@ -716,97 +443,66 @@ body, .main-quote-bg {
                                     @endforelse
                                 </select>
                             </div>
+                            <!-- dropdown ประเภท (รายได้/ส่วนลด) ซ่อนแบบต้นฉบับ -->
                             <div class="col-md-1" style="display: none">
                                 <select name="expense_type[]" class="form-select">
                                     <option selected value="income"> รายได้ </option>
                                 </select>
                             </div>
                             <div class="col-md-1">
+                                <input type="hidden" name="withholding_tax[]" value="N">
                                 <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y">
                             </div>
                             <div class="col-md-1 text-center">
-                                <select name="vat_status[]" class="vat-status form-select service-vat" style="width: 110%;">
+                                <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
                                     <option selected value="nonvat">nonVat</option>
                                     <option value="vat">Vat</option>
                                 </select>
                             </div>
-                            <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end service-qty" step="1" value="1"></div>
-                            <div class="col-md-1"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end service-price" step="0.01" value="0"></div>
-                            <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end service-total" value="0" readonly></div>
-                            <div class="col-md-1"><button type="button" class="remove-service-row"><i class="fa fa-trash"></i></button></div>
+                            <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="1"></div>
+                            <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01" value="0"></div>
+                            <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end" value="0" readonly></div>
+                            <div class="col-md-1 text-center">
+                                 <button type="button" class="btn btn-danger btn-sm remove-row-btn " title="ลบแถว" style="font-size: 13px 10px"><i class="fa fa-trash" ></i></button>
+                                {{-- <a href="javascript:void(0)" class="remove-row-btn  text-danger" title="ลบแถว"><span class="fa fa-trash"></span></a> --}}
                             </div>
                         </div>
-                        <div class="add-row mt-2">
-                            <i class="fa fa-plus"></i><a id="add-row-service" href="javascript:void(0)" class="ms-1"> เพิ่มรายการ</a>
-                        </div>
-                        <div class="add-row mt-2">
-                            <i class="fa fa-plus"></i><a id="add-row-discount" href="javascript:void(0)" class="ms-1"> เพิ่มส่วนลด</a>
-                        </div>
-                    <div class="row item-row table-discount mt-2">
+                    </div>
+                    <div class="add-row">
+                        <i class="fa fa-plus"></i><span id="add-row-service" style="cursor:pointer;"> เพิ่มรายการ</span>
+                    </div>
+                    <hr>
+                    <div class="row item-row" style="border-radius:8px;padding:8px 0;">
+                    <div class="row item-row table-discount">
                         <div class="col-md-12" style="text-align: left">
-                            <label class="discount-label"><i class="fa fa-tags me-1"></i>ส่วนลด</label>
-                            <div class="discount-list-box" id="discount-list">
+                            <label class="text-danger">ส่วนลด</label>
+                            <div id="discount-list" >
                                 <!-- Discount rows will be rendered here by JS -->
                             </div>
                         </div>
                     </div>
                     </div>
+                    <div class="add-row">
+                        <i class="fa fa-plus"></i><span id="add-row-discount" style="cursor:pointer;"> เพิ่มส่วนลด</span>
+                    </div>
                 </div>
-                <style>
-                .service-section-title {
-                    color: #fff;
-                    background: linear-gradient(90deg, #6366f1 0%, #60a5fa 100%);
-                    border-radius: 10px 10px 0 0;
-                    padding: 10px 20px 10px 15px;
-                    font-size: 1.2rem;
-                    font-weight: 600;
-                    margin-bottom: 0;
-                    letter-spacing: 0.5px;
-                    box-shadow: 0 2px 8px 0 rgba(99,102,241,0.08);
-                }
-                .service-section-box {
-                    background: #f1f5f9;
-                    border-radius: 0 0 12px 12px;
-                    border: 1.5px solid #e0e7ef;
-                    box-shadow: 0 2px 12px 0 rgba(99,102,241,0.06);
-                    padding: 24px 18px 18px 18px;
-                }
-                .service-header-row {
-                    background: #e0e7ef;
-                    border-radius: 7px;
-                    font-weight: 600;
-                    color: #374151;
-                    font-size: 1rem;
-                    margin-bottom: 8px;
-                }
-                .service-input {
-                    border: 1.5px solid #6366f1 !important;
-                    background: #fff !important;
-                    border-radius: 7px !important;
-                    font-size: 1rem;
-                    font-weight: 500;
-                    color: #222;
-                    box-shadow: 0 1px 2px 0 rgba(99,102,241,0.03);
-                }
-                .service-input:focus {
-                    border-color: #2563eb !important;
-                    box-shadow: 0 0 0 2px #a5b4fc33;
-                }
-                </style>
-                <hr>
-                <div class="row">
+                </div>
+                <hr class="divider">
+                <div class="section-card">
+                    <div class="section-title" style="background:linear-gradient(90deg,#1976d2 60%,#42a5f5 100%)"><i class="fa fa-calculator"></i> สรุปยอดและ VAT</div>
+                    <div class="row">
                     <div class="col-6">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="vat-method">การคำนวณ VAT:</label>
+                            <label for="vat-method">การคำนวณ VAT:</label>
                                     <div>
                                         <input type="radio" id="vat-include" name="vat_type" value="include" checked>
-                                        <label for="vat-include">คำนวณรวมกับราคาสินค้าและบริการ (VAT Include)</label>
+                                    <label for="vat-include">คำนวณรวมกับราคาสินค้าและบริการ (VAT Include)</label>
                                     </div>
                                     <div>
                                         <input type="radio" id="vat-exclude" name="vat_type" value="exclude">
-                                        <label for="vat-exclude">คำนวณแยกกับราคาสินค้าและบริการ (VAT Exclude)</label>
+                                    <label for="vat-exclude">คำนวณแยกกับราคาสินค้าและบริการ (VAT Exclude)</label>
                                     </div>
                                 </div>
                                 <hr>
@@ -819,7 +515,7 @@ body, .main-quote-bg {
                                 </div>
                             </div>
                             <div class="col-md012">
-                                <label>จำนวนเงินภาษีหัก ณ ที่จ่าย 3% : &nbsp;</label><span class="text-danger" id="withholding-amount"> 0.00</span> บาท
+                                    <label>จำนวนเงินภาษีหัก ณ ที่จ่าย 3% : &nbsp;</label><span class="text-danger" id="withholding-amount"> 0.00</span> บาท
                                 <hr>
                             </div>
                             <div class="col-md-12" style="padding-bottom: 10px">
@@ -864,9 +560,13 @@ body, .main-quote-bg {
                         <br>
                     </div>
                 </div>
-                <div class="row">
+                </div>
+                <hr class="divider">
+                <div class="section-card">
+                    <div class="section-title" style="background:linear-gradient(90deg,#fbc02d 60%,#fff176 100%);color:#333;"><i class="fa fa-hand-holding-usd"></i> เงื่อนไขการชำระเงิน</div>
+                    <div class="row">
                     <div class="col-md-12">
-                        <h5>เงือนไขการชำระเงิน</h5>
+                        <h5 style="color:#1976d2;">เงื่อนไขการชำระเงิน</h5>
                     </div>
                     <div class="col-md-12 ">
                         <div class="row">
@@ -957,6 +657,7 @@ body, .main-quote-bg {
                     </div>
                     <input type="hidden" id="booking-create-date" value="{{ date('Y-m-d') }}">
                 </div>
+                </div>
                 <div class="text-end mt-3">
                     <input type="hidden" name="quote_vat_exempted_amount">
                     <input type="hidden" name="quote_pre_tax_amount">
@@ -978,6 +679,86 @@ body, .main-quote-bg {
 
 <script>
 $(function() {
+    // --- Customer Autocomplete (เหมือน create.blade.php) ---
+    $('#customerSearch').on('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+        }
+    });
+    $('#customerSearch').on('input', function(e) {
+        var searchTerm = $(this).val();
+        if (searchTerm.length >= 2) {
+            $.ajax({
+                url: '{{ route('api.customer') }}',
+                method: 'GET',
+                data: { search: searchTerm },
+                success: function(data) {
+                    $('#customerResults').empty();
+                    if (data.length > 0) {
+                        $.each(data, function(index, item) {
+                            $('#customerResults').append(`
+                                <a href="#" class="list-group-item list-group-item-action"
+                                    data-id="${item.customer_id}"
+                                    data-name="${item.customer_name}"
+                                    data-email="${item.customer_email}"
+                                    data-taxid="${item.customer_texid}"
+                                    data-tel="${item.customer_tel}"
+                                    data-fax="${item.customer_fax}"
+                                    data-address="${item.customer_address}"
+                                >${item.customer_email} - ${item.customer_name} - ${item.customer_tel}</a>
+                            `);
+                        });
+                        // เพิ่มรายการ "กำหนดเอง"
+                        $('#customerResults').append(`
+                            <a href="#" id="custom-input" class="list-group-item list-group-item-action">กำหนดเอง</a>
+                        `);
+                    }
+                }
+            });
+        } else {
+            $('#customerResults').empty();
+        }
+    });
+    // เมื่อเลือกข้อมูลจากรายการค้นหา
+    $(document).on('click', '#customerResults a', function(e) {
+        e.preventDefault();
+        var selectedId = $(this).data('id') || '';
+        var selectedText = $(this).data('name') || '';
+        var customerEmail = $(this).data('email') || '';
+        var customerTaxid = $(this).data('taxid') || '';
+        var customerTel = $(this).data('tel') || '';
+        var customerFax = $(this).data('fax') || '';
+        var customerAddress = $(this).data('address') || '';
+        if ($(this).attr('id') === 'custom-input') {
+            var customSearchText = $('#customerSearch').val();
+            $('#customer_email').val('');
+            $('#texid').val('');
+            $('#customer_tel').val('');
+            $('#customer_fax').val('');
+            $('#customer_address').val('');
+            $('#customerSearch').val(customSearchText);
+            $('#customer-id').val('');
+            $('#customer-new').val('customerNew');
+        } else {
+            $('#customer_email').val(customerEmail);
+            $('#texid').val(customerTaxid);
+            $('#customer_tel').val(customerTel);
+            $('#customer_fax').val(customerFax);
+            $('#customer_address').val(customerAddress);
+            $('#customerSearch').val(selectedText);
+            $('#customer-id').val(selectedId);
+            $('#customer-new').val('customerOld');
+        }
+        $('#customerResults').empty();
+    });
+    // ปิดผลลัพธ์เมื่อคลิกนอก
+    $(document).on('click', function(event) {
+        if (!$(event.target).closest('#customerResults, #customerSearch').length) {
+            $('#customerResults').empty();
+        }
+    });
+    // แก้ select2 ใช้กับ row แรกของข้อมูลค่าบริการ
+    $('.product-select.select2').select2({width:'100%'});
     // trigger คำนวณใหม่เมื่อเปลี่ยน VAT Include/Exclude
     $('input[name="vat_type"]').on('change', function() {
         calculatePaymentCondition();
@@ -986,6 +767,140 @@ $(function() {
     $('#withholding-tax').on('change', function() {
         calculatePaymentCondition();
     });
+
+    // ฟังก์ชันคำนวณยอดเงินมัดจำและ sync ช่องชำระเต็มจำนวน
+    function syncDepositAndFullPayment() {
+        var isDeposit = $('#quote-payment-deposit').is(':checked');
+        var isFull = $('#quote-payment-full').is(':checked');
+        var depositRate = parseFloat($('#quote-payment-price').val().replace(/,/g, '')) || 0;
+        var pax = parseFloat($('#quote-pax-total').val().replace(/,/g, '')) || 0;
+        var payExtra = parseFloat($('#pay-extra').val().replace(/,/g, '')) || 0;
+        var grandTotal = parseFloat($('#grand-total').text().replace(/,/g, '')) || 0;
+        var depositTotal = 0;
+        // กรณีเลือกเงินมัดจำ
+        if (isDeposit) {
+            depositTotal = (depositRate * pax) + payExtra;
+            $('input[name="quote_payment_total"]').val(depositTotal.toFixed(2));
+            // set default payment date to next day from today
+            var today = new Date();
+            today.setDate(today.getDate() + 1);
+            today.setHours(13,0,0,0);
+            var year = today.getFullYear();
+            var month = ('0' + (today.getMonth() + 1)).slice(-2);
+            var day = ('0' + today.getDate()).slice(-2);
+            var hours = ('0' + today.getHours()).slice(-2);
+            var minutes = ('0' + today.getMinutes()).slice(-2);
+            var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+            $('input[name="quote_payment_date"]').val(formattedDate);
+            $('#quote-payment-date').val(formattedDate);
+            $('#quote-payment-date-new').val(formattedDate);
+        } else if (isFull) {
+            // ถ้าเลือกชำระเต็มจำนวน แต่มีการกรอก payExtra ให้คำนวณ depositTotal เฉพาะ payExtra
+            if (payExtra > 0) {
+                depositTotal = payExtra;
+                $('input[name="quote_payment_total"]').val(depositTotal.toFixed(2));
+            } else {
+                $('input[name="quote_payment_total"]').val('');
+            }
+        }
+        // sync ช่องชำระเต็มจำนวน (ยอดที่เหลือ) ให้แสดงเสมอ
+        var remain = grandTotal - depositTotal;
+        if (remain < 0) remain = 0;
+        $('#payment-total-full').val(remain.toFixed(2));
+        // ถ้าเลือกเงินมัดจำ ให้ readonly ช่องนี้, ถ้าเลือกชำระเต็มจำนวน ให้แก้ไขได้
+        if (isDeposit) {
+            $('#payment-total-full').prop('readonly', true);
+        } else if (isFull) {
+            $('#payment-total-full').prop('readonly', false);
+        }
+    }
+
+    // เมื่อเลือก radio ชำระเต็มจำนวน
+    $('#quote-payment-full').on('change', function() {
+        if ($(this).is(':checked')) {
+            // set default payment date for full payment to next day from today
+            var today = new Date();
+            today.setDate(today.getDate() + 1);
+            today.setHours(13,0,0,0);
+            var year = today.getFullYear();
+            var month = ('0' + (today.getMonth() + 1)).slice(-2);
+            var day = ('0' + today.getDate()).slice(-2);
+            var hours = ('0' + today.getHours()).slice(-2);
+            var minutes = ('0' + today.getMinutes()).slice(-2);
+            var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+            $('input[name="quote_payment_date_full"]').val(formattedDate);
+            $('#quote-payment-date-full').val(formattedDate);
+            // clear all deposit fields
+            $('#quote-payment-price').val('0');
+            $('#pay-extra').val('');
+            $('input[name="quote_payment_total"]').val('');
+            $('input[name="quote_payment_date"]').val('');
+            $('#quote-payment-date').val('');
+            $('#quote-payment-date-new').val('');
+            syncDepositAndFullPayment();
+        }
+    });
+    // เมื่อเลือก radio เงินมัดจำ หรือเปลี่ยนเรทเงินมัดจำ/จำนวน pax ให้คำนวณใหม่
+    $('#quote-payment-deposit, #quote-payment-price').on('change input', function() {
+        if ($('#quote-payment-deposit').is(':checked')) {
+            syncDepositAndFullPayment();
+        }
+    });
+    // เมื่อกรอก payExtra ให้ trigger syncDepositAndFullPayment() เสมอ ไม่ว่าจะเลือก deposit หรือ full
+    $('#pay-extra').on('change input', function() {
+        syncDepositAndFullPayment();
+    });
+    // เมื่อผู้ใช้เลือก radio เงินมัดจำ ให้ set วันที่เป็นวันถัดไปของวันปัจจุบันเสมอ
+    $('#quote-payment-deposit').on('change', function() {
+        if ($(this).is(':checked')) {
+            // set default deposit rate to 5000
+            $('#quote-payment-price').val('5000');
+            // set default payment date to next day from today
+            var today = new Date();
+            today.setDate(today.getDate() + 1);
+            today.setHours(13,0,0,0);
+            var year = today.getFullYear();
+            var month = ('0' + (today.getMonth() + 1)).slice(-2);
+            var day = ('0' + today.getDate()).slice(-2);
+            var hours = ('0' + today.getHours()).slice(-2);
+            var minutes = ('0' + today.getMinutes()).slice(-2);
+            var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+            $('input[name="quote_payment_date"]').val(formattedDate);
+            $('#quote-payment-date').val(formattedDate);
+            $('#quote-payment-date-new').val(formattedDate);
+
+            // set full payment date = 30 วันก่อนวันเดินทาง
+            var travelDateStr = $('#date-start').val();
+            if (travelDateStr) {
+                var travelDate = new Date(travelDateStr);
+                travelDate.setDate(travelDate.getDate() - 30);
+                travelDate.setHours(13,0,0,0);
+                var y = travelDate.getFullYear();
+                var m = ('0' + (travelDate.getMonth() + 1)).slice(-2);
+                var d = ('0' + travelDate.getDate()).slice(-2);
+                var h = ('0' + travelDate.getHours()).slice(-2);
+                var min = ('0' + travelDate.getMinutes()).slice(-2);
+                var fullPayDate = y + '-' + m + '-' + d + 'T' + h + ':' + min;
+                $('input[name="quote_payment_date_full"]').val(fullPayDate);
+                $('#quote-payment-date-full').val(fullPayDate);
+            }
+
+            // recalculate and set deposit total immediately
+            syncDepositAndFullPayment();
+        }
+    });
+    // เมื่อจำนวน pax เปลี่ยน (triggered จาก calculatePaymentCondition)
+    $('#quote-pax-total').on('change input', function() {
+        if ($('#quote-payment-deposit').is(':checked')) {
+            syncDepositAndFullPayment();
+        }
+    });
+    // เรียกทุกครั้งที่คำนวณใหม่
+    var oldCalculatePaymentCondition = calculatePaymentCondition;
+    calculatePaymentCondition = function() {
+        oldCalculatePaymentCondition();
+        syncDepositAndFullPayment();
+    };
     // เมื่อเลือกหรือเปลี่ยนวันออกเดินทาง ให้คำนวณวันเดินทางกลับอัตโนมัติ (ใช้ระยะเวลาทัวร์)
     $('#date-start-display').on('change.auto', function() {
         var val = $(this).val();
@@ -1076,6 +991,8 @@ $(function() {
         if(diffDays >= 31) {
             bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
             $('#quote-payment-deposit').prop('checked', true);
+            // set default deposit rate to 5000 when auto-select deposit
+            $('#quote-payment-price').val('5000');
         } else {
             bookingCreateDate = new Date();
             bookingCreateDate.setDate(dateNow.getDate() + 1);
@@ -1219,73 +1136,60 @@ $(function() {
     });
 
 
-    // เพิ่มฟังก์ชันอัปเดตเลขลำดับแถวบริการ
-    function updateRowNumbers() {
-        $('#table-income .service-row').each(function(index) {
-            $(this).find('.service-row-number').text(index + 1);
-        });
-    }
-
     // เพิ่มรายการบริการ (row)
     $('#add-row-service').on('click', function() {
-        var $rows = $('#table-income .service-row');
-        var $newRow;
-        if ($rows.length === 0) {
-            // ไม่มี row เลย ให้สร้าง row ใหม่จาก template HTML (ไม่ clone container)
-            var rowHtml = `
-                <div class="row item-row service-row">
-                    <div class="col-md-1 service-row-number">1</div>
-                    <div class="col-md-3">
-                        <select name="product_id[]" class="product-select form-select select2 service-product-select" style="width: 100%;">
-                            <option value="">--เลือกสินค้า--</option>
-                            @foreach ($products as $product)
-                                <option value="{{ $product->id }}" data-pax="{{ $product->product_pax }}">{{ $product->product_name }}{{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-1 text-center">
-                        <input type="checkbox" class="vat-3" name="vat_3[]">
-                    </div>
-                    <div class="col-md-1">
-                        <select name="vat_status[]" class="vat-status form-select service-vat" style="width: 110%;">
-                            <option value="non">non</option>
-                            <option value="vat">vat</option>
-                        </select>
-                    </div>
-                    <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end service-qty" step="1" value="1"></div>
-                    <div class="col-md-1"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end service-price" step="0.01" value="0"></div>
-                    <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end service-total" value="0" readonly></div>
-                    <div class="col-md-1"><button type="button" class="remove-service-row btn btn-success"><i class="fa fa-trash"></i></button></div>
+        // สร้าง row ใหม่แบบ discount-row (ไม่ clone)
+        var rowCount = $('#table-income > .row').length + 1;
+        var rowId = 'service-row-' + Date.now();
+        var rowHtml = `
+            <div class="row align-items-center">
+                <div class="col-md-1"><span class="row-number"></span></div>
+                <div class="col-md-3">
+                    <select name="product_id[]" class="form-select product-select select2" style="width: 100%;">
+                        <option value="">--เลือกสินค้า--</option>
+                        @forelse ($products as $product)
+                            <option data-pax="{{ $product->product_pax }}" value="{{ $product->id }}">{{ $product->product_name }}{{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
+                        @empty
+                        @endforelse
+                    </select>
                 </div>
-            `;
-            var $row = $(rowHtml);
-            $('#table-income').append($row);
-            $newRow = $row;
-        } else {
-            var $lastRow = $rows.last();
-            $newRow = $lastRow.clone(false, false);
-            $newRow.find('input, select').each(function() {
-                if ($(this).is('select')) {
-                    $(this).val($(this).find('option:first').val());
-                } else if ($(this).is(':checkbox')) {
-                    $(this).prop('checked', false);
-                } else if ($(this).hasClass('quantity')) {
-                    $(this).val(1);
-                } else if ($(this).hasClass('price-per-unit')) {
-                    $(this).val(0);
-                } else if ($(this).hasClass('total-amount')) {
-                    $(this).val(0);
-                } else {
-                    $(this).val('');
-                }
-            });
-            $newRow.insertAfter($lastRow);
-        }
-        // รีอินิท select2 เฉพาะแถวใหม่
-        $newRow.find('select.select2').select2({width:'100%'});
+               
+                <div class="col-md-1" style="display: none">
+                    <select name="expense_type[]" class="form-select">
+                        <option selected value="income"> รายได้ </option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y">
+                </div>
+                <div class="col-md-1 text-center">
+                    <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
+                        <option selected value="nonvat">nonVat</option>
+                        <option value="vat">Vat</option>
+                    </select>
+                </div>
+                <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="1"></div>
+                <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01" value="0"></div>
+                <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end" value="0" readonly></div>
+                <div class="col-md-1 text-center">
+                   <button type="button" class="btn btn-danger btn-sm remove-row-btn " title="ลบแถว"><i class="fa fa-trash" ></i></button>
+                </div>
+            </div>
+        `;
+        $('#table-income').append(rowHtml);
+        // init select2 เฉพาะแถวใหม่
+        var $select = $('#table-income .row:last .product-select.select2');
+        $select.select2({width:'100%'});
         updateRowNumbers();
         calculatePaymentCondition();
     });
+
+    // ฟังก์ชันอัปเดตเลขลำดับ row
+    function updateRowNumbers() {
+        $('#table-income > .row').each(function(i) {
+            $(this).find('.row-number').text(i + 1);
+        });
+    }
 
     // ลบรายการบริการ
     $(document).on('click', '.remove-row-btn', function() {
@@ -1295,6 +1199,9 @@ $(function() {
             calculatePaymentCondition();
         }
     });
+
+    // อัปเดตเลขลำดับครั้งแรก (กรณีมี row เดียว)
+    updateRowNumbers();
 
     // เพิ่มส่วนลด
     $('#add-row-discount').on('click', function() {
@@ -1316,8 +1223,8 @@ $(function() {
         var vat = rowData && rowData.vat ? rowData.vat : 'nonvat';
         var total = qty * price;
         var rowHtml = `
-            <div class="row discount-row mb-2" data-row-id="${rowId}">
-                <div class="col-md-1 discount-row-number">${rowCount}</div>
+            <div class="row item-row table-discount mb-1 align-items-center discount-row" data-row-id="${rowId}" style="background:#fffbe7;border-radius:8px;padding:8px 0;">
+                <div class="col-md-1 text-center discount-row-number">${rowCount}</div>
                 <div class="col-md-3">
                     <select class="form-select discount-product-select select2" name="discount_product_id[]" style="width:100%">
                         <option value="">--เลือกส่วนลด--</option>
@@ -1326,23 +1233,23 @@ $(function() {
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-1">
-                    <input type="number" class="form-control discount-qty" name="discount_qty[]" min="1" value="${qty}">
-                </div>
-                <div class="col-md-2">
-                    <input type="number" class="form-control discount-price" name="discount_price[]" step="0.01" value="${price}">
-                </div>
-                <div class="col-md-2">
+                <div class="col-md-1 text-center"><!-- รวม 3% (placeholder)--></div>
+                <div class="col-md-1 text-center">
                     <select class="form-select discount-vat" name="discount_vat[]">
                         <option value="nonvat" ${vat==='nonvat'?'selected':''}>nonVat</option>
-                        <option value="vat" ${vat==='vat'?'selected':''}>Vat</option>
                     </select>
                 </div>
-                <div class="col-md-2">
-                    <input type="number" class="form-control discount-total" name="discount_total[]" value="${total.toFixed(2)}" readonly>
+                <div class="col-md-1 text-center">
+                    <input type="number" class="form-control discount-qty text-center" name="discount_qty[]" min="1" value="${qty}">
                 </div>
-                <div class="col-md-1">
-                    <button type="button" class="btn btn-danger btn-sm remove-discount-row"><i class="fa fa-trash"></i></button>
+                <div class="col-md-2 text-center">
+                    <input type="number" class="form-control discount-price text-end" name="discount_price[]" step="0.01" value="${price}">
+                </div>
+                <div class="col-md-2 text-center">
+                    <input type="number" class="form-control discount-total text-end" name="discount_total[]" value="${total.toFixed(2)}" readonly>
+                </div>
+                <div class="col-md-1 text-center">
+                    <button type="button" class="btn btn-warning btn-sm remove-discount-row" title="ลบแถว"><i class="fa fa-trash"></i></button>
                 </div>
             </div>
         `;
