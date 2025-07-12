@@ -668,8 +668,7 @@
                     <input type="hidden" name="quote_grand_total" id="quote-grand-total">
                     <input type="hidden" name="quote_withholding_tax">
                     <input type="hidden" name="quote_pax_total" id="quote-pax-total">
-                    
-
+<a href="{{ route('quote.index') }}" class="btn btn-secondary btn-sm"><i class="fa fa-arrow-left"></i> กลับ</a>
                     <button type="submit" class="btn btn-primary btn-sm mx-3" form="formQuoteModern"><i class="fa fa-save"></i> สร้างใบเสนอราคา</button>
                     
                 </div>

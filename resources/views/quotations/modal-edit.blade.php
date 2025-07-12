@@ -616,7 +616,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="basic-addon1">ภายในวันที่</span>
                                         <input type="datetime-local" class="form-control" name="quote_payment_date" id="quote-payment-date" value="{{ $quotationModel->quote_payment_date ?? '' }}">
@@ -624,7 +624,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="input-group mb-3">
+                                    <div class="input-group mb-4">
                                         <span class="input-group-text" for="">เรทเงินมัดจำ</span>
                                         <select name="quote_payment_price" class="form-select" id="quote-payment-price">
                                             <option value="0" {{ (isset($quotationModel) && $quotationModel->quote_payment_price == 0) ? 'selected' : '' }}>0.00</option>
@@ -661,13 +661,13 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" for="">ชำระเพิ่มเติม</span>
                                         <input type="number" id="pay-extra" class="form-control" name="quote_payment_extra" placeholder="0.00" value="{{ $quotationModel->quote_payment_extra ?? '' }}">
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" for="">จำนวนเงินที่ต้องชำระ</span>
                                         <input type="number" class="form-control pax-total" name="quote_payment_total" step="0.01" placeholder="0.00" value="{{ $quotationModel->quote_payment_total ?? '' }}">
