@@ -274,7 +274,7 @@
                     <div class="col-md-2 ms-3">
                         <label>วันที่สั่งซื้อ/จองแพคเกจ:</label>
                         <input type="date" id="displayDatepicker" class="form-control" required value="{{ date('Y-m-d') }}">
-                        <input type="hidden" id="submitDatepicker" name="quote_booking_create">
+                        <input type="hidden" id="submitDatepicker" name="quote_booking_create" value="{{ date('Y-m-d') }}">
                         <input type="hidden" id="quote-date" name="quote_booking_create">
                     </div>
                     <div class="col-md-2">
@@ -283,8 +283,8 @@
                     </div>
                     <div class="col-md-2">
                         <label>วันที่เสนอราคา</label>
-                        <input type="date" id="displayDatepickerQuoteDate" class="form-control" required value="{{ date('Y-m-d') }}">
-                        <input type="hidden" id="submitDatepickerQuoteDate" name="quote_date" class="form-control">
+                        <input type="date" id="displayDatepickerQuoteDate"  name="quote_date"  class="form-control" required value="{{ date('Y-m-d') }}">
+     
                     </div>
                 </div>
                 </div>
@@ -777,10 +777,31 @@ $(function() {
         var payExtra = parseFloat($('#pay-extra').val().replace(/,/g, '')) || 0;
         var grandTotal = parseFloat($('#grand-total').text().replace(/,/g, '')) || 0;
         var depositTotal = 0;
+        // กรณีเลือกเงินมัดจำ
         if (isDeposit) {
             depositTotal = (depositRate * pax) + payExtra;
-            // set จำนวนเงินที่ต้องชำระ
             $('input[name="quote_payment_total"]').val(depositTotal.toFixed(2));
+            // set default payment date to next day from today
+            var today = new Date();
+            today.setDate(today.getDate() + 1);
+            today.setHours(13,0,0,0);
+            var year = today.getFullYear();
+            var month = ('0' + (today.getMonth() + 1)).slice(-2);
+            var day = ('0' + today.getDate()).slice(-2);
+            var hours = ('0' + today.getHours()).slice(-2);
+            var minutes = ('0' + today.getMinutes()).slice(-2);
+            var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+            $('input[name="quote_payment_date"]').val(formattedDate);
+            $('#quote-payment-date').val(formattedDate);
+            $('#quote-payment-date-new').val(formattedDate);
+        } else if (isFull) {
+            // ถ้าเลือกชำระเต็มจำนวน แต่มีการกรอก payExtra ให้คำนวณ depositTotal เฉพาะ payExtra
+            if (payExtra > 0) {
+                depositTotal = payExtra;
+                $('input[name="quote_payment_total"]').val(depositTotal.toFixed(2));
+            } else {
+                $('input[name="quote_payment_total"]').val('');
+            }
         }
         // sync ช่องชำระเต็มจำนวน (ยอดที่เหลือ) ให้แสดงเสมอ
         var remain = grandTotal - depositTotal;
@@ -794,15 +815,77 @@ $(function() {
         }
     }
 
-    // เมื่อเลือก radio ชำระเต็มจำนวน ให้นำ Grand Total - เงินมัดจำ ไปใส่ input จำนวนเงินชำระเต็มจำนวน
+    // เมื่อเลือก radio ชำระเต็มจำนวน
     $('#quote-payment-full').on('change', function() {
         if ($(this).is(':checked')) {
+            // set default payment date for full payment to next day from today
+            var today = new Date();
+            today.setDate(today.getDate() + 1);
+            today.setHours(13,0,0,0);
+            var year = today.getFullYear();
+            var month = ('0' + (today.getMonth() + 1)).slice(-2);
+            var day = ('0' + today.getDate()).slice(-2);
+            var hours = ('0' + today.getHours()).slice(-2);
+            var minutes = ('0' + today.getMinutes()).slice(-2);
+            var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+            $('input[name="quote_payment_date_full"]').val(formattedDate);
+            $('#quote-payment-date-full').val(formattedDate);
+            // clear all deposit fields
+            $('#quote-payment-price').val('0');
+            $('#pay-extra').val('');
+            $('input[name="quote_payment_total"]').val('');
+            $('input[name="quote_payment_date"]').val('');
+            $('#quote-payment-date').val('');
+            $('#quote-payment-date-new').val('');
             syncDepositAndFullPayment();
         }
     });
-    // เมื่อเลือก radio เงินมัดจำ หรือเปลี่ยนเรทเงินมัดจำ/จำนวน pax/ชำระเพิ่มเติม ให้คำนวณใหม่
-    $('#quote-payment-deposit, #quote-payment-price, #pay-extra').on('change input', function() {
+    // เมื่อเลือก radio เงินมัดจำ หรือเปลี่ยนเรทเงินมัดจำ/จำนวน pax ให้คำนวณใหม่
+    $('#quote-payment-deposit, #quote-payment-price').on('change input', function() {
         if ($('#quote-payment-deposit').is(':checked')) {
+            syncDepositAndFullPayment();
+        }
+    });
+    // เมื่อกรอก payExtra ให้ trigger syncDepositAndFullPayment() เสมอ ไม่ว่าจะเลือก deposit หรือ full
+    $('#pay-extra').on('change input', function() {
+        syncDepositAndFullPayment();
+    });
+    // เมื่อผู้ใช้เลือก radio เงินมัดจำ ให้ set วันที่เป็นวันถัดไปของวันปัจจุบันเสมอ
+    $('#quote-payment-deposit').on('change', function() {
+        if ($(this).is(':checked')) {
+            // set default deposit rate to 5000
+            $('#quote-payment-price').val('5000');
+            // set default payment date to next day from today
+            var today = new Date();
+            today.setDate(today.getDate() + 1);
+            today.setHours(13,0,0,0);
+            var year = today.getFullYear();
+            var month = ('0' + (today.getMonth() + 1)).slice(-2);
+            var day = ('0' + today.getDate()).slice(-2);
+            var hours = ('0' + today.getHours()).slice(-2);
+            var minutes = ('0' + today.getMinutes()).slice(-2);
+            var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+            $('input[name="quote_payment_date"]').val(formattedDate);
+            $('#quote-payment-date').val(formattedDate);
+            $('#quote-payment-date-new').val(formattedDate);
+
+            // set full payment date = 30 วันก่อนวันเดินทาง
+            var travelDateStr = $('#date-start').val();
+            if (travelDateStr) {
+                var travelDate = new Date(travelDateStr);
+                travelDate.setDate(travelDate.getDate() - 30);
+                travelDate.setHours(13,0,0,0);
+                var y = travelDate.getFullYear();
+                var m = ('0' + (travelDate.getMonth() + 1)).slice(-2);
+                var d = ('0' + travelDate.getDate()).slice(-2);
+                var h = ('0' + travelDate.getHours()).slice(-2);
+                var min = ('0' + travelDate.getMinutes()).slice(-2);
+                var fullPayDate = y + '-' + m + '-' + d + 'T' + h + ':' + min;
+                $('input[name="quote_payment_date_full"]').val(fullPayDate);
+                $('#quote-payment-date-full').val(fullPayDate);
+            }
+
+            // recalculate and set deposit total immediately
             syncDepositAndFullPayment();
         }
     });
@@ -908,6 +991,8 @@ $(function() {
         if(diffDays >= 31) {
             bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
             $('#quote-payment-deposit').prop('checked', true);
+            // set default deposit rate to 5000 when auto-select deposit
+            $('#quote-payment-price').val('5000');
         } else {
             bookingCreateDate = new Date();
             bookingCreateDate.setDate(dateNow.getDate() + 1);
