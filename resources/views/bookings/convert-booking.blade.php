@@ -719,7 +719,7 @@
 
 <script>
 $(function() {
-    // --- Customer Autocomplete (เหมือน create.blade.php) ---
+    // --- Customer Autocomplete (เหมือน create.blade.php)ss ---
 
     // เรียกฟังก์ชันคำนวณและอัปเดตเลขลำดับ row ทันทีเมื่อโหลดหน้า
     if (typeof calculatePaymentCondition === 'function') {
