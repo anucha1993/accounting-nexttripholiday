@@ -450,6 +450,7 @@
                                 </select>
                             </div>
                             <div class="col-md-1">
+                                <input type="hidden" name="withholding_tax[]" value="N">
                                 <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y">
                             </div>
                             <div class="col-md-1 text-center">
@@ -678,6 +679,84 @@
 
 <script>
 $(function() {
+    // --- Customer Autocomplete (เหมือน create.blade.php) ---
+    $('#customerSearch').on('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+        }
+    });
+    $('#customerSearch').on('input', function(e) {
+        var searchTerm = $(this).val();
+        if (searchTerm.length >= 2) {
+            $.ajax({
+                url: '{{ route('api.customer') }}',
+                method: 'GET',
+                data: { search: searchTerm },
+                success: function(data) {
+                    $('#customerResults').empty();
+                    if (data.length > 0) {
+                        $.each(data, function(index, item) {
+                            $('#customerResults').append(`
+                                <a href="#" class="list-group-item list-group-item-action"
+                                    data-id="${item.customer_id}"
+                                    data-name="${item.customer_name}"
+                                    data-email="${item.customer_email}"
+                                    data-taxid="${item.customer_texid}"
+                                    data-tel="${item.customer_tel}"
+                                    data-fax="${item.customer_fax}"
+                                    data-address="${item.customer_address}"
+                                >${item.customer_email} - ${item.customer_name} - ${item.customer_tel}</a>
+                            `);
+                        });
+                        // เพิ่มรายการ "กำหนดเอง"
+                        $('#customerResults').append(`
+                            <a href="#" id="custom-input" class="list-group-item list-group-item-action">กำหนดเอง</a>
+                        `);
+                    }
+                }
+            });
+        } else {
+            $('#customerResults').empty();
+        }
+    });
+    // เมื่อเลือกข้อมูลจากรายการค้นหา
+    $(document).on('click', '#customerResults a', function(e) {
+        e.preventDefault();
+        var selectedId = $(this).data('id') || '';
+        var selectedText = $(this).data('name') || '';
+        var customerEmail = $(this).data('email') || '';
+        var customerTaxid = $(this).data('taxid') || '';
+        var customerTel = $(this).data('tel') || '';
+        var customerFax = $(this).data('fax') || '';
+        var customerAddress = $(this).data('address') || '';
+        if ($(this).attr('id') === 'custom-input') {
+            var customSearchText = $('#customerSearch').val();
+            $('#customer_email').val('');
+            $('#texid').val('');
+            $('#customer_tel').val('');
+            $('#customer_fax').val('');
+            $('#customer_address').val('');
+            $('#customerSearch').val(customSearchText);
+            $('#customer-id').val('');
+            $('#customer-new').val('customerNew');
+        } else {
+            $('#customer_email').val(customerEmail);
+            $('#texid').val(customerTaxid);
+            $('#customer_tel').val(customerTel);
+            $('#customer_fax').val(customerFax);
+            $('#customer_address').val(customerAddress);
+            $('#customerSearch').val(selectedText);
+            $('#customer-id').val(selectedId);
+            $('#customer-new').val('customerOld');
+        }
+        $('#customerResults').empty();
+    });
+    // ปิดผลลัพธ์เมื่อคลิกนอก
+    $(document).on('click', function(event) {
+        if (!$(event.target).closest('#customerResults, #customerSearch').length) {
+            $('#customerResults').empty();
+        }
+    });
     // แก้ select2 ใช้กับ row แรกของข้อมูลค่าบริการ
     $('.product-select.select2').select2({width:'100%'});
     // trigger คำนวณใหม่เมื่อเปลี่ยน VAT Include/Exclude
@@ -688,6 +767,57 @@ $(function() {
     $('#withholding-tax').on('change', function() {
         calculatePaymentCondition();
     });
+
+    // ฟังก์ชันคำนวณยอดเงินมัดจำและ sync ช่องชำระเต็มจำนวน
+    function syncDepositAndFullPayment() {
+        var isDeposit = $('#quote-payment-deposit').is(':checked');
+        var isFull = $('#quote-payment-full').is(':checked');
+        var depositRate = parseFloat($('#quote-payment-price').val().replace(/,/g, '')) || 0;
+        var pax = parseFloat($('#quote-pax-total').val().replace(/,/g, '')) || 0;
+        var payExtra = parseFloat($('#pay-extra').val().replace(/,/g, '')) || 0;
+        var grandTotal = parseFloat($('#grand-total').text().replace(/,/g, '')) || 0;
+        var depositTotal = 0;
+        if (isDeposit) {
+            depositTotal = (depositRate * pax) + payExtra;
+            // set จำนวนเงินที่ต้องชำระ
+            $('input[name="quote_payment_total"]').val(depositTotal.toFixed(2));
+        }
+        // sync ช่องชำระเต็มจำนวน (ยอดที่เหลือ) ให้แสดงเสมอ
+        var remain = grandTotal - depositTotal;
+        if (remain < 0) remain = 0;
+        $('#payment-total-full').val(remain.toFixed(2));
+        // ถ้าเลือกเงินมัดจำ ให้ readonly ช่องนี้, ถ้าเลือกชำระเต็มจำนวน ให้แก้ไขได้
+        if (isDeposit) {
+            $('#payment-total-full').prop('readonly', true);
+        } else if (isFull) {
+            $('#payment-total-full').prop('readonly', false);
+        }
+    }
+
+    // เมื่อเลือก radio ชำระเต็มจำนวน ให้นำ Grand Total - เงินมัดจำ ไปใส่ input จำนวนเงินชำระเต็มจำนวน
+    $('#quote-payment-full').on('change', function() {
+        if ($(this).is(':checked')) {
+            syncDepositAndFullPayment();
+        }
+    });
+    // เมื่อเลือก radio เงินมัดจำ หรือเปลี่ยนเรทเงินมัดจำ/จำนวน pax/ชำระเพิ่มเติม ให้คำนวณใหม่
+    $('#quote-payment-deposit, #quote-payment-price, #pay-extra').on('change input', function() {
+        if ($('#quote-payment-deposit').is(':checked')) {
+            syncDepositAndFullPayment();
+        }
+    });
+    // เมื่อจำนวน pax เปลี่ยน (triggered จาก calculatePaymentCondition)
+    $('#quote-pax-total').on('change input', function() {
+        if ($('#quote-payment-deposit').is(':checked')) {
+            syncDepositAndFullPayment();
+        }
+    });
+    // เรียกทุกครั้งที่คำนวณใหม่
+    var oldCalculatePaymentCondition = calculatePaymentCondition;
+    calculatePaymentCondition = function() {
+        oldCalculatePaymentCondition();
+        syncDepositAndFullPayment();
+    };
     // เมื่อเลือกหรือเปลี่ยนวันออกเดินทาง ให้คำนวณวันเดินทางกลับอัตโนมัติ (ใช้ระยะเวลาทัวร์)
     $('#date-start-display').on('change.auto', function() {
         var val = $(this).val();
