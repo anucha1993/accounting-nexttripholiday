@@ -5,19 +5,19 @@
         font-family: 'Sarabun', 'Prompt', 'Segoe UI', sans-serif;
     }
     .container.border.bg-white {
-        background: #f7fafd;
+        background: #eaf6f2;
         border-radius: 18px;
         box-shadow: 0 2px 16px 0 rgba(0,0,0,0.07);
         padding: 32px 28px 24px 28px;
         margin-top: 24px;
     }
     .section-card {
-        background: #fff;
+        background: #ffffff;
         border-radius: 14px;
-        box-shadow: 0 1px 8px 0 rgba(25,118,210,0.07);
+        box-shadow: 0 1px 8px 0 rgba(120,180,160,0.07);
         margin-bottom: 28px;
         padding: 24px 18px 18px 18px;
-        border-top: 5px solid #1976d2;
+        border-top: 5px solid #b2dfdb;
         position: relative;
     }
     .section-card .section-title {
@@ -25,11 +25,11 @@
         font-weight: 700;
         margin-bottom: 18px;
         color: #fff;
-        background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+        background: linear-gradient(90deg, #80cbc4 60%, #b2dfdb 100%);
         border-radius: 8px 8px 8px 8px;
         padding: 10px 18px 10px 44px;
         position: relative;
-        box-shadow: 0 2px 8px 0 rgba(25,118,210,0.08);
+        box-shadow: 0 2px 8px 0 rgba(120,180,160,0.08);
         letter-spacing: 0.5px;
     }
     .section-title .fa {
@@ -41,16 +41,16 @@
     }
     .divider {
         border: none;
-        border-top: 2px dashed #90caf9;
+        border-top: 2px dashed #b2dfdb;
         margin: 24px 0 18px 0;
     }
     h4, h5 {
         font-weight: 700;
-        color: #1a237e;
+        color: #388e81;
         letter-spacing: 0.5px;
     }
     h5.section-inline {
-        background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+        background: linear-gradient(90deg, #80cbc4 60%, #b2dfdb 100%);
         color: #fff!important;
         border-radius: 8px;
         padding: 7px 16px 7px 38px;
@@ -72,31 +72,31 @@
     }
     .form-control, .form-select, .select2-selection {
         border-radius: 8px !important;
-        border: 1.5px solid #d1d5db;
+        border: 1.5px solid #b2dfdb;
         box-shadow: 0 1px 2px 0 rgba(0,0,0,0.03);
         font-size: 1.08rem;
         padding: 10px 14px;
-        background: #fafdff;
+        background: #f7fafc;
         transition: border 0.2s, box-shadow 0.2s;
     }
     .form-control:focus, .form-select:focus, .select2-selection:focus {
-        border: 2px solid #42a5f5 !important;
+        border: 2px solid #80cbc4 !important;
         background: #fff;
         outline: none;
-        box-shadow: 0 2px 8px 0 rgba(25,118,210,0.13);
+        box-shadow: 0 2px 8px 0 rgba(120,180,160,0.13);
     }
     .form-control:focus, .form-select:focus, .select2-selection:focus {
-        border: 1.5px solid #1976d2 !important;
+        border: 1.5px solid #80cbc4 !important;
         background: #fff;
         outline: none;
-        box-shadow: 0 2px 8px 0 rgba(25,118,210,0.07);
+        box-shadow: 0 2px 8px 0 rgba(120,180,160,0.07);
     }
     .select2-container--default .select2-selection--single {
         height: 38px;
         padding: 4px 8px;
         border-radius: 8px;
-        border: 1px solid #d1d5db;
-        background: #fafbfc;
+        border: 1px solid #b2dfdb;
+        background: #f7fafc;
     }
     .select2-container--default .select2-selection--single .select2-selection__rendered {
         line-height: 30px;
@@ -105,36 +105,36 @@
         margin-bottom: 18px;
     }
     .header-row, .summary-row {
-        background: #e3f2fd;
+        background: #e0f2f1;
         border-radius: 8px;
         margin-bottom: 6px;
         padding: 8px 0;
-        border-left: 4px solid #1976d2;
+        border-left: 4px solid #80cbc4;
     }
     .header-row > div, .summary-row > div {
         font-weight: 600;
-        color: #374151;
+        color: #388e81;
     }
     .item-row {
-        background: #fafdff;
+        background: #f7fafc;
         border-radius: 10px;
         margin-bottom: 18px;
-        box-shadow: 0 1px 4px 0 rgba(25,118,210,0.04);
+        box-shadow: 0 1px 4px 0 rgba(120,180,160,0.04);
         transition: box-shadow 0.2s, background 0.2s;
         padding: 10px 0 10px 0;
     }
     .item-row.table-income {
-        background: #fafdff;
+        background: #f7fafc;
     }
     .item-row.table-discount {
-        background: #fffbe7;
+        background: #e3fcec;
     }
     .item-row:hover {
-        box-shadow: 0 4px 16px 0 rgba(25,118,210,0.13);
-        background: #e3f2fd;
+        box-shadow: 0 4px 16px 0 rgba(120,180,160,0.13);
+        background: #e0f2f1;
     }
     .item-row.table-discount:hover {
-        background: #fff3c0;
+        background: #e0f2f1;
     }
     .row.item-row > .row {
         margin-bottom: 10px;
@@ -142,20 +142,20 @@
     .add-row {
         margin: 10px 0 10px 0;
         font-size: 1.08rem;
-        color: #1976d2;
+        color: #388e81;
         cursor: pointer;
         font-weight: 500;
         display: flex;
         align-items: center;
-        background: #e3f2fd;
+        background: #e0f2f1;
         border-radius: 8px;
         padding: 7px 12px;
         width: fit-content;
         transition: background 0.2s;
     }
     .add-row:hover {
-        background: #bbdefb;
-        color: #0d47a1;
+        background: #b2dfdb;
+        color: #00695c;
     }
     .add-row i {
         margin-right: 6px;
@@ -168,26 +168,26 @@
         transition: background 0.2s, color 0.2s;
     }
     .btn-primary {
-        background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+        background: linear-gradient(90deg, #80cbc4 60%, #b2dfdb 100%);
         border: none;
         color: #fff;
-        box-shadow: 0 2px 8px 0 rgba(25,118,210,0.08);
+        box-shadow: 0 2px 8px 0 rgba(120,180,160,0.08);
     }
     .btn-primary:hover {
-        background: linear-gradient(90deg, #0d47a1 60%, #1976d2 100%);
+        background: linear-gradient(90deg, #388e81 60%, #80cbc4 100%);
         color: #fff;
     }
     .btn-danger {
-        background: linear-gradient(90deg, #e53935 60%, #ff7043 100%);
+        background: linear-gradient(90deg, #b2dfdb 60%, #80cbc4 100%);
         border: none;
         color: #fff;
     }
     .btn-danger:hover {
-        background: linear-gradient(90deg, #b71c1c 60%, #e53935 100%);
+        background: linear-gradient(90deg, #388e81 60%, #b2dfdb 100%);
         color: #fff;
     }
     .btn-link {
-        color: #1976d2;
+        color: #388e81;
         text-decoration: underline;
         background: none;
         border: none;
@@ -198,28 +198,28 @@
         transition: background 0.15s;
     }
     .list-group-item:hover, .period-select:hover {
-        background: #e3f2fd !important;
-        color: #1976d2;
+        background: #e0f2f1 !important;
+        color: #388e81;
     }
     .summary {
-        background: #f8fafc;
+        background: #eaf6f2;
         border-radius: 12px;
         padding: 18px 12px 10px 12px;
-        box-shadow: 0 1px 8px 0 rgba(25,118,210,0.07);
-        border-left: 5px solid #1976d2;
+        box-shadow: 0 1px 8px 0 rgba(120,180,160,0.07);
+        border-left: 5px solid #80cbc4;
     }
     #grand-total, #sum-include-vat {
         font-size: 1.18rem;
         font-weight: 700;
-        color: #d84315;
-        background: linear-gradient(90deg, #fff3e0 60%, #ffe0b2 100%);
+        color: #388e81;
+        background: linear-gradient(90deg, #e3fcec 60%, #b2dfdb 100%);
         border-radius: 6px;
         padding: 2px 8px;
-        box-shadow: 0 1px 4px 0 rgba(255,152,0,0.07);
+        box-shadow: 0 1px 4px 0 rgba(120,180,160,0.07);
     }
     #pax {
         font-size: 1.08rem;
-        color: #1976d2;
+        color: #388e81;
         font-weight: 600;
     }
     textarea.form-control {
@@ -227,17 +227,17 @@
         border-radius: 8px;
     }
     .input-group-text {
-        background: #e3eafc;
+        background: #e0f2f1;
         border-radius: 8px 0 0 8px;
         font-weight: 600;
-        color: #1a237e;
+        color: #388e81;
     }
     .discount-row {
-        background: #f9f9fb;
+        background: #e3fcec;
         border-radius: 8px;
         margin-bottom: 6px;
-        box-shadow: 0 1px 4px 0 rgba(25,118,210,0.04);
-        border-left: 4px solid #42a5f5;
+        box-shadow: 0 1px 4px 0 rgba(120,180,160,0.04);
+        border-left: 4px solid #b2dfdb;
     }
     .discount-row .btn-danger {
         padding: 4px 10px;
@@ -706,7 +706,7 @@
                     <input type="hidden" name="quote_grand_total" id="quote-grand-total">
                     <input type="hidden" name="quote_withholding_tax">
                     <input type="hidden" name="quote_pax_total" id="quote-pax-total">
-<a href="{{ route('quote.index') }}" class="btn btn-secondary btn-sm"><i class="fa fa-arrow-left"></i> กลับ</a>
+<a href="{{ route('booking.index') }}" class="btn btn-secondary btn-sm"><i class="fa fa-arrow-left"></i> กลับ</a>
                     <button type="submit" class="btn btn-primary btn-sm mx-3" form="formQuoteModern"><i class="fa fa-save"></i> สร้างใบเสนอราคา</button>
                     
                 </div>
@@ -720,6 +720,14 @@
 <script>
 $(function() {
     // --- Customer Autocomplete (เหมือน create.blade.php) ---
+
+    // เรียกฟังก์ชันคำนวณและอัปเดตเลขลำดับ row ทันทีเมื่อโหลดหน้า
+    if (typeof calculatePaymentCondition === 'function') {
+        calculatePaymentCondition();
+    }
+    if (typeof updateRowNumbers === 'function') {
+        updateRowNumbers();
+    }
     $('#customerSearch').on('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
