@@ -460,15 +460,17 @@
                      <hr>
                      {{-- <div class="row discount-row mb-1 align-items-center" data-row-id="${rowId}" style="background:#fffbe7;border-radius:8px;padding:8px 0;"> --}}
                     <div class="row item-row table-income" id="table-income" style="background:#55ffb848;border-radius:8px;padding:8px 0;">
+                        
+                        @forelse ($quoteProducts as $key => $item)
+                            @if ($item['product_qty'])
+
                         <div class="row align-items-center row item-row">
-                            
-                            
                             <div class="col-md-1 "><span class="row-number"></span></div>
                             <div class="col-md-3">
                                 <select name="product_id[]" class="form-select product-select select2" id="product-select" style="width: 100%;">
                                     <option value="">--เลือกสินค้า--</option>
                                     @forelse ($products as $product)
-                                        <option data-pax="{{ $product->product_pax }}" value="{{ $product->id }}">{{ $product->product_name }}{{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
+                                        <option data-pax="{{ $product->product_pax }}" @if ($item['product_id'] === $product->id) selected @endif value="{{ $product->id }}">{{ $product->product_name }}{{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
                                     @empty
                                     @endforelse
                                 </select>
@@ -489,14 +491,20 @@
                                     <option value="vat">Vat</option>
                                 </select>
                             </div>
-                            <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="1"></div>
-                            <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01" value="0"></div>
+                            <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" value="{{ $item['product_qty'] }}" step="1" value="1"></div>
+                            <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" value="{{ $item['product_price'] }}" step="0.01" value="0"></div>
                             <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end" value="0" readonly></div>
                             <div class="col-md-1 text-center">
                                  <button type="button" class="btn btn-danger btn-sm remove-row-btn " title="ลบแถว" style="font-size: 13px 10px"><i class="fa fa-trash" ></i></button>
                                 {{-- <a href="javascript:void(0)" class="remove-row-btn  text-danger" title="ลบแถว"><span class="fa fa-trash"></span></a> --}}
                             </div>
                         </div>
+
+                          @endif
+
+                        @empty
+                        @endforelse
+
                     </div>
                     <div class="add-row">
                         <i class="fa fa-plus"></i><span id="add-row-service" style="cursor:pointer;"> เพิ่มรายการ</span>
