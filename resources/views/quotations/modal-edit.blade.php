@@ -678,13 +678,13 @@
                                         <input type="radio" name="quote_payment_type" id="quote-payment-full" value="full" {{ (isset($quotationModel) && $quotationModel->quote_payment_type == 'full') ? 'checked' : '' }}> <label for="quote-payment-type"> ชำระเต็มจำนวน</label>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="basic-addon1">ภายในวันที่</span>
                                         <input type="datetime-local" class="form-control" id="quote-payment-date-full" name="quote_payment_date_full" value="{{ $quotationModel->quote_payment_date_full ?? '' }}">
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" for="">จำนวนเงิน</span>
                                         <input type="number" class="form-control" name="quote_payment_total_full" id="payment-total-full" step="0.01" placeholder="0.00" value="{{ $quotationModel->quote_payment_total_full ?? '' }}">
