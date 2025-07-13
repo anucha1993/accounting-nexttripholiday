@@ -404,7 +404,7 @@
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">หักเงินมัดจำ / Deposit</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($quotationModel->payment-$invoiceModel->invoice_grand_total-$invoiceModel->payment, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($quotationModel->payment, 2, '.', ',') }}</td>
                 </tr>
 
                 <tr>

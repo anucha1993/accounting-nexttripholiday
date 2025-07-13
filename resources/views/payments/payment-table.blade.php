@@ -111,7 +111,133 @@
                                     <a href="{{ route('mpdf.payment', $item->payment_id) }}" onclick="openPdfPopup(this.href); return false;"><i
                                         class="fa fa-print text-danger"></i> พิมพ์</a>
                                     @endif
-                                    <a class="dropdown-item " href=""><i class="fas fa-envelope text-info"></i>ส่งเมล</a>
+<a class="dropdown-item payment-sendmail" href="#" data-payment-id="{{ $item->payment_id }}" data-payment-number="{{ $item->payment_number }}" data-payment-email="{{ $item->paymentCustomer->customer_email ?? '' }}"><i class="fas fa-envelope text-info"></i>ส่งเมล</a>
+<!-- Modal ส่งเมลรายการชำระเงิน -->
+<div class="modal fade" id="modal-payment-sendmail" tabindex="-1" aria-labelledby="modalPaymentSendMailLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalPaymentSendMailLabel">ส่งอีเมลรายการชำระเงิน</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="sendPaymentMailForm" method="post">
+          @csrf
+          <input type="hidden" name="payment_id" id="mail-payment-id">
+          <div class="mb-3">
+            <label for="mail-payment-number" class="form-label">เลขที่ชำระ</label>
+            <input type="text" class="form-control" id="mail-payment-number" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="mail-payment-email" class="form-label">อีเมลผู้รับ</label>
+            <input type="email" class="form-control" name="email" id="mail-payment-email" required>
+          </div>
+          <div class="mb-3">
+            <label for="mail-payment-subject" class="form-label">หัวข้อ</label>
+            <input type="text" class="form-control" name="subject" id="mail-payment-subject" value="แจ้งรายการชำระเงิน">
+          </div>
+          <div class="mb-3">
+            <label for="mail-payment-detail" class="form-label">รายละเอียด</label>
+            <textarea class="form-control" name="text_detail" id="mail-payment-detail" rows="8"><p>เรียนลูกค้า</p><p>แนบรายละเอียดการชำระเงินตามไฟล์ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p></textarea>
+          </div>
+          <div class="mb-3" id="mail-payment-slip-group" style="display:none;">
+            <label class="form-label">ไฟล์แนบสลิป</label>
+            <div id="mail-payment-slip-link"></div>
+            <input type="hidden" name="payment_file_path" id="mail-payment-file-path">
+          </div>
+          <div class="text-end">
+            <button type="submit" class="btn btn-info"><i class="fas fa-paper-plane"></i> ส่งอีเมล</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- CKEditor 4 CDN -->
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+<script>
+$(document).ready(function() {
+  // Initialize CKEditor for the payment detail textarea
+  if (typeof CKEDITOR !== 'undefined') {
+    if (CKEDITOR.instances['mail-payment-detail']) {
+      CKEDITOR.instances['mail-payment-detail'].destroy(true);
+    }
+    CKEDITOR.replace('mail-payment-detail', {
+      height: 250
+    });
+  }
+
+  // เปิด modal ส่งเมล
+  $(document).on('click', '.payment-sendmail', function(e) {
+    e.preventDefault();
+    var paymentId = $(this).data('payment-id');
+    var paymentNumber = $(this).data('payment-number');
+    var paymentEmail = $(this).data('payment-email') || '';
+    // Find the payment row and get the slip file path
+    var $row = $(this).closest('tr');
+    var slipLink = $row.find('a[href$=".pdf"], a[href$=".jpg"], a[href$=".jpeg"], a[href$=".png"], a[href$=".gif"]');
+    var slipUrl = '';
+    if (slipLink.length > 0) {
+      slipUrl = slipLink.attr('href');
+    }
+    if (slipUrl) {
+      $('#mail-payment-slip-group').show();
+      $('#mail-payment-slip-link').html('<a href="'+slipUrl+'" target="_blank">ดูไฟล์สลิป</a>');
+      $('#mail-payment-file-path').val(slipUrl);
+    } else {
+      $('#mail-payment-slip-group').hide();
+      $('#mail-payment-slip-link').html('');
+      $('#mail-payment-file-path').val('');
+    }
+    $('#mail-payment-id').val(paymentId);
+    $('#mail-payment-number').val(paymentNumber);
+    $('#mail-payment-email').val(paymentEmail);
+    $('#mail-payment-subject').val('แจ้งรายการชำระเงิน');
+    if (CKEDITOR.instances['mail-payment-detail']) {
+      CKEDITOR.instances['mail-payment-detail'].setData('<p>เรียนลูกค้า</p><p>แนบรายละเอียดการชำระเงินตามไฟล์ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p>');
+    } else {
+      $('#mail-payment-detail').val('<p>เรียนลูกค้า</p><p>แนบรายละเอียดการชำระเงินตามไฟล์ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p>');
+    }
+    $('#modal-payment-sendmail').modal('show');
+  });
+
+  // ส่งเมลผ่าน Ajax
+  $('#sendPaymentMailForm').on('submit', function(e) {
+    e.preventDefault();
+    // Update textarea with CKEditor data before sending
+    if (CKEDITOR.instances['mail-payment-detail']) {
+      CKEDITOR.instances['mail-payment-detail'].updateElement();
+    }
+    var form = this;
+    var formData = new FormData(form);
+    Swal.fire({
+      title: 'กำลังส่งอีเมล...',
+      html: 'กรุณารอสักครู่...',
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => { Swal.showLoading(); }
+    });
+    fetch("{{ route('payments.sendMail') }}", {
+      method: 'POST',
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        Swal.fire({ icon: 'success', title: 'ส่งอีเมลสำเร็จ!', text: 'อีเมลได้ถูกส่งแล้ว' });
+        $('#modal-payment-sendmail').modal('hide');
+      } else {
+        Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถส่งอีเมลได้' });
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถส่งอีเมลได้' });
+    });
+  });
+});
+</script>
                                 </td>
                                 
                               

@@ -209,13 +209,28 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
+            {{--
+                Badge/status ที่แสดงใน CheckList (ใช้สำหรับ mapping filter dropdown):
+                - getQuoteStatusQuotePayment:
+                    "คืนเงินลูกค้าแล้ว", "รอคืนเงินลูกค้า", "ยังไม่ได้คืนเงินลูกค้า", "รอคืนเงินบางส่วน", "คืนเงินบางส่วนแล้ว"
+                - getStatusWithholdingTax:
+                    "ได้รับใบกำกับโฮลเซลแล้ว", "รอใบกำกับภาษีโฮลเซลล์"
+                - getQuoteStatusWithholdingTax:
+                    "ออกใบหักแล้ว", "รอออกใบหัก ณ ที่จ่ายโฮลเซลล์..."
+                - getStatusWhosaleInputTax:
+                    (ไม่มี badge เฉพาะ)
+                - getStatusCustomerRefund:
+                    "คืนเงินลูกค้าแล้ว", "ยังไม่คืนเงินลูกค้า"
+                - getStatusWholesaleRefund:
+                    "โฮลเซลล์คืนเงินแล้ว", "ยังไม่ได้รับเงินคืน"
+            --}}
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
                         @can('quotation-export')
                         <form action="{{route('export.quote')}}" id="export-excel" method="post" class="d-inline">
                             @csrf
                             @method('POST')
-                            <input type="hidden" name="quote_ids" value="{{$quotations->pluck('quote_id')}}">
+                            <input type="hidden" name="quote_ids" id="export-quote-ids" value="{{$quotations->pluck('quote_id')}}">
                             <button class="btn btn-success btn-sm" type="submit">
                                 <i class="fas fa-file-excel"></i> Export Excel
                             </button>
@@ -269,8 +284,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($quotations as $key => $item)
-                            <tr class="align-middle">
+                        @php
+                            $inputtaxTotalWholesale = 0;
+                        @endphp
+@forelse ($quotations as $key => $item)
+    <tr class="align-middle" data-quote-id="{{ $item->quote_id }}">
                                 <td class="text-center fw-bold">
                                             {{ ($quotations->total() - $quotations->firstItem() + 1) - $key }}
                                         </td>
@@ -352,11 +370,20 @@
                                         $wholesalePaid = $item->GetDepositWholesale() - $item->GetDepositWholesaleRefund();
                                         $wholesaleOutstanding = $totalWholesale - $wholesalePaid;
                                     @endphp
-                                    @if ($wholesaleOutstanding != 0)
-                                         <span class="text-danger fw-bold">{{ number_format($wholesaleOutstanding, 2) }}</span>
-                                    @else
+                                    @if ($totalWholesale != 0 && $wholesaleOutstanding != 0)
+                                    @php
+                                        $inputtaxTotalWholesale += $wholesaleOutstanding;
+                                    @endphp
                                         
+                                         <span class="text-danger fw-bold">{{ number_format($wholesaleOutstanding, 2) }}</span>
+
+                                    @elseif ($totalWholesale == 0)
+                                        <span class="text-muted">ยังไม่มีต้นทุน</span>
+                                     @else
+                                        <span class="text-muted">-</span>
                                     @endif
+
+                                    {{-- ต้นทุน : {{ number_format($totalWholesale, 2) }} --}}
 
                                    
                                     {{-- @if(($item->GetDeposit() > 0) && $item->quote_status != 'cancel' && $totalWholesale > 0 && $wholesaleOutstanding != 0)
@@ -367,6 +394,21 @@
                                 </td>
                                 <td>
                                     <div class="d-flex flex-wrap gap-1" style="max-width: 100px;">
+                                    {{--
+                                        Badge/status ที่แสดงใน CheckList (ใช้สำหรับ mapping filter dropdown):
+                                        - getQuoteStatusQuotePayment:
+                                            "คืนเงินลูกค้าแล้ว", "รอคืนเงินลูกค้า", "ยังไม่ได้คืนเงินลูกค้า", "รอคืนเงินบางส่วน", "คืนเงินบางส่วนแล้ว"
+                                        - getStatusWithholdingTax:
+                                            "ได้รับใบกำกับโฮลเซลแล้ว", "รอใบกำกับภาษีโฮลเซลล์"
+                                        - getQuoteStatusWithholdingTax:
+                                            "ออกใบหักแล้ว", "รอออกใบหัก ณ ที่จ่ายโฮลเซลล์..."
+                                        - getStatusWhosaleInputTax:
+                                            (ไม่มี badge เฉพาะ)
+                                        - getStatusCustomerRefund:
+                                            "คืนเงินลูกค้าแล้ว", "ยังไม่คืนเงินลูกค้า"
+                                        - getStatusWholesaleRefund:
+                                            "โฮลเซลล์คืนเงินแล้ว", "ยังไม่ได้รับเงินคืน"
+                                    --}}
                                         {!! getQuoteStatusQuotePayment($item) !!}
                                         {!! getStatusWithholdingTax($item->quoteInvoice) !!}
                                         {!! getQuoteStatusWithholdingTax($item->quoteLogStatus) !!}
@@ -418,7 +460,12 @@
                             <td class="text-center fw-bold text-primary">{{number_format($SumPax)}}</td>
                             <td colspan="4"></td>
                             <td class="text-end fw-bold text-success">{{number_format($SumTotal,2)}}</td>
-                            <td colspan="4" class="text-muted"><small>บาท</small></td>
+                            <td colspan="1" class="text-muted"><small>บาท</small></td>
+                            <td colspan="1" class="text-muted">ยอดค้างชำระโฮลเซล :</td>
+                            <td class="text-end fw-bold text-danger">
+                                
+                                {{ number_format($inputtaxTotalWholesale, 2) }} บาท
+                            </td>
                         </tr>
                     </tfoot>
                 </table>
@@ -428,6 +475,52 @@
 </div>
 <script>
 $(document).ready(function() {
+    // === Client-side CheckList Filter ===
+    // 1. สร้าง dropdown ใหม่จาก badge จริงใน CheckList
+    var badgeSet = new Set();
+    $('#quote-table tbody tr').each(function() {
+        $(this).find('td').eq(16).find('.badge').each(function() {
+            var txt = $(this).text().trim();
+            if (txt) badgeSet.add(txt);
+        });
+    });
+    var badgeList = Array.from(badgeSet).sort();
+    var $checkListFilter = $('<select class="form-select" id="checklist-client-filter" style="width:100%"><option value="all">ทั้งหมด</option></select>');
+    badgeList.forEach(function(txt) {
+        $checkListFilter.append('<option value="'+txt+'">'+txt+'</option>');
+    });
+    // 2. แทนที่ dropdown เดิม (หรือจะซ่อนไว้ก็ได้)
+    var $old = $('select[name="search_not_check_list"]').closest('.col-md-2');
+    $old.hide();
+    var $newCol = $('<div class="col-md-2"><label>ยังไม่ได้ทำ Check List (Client Filter)</label></div>');
+    $newCol.append($checkListFilter);
+    $old.after($newCol);
+    // 3. filter ตารางเมื่อเลือก
+    $checkListFilter.on('change', function() {
+        var val = $(this).val();
+        $('#quote-table tbody tr').each(function() {
+            if (val === 'all') {
+                $(this).show();
+            } else {
+                var found = false;
+                $(this).find('td').eq(16).find('.badge').each(function() {
+                    if ($(this).text().trim() === val) found = true;
+                });
+                $(this).toggle(found);
+            }
+        });
+    });
+
+    // === Export เฉพาะ quote_ids ที่แสดงอยู่หลัง filter client-side ===
+    $('#export-excel').on('submit', function(e) {
+        var ids = [];
+        $('#quote-table tbody tr:visible').each(function() {
+            var qid = $(this).data('quote-id');
+            if (qid) ids.push(qid);
+        });
+        console.log('[Export Debug] quote_ids ที่จะถูกส่งออก:', ids);
+        $('#export-quote-ids').val(ids.join(','));
+    });
     $('[data-bs-toggle="tooltip"]').tooltip();
     $('.select2').select2({ placeholder: 'เลือก...', allowClear: true, width: '100%' });
     $('select[name^="search_"]').on('change', function() {

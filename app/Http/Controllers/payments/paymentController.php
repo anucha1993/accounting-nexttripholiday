@@ -1,22 +1,53 @@
 <?php
-
 namespace App\Http\Controllers\payments;
-
 use Illuminate\Http\Request;
 use App\Models\bank\bankModel;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
 use App\Models\bank\bankCompanyModel;
 use App\Models\invoices\invoiceModel;
 use App\Models\payments\paymentModel;
+use App\Services\NotificationService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use App\Models\quotations\quotationModel;
-use App\Services\NotificationService;
 
 class paymentController extends Controller
 {
+
+     //
+    public function sendMail(Request $request)
+    {
+        $to = $request->input('email');
+        $subject = $request->input('subject', 'แจ้งรายการชำระเงิน');
+        $detail = $request->input('text_detail');
+        $slipUrl = $request->input('payment_file_path');
+
+        try {
+            Mail::send([], [], function ($message) use ($to, $subject, $detail, $slipUrl) {
+                $message->to($to)
+                    ->subject($subject)
+                    ->html($detail, 'text/html');
+                if ($slipUrl) {
+                    // ดึง path ไฟล์จาก storage/app/public (Laravel storage:link)
+                    $storagePrefix = '/storage/';
+                    if (strpos($slipUrl, $storagePrefix) !== false) {
+                        $relativePath = str_replace($storagePrefix, '', $slipUrl);
+                        $storagePath = storage_path('app/public/' . $relativePath);
+                        if (file_exists($storagePath)) {
+                            $message->attach($storagePath);
+                        }
+                    }
+                }
+            });
+            return response()->json(['success' => true, 'message' => 'ส่งอีเมลสำเร็จ']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'เกิดข้อผิดพลาดในการส่งอีเมล: ' . $e->getMessage()]);
+        }
+    }
+    
     //
     public function index(quotationModel $quotationModel, Request $request)
     {

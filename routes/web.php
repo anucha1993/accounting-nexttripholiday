@@ -1,5 +1,7 @@
+
 <?php
 
+;
 use App\Exports\invoiceExport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +20,7 @@ use App\Http\Controllers\MPDF\MailQuoteController;
 use App\Http\Controllers\airline\airlineController;
 use App\Http\Controllers\booking\BookingController;
 use App\Http\Controllers\reports\saleTaxController;
+
 use App\Http\Controllers\invoices\invoiceController;
 use App\Http\Controllers\payments\paymentController;
 use App\Http\Controllers\products\productController;
@@ -38,13 +41,14 @@ use App\Http\Controllers\MPDF\MPDF_QuotationController;
 use App\Http\Controllers\exports\receiptExportControlle;
 use App\Http\Controllers\MPDF\MPDF_creditNoteController;
 use App\Http\Controllers\MPDF\MPDF_taxReceiptController;
+use App\Http\Controllers\quotations\QuoteListController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
 use App\Http\Controllers\CreditNote\creditNoteController;
 use App\Http\Controllers\exports\invoiceExportController;
+
 use App\Http\Controllers\exports\saleTaxExportController;
 use App\Http\Controllers\MPDF\MPDF_WithholdingController;
 use App\Http\Controllers\payments\paymentDebitController;
-
 use App\Http\Controllers\quotefiles\QuoteFilesController;
 use App\Http\Controllers\reports\invoiceReportController;
 use App\Http\Controllers\reports\receiptReportController;
@@ -66,7 +70,6 @@ use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\MPDF\MPDF_WithhodingDocumentController;
 use App\Http\Controllers\reports\paymentWholesaleReportController;
 use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
-use App\Http\Controllers\quotations\QuoteListController;
 
 /*
 |--------------------------------------------------------------------------
@@ -214,6 +217,7 @@ Route::put('payments/update/{paymentModel}',[paymentController::class,'update'])
 Route::get('payments/cancelModal/{paymentModel}',[paymentController::class,'cancelModal'])->name('payment.cancelModal');
 Route::get('payments/delete/{paymentModel}',[paymentController::class,'delete'])->name('payment.delete');
 Route::get('payments/refresh/cancel/{paymentModel}',[paymentController::class,'RefreshCancel'])->name('payment.RefreshCancel');
+Route::post('payments/send-mail', [paymentController::class, 'sendMail'])->name('payments.sendMail');
 
 Route::get('payment/quotation/{quotationModel}',[paymentController::class,'quotation'])->name('payment.quotation');
 Route::put('payment/cancel/{paymentModel}',[paymentController::class,'cancel'])->name('payment.cancel');

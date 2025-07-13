@@ -103,19 +103,7 @@ class QuoteListController extends Controller
                     }
                 });
             })
-            ->when(!empty($searchNotLogStatus) && $searchNotLogStatus !== 'all', function ($query) use ($searchNotLogStatus) {
-                return $query->whereHas('quoteLog', function ($q1) use ($searchNotLogStatus) {
-                    switch ($searchNotLogStatus) {
-                        case 'booking_email_status': $q1->where('booking_email_status', 'ยังไม่ได้ส่ง')->orWhereNull('booking_email_status'); break;
-                        case 'invoice_status': $q1->where('invoice_status','ยังไม่ได้')->orWhereNull('invoice_status'); break;
-                        case 'slip_status': $q1->where('slip_status','ยังไม่ได้ส่ง')->orWhereNull('slip_status'); break;
-                        case 'passport_status': $q1->where('passport_status','ยังไม่ได้ส่ง')->orWhereNull('passport_status'); break;
-                        case 'appointment_status': $q1->where('appointment_status','ยังไม่ได้ส่ง')->orWhereNull('appointment_status'); break;
-                        case 'withholding_tax_status': $q1->where('withholding_tax_status','ยังไม่ได้ออก')->orWhereNull('withholding_tax_status'); break;
-                        case 'wholesale_tax_status': $q1->where('wholesale_tax_status','ยังไม่ได้รับ')->orWhereNull('wholesale_tax_status'); break;
-                    }
-                });
-            })
+            // ไม่ filter ที่ SQL สำหรับ Check List ให้ filter หลัง paginate เท่านั้น เพื่อความตรงกับ badge ที่แสดงจริง
             ->when($searchSale && $searchSale != 'all', function ($query) use ($searchSale) {
                 return $query->where('quote_sale', $searchSale);
             })
@@ -230,6 +218,48 @@ class QuoteListController extends Controller
             $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchCustomerPayment) {
                 $status = strip_tags(getQuoteStatusPayment($quotation));
                 return $status === $searchCustomerPayment;
+            })->values();
+            $quotations->setCollection($filtered);
+        }
+
+        // Filter CheckList (badge) หลัง paginate เฉพาะกรณีเลือกสถานะ (เพื่อให้ตรงกับ Blade)
+        if (!empty($searchNotLogStatus) && $searchNotLogStatus !== 'all') {
+            $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchNotLogStatus) {
+                // Map dropdown value to badge text (ตรงกับ badge จริงที่ helper return)
+                $map = [
+                    // getQuoteStatusQuotePayment
+                    'customer_refund_status' => ['ยังไม่ได้คืนเงินลูกค้า', 'รอคืนเงินลูกค้า', 'คืนเงินลูกค้าแล้ว', 'รอคืนเงินบางส่วน', 'คืนเงินบางส่วนแล้ว'],
+                    // getStatusWithholdingTax
+                    'withholding_tax_status' => ['รอใบกำกับภาษีโฮลเซลล์', 'ได้รับใบกำกับโฮลเซลแล้ว'],
+                    // getQuoteStatusWithholdingTax
+                    'wholesale_tax_status' => ['รอออกใบหัก ณ ที่จ่ายโฮลเซลล์...', 'ออกใบหักแล้ว'],
+                    // getStatusWhosaleInputTax
+                    'invoice_status' => ['รอใบกำกับภาษีโฮลเซลล์', 'ได้รับใบกำกับโฮลเซลแล้ว'],
+                    // getStatusCustomerRefund
+                    'booking_email_status' => ['ยังไม่ได้ส่งใบอีเมลล์จองทัวร์ให้โฮลเซลล์'], // ไม่มี badge จริง ต้อง mapping เพิ่มถ้ามี
+                    // getStatusWholesaleRefund
+                    'wholesale_refund_status' => ['ยังไม่ได้รับเงินคืน', 'โฮลเซลล์คืนเงินแล้ว'],
+                    // เพิ่มเติม mapping อื่น ๆ ตาม badge จริงที่ helper return
+                    'slip_status' => ['ยังไม่ส่งสลิปให้โฮลเซลล์'], // ไม่มี badge จริง ต้อง mapping เพิ่มถ้ามี
+                    'passport_status' => ['ยังไม่ส่งพาสปอตให้โฮลเซลล์'], // ไม่มี badge จริง ต้อง mapping เพิ่มถ้ามี
+                    'appointment_status' => ['ยังไม่ส่งใบนัดหมายให้ลูกค้า'], // ไม่มี badge จริง ต้อง mapping เพิ่มถ้ามี
+                ];
+                $badgeTexts = $map[$searchNotLogStatus] ?? null;
+                if (!$badgeTexts) return true;
+                // รวม badge ทั้งหมดใน CheckList เป็น string
+                $badges = '';
+                $badges .= strip_tags(getQuoteStatusQuotePayment($quotation));
+                $badges .= strip_tags(getStatusWithholdingTax($quotation->quoteInvoice));
+                $badges .= strip_tags(getQuoteStatusWithholdingTax($quotation->quoteLogStatus));
+                $badges .= strip_tags(getStatusWhosaleInputTax($quotation->checkfileInputtax));
+                $badges .= strip_tags(getStatusCustomerRefund($quotation->quoteLogStatus));
+                $badges .= strip_tags(getStatusWholesaleRefund($quotation->quoteLogStatus));
+                foreach ($badgeTexts as $badgeText) {
+                    if (strpos($badges, $badgeText) !== false) {
+                        return true;
+                    }
+                }
+                return false;
             })->values();
             $quotations->setCollection($filtered);
         }
