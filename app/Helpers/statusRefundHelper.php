@@ -1,12 +1,14 @@
 <?php
 
+
 if (!function_exists('getStatusCustomerRefund')) {
+    //
     function getStatusCustomerRefund($quoteLog)
     {
         if (!$quoteLog) {
             return '';
         }
-
+        
         if ($quoteLog->customer_refund_status === 'คืนเงินสำเร็จ') {
             return '<span class="badge bg-success badge-sm">คืนเงินลูกค้าแล้ว</span>';
         } elseif ($quoteLog->customer_refund_status === 'ยังไม่ได้คืนเงิน') {
@@ -16,6 +18,8 @@ if (!function_exists('getStatusCustomerRefund')) {
         return '';
     }
 }
+
+
 
 if (!function_exists('getStatusWholesaleRefund')) {
     function getStatusWholesaleRefund($quoteLog)

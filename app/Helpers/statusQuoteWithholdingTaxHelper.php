@@ -10,9 +10,9 @@ if (!function_exists('getQuoteStatusWithholdingTax')) {
 
         if ($quoteLogStatus && $quoteLogStatus->wholesale_skip_status === 'ต้องการออก') {
             if($quoteLogStatus->wholesale_tax_status === 'ได้รับแล้ว'){
-             return '<span class="badge rounded-pill bg-success">ออกใบหักแล้ว </span>';
+             return '<span class="badge rounded-pill bg-success">ออกใบหักโฮลเซลล์แล้ว </span>';
             }else{
-                 return '<span class="badge rounded-pill bg-warning">รอออกใบหัก ณ ที่จ่ายโฮลเซลล์'.$quoteLogStatus->wholesale_skip_status.' </span>';
+                 return '<span class="badge rounded-pill bg-warning">รอออกใบหักโฮลเซลล์'.$quoteLogStatus->wholesale_skip_status.' </span>';
             }
         }
 

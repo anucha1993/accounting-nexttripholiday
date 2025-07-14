@@ -173,8 +173,8 @@ class quotationModel extends Model
 
     public function quoteLog()
     {
-        // แก้ foreign key ให้ถูกต้อง: quote_logs.quote_id -> quotation.quote_id
-        return $this->hasOne(\App\Models\QuoteLogModel::class, 'quote_id', 'quote_id');
+        // เปลี่ยนเป็น hasMany เพื่อรองรับหลายแถวใน quote_logs
+        return $this->hasMany(\App\Models\QuoteLogModel::class, 'quote_id', 'quote_id');
     }
 
     // ความสัมพันธ์กับ BookingModel

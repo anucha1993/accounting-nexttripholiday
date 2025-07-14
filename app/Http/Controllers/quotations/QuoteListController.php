@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\quotations;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\quotations\quotationModel;
 use App\Models\sales\saleModel;
+// use App\Helpers\statusQuoteWithholdingTaxHelper;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use App\Models\booking\countryModel;
 use App\Models\wholesale\wholesaleModel;
-use Illuminate\Support\Facades\DB;
+use App\Models\quotations\quotationModel;
 
 class QuoteListController extends Controller
 {
@@ -79,6 +81,7 @@ class QuoteListController extends Controller
             ->when($searchPax && $searchPax != null, function ($query) use ($searchPax) {
                 return $query->where('quote_pax_total', $searchPax);
             })
+
             ->when($searchLogStatus && $searchLogStatus === 'allCheck', function ($query, $searchLogStatus) {
                 return $query->whereHas('quoteLog', function ($q1) use ($searchLogStatus) {
                     $q1->where('booking_email_status', 'ส่งแล้ว');
@@ -90,6 +93,7 @@ class QuoteListController extends Controller
                     $q1->where('wholesale_tax_status', 'ได้รับแล้ว');
                 });
             })
+
             ->when($searchLogStatus, function ($query, $searchLogStatus) {
                 return $query->whereHas('quoteLog', function ($q1) use ($searchLogStatus) {
                     switch ($searchLogStatus) {
@@ -203,7 +207,19 @@ class QuoteListController extends Controller
             })
             ->orderBy('created_at', 'desc');
 
-        $quotations = $quotationsQuery->paginate($perPage)->withQueryString();
+        // ดึง status ทั้งหมดของ getQuoteStatusQuotePayment และ getStatusWithholdingTax (ก่อน paginate/filter)
+        $allQuoteStatusQuotePayment = $quotationsQuery->get()->flatMap(function($item) {
+            return [
+                strip_tags(getQuoteStatusQuotePayment($item)),
+                strip_tags(getStatusWithholdingTax($item->quoteInvoice)),
+                strip_tags(getQuoteStatusWithholdingTax($item->quoteLogStatus)),
+                strip_tags(\getStatusWhosaleInputTax($item->checkfileInputtax)),
+                // เพิ่ม helper อื่นๆ ได้ที่นี่
+            ];
+        })->unique()->filter()->values();
+
+        $quotations = $quotationsQuery->paginate(10)->withQueryString();
+        Log::debug('CheckList paginate SQL', ['sql' => $quotationsQuery->toSql(), 'bindings' => $quotationsQuery->getBindings()]);
 
         // Filter ด้วย getStatusPaymentWhosale หลัง paginate เฉพาะกรณีเลือกสถานะ (เพื่อให้ตรงกับ Blade)
         if (!empty($searchPaymentWholesaleStatus) && $searchPaymentWholesaleStatus !== 'all') {
@@ -213,60 +229,24 @@ class QuoteListController extends Controller
             })->values();
             $quotations->setCollection($filtered);
         }
+
         // Filter ด้วย getQuoteStatusPayment หลัง paginate เฉพาะกรณีเลือกสถานะ (เพื่อให้ตรงกับ Blade)
         if (!empty($searchCustomerPayment) && $searchCustomerPayment !== 'all') {
             $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchCustomerPayment) {
                 $status = strip_tags(getQuoteStatusPayment($quotation));
                 return $status === $searchCustomerPayment;
             })->values();
+            
             $quotations->setCollection($filtered);
         }
 
-        // Filter CheckList (badge) หลัง paginate เฉพาะกรณีเลือกสถานะ (เพื่อให้ตรงกับ Blade)
-        if (!empty($searchNotLogStatus) && $searchNotLogStatus !== 'all') {
-            $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchNotLogStatus) {
-                // Map dropdown value to badge text (ตรงกับ badge จริงที่ helper return)
-                $map = [
-                    // getQuoteStatusQuotePayment
-                    'customer_refund_status' => ['ยังไม่ได้คืนเงินลูกค้า', 'รอคืนเงินลูกค้า', 'คืนเงินลูกค้าแล้ว', 'รอคืนเงินบางส่วน', 'คืนเงินบางส่วนแล้ว'],
-                    // getStatusWithholdingTax
-                    'withholding_tax_status' => ['รอใบกำกับภาษีโฮลเซลล์', 'ได้รับใบกำกับโฮลเซลแล้ว'],
-                    // getQuoteStatusWithholdingTax
-                    'wholesale_tax_status' => ['รอออกใบหัก ณ ที่จ่ายโฮลเซลล์...', 'ออกใบหักแล้ว'],
-                    // getStatusWhosaleInputTax
-                    'invoice_status' => ['รอใบกำกับภาษีโฮลเซลล์', 'ได้รับใบกำกับโฮลเซลแล้ว'],
-                    // getStatusCustomerRefund
-                    'booking_email_status' => ['ยังไม่ได้ส่งใบอีเมลล์จองทัวร์ให้โฮลเซลล์'], // ไม่มี badge จริง ต้อง mapping เพิ่มถ้ามี
-                    // getStatusWholesaleRefund
-                    'wholesale_refund_status' => ['ยังไม่ได้รับเงินคืน', 'โฮลเซลล์คืนเงินแล้ว'],
-                    // เพิ่มเติม mapping อื่น ๆ ตาม badge จริงที่ helper return
-                    'slip_status' => ['ยังไม่ส่งสลิปให้โฮลเซลล์'], // ไม่มี badge จริง ต้อง mapping เพิ่มถ้ามี
-                    'passport_status' => ['ยังไม่ส่งพาสปอตให้โฮลเซลล์'], // ไม่มี badge จริง ต้อง mapping เพิ่มถ้ามี
-                    'appointment_status' => ['ยังไม่ส่งใบนัดหมายให้ลูกค้า'], // ไม่มี badge จริง ต้อง mapping เพิ่มถ้ามี
-                ];
-                $badgeTexts = $map[$searchNotLogStatus] ?? null;
-                if (!$badgeTexts) return true;
-                // รวม badge ทั้งหมดใน CheckList เป็น string
-                $badges = '';
-                $badges .= strip_tags(getQuoteStatusQuotePayment($quotation));
-                $badges .= strip_tags(getStatusWithholdingTax($quotation->quoteInvoice));
-                $badges .= strip_tags(getQuoteStatusWithholdingTax($quotation->quoteLogStatus));
-                $badges .= strip_tags(getStatusWhosaleInputTax($quotation->checkfileInputtax));
-                $badges .= strip_tags(getStatusCustomerRefund($quotation->quoteLogStatus));
-                $badges .= strip_tags(getStatusWholesaleRefund($quotation->quoteLogStatus));
-                foreach ($badgeTexts as $badgeText) {
-                    if (strpos($badges, $badgeText) !== false) {
-                        return true;
-                    }
-                }
-                return false;
-            })->values();
-            $quotations->setCollection($filtered);
-        }
+        // Filter ด้วย getQuoteStatusQuotePayment และ getStatusWithholdingTax หลัง paginate เฉพาะกรณีเลือกสถานะ (CheckList ให้ตรงกับ badge จริง)
+        $quotations = $this->filterByCheckListStatus($quotations, $searchNotLogStatus);
 
         $SumPax = $quotations->sum('quote_pax_total');
         $SumTotal = $quotations->sum('quote_grand_total');
 
+        
         $customerPaymentStatuses = [
             'รอคืนเงิน',
             'ยกเลิกการสั่งซื้อ',
@@ -278,16 +258,38 @@ class QuoteListController extends Controller
             'คืนเงินแล้ว',
         ];
 
-        // ลบ PHP filter สถานะโฮลเซลล์ออก (filter ที่ SQL แล้ว)
-        // if ($searchPaymentWholesaleStatus && $searchPaymentWholesaleStatus !== 'all') {
-        //     $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchPaymentWholesaleStatus) {
-        //         $status = strip_tags(getStatusPaymentWhosale($quotation));
-        //         return $status === $searchPaymentWholesaleStatus;
-        //     })->values();
-        //     $quotations->setCollection($filtered);
-        // }
+        // ส่ง $allQuoteStatusQuotePayment ไปที่ view
+        return view('quotations.list', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'customerPaymentStatuses', 'campaignSource', 'allQuoteStatusQuotePayment'));
+    }
 
-        return view('quotations.list', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'customerPaymentStatuses', 'campaignSource'));
+    /**
+     * Filter quotations collection by all badge logic (CheckList)
+     *
+     * @param \Illuminate\Pagination\LengthAwarePaginator $quotations
+     * @param string $searchNotLogStatus
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    protected function filterByCheckListStatus($quotations, $searchNotLogStatus)
+    {
+        if (empty($searchNotLogStatus) || $searchNotLogStatus === 'all') {
+            return $quotations;
+        }
+        $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchNotLogStatus) {
+            $badges = [
+                trim(strip_tags(getQuoteStatusQuotePayment($quotation))),
+                trim(strip_tags(getStatusWithholdingTax($quotation->quoteInvoice))),
+                trim(strip_tags(getQuoteStatusWithholdingTax($quotation->quoteLogStatus))),
+                trim(strip_tags(getStatusWhosaleInputTax($quotation->checkfileInputtax))),
+                trim(strip_tags(getStatusCustomerRefund($quotation->quoteLogStatus))),
+                trim(strip_tags(getStatusWholesaleRefund($quotation->quoteLogStatus))),
+                // เพิ่ม helper อื่นๆ ได้ที่นี่
+            ];
+            $search = trim($searchNotLogStatus);
+            Log::debug('CheckList filter', ['badges' => $badges, 'search' => $search, 'quote_id' => $quotation->quote_id]);
+            return in_array($search, $badges);
+        })->values();
+        $quotations->setCollection($filtered);
+        return $quotations;
     }
 
     public function destroy($id)

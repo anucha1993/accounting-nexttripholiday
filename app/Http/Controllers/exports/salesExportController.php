@@ -15,16 +15,22 @@ class salesExportController extends Controller
     public function export(Request $request)
     {
         $taxinvoiceIdsString = $request->taxinvoice_ids;
-        
         $taxinvoiceIdsArray = explode(',', trim($taxinvoiceIdsString, ']'));
-    
-        // ลบ '[' ออกจาก index แรก
         if (isset($taxinvoiceIdsArray[0])) {
             $taxinvoiceIdsArray[0] = str_replace('[', '', $taxinvoiceIdsArray[0]);
         }
-    
-      //dd($taxinvoiceIdsArray);
-    
-        return Excel::download(new salesExport($taxinvoiceIdsArray), 'sales.xlsx');
+        return Excel::download(new salesExport(
+            $taxinvoiceIdsArray,
+            $request->commission_mode,
+            $request->sale_id,
+            $request->wholsale_id,
+            $request->country_id,
+            $request->status,
+            $request->column_name,
+            $request->keyword,
+            $request->date_start,
+            $request->date_end,
+            $request->campaign_source_id
+        ), 'sales.xlsx');
     }
 }
