@@ -362,67 +362,185 @@
                 </div>
                 {!! $quotations->withQueryString()->links('pagination::bootstrap-5') !!}
                 <table class="table table-sm table-hover table-striped table-bordered" id="quote-table"
-                    style="font-size: 16px;">
-                    <thead class="table-dark " style="font-size: 26px;">
+                    style="font-size: 11px;">
+                    <thead class="table-dark sticky-top">
                         <tr>
-                            <th style="font-size: 18px;" class="text-center">#</th>
-                            <th style="font-size: 18px;">รายละเอียด</th>
-                            <th style="font-size: 18px;">ลูกค้า</th>
-                            <th style="font-size: 18px;">สถานะ</th>
-                            <th style="font-size: 18px;" class="text-center">PAX</th>
-                            <th style="font-size: 18px;">ยอดเงิน</th>
-                            <th style="font-size: 18px;">ผู้ขาย</th>
-                            <th style="font-size: 18px;" class="text-center">จัดการ</th>
+                            <th style="width: 40px;" class="text-center">#</th>
+                            <th style="width: 80px;">วันที่จอง</th>
+                            <th style="width: 120px;">ใบเสนอราคา</th>
+                            <th style="width: 100px;">เลขจองทัวร์</th>
+                            <th style="width: 200px;">โปรแกรมทัวร์</th>
+                            <th style="width: 120px;">วันเดินทาง</th>
+                            <th style="width: 150px;">ลูกค้า</th>
+                            <th style="width: 120px;">ที่มา</th> <!-- New column -->
+                            <th style="width: 50px;" class="text-center">PAX</th>
+                            <th style="width: 80px;">ประเทศ</th>
+                            <th style="width: 60px;">สายการบิน</th>
+                            <th style="width: 80px;">โฮลเซลล์</th>
+                            <th style="width: 120px;">สถานะลูกค้า</th>
+                            <th style="width: 100px;" class="text-end">ยอดเงิน</th>
+                            <th style="width: 120px;">สถานะโฮลเซลล์</th>
+                            <th style="width: 100px;">ค้างชำระโฮลเซล</th>
+                            <th style="width: 100px;">CheckList</th>
+                            <th style="width: 80px;">ผู้ขาย</th>
+                            <th style="width: 80px;" class="text-center">จัดการ</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @php $inputtaxTotalWholesale = 0; @endphp
+                        @php
+                            $inputtaxTotalWholesale = 0;
+                        @endphp
                         @forelse ($quotations as $key => $item)
                             <tr class="align-middle" data-quote-id="{{ $item->quote_id }}">
                                 <td class="text-center fw-bold">
                                     {{ $quotations->total() - $quotations->firstItem() + 1 - $key }}
                                 </td>
-                                <td>
-                                    <div><span class="fw-bold text-primary">{{ $item->quote_number }}</span> <span class="badge bg-light text-dark">{{ $item->quote_booking }}</span></div>
-                                    <div><small class="text-muted">จอง: {{ date('d/m/y', strtotime($item->quote_booking_create)) }}</small></div>
-                                    <div><span title="{{ $item->quote_tour_name ?: $item->quote_tour_name1 }}">{{ mb_substr($item->quote_tour_name ?: $item->quote_tour_name1, 0, 100) }}{{ strlen($item->quote_tour_name ?: $item->quote_tour_name1) > 25 ? '...' : '' }}</span></div>
-                                    <div><small>เดินทาง: {{ date('d/m/y', strtotime($item->quote_date_start)) }} - {{ date('d/m/y', strtotime($item->quote_date_end)) }}</small></div>
-                                </td>
-                                <td style="width: 250px">
-                                    <div><span title="{{ $item->quotecustomer->customer_name }}">{{ mb_substr($item->quotecustomer->customer_name, 0, 100) }}{{ strlen($item->quotecustomer->customer_name) > 100 ? '...' : '' }}</span></div>
-                                    <div><small>ที่มา: {{ $item->quotecustomer->customer_campaign_source ? ($campaignSource->firstWhere('campaign_source_id', $item->quotecustomer->customer_campaign_source)?->campaign_source_name ?? '-') : '-' }}</small></div>
-                                    <div><small>ประเทศ: {{ $item->quoteCountry->country_name_th }}</small></div>
-                                    <div><small>สายการบิน: {{ $item->airline->code }}</small></div>
-                                    <div><small>โฮลเซลล์: {{ $item->quoteWholesale->code }}</small></div>
+                                <td class="text-center">
+                                    <small
+                                        class="text-muted">{{ date('d/m/y', strtotime($item->quote_booking_create)) }}</small>
                                 </td>
                                 <td>
-                                    <div><b>สถานะลูกค้า:</b> <span class="d-inline-block">{!! getQuoteStatusPayment($item) !!}</span></div>
-                                    <div><b>สถานะโฮลเซลล์:</b> <span class="d-inline-block">{!! getStatusPaymentWhosale($item) !!}</span></div>
-                                    <div><b>CheckList:</b> <span class="d-inline-block">{!! getQuoteStatusQuotePayment($item) !!} {!! getStatusWithholdingTax($item->quoteInvoice) !!} {!! getQuoteStatusWithholdingTax($item->quoteLogStatus) !!} {!! getStatusWhosaleInputTax($item->checkfileInputtax) !!} {!! getStatusCustomerRefund($item->quoteLogStatus) !!} {!! getStatusWholesaleRefund($item->quoteLogStatus) !!}</span></div>
+                                    <div class="d-flex flex-column">
+                                        <span class="fw-bold text-primary">{{ $item->quote_number }}</span>
+                                        <div>
+                                            @if ($item->debitNote)
+                                                <span class="badge bg-success badge-sm">DBN</span>
+                                            @endif
+                                            @if ($item->creditNote)
+                                                <span class="badge bg-danger badge-sm">CDN</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark">{{ $item->quote_booking }}</span>
+                                </td>
+                                <td>
+                                    <div data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="{{ $item->quote_tour_name ?: $item->quote_tour_name1 }}">
+                                        {{ mb_substr($item->quote_tour_name ?: $item->quote_tour_name1, 0, 25) }}{{ strlen($item->quote_tour_name ?: $item->quote_tour_name1) > 25 ? '...' : '' }}
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex flex-column">
+                                        <small>{{ date('d/m/y', strtotime($item->quote_date_start)) }}</small> ถึง
+                                        <small
+                                            class="text-muted">{{ date('d/m/y', strtotime($item->quote_date_end)) }}</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div data-bs-toggle="tooltip" title="{{ $item->quotecustomer->customer_name }}">
+                                        {{ mb_substr($item->quotecustomer->customer_name, 0, 20) }}{{ strlen($item->quotecustomer->customer_name) > 20 ? '...' : '' }}
+                                    </div>
+                                </td>
+                                <td>
+                                    @php
+                                        $sourceName = '';
+                                        if (
+                                            isset($item->quotecustomer->customer_campaign_source) &&
+                                            !empty($item->quotecustomer->customer_campaign_source) &&
+                                            isset($campaignSource)
+                                        ) {
+                                            $source = $campaignSource->firstWhere(
+                                                'campaign_source_id',
+                                                $item->quotecustomer->customer_campaign_source,
+                                            );
+                                            $sourceName = $source ? $source->campaign_source_name : '';
+                                        }
+                                    @endphp
+                                    {{ $sourceName ?: 'none' }}
                                 </td>
                                 <td class="text-center">
                                     <span class="badge bg-info">{{ $item->quote_pax_total }}</span>
                                 </td>
                                 <td>
-                                    <div class="text-end text-success fw-bold">{{ number_format($item->quote_grand_total, 0) }} <small class="text-muted">บาท</small></div>
+                                    <small>{{ $item->quoteCountry->country_name_th }}</small>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-secondary badge-sm">{{ $item->airline->code }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span
+                                        class="badge bg-warning text-dark badge-sm">{{ $item->quoteWholesale->code }}</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        {!! getQuoteStatusPayment($item) !!}
+                                    </div>
+                                </td>
+                                <td class="text-end">
+                                    <strong class="text-success">{{ number_format($item->quote_grand_total, 0) }}</strong>
+                                    <small class="text-muted d-block">บาท</small>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        {!! getStatusPaymentWhosale($item) !!}
+                                    </div>
+                                </td>
+                                <td class="text-end">
                                     @php
                                         $totalWholesale = $item->inputtaxTotalWholesale() ?? 0;
-                                        $wholesalePaid = $item->GetDepositWholesale() - $item->GetDepositWholesaleRefund();
+                                        $wholesalePaid =
+                                            $item->GetDepositWholesale() - $item->GetDepositWholesaleRefund();
                                         $wholesaleOutstanding = $totalWholesale - $wholesalePaid;
                                     @endphp
-                                    <div class="text-end text-danger small">ค้างโฮลเซล: {{ number_format($wholesaleOutstanding, 2) }}</div>
-                                    @php $inputtaxTotalWholesale += $wholesaleOutstanding; @endphp
+                                    @if ($totalWholesale != 0 && $wholesaleOutstanding != 0)
+                                        @php
+                                            $inputtaxTotalWholesale += $wholesaleOutstanding;
+                                        @endphp
+
+                                        <span
+                                            class="text-danger fw-bold">{{ number_format($wholesaleOutstanding, 2) }}</span>
+                                    @elseif ($totalWholesale == 0)
+                                        <span class="text-muted">ยังไม่มีต้นทุน</span>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+
+                                    {{-- ต้นทุน : {{ number_format($totalWholesale, 2) }} --}}
+
+
+                                    {{-- @if ($item->GetDeposit() > 0 && $item->quote_status != 'cancel' && $totalWholesale > 0 && $wholesaleOutstanding != 0)
+                                        <span class="text-danger fw-bold">{{ number_format($wholesaleOutstanding, 2) }}</span>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif --}}
+
+
                                 </td>
-                                <td class="text-center"><small>{{ $item->Salename->name }}</small></td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-1" style="max-width: 100px;">
+
+                                        {!! getQuoteStatusQuotePayment($item) !!}
+                                        {!! getStatusWithholdingTax($item->quoteInvoice) !!}
+                                        {!! getQuoteStatusWithholdingTax($item->quoteLogStatus) !!}
+
+
+                                        {!! getStatusWhosaleInputTax($item->checkfileInputtax) !!}
+                                        {!! getStatusCustomerRefund($item->quoteLogStatus) !!}
+
+                                        {!! getStatusWholesaleRefund($item->quoteLogStatus) !!}
+
+
+                                        {{-- สามารถเพิ่ม helper อื่นๆ ที่เกี่ยวข้องกับ CheckList ได้ที่นี่ --}}
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <small>{{ $item->Salename->name }}</small>
+                                </td>
                                 <td class="text-center">
                                     @can('quotation-edit')
-                                        <a href="{{ route('quote.editNew', $item->quote_id) }}" class="btn btn-primary btn-sm mb-1" data-bs-toggle="tooltip" title="จัดการข้อมูล">
+                                        <a href="{{ route('quote.editNew', $item->quote_id) }}"
+                                            class="btn btn-primary btn-sm mb-1" data-bs-toggle="tooltip"
+                                            title="จัดการข้อมูล">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                     @endcan
 
                                     @can('quotation-delete')
-                                        <form action="{{ route('quotelist.destroy', $item->quote_id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('ยืนยันการลบข้อมูลใบเสนอราคานี้?');">
+                                        <form action="{{ route('quotelist.destroy', $item->quote_id) }}" method="POST"
+                                            style="display:inline-block;"
+                                            onsubmit="return confirm('ยืนยันการลบข้อมูลใบเสนอราคานี้?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm " title="ลบข้อมูล">
@@ -436,7 +554,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center py-4">
+                                <td colspan="17" class="text-center py-4">
                                     <div class="text-muted">
                                         <i class="fas fa-search fa-2x mb-3"></i>
                                         <p>ไม่พบข้อมูลตามเงื่อนไขที่ค้นหา</p>
@@ -447,10 +565,16 @@
                     </tbody>
                     <tfoot class="table-light">
                         <tr>
-                            <td colspan="4" class="text-end fw-bold">สรุปรวม:</td>
+                            <td colspan="7" class="text-end fw-bold">สรุปรวม:</td>
                             <td class="text-center fw-bold text-primary">{{ number_format($SumPax) }}</td>
-                            <td class="text-end fw-bold text-success">{{ number_format($SumTotal, 2) }} <small class="text-muted">บาท</small></td>
-                            <td colspan="2" class="text-end text-danger">ยอดค้างชำระโฮลเซล : {{ number_format($inputtaxTotalWholesale, 2) }} บาท</td>
+                            <td colspan="4"></td>
+                            <td class="text-end fw-bold text-success">{{ number_format($SumTotal, 2) }}</td>
+                            <td colspan="1" class="text-muted"><small>บาท</small></td>
+                            <td colspan="1" class="text-muted">ยอดค้างชำระโฮลเซล :</td>
+                            <td class="text-end fw-bold text-danger">
+
+                                {{ number_format($inputtaxTotalWholesale, 2) }} บาท
+                            </td>
                         </tr>
                     </tfoot>
                 </table>
