@@ -550,175 +550,7 @@
             </form>
 
             <!-- แบ่งเส้น -->
-            <hr class="my-4" style="border-top: 2px solid #e9ecef; margin: 30px 0;">
-
-            <!-- Summary Cards -->
-            @php
-                // คำนวณยอดรวมสำหรับแสดงใน Summary Cards
-                $summaryTotalMath = 0;
-                $summaryTotalPeople = 0;
-                $summaryTotalSales = 0;
-                $summaryInputtaxTotal = 0;
-                $summaryWhosaleTotal = 0;
-                $summaryGranTotal = 0;
-                $summaryDiscountTotal = 0;
-                $summaryServiceTotal = 0;
-                $summaryPaxTotal = 0;
-                $summaryTotalCost = 0; // ต้นทุนรวม
-                $summaryTotalProfit = 0; // กำไรรวม
-
-                if ($request->commission_mode == 'qt') {
-                    // คำนวณแบบปกติ
-                    foreach ($taxinvoices as $item) {
-                        $withholdingTaxAmount = $item->invoice?->getWithholdingTaxAmountAttribute() ?? 0;
-                        $getTotalInputTaxVat = $item->invoice->quote?->getTotalInputTaxVat() ?? 0;
-                        $hasInputTaxFile = $item->invoice->quote
-                            ->InputTaxVat()
-                            ->whereNotNull('input_tax_file')
-                            ->exists();
-                        $paymentInputtaxTotal = $hasInputTaxFile
-                            ? $withholdingTaxAmount - $getTotalInputTaxVat
-                            : $withholdingTaxAmount + $getTotalInputTaxVat;
-
-                        $people = $item->invoice->quote->quote_pax_total;
-
-                        // 1. ยอดสุทธิ = ค่าบริการ - ส่วนลด (ให้ตรงกับ table)
-                        $serviceAmount = $item->invoice->quote->quote_grand_total;
-                        $discountAmount = $item->invoice->quote->quote_discount;
-                        $netAmount = $serviceAmount - $discountAmount; // ยอดสุทธิ = ค่าบริการ - ส่วนลด
-
-                        // 2. ต้นทุนรวม = ยอดชำระโฮลเซลล์ + ต้นทุนอื่นๆ
-                        $wholesalePayment =
-                            $item->invoice->quote->GetDepositWholesale() -
-                            $item->invoice->quote->GetDepositWholesaleRefund();
-                        $totalCost = $wholesalePayment + $paymentInputtaxTotal;
-
-                        // 3. กำไร = ยอดสุทธิ - ต้นทุนรวม
-                        $profit = $netAmount - $totalCost;
-
-                        $profitPerPerson = $people > 0 ? $profit / $people : 0;
-
-                        $mode = $request->commission_mode ?? 'qt';
-                        $saleId = $item->invoice->quote->Salename->id ?? null;
-                        if ($saleId) {
-                            $res = calculateCommission($profitPerPerson, $saleId, $mode, $people);
-                            $result['type'] = $res['type'];
-                        }
-
-                        if ($result['type'] == 'step-QT' || $result['type'] == 'percent-QT') {
-                            $summaryTotalMath += $res['calculated'];
-                            $summaryPaxTotal += $people;
-                            $summaryServiceTotal += $serviceAmount;
-                            $summaryDiscountTotal += $discountAmount;
-                            $summaryGranTotal += $netAmount; // ยอดสุทธิ
-                            $summaryWhosaleTotal += $wholesalePayment;
-                            $summaryInputtaxTotal += $paymentInputtaxTotal;
-                            $summaryTotalCost += $totalCost; // ต้นทุนรวม
-                            $summaryTotalProfit += $profit; // กำไรรวม
-                            $summaryTotalPeople += $profitPerPerson;
-                        }
-                    }
-                } elseif ($request->commission_mode == 'total') {
-                    // คำนวณแบบ Total
-                    foreach ($taxinvoices as $saleId => $groupedQuotes) {
-                        $paxTotal = $groupedQuotes->sum(fn($i) => $i->invoice->quote->quote_pax_total ?? 0);
-
-                        // 1. ยอดสุทธิ = ค่าบริการ + ส่วนลด
-                        $serviceTotal = $groupedQuotes->sum(
-                            fn($i) => ($i->invoice->quote->quote_grand_total ?? 0) +
-                                ($i->invoice->quote->quote_discount ?? 0),
-                        );
-                        $discountTotal = $groupedQuotes->sum(fn($i) => $i->invoice->quote->quote_discount ?? 0);
-                        $netTotal = $serviceTotal; // ยอดสุทธิ
-
-                        // 2. ต้นทุนรวม = ยอดชำระโฮลเซลล์ + ต้นทุนอื่นๆ
-                        $wholesaleTotal = $groupedQuotes->sum(function ($i) {
-                            return $i->invoice->quote->GetDepositWholesale() -
-                                $i->invoice->quote->GetDepositWholesaleRefund();
-                        });
-
-                        $otherCostTotal = $groupedQuotes->sum(function ($i) {
-                            $withholding = $i->invoice?->getWithholdingTaxAmountAttribute() ?? 0;
-                            $inputTax = $i->invoice->quote?->getTotalInputTaxVat() ?? 0;
-                            $hasInputTaxFile = $i->invoice->quote
-                                ->InputTaxVat()
-                                ->whereNotNull('input_tax_file')
-                                ->exists();
-                            return $hasInputTaxFile ? $withholding - $inputTax : $withholding + $inputTax;
-                        });
-
-                        $totalCost = $wholesaleTotal + $otherCostTotal;
-
-                        // 3. กำไร = ยอดสุทธิ - ต้นทุนรวม
-                        $totalProfit = $netTotal - $totalCost;
-
-                        $people = $paxTotal;
-                        $mode = $request->commission_mode ?? 'qt';
-                        $res = calculateCommission($totalProfit, $saleId, $mode, $people);
-                        $result['type'] = $res['type'];
-                      if ($result['type'] == 'step-Total' || $result['type'] == 'percent-Total') {
-                        $summaryPaxTotal += $paxTotal;
-                        $summaryServiceTotal += $serviceTotal;
-                        $summaryDiscountTotal += $discountTotal;
-                        $summaryGranTotal += $netTotal; // ยอดสุทธิ
-                        $summaryWhosaleTotal += $wholesaleTotal;
-                        $summaryInputtaxTotal += $otherCostTotal;
-                        $summaryTotalCost += $totalCost; // ต้นทุนรวม
-                        $summaryTotalProfit += $totalProfit; // กำไรรวม
-                        $summaryTotalMath += $res['calculated'];
-                      }
-                    }
-                } else {
-                    // คำนวณแบบปกติ
-                    foreach ($taxinvoices as $item) {
-                        $withholdingTaxAmount = $item->invoice?->getWithholdingTaxAmountAttribute() ?? 0;
-                        $getTotalInputTaxVat = $item->invoice->quote?->getTotalInputTaxVat() ?? 0;
-                        $hasInputTaxFile = $item->invoice->quote
-                            ->InputTaxVat()
-                            ->whereNotNull('input_tax_file')
-                            ->exists();
-                        $paymentInputtaxTotal = $hasInputTaxFile
-                            ? $withholdingTaxAmount - $getTotalInputTaxVat
-                            : $withholdingTaxAmount + $getTotalInputTaxVat;
-
-                        $people = $item->invoice->quote->quote_pax_total;
-
-                        // 1. ยอดสุทธิ = ค่าบริการ - ส่วนลด (ให้ตรงกับ table)
-                        $serviceAmount = $item->invoice->quote->quote_grand_total;
-                        $discountAmount = $item->invoice->quote->quote_discount;
-                        $netAmount = $serviceAmount - $discountAmount; // ยอดสุทธิ = ค่าบริการ - ส่วนลด
-
-                        // 2. ต้นทุนรวม = ยอดชำระโฮลเซลล์ + ต้นทุนอื่นๆ
-                        $wholesalePayment =
-                            $item->invoice->quote->GetDepositWholesale() -
-                            $item->invoice->quote->GetDepositWholesaleRefund();
-                        $totalCost = $wholesalePayment + $paymentInputtaxTotal;
-
-                        // 3. กำไร = ยอดสุทธิ - ต้นทุนรวม
-                        $profit = $netAmount - $totalCost;
-
-                        $profitPerPerson = $people > 0 ? $profit / $people : 0;
-
-                        $mode = $request->commission_mode ?? 'qt';
-                        $saleId = $item->invoice->quote->Salename->id ?? null;
-                        if ($saleId) {
-                            $res = calculateCommission($profitPerPerson, $saleId, $mode, $people);
-                            $result['type'] = $res['type'];
-                        }
-                            $summaryTotalMath = 0;
-                        $summaryPaxTotal += $people;
-                        $summaryServiceTotal += $serviceAmount;
-                        $summaryDiscountTotal += $discountAmount;
-                        $summaryGranTotal += $netAmount; // ยอดสุทธิ
-                        $summaryWhosaleTotal += $wholesalePayment;
-                        $summaryInputtaxTotal += $paymentInputtaxTotal;
-                        $summaryTotalCost += $totalCost; // ต้นทุนรวม
-                        $summaryTotalProfit += $profit; // กำไรรวม
-                        $summaryTotalPeople += $profitPerPerson;
-                    }
-                    
-                }
-            @endphp
+            {{-- <hr class="my-4" style="border-top: 2px solid #e9ecef; margin: 30px 0;">
 
             <div class="row mb-4">
                 <div class="col-md-3">
@@ -728,7 +560,7 @@
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     <h6 class="mb-1" style="color: rgba(255,255,255,0.9);">PAX รวม</h6>
-                                    <h4 class="mb-0 fw-bold">{{ number_format($summaryPaxTotal) }}</h4>
+                                    <h4 class="mb-0 fw-bold">{{ number_format($sumPax) }}</h4>
                                 </div>
                                 <div class="icon-box"
                                     style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
@@ -746,7 +578,7 @@
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     <h6 class="mb-1" style="color: rgba(255,255,255,0.9);">ยอดสุทธิรวม</h6>
-                                    <h4 class="mb-0 fw-bold">{{ number_format($summaryGranTotal, 2) }}</h4>
+                                    <h4 class="mb-0 fw-bold">{{ number_format($sumGrandTotal, 2) }}</h4>
                                     <small style="color: rgba(255,255,255,0.8);">บาท</small>
                                 </div>
                                 <div class="icon-box"
@@ -765,7 +597,7 @@
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     <h6 class="mb-1" style="color: rgba(255,255,255,0.9);">ต้นทุนรวม</h6>
-                                    <h4 class="mb-0 fw-bold">{{ number_format($summaryTotalCost, 2) }}</h4>
+                                    <h4 class="mb-0 fw-bold">{{ number_format($sumTotalCost, 2) }}</h4>
                                     <small style="color: rgba(255,255,255,0.8);">บาท</small>
                                 </div>
                                 <div class="icon-box"
@@ -784,7 +616,7 @@
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     <h6 class="mb-1" style="color: rgba(255,255,255,0.9);">กำไรรวม</h6>
-                                    <h4 class="mb-0 fw-bold">{{ number_format($summaryTotalProfit, 2) }}</h4>
+                                    <h4 class="mb-0 fw-bold">{{ number_format($sumNetProfit, 2) }}</h4>
                                     <small style="color: rgba(255,255,255,0.8);">บาท</small>
                                 </div>
                                 <div class="icon-box"
@@ -795,10 +627,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <!-- แถวที่สองของ Summary Cards -->
-            <div class="row mb-4">
+            {{-- <div class="row mb-4">
                 <div class="col-md-3">
                     <div class="card border-0 shadow-sm summary-card h-100"
                         style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333;">
@@ -807,7 +639,7 @@
                                 <div>
                                     <h6 class="mb-1" style="color: #666;">ค่าบริการรวม</h6>
                                     <h4 class="mb-0 fw-bold" style="color: #333;">
-                                        {{ number_format($summaryServiceTotal, 2) }}</h4>
+                                        {{ number_format($sumService, 2) }}</h4>
                                     <small style="color: #666;">บาท</small>
                                 </div>
                                 <div class="icon-box"
@@ -827,7 +659,7 @@
                                 <div>
                                     <h6 class="mb-1" style="color: #666;">ส่วนลดรวม</h6>
                                     <h4 class="mb-0 fw-bold" style="color: #333;">
-                                        {{ number_format($summaryDiscountTotal, 2) }}</h4>
+                                        {{ number_format($sumDiscount, 2) }}</h4>
                                     <small style="color: #666;">บาท</small>
                                 </div>
                                 <div class="icon-box"
@@ -847,7 +679,7 @@
                                 <div>
                                     <h6 class="mb-1" style="color: #666;">ยอดชำระโฮลเซลล์</h6>
                                     <h4 class="mb-0 fw-bold" style="color: #333;">
-                                        {{ number_format($summaryWhosaleTotal, 2) }}</h4>
+                                        {{ number_format($sumWholesalePaid, 2) }}</h4>
                                     <small style="color: #666;">บาท</small>
                                 </div>
                                 <div class="icon-box"
@@ -861,62 +693,45 @@
 
                 <div class="col-md-3">
                     <div class="card border-0 shadow-sm summary-card h-100"
-                        style="background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);">
-                        <div class="card-body text-white text-center">
+                        style="background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%); color: #333;">
+                        <div class="card-body text-center">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h6 class="mb-1" style="color: rgba(255,255,255,0.9);">คอมมิชชั่นรวม</h6>
-                                    <h4 class="mb-0 fw-bold">{{ number_format($summaryTotalMath, 2) }}</h4>
-                                    <small style="color: rgba(255,255,255,0.8);">บาท</small>
+                                    <h6 class="mb-1" style="color: #666;">ต้นทุนอื่นๆ</h6>
+                                    <h4 class="mb-0 fw-bold" style="color: #333;">
+                                        {{ number_format($sumOtherCost, 2) }}</h4>
+                                    <small style="color: #666;">บาท</small>
                                 </div>
                                 <div class="icon-box"
-                                    style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fas fa-percentage" style="font-size: 24px;"></i>
+                                    style="width: 50px; height: 50px; background: rgba(0,0,0,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-cogs" style="font-size: 24px; color: #333;"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- ปุ่ม Export และ Header ตาราง -->
-            {{-- <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5><i class="fas fa-table me-2"></i>Sales Report</h5>
-                {{-- Debug taxinvoice_ids (flatMap for groupBy/collection of collections) --}}
-                {{-- @php
-                    $allIds = $taxinvoices
-                        ->flatMap(function ($group) {
-                            return is_array($group) || $group instanceof \Illuminate\Support\Collection
-                                ? collect($group)->pluck('taxinvoice_id')
-                                : [$group->taxinvoice_id];
-                        })
-                        ->filter()
-                        ->unique();
-                @endphp
-                {{-- <div class="mb-2">
-                        <strong>DEBUG taxinvoice_ids:</strong>
-                        <span style="color: #e53e3e; font-weight: bold;">{{ $allIds->implode(',') }}</span>
-                        <strong> | Count:</strong> <span style="color: #3182ce; font-weight: bold;">{{ $allIds->count() }}</span>
-                    </div> --}}
-                 {{-- <form action="{{ route('export.sales') }}" method="post" class="d-inline">
-                    @csrf
-                    @method('post')
-                    <input type="hidden" name="taxinvoice_ids" value="{{ $allIds->implode(',') }}">
-                    <input type="hidden" name="commission_mode" value="{{ $request->commission_mode }}">
-                    <input type="hidden" name="sale_id" value="{{ $request->sale_id }}">
-                    <input type="hidden" name="wholsale_id" value="{{ $request->wholsale_id }}">
-                    <input type="hidden" name="country_id" value="{{ $request->country_id }}">
-                    <input type="hidden" name="status" value="{{ $request->status }}">
-                    <input type="hidden" name="column_name" value="{{ $request->column_name }}">
-                    <input type="hidden" name="keyword" value="{{ $request->keyword }}">
-                    <input type="hidden" name="date_start" value="{{ $request->date_start }}">
-                    <input type="hidden" name="date_end" value="{{ $request->date_end }}">
-                    <input type="hidden" name="campaign_source_id" value="{{ $request->campaign_source_id }}">
-                    <button type="submit" class="btn btn-success">
-                        <i class="fas fa-file-excel me-1"></i>Export Excel
-                    </button>
-                </form> --}}
-             {{-- </div> --}}
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm summary-card h-100"
+                        style="background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%); color: #333;">
+                        <div class="card-body text-center">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="mb-1" style="color: #666;">กำไรเฉลี่ย:คน</h6>
+                                    <h4 class="mb-0 fw-bold" style="color: #333;">
+                                        {{ number_format($sumNetProfitPerPax, 2) }}</h4>
+                                    <small style="color: #666;">บาท</small>
+                                </div>
+                                <div class="icon-box"
+                                    style="width: 50px; height: 50px; background: rgba(0,0,0,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-user-friends" style="font-size: 24px; color: #333;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> --}}
+
 
             <!-- Convert to Excel button and table -->
             <div class="d-flex justify-content-end mb-2">
@@ -924,613 +739,14 @@
                     <i class="fas fa-file-excel me-1"></i>Convert to Excel
                 </button>
             </div>
-
-            <!-- ตาราง -->
-            <div class="table-responsive">
-                @if ($request->commission_mode == 'qt')
-                    <table class="table mb-0">
-                        <thead>
-                            <tr>
-                                <th>Quotes</th>
-                                <th>ช่วงเวลาเดินทาง</th>
-                                <th>โฮลเซลล์</th>
-                                <th>ชื่อลูกค้า</th>
-                                <th>ประเทศ</th>
-                                <th>แพคเกจทัวร์ที่ซื้อ</th>
-                                <th>ที่มา</th>
-                                <th>เซลล์ผู้ขาย</th>
-                                <th>PAX</th>
-                                <th>ค่าบริการ</th>
-                                <th>ส่วนลด</th>
-                                <th>ยอดรวมสุทธิ</th>
-                                <th>ยอดชำระโฮลเซลล์</th>
-                                <th>ต้นทุนอื่นๆ</th>
-                                <th>ต้นทุนรวม</th>
-                                <th>กำไร</th>
-                                <th>กำไรเฉลี่ย:คน</th>
-                                <th>คอมมิชชั่นทั้งสิ้น</th>
-                                <th>CommissionGroup</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                                $totalMath = 0;
-                                $totalPeople = 0;
-                                $totalSales = 0;
-                                $InputtaxTotal = 0;
-                                $WhosaleTotal = 0;
-                                $granTotal = 0;
-                                $discountTotal = 0;
-                                $serviceTotal = 0;
-                                $paxTotal = 0;
-                                $paymentWhosale = 0;
-                            @endphp
-                            @forelse ($taxinvoices as $item)
-                                @php
-                                    $withholdingTaxAmount = $item->invoice?->getWithholdingTaxAmountAttribute() ?? 0;
-                                    $getTotalInputTaxVat = $item->invoice->quote?->getTotalInputTaxVat() ?? 0;
-                                    $hasInputTaxFile = $item->invoice->quote
-                                        ->InputTaxVat()
-                                        ->whereNotNull('input_tax_file')
-                                        ->exists();
-                                    $paymentInputtaxTotal = $hasInputTaxFile
-                                        ? $withholdingTaxAmount - $getTotalInputTaxVat
-                                        : $withholdingTaxAmount + $getTotalInputTaxVat;
-
-                                    $people = $item->invoice->quote->quote_pax_total;
-
-                                    // 1. ยอดสุทธิ = ค่าบริการ - ส่วนลด
-                                    $serviceAmount = $item->invoice->quote->quote_grand_total;
-                                    $discountAmount = $item->invoice->quote->quote_discount;
-                                    $netAmount = $serviceAmount - $discountAmount; // ยอดสุทธิ = ค่าบริการ - ส่วนลด
-
-                                    // 2. ต้นทุนรวม = ยอดชำระโฮลเซลล์ + ต้นทุนอื่นๆ
-                                    $wholesalePayment =
-                                        $item->invoice->quote->GetDepositWholesale() -
-                                        $item->invoice->quote->GetDepositWholesaleRefund();
-                                    $totalCost = $wholesalePayment + $paymentInputtaxTotal;
-
-                                    // 3. กำไร = ยอดสุทธิ - ต้นทุนรวม
-                                    $profit = $netAmount - $totalCost;
-
-                                    $profitPerPerson = $people > 0 ? $profit / $people : 0;
-
-                                    $mode = $request->commission_mode ?? 'qt';
-                                    $saleId = $item->invoice->quote->Salename->id ?? null;
-                                    $result = ['amount' => 0, 'group_name' => '-', 'calculated' => 0];
-
-                                    if ($saleId) {
-                                        $res = calculateCommission($profitPerPerson, $saleId, $mode, $people);
-                                        $result['amount'] = $res['amount']; // ค่า base เช่น 10, 100
-                                        $result['group_name'] = $res['group_name']; // ชื่อกลุ่ม
-                                        $result['calculated'] = $res['calculated']; // ✅ ค่าคอมที่แท้จริง
-                                        $result['type'] = $res['type']; // ✅ ค่าคอมที่แท้จริง
-                                        $totalMath += $res['calculated'];
-                                    }
-
-                                    if ($result['type'] == 'step-QT' || $result['type'] == 'percent-QT') {
-                                        // สะสมยอดรวม
-                                        $totalSales += $profit;
-                                        $WhosaleTotal += $wholesalePayment;
-                                        $granTotal += $netAmount;
-                                        $discountTotal += $discountAmount;
-                                        $serviceTotal += $serviceAmount;
-                                        $paxTotal += $people;
-                                        $InputtaxTotal += $paymentInputtaxTotal;
-                                        $totalPeople += $profitPerPerson;
-                                    }
-                                @endphp
-                                @if ($result['type'] == 'step-QT' || $result['type'] == 'percent-QT')
-                                    <tr>
-                                        <td><a target="_blank"
-                                                href="{{ route('quote.editNew', $item->invoice->quote->quote_id) }}">{{ $item->invoice->quote->quote_number ?? 'ใบเสนอราคาถูกลบ' }}</a>
-                                        </td>
-                                        <td>{{ date('d/m/Y', strtotime($item->invoice->quote->quote_date_start)) }} -
-                                            {{ date('d/m/Y', strtotime($item->invoice->quote->quote_date_end)) }}</td>
-                                        <td>{{ $item->invoice->quote->quoteWholesale->code }}</td>
-
-                                        <td>{{ $item->invoice->customer->customer_name }}</td>
-                                        <td>{{ $item->invoice->quote->quoteCountry->iso2 }}</td>
-                                        <td><span data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="{{ $item->invoice->quote->quote_tour_name ?? $item->invoice->quote->quote_tour_name1 }}">{{ Str::limit($item->invoice->quote->quote_tour_name ?? $item->invoice->quote->quote_tour_name1, 20) }}</span>
-                                        </td>
-                                        <td>
-                                            @php
-                                                $sourceName = '';
-                                                if (
-                                                    isset($item->invoice->customer->customer_campaign_source) &&
-                                                    !empty($item->invoice->customer->customer_campaign_source) &&
-                                                    isset($campaignSource)
-                                                ) {
-                                                    $source = $campaignSource->firstWhere(
-                                                        'campaign_source_id',
-                                                        $item->invoice->customer->customer_campaign_source,
-                                                    );
-                                                    $sourceName = $source ? $source->campaign_source_name : '';
-                                                }
-                                            @endphp
-                                            {{ $sourceName ?: 'none' }}
-                                        </td>
-                                        <td>{{ $item->invoice->quote->Salename->name }}</td>
-                                        <td>{{ $people }}</td>
-                                        <td>{{ number_format($serviceAmount, 2) }}</td>
-                                        <td>{{ number_format($discountAmount, 2) }}</td>
-                                        <td>{{ number_format($netAmount, 2) }}</td>
-                                        <td>{{ number_format($wholesalePayment, 2) }}</td>
-                                        <td>{{ number_format($paymentInputtaxTotal, 2) }}</td>
-                                        <td>{{ number_format($totalCost, 2) }}</td>
-                                        <td>{{ number_format($profit, 2) }}</td>
-                                        <td>{{ number_format($profitPerPerson, 2) }}</td>
-                                        <td>{{ number_format($result['calculated'], 2) }}</td>
-                                        <td>({{ number_format($result['amount'], 2) }}) {{ $result['group_name'] }}</td>
-
-                                    </tr>
-                                @endif
-                            @empty
-                                <tr>
-                                    <td colspan="19" class="text-center text-muted">ไม่พบรายการ</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-
-                        <tfoot style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff;">
-                            @php
-                                $commissionTotal = 0;
-                                $commissionGroupName = '-';
-                                if ($request->commission_mode === 'total') {
-                                    $saleId = $request->sale_id ?? null;
-                                    if ($saleId) {
-                                        $result = calculateCommission($profitPerPerson, $saleId);
-                                        $commissionGroupName = $result['group_name'] ?? '-';
-                                        $commissionPercent = $result['percent'] ?? null;
-                                        // ถ้า percent ให้คิดตามเปอร์เซ็นต์
-                                        if ($commissionPercent !== null) {
-                                            $commissionTotal = ($profitPerPerson * $commissionPercent) / 100;
-                                        } else {
-                                            $commissionTotal = $result['amount']; // fallback
-                                        }
-                                    }
-                                }
-                            @endphp
-                            <tr>
-                                <th colspan="8" style="color: #fff;"><i
-                                        class="fas fa-calculator me-2"></i>รวมทั้งสิ้น:</th>
-                                <th style="color: #fff;">{{ number_format($paxTotal) }}</th>
-                                <th style="color: #fff;">{{ number_format($serviceTotal, 2) }}</th>
-                                <th style="color: #fff;">{{ number_format($discountTotal, 2) }}</th>
-                                <th style="color: #fff;">{{ number_format($granTotal, 2) }}</th>
-                                <th style="color: #fff;">{{ number_format($WhosaleTotal, 2) }}</th>
-                                <th style="color: #fff;">{{ number_format($InputtaxTotal, 2) }}</th>
-                                <th style="color: #fff;">{{ number_format($WhosaleTotal + $InputtaxTotal, 2) }}</th>
-                                <th style="color: #fff;">{{ number_format($totalSales, 2) }}</th>
-                                <th style="color: #fff;">{{ number_format($totalPeople, 2) }}</th>
-                                <th style="color: #fff;">
-                                    {{ $request->commission_mode === 'total' ? number_format($commissionTotal, 2) : number_format($totalMath, 2) }}
-                                </th>
-                                <th style="color: #fff;">
-                                    {{ $request->commission_mode === 'total' ? $commissionGroupName : '-' }}
-                                </th>
-                            </tr>
-                        </tfoot>
-
-                    </table>
-                @elseif($request->commission_mode === 'total')
-                    <table class="table mb-0">
-                        <thead>
-                            <tr>
-                                <th>จำนวน Quote</th>
-                                <th>เซลล์ผู้ขาย</th>
-                                <th>PAX รวม</th>
-                                <th>ค่าบริการ</th>
-                                <th>ค่าบริการ</th>
-                                <th>ส่วนลด</th>
-                                <th>ยอดรวมสุทธิ</th>
-                                <th>ยอดชำระโฮลเซลล์</th>
-                                <th>ต้นทุนอื่นๆ</th>
-                                <th>กำไร</th>
-                                <th>กำไรเฉลี่ย:คน</th>
-                                <th>คอมมิชชั่นทั้งสิ้น</th>
-                                <th>Total CommissionGroup</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                                $totalMath = 0;
-                            @endphp
-                            @forelse ($taxinvoices as $saleId => $groupedQuotes)
-                                @php
-                                    $quoteCount = $groupedQuotes->pluck('quote_number');
-                                    $saleName =
-                                        optional($groupedQuotes->first()->invoice->quote->Salename)->name ??
-                                        'ไม่ระบุเซลล์';
-
-                                    $paxTotal = $groupedQuotes->sum(fn($i) => $i->invoice->quote->quote_pax_total ?? 0);
-
-                                    // 1. ยอดสุทธิ = ค่าบริการ + ส่วนลด
-                                    $serviceTotal = $groupedQuotes->sum(
-                                        fn($i) => $i->invoice->quote->quote_grand_total ?? 0,
-                                    );
-                                    $discountTotal = $groupedQuotes->sum(
-                                        fn($i) => $i->invoice->quote->quote_discount ?? 0,
-                                    );
-                                    $netTotal = $serviceTotal - $discountTotal; // ยอดสุทธิ = ค่าบริการ - ส่วนลด
-
-                                    // 2. ต้นทุนรวม = ยอดชำระโฮลเซลล์ + ต้นทุนอื่นๆ
-                                    $wholesaleTotal = $groupedQuotes->sum(function ($i) {
-                                        return $i->invoice->quote->GetDepositWholesale() -
-                                            $i->invoice->quote->GetDepositWholesaleRefund();
-                                    });
-
-                                    $otherCostTotal = $groupedQuotes->sum(function ($i) {
-                                        $withholding = $i->invoice?->getWithholdingTaxAmountAttribute() ?? 0;
-                                        $inputTax = $i->invoice->quote?->getTotalInputTaxVat() ?? 0;
-                                        $hasInputTaxFile = $i->invoice->quote
-                                            ->InputTaxVat()
-                                            ->whereNotNull('input_tax_file')
-                                            ->exists();
-                                        return $hasInputTaxFile ? $withholding - $inputTax : $withholding + $inputTax;
-                                    });
-
-                                    $totalCost = $wholesaleTotal + $otherCostTotal;
-
-                                    // 3. กำไร = ยอดสุทธิ - ต้นทุนรวม
-                                    $totalProfit = $netTotal - $totalCost;
-
-                                    $profitAvgPerPax = $paxTotal > 0 ? $totalProfit / $paxTotal : 0;
-
-                                    $mode = $request->commission_mode ?? 'qt';
-                                    $people = $paxTotal;
-                                    $result = ['amount' => 0, 'group_name' => '-', 'calculated' => 0];
-
-                                    if ($saleId) {
-                                        $res = calculateCommission($totalProfit, $saleId, $mode, $people);
-                                        $result['amount'] = $res['amount']; // เช่น 10%
-                                        $result['group_name'] = $res['group_name'];
-                                        $result['calculated'] = $res['calculated']; // ✅ ค่าคอมที่แท้จริง
-                                        $result['type'] = $res['type']; // ✅ ค่าคอมที่แท้จริง
-                                        $totalMath += $res['calculated'];
-                                    }
-                                @endphp
-
-                                @if ($result['type'] == 'step-Total' || $result['type'] == 'percent-Total')
-                                    <tr>
-                                        <td>{{ implode(', ', $groupedQuotes->pluck('invoice.quote.quote_number')->toArray()) }}
-                                        </td>
-                                        <td>{{ $saleName }}</td>
-                                        <td>{{ number_format($paxTotal) }}</td>
-                                        <td>{{ number_format($serviceTotal, 2) }}</td>
-                                        <td>{{ number_format($serviceTotal - $discountTotal, 2) }}</td>
-                                        {{-- ค่าบริการสุทธิหลังหักส่วนลด --}}
-                                        <td>{{ number_format($discountTotal, 2) }}</td>
-                                        <td>{{ number_format($netTotal, 2) }}</td>
-                                        <td>{{ number_format($wholesaleTotal, 2) }}</td>
-                                        <td>{{ number_format($otherCostTotal, 2) }}</td>
-                                        <td>{{ number_format($totalProfit, 2) }}</td>
-                                        <td>{{ number_format($profitAvgPerPax, 2) }}</td>
-                                        <td>{{ number_format($result['calculated'], 2) }}</td>
-                                        <td>
-                                            @if ($result['type'] === 'step-QT' || $result['type'] === 'step-Total')
-                                                ({{ number_format($result['amount']) . 'บาท' }})
-                                                {{ $result['group_name'] }}
-                                            @else
-                                                ({{ number_format($result['amount']) . '%' }})
-                                                {{ $result['group_name'] }}
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endif
-                            @empty
-                                <tr>
-                                    <td colspan="13" class="text-center text-muted">ไม่พบรายการ</td>
-                                </tr>
-                            @endforelse
-
-                        <tfoot>
-                            @php
-                                $sumQuotes = 0;
-                                $sumPax = 0;
-                                $sumService = 0;
-                                $sumDiscount = 0;
-                                $sumNet = 0;
-                                $sumWholesale = 0;
-                                $sumOtherCost = 0;
-                                $sumProfit = 0;
-                                $sumCommission = 0;
-
-                                foreach ($taxinvoices as $saleId => $groupedQuotes) {
-                                    $paxTotal = $groupedQuotes->sum(fn($i) => $i->invoice->quote->quote_pax_total ?? 0);
-
-                                    // 1. ยอดสุทธิ = ค่าบริการ + ส่วนลด
-                                    $serviceTotal = $groupedQuotes->sum(
-                                        fn($i) => $i->invoice->quote->quote_grand_total ?? 0,
-                                    );
-                                    $discountTotal = $groupedQuotes->sum(
-                                        fn($i) => $i->invoice->quote->quote_discount ?? 0,
-                                    );
-                                    $netTotal = $serviceTotal - $discountTotal; // ยอดสุทธิ = ค่าบริการ - ส่วนลด
-
-                                    // 2. ต้นทุนรวม = ยอดชำระโฮลเซลล์ + ต้นทุนอื่นๆ
-                                    $wholesaleTotal = $groupedQuotes->sum(function ($i) {
-                                        return $i->invoice->quote->GetDepositWholesale() -
-                                            $i->invoice->quote->GetDepositWholesaleRefund();
-                                    });
-
-                                    $otherCostTotal = $groupedQuotes->sum(function ($i) {
-                                        $withholding = $i->invoice?->getWithholdingTaxAmountAttribute() ?? 0;
-                                        $inputTax = $i->invoice->quote?->getTotalInputTaxVat() ?? 0;
-                                        $hasInputTaxFile = $i->invoice->quote
-                                            ->InputTaxVat()
-                                            ->whereNotNull('input_tax_file')
-                                            ->exists();
-                                        return $hasInputTaxFile ? $withholding - $inputTax : $withholding + $inputTax;
-                                    });
-
-                                    $totalCost = $wholesaleTotal + $otherCostTotal;
-
-                                    // 3. กำไร = ยอดสุทธิ - ต้นทุนรวม
-                                    $totalProfit = $netTotal - $totalCost;
-
-                                    $people = $paxTotal;
-                                    $mode = $request->commission_mode ?? 'qt';
-
-                                    $res = calculateCommission($totalProfit, $saleId, $mode, $people);
-                                    $commission = $res['calculated'] ?? 0;
-                                    $commissionType = $res['type'];
-
-                                    if ($commissionType == 'step-Total' || $commissionType == 'percent-Total') {
-                                        # code...
-                                        // ✔ สะสมรวม
-                                        $sumQuotes += $groupedQuotes->count();
-                                        $sumPax += $paxTotal;
-                                        $sumService += $serviceTotal;
-                                        $sumDiscount += $discountTotal;
-                                        $sumNet += $netTotal;
-                                        $sumWholesale += $wholesaleTotal;
-                                        $sumOtherCost += $otherCostTotal;
-                                        $sumProfit += $totalProfit;
-                                        $sumCommission += $commission;
-                                    }
-                                }
-
-                                $sumProfitAvg = $taxinvoices->sum(function ($quotes) {
-                                    $pax = $quotes->sum(fn($i) => $i->invoice->quote->quote_pax_total ?? 0);
-
-                                    // 1. ยอดสุทธิ = ค่าบริการ + ส่วนลด
-                                    $service = $quotes->sum(fn($i) => $i->invoice->quote->quote_grand_total ?? 0);
-
-                                    // 2. ต้นทุนรวม = ยอดชำระโฮลเซลล์ + ต้นทุนอื่นๆ
-                                    $wholesale = $quotes->sum(function ($i) {
-                                        return $i->invoice->quote->GetDepositWholesale() -
-                                            $i->invoice->quote->GetDepositWholesaleRefund();
-                                    });
-
-                                    $otherCost = $quotes->sum(function ($i) {
-                                        $withholding = $i->invoice?->getWithholdingTaxAmountAttribute() ?? 0;
-                                        $inputTax = $i->invoice->quote?->getTotalInputTaxVat() ?? 0;
-                                        $hasInputTaxFile = $i->invoice->quote
-                                            ->InputTaxVat()
-                                            ->whereNotNull('input_tax_file')
-                                            ->exists();
-                                        return $hasInputTaxFile ? $withholding - $inputTax : $withholding + $inputTax;
-                                    });
-
-                                    $totalCost = $wholesale + $otherCost;
-
-                                    // 3. กำไร = ยอดสุทธิ - ต้นทุนรวม
-                                    $discount = $quotes->sum(fn($i) => $i->invoice->quote->quote_discount ?? 0);
-                                    $profit = $service - $discount - $totalCost;
-
-                                    return $pax > 0 ? $profit / $pax : 0;
-                                });
-                            @endphp
-
-                            <tfoot style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff;">
-                                <tr>
-                                    <td style="color: #fff;">{{ $sumQuotes }}</td>
-                                    <td style="color: #fff;" class="text-end"><i
-                                            class="fas fa-calculator me-2"></i>รวมทั้งหมด</td>
-                                    <td style="color: #fff;">{{ number_format($sumPax) }}</td>
-                                    <td style="color: #fff;">{{ number_format($sumService, 2) }}</td>
-                                    <td style="color: #fff;">{{ number_format($sumService, 2) }}</td>
-                                    <td style="color: #fff;">{{ number_format($sumDiscount, 2) }}</td>
-                                    <td style="color: #fff;">{{ number_format($sumNet, 2) }}</td>
-                                    <td style="color: #fff;">{{ number_format($sumWholesale, 2) }}</td>
-                                    <td style="color: #fff;">{{ number_format($sumOtherCost, 2) }}</td>
-                                    <td style="color: #fff;">{{ number_format($sumProfit, 2) }}</td>
-                                    <td style="color: #fff;">{{ number_format($sumProfitAvg, 2) }}</td>
-                                    <td style="color: #fff;">{{ number_format($sumCommission, 2) }}</td>
-                                    <td style="color: #fff;">-</td>
-                                </tr>
-                            </tfoot>
-                    </table>
+            
+              @if ($mode === 'qt')
+                    @include('reports.sale-table-qt')
+                @elseif($mode === 'total')
+                    @include('reports.sale-table-total')
                 @else
-                    <table class="table mb-0">
-                        <thead>
-                            <tr>
-                                <th>Quotes</th>
-                                <th>ช่วงเวลาเดินทาง</th>
-                                <th>โฮลเซลล์</th>
-                                <th>ชื่อลูกค้า</th>
-                                <th>ประเทศ</th>
-                                <th>แพคเกจทัวร์ที่ซื้อ</th>
-                                <th>ที่มา</th>
-                                <th>เซลล์ผู้ขาย</th>
-                                <th>PAX</th>
-                                <th>ค่าบริการ</th>
-                                <th>ส่วนลด</th>
-                                <th>ยอดรวมสุทธิ</th>
-                                <th>ยอดชำระโฮลเซลล์</th>
-                                <th>ต้นทุนอื่นๆ</th>
-                                <th>ต้นทุนรวม</th>
-                                <th>กำไร</th>
-                                {{-- <th>กำไรเฉลี่ย:คน</th>
-                                <th>คอมมิชชั่นทั้งสิ้น</th> --}}
-                                <th>CommissionGroup</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                                $totalMath = 0;
-                                $totalPeople = 0;
-                                $totalSales = 0;
-                                $InputtaxTotal = 0;
-                                $WhosaleTotal = 0;
-                                $granTotal = 0;
-                                $discountTotal = 0;
-                                $serviceTotal = 0;
-                                $paxTotal = 0;
-                                $paymentWhosale = 0;
-                            @endphp
-                            @forelse ($taxinvoices as $item)
-                                @php
-                                    $withholdingTaxAmount = $item->invoice?->getWithholdingTaxAmountAttribute() ?? 0;
-                                    $getTotalInputTaxVat = $item->invoice->quote?->getTotalInputTaxVat() ?? 0;
-                                    $hasInputTaxFile = $item->invoice->quote
-                                        ->InputTaxVat()
-                                        ->whereNotNull('input_tax_file')
-                                        ->exists();
-                                    $paymentInputtaxTotal = $hasInputTaxFile
-                                        ? $withholdingTaxAmount - $getTotalInputTaxVat
-                                        : $withholdingTaxAmount + $getTotalInputTaxVat;
-
-                                    $people = $item->invoice->quote->quote_pax_total;
-
-                                    // 1. ยอดสุทธิ = ค่าบริการ - ส่วนลด
-                                    $serviceAmount = $item->invoice->quote->quote_grand_total;
-                                    $discountAmount = $item->invoice->quote->quote_discount;
-                                    $netAmount = $serviceAmount - $discountAmount; // ยอดสุทธิ = ค่าบริการ - ส่วนลด
-
-                                    // 2. ต้นทุนรวม = ยอดชำระโฮลเซลล์ + ต้นทุนอื่นๆ
-                                    $wholesalePayment =
-                                        $item->invoice->quote->GetDepositWholesale() -
-                                        $item->invoice->quote->GetDepositWholesaleRefund();
-                                    $totalCost = $wholesalePayment + $paymentInputtaxTotal;
-
-                                    // 3. กำไร = ยอดสุทธิ - ต้นทุนรวม
-                                    $profit = $netAmount - $totalCost;
-
-                                    $profitPerPerson = $people > 0 ? $profit / $people : 0;
-
-                                    $mode = $request->commission_mode ?? 'qt';
-                                    $saleId = $item->invoice->quote->Salename->id ?? null;
-                                    $result = ['amount' => 0, 'group_name' => '-', 'calculated' => 0];
-
-                                    if ($saleId) {
-                                        $res = calculateCommission($profitPerPerson, $saleId, $mode, $people);
-                                        $result['amount'] = $res['amount']; // ค่า base เช่น 10, 100
-                                        $result['group_name'] = $res['group_name']; // ชื่อกลุ่ม
-                                        $result['calculated'] = $res['calculated']; // ✅ ค่าคอมที่แท้จริง
-                                        $result['type'] = $res['type']; // ✅ ค่าคอมที่แท้จริง
-                                        $totalMath += $res['calculated'];
-                                    }
-
-                                    // สะสมยอดรวม
-                                    $totalSales += $profit;
-                                    $WhosaleTotal += $wholesalePayment;
-                                    $granTotal += $netAmount;
-                                    $discountTotal += $discountAmount;
-                                    $serviceTotal += $serviceAmount;
-                                    $paxTotal += $people;
-                                    $InputtaxTotal += $paymentInputtaxTotal;
-                                    $totalPeople += $profitPerPerson;
-
-                                @endphp
-
-                                <tr>
-                                    <td><a target="_blank"
-                                            href="{{ route('quote.editNew', $item->invoice->quote->quote_id) }}">{{ $item->invoice->quote->quote_number ?? 'ใบเสนอราคาถูกลบ' }}</a>
-                                    </td>
-                                    <td>{{ date('d/m/Y', strtotime($item->invoice->quote->quote_date_start)) }} -
-                                        {{ date('d/m/Y', strtotime($item->invoice->quote->quote_date_end)) }}</td>
-                                    <td>{{ $item->invoice->quote->quoteWholesale->code }}</td>
-
-                                    <td>{{ $item->invoice->customer->customer_name }}</td>
-                                    <td>{{ $item->invoice->quote->quoteCountry->iso2 }}</td>
-                                    <td><span data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="{{ $item->invoice->quote->quote_tour_name ?? $item->invoice->quote->quote_tour_name1 }}">{{ Str::limit($item->invoice->quote->quote_tour_name ?? $item->invoice->quote->quote_tour_name1, 20) }}</span>
-                                    </td>
-                                    <td>
-                                        @php
-                                            $sourceName = '';
-                                            if (
-                                                isset($item->invoice->customer->customer_campaign_source) &&
-                                                !empty($item->invoice->customer->customer_campaign_source) &&
-                                                isset($campaignSource)
-                                            ) {
-                                                $source = $campaignSource->firstWhere(
-                                                    'campaign_source_id',
-                                                    $item->invoice->customer->customer_campaign_source,
-                                                );
-                                                $sourceName = $source ? $source->campaign_source_name : '';
-                                            }
-                                        @endphp
-                                        {{ $sourceName ?: 'none' }}
-                                    </td>
-
-                                    <td>{{ $item->invoice->quote->Salename->name }}</td>
-
-                                    <td>{{ $people }}</td>
-                                    <td>{{ number_format($serviceAmount, 2) }}</td>
-                                    <td>{{ number_format($discountAmount, 2) }}</td>
-                                    <td>{{ number_format($netAmount, 2) }}</td>
-                                    <td>{{ number_format($wholesalePayment, 2) }}</td>
-                                    <td>{{ number_format($paymentInputtaxTotal, 2) }}</td>
-                                    <td>{{ number_format($totalCost, 2) }}</td>
-                                    <td>{{ number_format($profit, 2) }}</td>
-                                  
-                                    <td>{{ $result['group_name'] }}</td>
-
-                                </tr>
-
-                            @empty
-                                <tr>
-                                    <td colspan="19" class="text-center text-muted">ไม่พบรายการ</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-
-                        <tfoot style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff;">
-                            @php
-                                $commissionTotal = 0;
-                                $commissionGroupName = '-';
-                                if ($request->commission_mode === 'total') {
-                                    $saleId = $request->sale_id ?? null;
-                                    if ($saleId) {
-                                        $result = calculateCommission($profitPerPerson, $saleId);
-                                        $commissionGroupName = $result['group_name'] ?? '-';
-                                        $commissionPercent = $result['percent'] ?? null;
-                                        // ถ้า percent ให้คิดตามเปอร์เซ็นต์
-                                        if ($commissionPercent !== null) {
-                                            $commissionTotal = ($profitPerPerson * $commissionPercent) / 100;
-                                        } else {
-                                            $commissionTotal = $result['amount']; // fallback
-                                        }
-                                    }
-                                }
-                            @endphp
-                            <tr>
-                                <th colspan="8" style="color: #fff;"><i
-                                        class="fas fa-calculator me-2"></i>รวมทั้งสิ้น:</th>
-                                <th style="color: #fff;">{{ number_format($paxTotal) }}</th>
-                                <th style="color: #fff;">{{ number_format($serviceTotal, 2) }}</th>
-                                <th style="color: #fff;">{{ number_format($discountTotal, 2) }}</th>
-                                <th style="color: #fff;">{{ number_format($granTotal, 2) }}</th>
-                                <th style="color: #fff;">{{ number_format($WhosaleTotal, 2) }}</th>
-                                <th style="color: #fff;">{{ number_format($InputtaxTotal, 2) }}</th>
-                                <th style="color: #fff;">{{ number_format($WhosaleTotal + $InputtaxTotal, 2) }}</th>
-                                <th style="color: #fff;">{{ number_format($totalSales, 2) }}</th>
-                             
-                                <th style="color: #fff;">
-                                    {{ $request->commission_mode === 'total' ? $commissionGroupName : '-' }}
-                                </th>
-                            </tr>
-                        </tfoot>
-
-                    </table>
+                    @include('reports.sale-table-all')
                 @endif
-            </div>
         </div>
     </div>
     </div>
@@ -1633,12 +849,13 @@
             // Find the closest table before the button
             let table = btn.closest('div').nextElementSibling.querySelector('table');
             if (!table) return;
-            let wb = XLSX.utils.table_to_book(table, {sheet: "Sheet1", raw: true});
+            let wb = XLSX.utils.table_to_book(table, {
+                sheet: "Sheet1",
+                raw: true
+            });
             // ภาษาไทยรองรับอัตโนมัติ
-            XLSX.writeFile(wb, 'sales-report-' + (new Date().toISOString().slice(0,10)) + '.xlsx');
+            XLSX.writeFile(wb, 'sales-report-' + (new Date().toISOString().slice(0, 10)) + '.xlsx');
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 @endsection
-
-

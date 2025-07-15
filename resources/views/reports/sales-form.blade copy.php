@@ -705,16 +705,16 @@
                             $res = calculateCommission($profitPerPerson, $saleId, $mode, $people);
                             $result['type'] = $res['type'];
                         }
-                            $summaryTotalMath = 0
-                            $summaryPaxTotal += $people;
-                            $summaryServiceTotal += $serviceAmount;
-                            $summaryDiscountTotal += $discountAmount;
-                            $summaryGranTotal += $netAmount; // ยอดสุทธิ
-                            $summaryWhosaleTotal += $wholesalePayment;
-                            $summaryInputtaxTotal += $paymentInputtaxTotal;
-                            $summaryTotalCost += $totalCost; // ต้นทุนรวม
-                            $summaryTotalProfit += $profit; // กำไรรวม
-                            $summaryTotalPeople += $profitPerPerson;
+                            $summaryTotalMath = 0;
+                        $summaryPaxTotal += $people;
+                        $summaryServiceTotal += $serviceAmount;
+                        $summaryDiscountTotal += $discountAmount;
+                        $summaryGranTotal += $netAmount; // ยอดสุทธิ
+                        $summaryWhosaleTotal += $wholesalePayment;
+                        $summaryInputtaxTotal += $paymentInputtaxTotal;
+                        $summaryTotalCost += $totalCost; // ต้นทุนรวม
+                        $summaryTotalProfit += $profit; // กำไรรวม
+                        $summaryTotalPeople += $profitPerPerson;
                     }
                     
                 }
@@ -880,10 +880,10 @@
             </div>
 
             <!-- ปุ่ม Export และ Header ตาราง -->
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            {{-- <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5><i class="fas fa-table me-2"></i>Sales Report</h5>
                 {{-- Debug taxinvoice_ids (flatMap for groupBy/collection of collections) --}}
-                @php
+                {{-- @php
                     $allIds = $taxinvoices
                         ->flatMap(function ($group) {
                             return is_array($group) || $group instanceof \Illuminate\Support\Collection
@@ -898,14 +898,31 @@
                         <span style="color: #e53e3e; font-weight: bold;">{{ $allIds->implode(',') }}</span>
                         <strong> | Count:</strong> <span style="color: #3182ce; font-weight: bold;">{{ $allIds->count() }}</span>
                     </div> --}}
-                <form action="{{ route('export.sales') }}" method="post" class="d-inline">
+                 {{-- <form action="{{ route('export.sales') }}" method="post" class="d-inline">
                     @csrf
                     @method('post')
                     <input type="hidden" name="taxinvoice_ids" value="{{ $allIds->implode(',') }}">
+                    <input type="hidden" name="commission_mode" value="{{ $request->commission_mode }}">
+                    <input type="hidden" name="sale_id" value="{{ $request->sale_id }}">
+                    <input type="hidden" name="wholsale_id" value="{{ $request->wholsale_id }}">
+                    <input type="hidden" name="country_id" value="{{ $request->country_id }}">
+                    <input type="hidden" name="status" value="{{ $request->status }}">
+                    <input type="hidden" name="column_name" value="{{ $request->column_name }}">
+                    <input type="hidden" name="keyword" value="{{ $request->keyword }}">
+                    <input type="hidden" name="date_start" value="{{ $request->date_start }}">
+                    <input type="hidden" name="date_end" value="{{ $request->date_end }}">
+                    <input type="hidden" name="campaign_source_id" value="{{ $request->campaign_source_id }}">
                     <button type="submit" class="btn btn-success">
                         <i class="fas fa-file-excel me-1"></i>Export Excel
                     </button>
-                </form>
+                </form> --}}
+             {{-- </div> --}}
+
+            <!-- Convert to Excel button and table -->
+            <div class="d-flex justify-content-end mb-2">
+                <button class="btn btn-outline-success" onclick="exportTableToExcel(this)">
+                    <i class="fas fa-file-excel me-1"></i>Convert to Excel
+                </button>
             </div>
 
             <!-- ตาราง -->
@@ -1374,9 +1391,7 @@
                                         ->InputTaxVat()
                                         ->whereNotNull('input_tax_file')
                                         ->exists();
-                                    $paymentInputtaxTotal = $hasInputTaxFile
-                                        ? $withholdingTaxAmount - $getTotalInputTaxVat
-                                        : $withholdingTaxAmount + $getTotalInputTaxVat;
+                                    $paymentInputtaxTotal = $hasInputTaxFile? $withholdingTaxAmount - $getTotalInputTaxVat: $withholdingTaxAmount + $getTotalInputTaxVat;
 
                                     $people = $item->invoice->quote->quote_pax_total;
 
@@ -1611,5 +1626,17 @@
                 $(this).blur();
             });
         });
+
+        function exportTableToExcel(btn) {
+            // Find the closest table before the button
+            let table = btn.closest('div').nextElementSibling.querySelector('table');
+            if (!table) return;
+            let wb = XLSX.utils.table_to_book(table, {sheet: "Sheet1", raw: true});
+            // ภาษาไทยรองรับอัตโนมัติ
+            XLSX.writeFile(wb, 'sales-report-' + (new Date().toISOString().slice(0,10)) + '.xlsx');
+        }
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 @endsection
+
+

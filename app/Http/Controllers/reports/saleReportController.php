@@ -10,6 +10,7 @@ use App\Models\invoices\taxinvoiceModel;
 use App\Models\wholesale\wholesaleModel;
 use App\Models\commissions\commissionListModel;
 use App\Models\commissions\commissionGroupModel;
+use App\Models\quotations\quotationModel;
 
 class saleReportController extends Controller
 {
@@ -24,66 +25,96 @@ class saleReportController extends Controller
         $wholesaleId = $request->input('wholsale_id');
         $countryId = $request->input('country_id');
         $saleId = $request->input('sale_id');
-        $mode = $request->commission_mode ?? 'qt';
-
-        $taxinvoices = taxinvoiceModel::with('invoice', 'taxinvoiceCustomer')
-            ->when($searchDateStart && $searchDateEnd, fn($q) => $q->whereBetween('taxinvoice_date', [$searchDateStart, $searchDateEnd]))
-            ->where('taxinvoice_status', 'success')
-
-            ->when($column_name === 'taxinvoice_number', fn($q) => $q->where('taxinvoice_number', 'LIKE', "%{$keyword}%"))
-            ->when($column_name === 'invoice_number', fn($q) => $q->whereHas('invoice', fn($q1) => $q1->where('invoice_number', 'LIKE', "%{$keyword}%")))
-            ->when($column_name === 'invoice_booking', fn($q) => $q->whereHas('invoice', fn($q1) => $q1->where('invoice_booking', 'LIKE', "%{$keyword}%")))
-            ->when($column_name === 'customer_name', fn($q) => $q->whereHas('taxinvoiceCustomer', fn($q1) => $q1->where('customer_name', 'LIKE', "%{$keyword}%")))
-            ->when($column_name === 'quote_number', fn($q) => $q->whereHas('invoice.quotation', fn($q1) => $q1->where('quote_number', 'LIKE', "%{$keyword}%")))
-            ->when($column_name === 'customer_texid', fn($q) => $q->whereHas('taxinvoiceCustomer', fn($q1) => $q1->where('customer_texid', 'LIKE', "%{$keyword}%")))
-            ->when($column_name === 'all', function ($q) use ($keyword) {
-                return $q->where(function ($sub) use ($keyword) {
-                    $sub->where('taxinvoice_number', 'LIKE', "%{$keyword}%")
-                        ->orWhereHas('taxinvoiceCustomer', fn($q1) => $q1->where('customer_name', 'LIKE', "%{$keyword}%")->orWhere('customer_texid', 'LIKE', "%{$keyword}%"))
-                        ->orWhereHas('invoice', fn($q1) => $q1->where('invoice_number', 'LIKE', "%{$keyword}%"))
-                        ->orWhereHas('invoice.quotation', fn($q1) => $q1->where('quote_number', 'LIKE', "%{$keyword}%"));
-                });
-            })
-            ->when($wholesaleId, function ($q) use ($wholesaleId) {
-                return $q->whereHas('invoice.quotation', fn($q1) => $q1->where('quote_wholesale', $wholesaleId));
-            })
-            ->when($countryId, function ($q) use ($countryId) {
-                return $q->whereHas('invoice.quotation', fn($q1) => $q1->where('quote_country', $countryId));
-            })
-            ->when($saleId, function ($q) use ($saleId) {
-                return $q->whereHas('invoice.quotation', fn($q1) => $q1->where('quote_sale', $saleId));
-            })
-            ->when($request->input('campaign_source_id'), function ($q) use ($request) {
-                return $q->whereHas('invoice.quotation.quoteCustomer', function ($q1) use ($request) {
-                    $q1->where('customer_campaign_source', $request->input('campaign_source_id'));
-                });
-            });
-
-        if ($mode === 'total') {
-            // ดึงข้อมูลทั้งหมดก่อน Group
-            $allInvoices = $taxinvoices->get();
-            // Group by Sale ID (หากไม่มี sale ให้ใช้ 'unknown')
-            $taxinvoices = $allInvoices->groupBy(function ($item) {
-                return $item->invoice->quote->Salename->id ?? 'unknown';
-            });
-            // สรุปรวม Grand Total และ VAT สำหรับทุกกลุ่ม
-            $grandTotalSum = $allInvoices->sum(fn($tx) => $tx->invoice->invoice_grand_total);
-            $vat = $allInvoices->sum(fn($tx) => $tx->invoice->invoice_withholding_tax);
-        } else {
-            // โหมด QT ปกติ
-            $taxinvoices = $taxinvoices->get();
-            $grandTotalSum = $taxinvoices->sum(fn($tx) => $tx->invoice->invoice_grand_total);
-            $vat = $taxinvoices->sum(fn($tx) => $tx->invoice->invoice_withholding_tax);
-        }
-
-        // list wholesale ส่งไปให้ View
+        $mode = $request->commission_mode ?? 'all'; // กำหนด default เป็น qt
+        $campaignSource = DB::table('campaign_source')->get();
         $wholesales = WholesaleModel::where('status', 'on')->get();
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
         $sales = saleModel::select('name', 'id')
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
             ->get();
-        $campaignSource = DB::table('campaign_source')->get();
 
-        return view('reports.sales-form', compact('taxinvoices', 'request', 'grandTotalSum', 'vat', 'wholesales', 'country', 'sales', 'campaignSource'));
+        // ดึงใบเสนอราคาทั้งหมดที่สำเร็จ
+        $quotationSuccess = quotationModel::where('quote_status', 'success')
+            ->get()
+            ->filter(function ($item) {
+                // ลูกค้าต้องชำระเงินครบ (GetDeposit() >= quote_grand_total)
+                $customerPaid = $item->GetDeposit()?? 0;
+                $grandTotal = $item->quote_grand_total ?? 0;
+                // โฮลเซลต้องชำระครบ (inputtaxTotalWholesale() - getWholesalePaidNet() == 0)
+                $wholesaleOutstanding = 0;
+                if (method_exists($item, 'inputtaxTotalWholesale') && method_exists($item, 'getWholesalePaidNet')) {
+                    $wholesaleOutstanding = $item->inputtaxTotalWholesale() - $item->getWholesalePaidNet();
+                }
+                // ห้ามมีสถานะคืนเงินลูกค้าทุกแบบ
+                $status = getQuoteStatusQuotePayment($item);
+                $forbidden = [
+                    'รอคืนเงินลูกค้า',
+                    'ยังไม่ได้คืนเงินลูกค้า',
+                ];
+                foreach ($forbidden as $word) {
+                    if (strpos($status, $word) !== false) {
+                        return false;
+                    }
+                }
+                // ห้ามมีสถานะโฮลเซลล์ที่ไม่อนุญาต
+                $wholesaleStatus = getStatusPaymentWhosale($item);
+                $forbiddenWholesale = [
+                    'รอโฮลเซลล์คืนเงิน',
+                    'โอนเงินให้โฮลเซลล์เกิน',
+                    'รอชำระเงินมัดจำ',
+                    'รอชำระเงินส่วนที่เหลือ',
+                ];
+                foreach ($forbiddenWholesale as $word) {
+                    if (strpos($wholesaleStatus, $word) !== false) {
+                        return false;
+                    }
+                }
+                return ($customerPaid >= $grandTotal) && ($wholesaleOutstanding == 0);
+            })
+            ->values();
+           
+
+        // Filter เฉพาะใบเสนอราคาที่ค่าคอมตรงกับ mode ที่เลือก (qt หรือ total)
+        if ($mode === 'total') {
+            // Filter เฉพาะใบเสนอราคาที่ค่าคอมเป็น step-Total หรือ percent-Total
+            $quotationSuccess = $quotationSuccess
+                ->filter(function ($item) {
+                    $commission = calculateCommission($item->getNetProfit(), $item->quote_sale, 'total', $item->quote_pax_total);
+                    return in_array($commission['type'], ['step-Total', 'percent-Total']);
+                })
+                ->values();
+            // Group by sale_id
+            $saleGroups = $quotationSuccess
+                ->groupBy('quote_sale')
+                ->map(function ($items, $saleId) {
+                    $netProfitSum = $items->sum(function ($item) {
+                        return $item->getNetProfit();
+                    });
+                    $paxSum = $items->sum('quote_pax_total');
+                    return [
+                        'sale_id' => $saleId,
+                        'items' => $items,
+                        'net_profit_sum' => $netProfitSum,
+                        'pax_sum' => $paxSum,
+                    ];
+                })
+                ->values();
+            return view('reports.sales-form', compact('saleGroups', 'request', 'wholesales', 'country', 'sales', 'campaignSource', 'mode'));
+        } elseif ($mode === 'qt') {
+            // รายใบเสนอราคา (qt)
+            $quotationSuccess = $quotationSuccess
+                ->filter(function ($item) use ($mode) {
+                    $commission = calculateCommission($item->getNetProfit(), $item->quote_sale, 'qt', $item->quote_pax_total);
+                    if ($mode === 'qt') {
+                        return in_array($commission['type'], ['step-QT', 'percent-QT']);
+                    }
+                    return true;
+                })
+                ->values();
+            return view('reports.sales-form', compact('quotationSuccess', 'request', 'wholesales', 'country', 'sales', 'campaignSource', 'mode'));
+        } else {
+            // รายใบเสนอราคา (all) ไม่ต้อง filter ใดๆ แสดงทุก commission
+            return view('reports.sales-form', compact('quotationSuccess', 'request', 'wholesales', 'country', 'sales', 'campaignSource', 'mode'));
+        }
     }
 }

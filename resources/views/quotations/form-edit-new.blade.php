@@ -443,18 +443,18 @@
 
                         <div class="profit-item">
                             <span class="label">ชำระโฮลเซลล์แล้ว</span>
-                            <span class="value">{{ number_format($wholesalePayment, 2) }}</span>
+                            <span class="value">{{ number_format($quotationModel->getWholesalePaidNet(), 2) }}</span>
                         </div>
 
                         <div class="profit-item">
                             <span class="label">ค้างชำระโฮลเซลล์</span>
-                            <span class="value">{{ number_format($quotationModel->inputtaxTotalWholesale() - $wholesalePayment, 2) }}</span>
+                            <span class="value">{{ number_format($quotationModel->inputtaxTotalWholesale() - $quotationModel->getWholesalePaidNet(), 2) }}</span>
                         </div>
 
                         <div class="profit-item">
                             <span class="label">ต้นทุนอื่นๆ</span>
                             <span
-                                class="value">{{ number_format($paymentInputtaxTotal + $quotationModel->getTotalInputTaxVatType(), 2) }}</span>
+                                class="value">{{ number_format($quotationModel->getTotalOtherCost(), 2) }}</span>
                         </div>
 
                         <div class="profit-item">
@@ -463,7 +463,7 @@
                                 class="value">
                                 @if ($wholesalePayment > 0 || $paymentInputtaxTotal > 0)
                                    
-                                    {{ number_format($TotalGrand, 2) }}
+                                    {{ number_format($quotationModel->getNetProfit(), 2) }}
                                     
                                 @else
                                     {{ number_format(0, 2) }}

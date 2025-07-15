@@ -76,7 +76,6 @@ class quotationModel extends Model
         'quote_payment_status',
     ];
 
-
     // ความสัมพันธ์กับ CampaignSource (customer_campaign_source)
     public function campaignSource()
     {
@@ -212,12 +211,12 @@ class quotationModel extends Model
     }
     public function getRefundTotalAttribute()
     {
-        return $this->quotePayments()->where('payment_type', 'refund')->whereNot('payment_status','cancel')->sum('payment_total');
+        return $this->quotePayments()->where('payment_type', 'refund')->whereNot('payment_status', 'cancel')->sum('payment_total');
     }
-     public function getTotalAttribute()
+    public function getTotalAttribute()
     {
-     //return $this->quotePayments()->whereNot('payment_type','refund')->whereNotNull('payment_file_path')->sum('payment_total');
-      return $this->quotePayments()->whereNot('payment_status','cancel')->sum('payment_total');
+        //return $this->quotePayments()->whereNot('payment_type','refund')->whereNotNull('payment_file_path')->sum('payment_total');
+        return $this->quotePayments()->whereNot('payment_status', 'cancel')->sum('payment_total');
     }
 
     // ความสัมพันธ์กับ Quote_log
@@ -231,7 +230,7 @@ class quotationModel extends Model
     {
         return $this->belongsTo(wholesaleModel::class, 'quote_wholesale', 'id');
     }
-    
+
     public function quoteCountry()
     {
         return $this->belongsTo(countryModel::class, 'quote_country', 'id');
@@ -267,7 +266,6 @@ class quotationModel extends Model
             });
     }
 
-    
     public function GetDepositWholesaleRefund()
     {
         return $this->paymentWholesale()
@@ -278,12 +276,10 @@ class quotationModel extends Model
             });
     }
 
-     public function getWholesalePaidNet()
+    public function getWholesalePaidNet()
     {
         return $this->GetDepositWholesale() - $this->GetDepositWholesaleRefund();
     }
-    
-   
 
     public function GrossProfit()
     {
@@ -294,7 +290,7 @@ class quotationModel extends Model
 
         return $grossProfit;
     }
-     public function quoteLogStatus()
+    public function quoteLogStatus()
     {
         return $this->hasOne(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
     }
@@ -303,14 +299,11 @@ class quotationModel extends Model
     {
         return $this->hasOne(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
     }
-   
 
-public function checkfileInputtax()
-{
-    return $this->hasOne(inputTaxModel::class, 'input_tax_quote_id', 'quote_id')
-                ->where('input_tax_type', 0)
-                ->where('input_tax_status', 'success');
-}
+    public function checkfileInputtax()
+    {
+        return $this->hasOne(inputTaxModel::class, 'input_tax_quote_id', 'quote_id')->where('input_tax_type', 0)->where('input_tax_status', 'success');
+    }
     public function inputtaxTotal()
     {
         return $this->inputtax()
@@ -319,6 +312,41 @@ public function checkfileInputtax()
             ->sum(function ($inputtax) {
                 return $inputtax->input_tax_withholding;
             });
+    }
+
+    // Accessor: คำนวณยอดหักภาษี ณ ที่จ่าย (Withholding Tax Amount) เช่นเดียวกับ invoiceModel
+    public function getWithholdingTaxAmountAttribute()
+    {
+        // ถ้าไม่มี invoice ที่เกี่ยวข้อง จะคืนค่า 0
+        $invoice = $this->invoiceVat()->first();
+        if (!$invoice) {
+            return 0;
+        }
+        // ใช้ is_null เพื่อตรวจสอบว่า invoice_image เป็น NULL หรือไม่
+        if (is_null($invoice->invoice_image)) {
+            return is_numeric($invoice->invoice_withholding_tax) ? $invoice->invoice_withholding_tax + $invoice->invoice_vat : 0;
+        }
+        return $invoice->invoice_vat;
+    }
+    //ยอดรวมต้นทุนรวม
+     public function getTotalCostAll()
+    {
+        $getTotalOtherCost = $this->getTotalOtherCost();
+        $getWholesalePaidNet = $this->getWholesalePaidNet();
+        return $getTotalOtherCost + $getWholesalePaidNet;
+    }
+    //ยอดรวมต้นทุนรวมอื่นๆ
+    public function getTotalOtherCost()
+    {
+        // คำนวณต้นทุนอื่นๆ ตามตัวอย่างใน Blade
+        $withholdingTaxAmount = $this->withholding_tax_amount; // accessor
+        $getTotalInputTaxVat = $this->getTotalInputTaxVat();
+        $hasInputTaxFile = $this->InputTaxVat()->whereNotNull('input_tax_file')->exists();
+        if ($hasInputTaxFile) {
+            return $withholdingTaxAmount - $getTotalInputTaxVat;
+        } else {
+            return $withholdingTaxAmount + $getTotalInputTaxVat;
+        }
     }
 
     public function inputtaxTotalWholesale()
@@ -356,15 +384,41 @@ public function checkfileInputtax()
     {
         return $this->belongsTo(debitNoteModel::class, 'quote_id', 'quote_id');
     }
+
     public function creditNote()
     {
         return $this->belongsTo(creditNoteModel::class, 'quote_id', 'quote_id');
     }
-
     // Accessor สำหรับสถานะการชำระของลูกค้า (plain text)
     public function getCustomerPaymentStatusAttribute()
     {
         return trim(strip_tags(getQuoteStatusPayment($this)));
     }
-   
+
+    // ฟังก์ชันคำนวณกำไรสุทธิ (Net Profit)
+    public function getNetProfit()
+    {
+        $paymentCustomer = $this->quote_grand_total; // ลูกค้าชำระเงิน
+        $totalCostAll = $this->getTotalCostAll(); // ต้นทุนรวมทั้งหมด (ต้นทุนอื่นๆ + โอนโฮลเซลล์สุทธิ)
+        return $paymentCustomer - $totalCostAll;
+    }
+    // ฟังก์ชันคำนวณกำไรสุทธิต่อคน (Net Profit Per Pax)
+    public function getNetProfitPerPax()
+    {
+        $pax = $this->quote_pax_total;
+        if (!$pax || $pax == 0) {
+            return 0;
+        }
+        $netProfit = $this->getNetProfit();
+        return $netProfit / $pax;
+    }
+
+    public function getCommissionQt()
+{
+    $profit = $this->getNetProfit(); // หรือสูตรที่ต้องการ
+    $saleId = $this->quote_sale;
+    $people = $this->quote_pax_total;
+    $result = calculateCommission($profit, $saleId, 'qt', $people);
+    return $result['calculated'] ?? 0;
+}
 }
