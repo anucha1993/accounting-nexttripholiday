@@ -30,6 +30,9 @@ function getStatusBadge($quoteLogStatus)
     if ($quoteLogStatus->wholesale_skip_status !== 'ไม่ต้องการออก' && ($quoteLogStatus->withholding_tax_status === 'ยังไม่ได้ออก' || $quoteLogStatus->withholding_tax_status === null)) {
         return '<span class="badge rounded-pill bg-danger">ยังไม่ได้ออกใบหัก ณ ที่จ่าย</span>';
     }
+    //  if ($quoteLogStatus->wholesale_tax_status === 'ยังไม่ได้รับ' || $quoteLogStatus->wholesale_tax_status === null) {
+    //     return '<span class="badge rounded-pill bg-danger">รอใบกำกับภาษีโฮลเซลล์ </span>';
+    // }
 
     return ''; // คืนค่าว่างหากไม่มีเงื่อนไขใดๆ ตรงกับสถานะ // 
 }

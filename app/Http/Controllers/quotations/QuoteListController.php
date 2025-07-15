@@ -41,6 +41,8 @@ class QuoteListController extends Controller
         $searchNotLogStatus = $request->input('search_not_check_list');
         $searchPaymentWholesaleStatus = $request->input('search_wholesale_payment');
         $searchCustomerPayment = $request->input('search_customer_payment', 'all');
+        $searchPaymentOverpays = $request->input('search_payment_overpays', 'all');
+        $searchPaymentWholesaleOverpays = $request->input('search_payment_wholesale_overpays', 'all');
 
         $sales = saleModel::select('name', 'id')
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
@@ -181,8 +183,34 @@ class QuoteListController extends Controller
             $quotations->setCollection($filtered);
         }
 
+         // Filter ด้วย getQuoteStatusPaymentKey (Helper) หลัง paginate เฉพาะกรณีเลือกสถานะ (เพื่อให้ตรงกับ Blade)
+        if (!empty($searchNotLogStatus) && $searchNotLogStatus !== 'all') {
+            $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchNotLogStatus) {
+                $statusText = trim(strip_tags(getStatusBadge($quotation->quoteLogStatus)));
+                return $statusText == $searchNotLogStatus;
+            })->values();
+            $quotations->setCollection($filtered);
+        }
+
+          // Filter สถานะลูกค้าชำระเงินเกิน
+        if (!empty($searchPaymentOverpays) && $searchPaymentOverpays !== 'all') {
+            $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchPaymentOverpays) {
+                $statusText = trim(strip_tags(getQuoteStatusQuotePayment($quotation)));
+                return $statusText == $searchPaymentOverpays;
+            })->values();
+            $quotations->setCollection($filtered);
+        }
+          // Filter สถานะชำระเงินโฮลเซลเกิน
+        if (!empty($searchPaymentWholesaleOverpays) && $searchPaymentWholesaleOverpays !== 'all') {
+            $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchPaymentWholesaleOverpays) {
+                $statusText = trim(strip_tags(getStatusPaymentWhosale($quotation)));
+                return $statusText == $searchPaymentWholesaleOverpays;
+            })->values();
+            $quotations->setCollection($filtered);
+        }
+
         // Filter ด้วย getQuoteStatusQuotePayment และ getStatusWithholdingTax หลัง paginate เฉพาะกรณีเลือกสถานะ (CheckList ให้ตรงกับ badge จริง)
-        $quotations = $this->filterByCheckListStatus($quotations, $searchNotLogStatus);
+        // $quotations = $this->filterByCheckListStatus($quotations, $searchNotLogStatus);
 
         $SumPax = $quotations->sum('quote_pax_total');
         $SumTotal = $quotations->sum('quote_grand_total');
@@ -210,28 +238,28 @@ class QuoteListController extends Controller
      * @param string $searchNotLogStatus
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    protected function filterByCheckListStatus($quotations, $searchNotLogStatus)
-    {
-        if (empty($searchNotLogStatus) || $searchNotLogStatus === 'all') {
-            return $quotations;
-        }
-        $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchNotLogStatus) {
-            $badges = [
-                trim(strip_tags(getQuoteStatusQuotePayment($quotation))),
-                trim(strip_tags(getStatusWithholdingTax($quotation->quoteInvoice))),
-                trim(strip_tags(getQuoteStatusWithholdingTax($quotation->quoteLogStatus))),
-                trim(strip_tags(getStatusWhosaleInputTax($quotation->checkfileInputtax))),
-                trim(strip_tags(getStatusCustomerRefund($quotation->quoteLogStatus))),
-                trim(strip_tags(getStatusWholesaleRefund($quotation->quoteLogStatus))),
-                // เพิ่ม helper อื่นๆ ได้ที่นี่
-            ];
-            $search = trim($searchNotLogStatus);
-            Log::debug('CheckList filter', ['badges' => $badges, 'search' => $search, 'quote_id' => $quotation->quote_id]);
-            return in_array($search, $badges);
-        })->values();
-        $quotations->setCollection($filtered);
-        return $quotations;
-    }
+    // protected function filterByCheckListStatus($quotations, $searchNotLogStatus)
+    // {
+    //     if (empty($searchNotLogStatus) || $searchNotLogStatus === 'all') {
+    //         return $quotations;
+    //     }
+    //     $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchNotLogStatus) {
+    //         $badges = [
+    //             trim(strip_tags(getQuoteStatusQuotePayment($quotation))),
+    //             trim(strip_tags(getStatusWithholdingTax($quotation->quoteInvoice))),
+    //             trim(strip_tags(getQuoteStatusWithholdingTax($quotation->quoteLogStatus))),
+    //             trim(strip_tags(getStatusWhosaleInputTax($quotation->checkfileInputtax))),
+    //             trim(strip_tags(getStatusCustomerRefund($quotation->quoteLogStatus))),
+    //             trim(strip_tags(getStatusWholesaleRefund($quotation->quoteLogStatus))),
+    //             // เพิ่ม helper อื่นๆ ได้ที่นี่
+    //         ];
+    //         $search = trim($searchNotLogStatus);
+    //         Log::debug('CheckList filter', ['badges' => $badges, 'search' => $search, 'quote_id' => $quotation->quote_id]);
+    //         return in_array($search, $badges);
+    //     })->values();
+    //     $quotations->setCollection($filtered);
+    //     return $quotations;
+    // }
 
     public function destroy($id)
     {

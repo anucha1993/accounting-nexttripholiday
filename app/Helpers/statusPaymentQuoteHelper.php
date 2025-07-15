@@ -37,15 +37,16 @@ if (!function_exists('getQuoteStatusQuotePayment')) {
             }
 
             return '<span class="badge rounded-pill bg-danger">ยังไม่ได้คืนเงินลูกค้า</span>';
-        } else {
+        } 
+        else {
             // ถ้ามี pending refund อยู่ → แสดง "รอคืนเงินบางส่วน" เสมอ
             if ($hasPendingRefund) {
-                return '<span class="badge rounded-pill bg-warning text-dark">รอคืนเงินบางส่วน</span>';
+                return '<span class="badge rounded-pill bg-warning text-dark">รอคืนเงินลูกค้า</span>';
             }
 
             // ไม่มี pending แล้วแต่เคยคืนบางส่วน → "คืนเงินบางส่วนแล้ว"
             if ($refundSuccessTotal > 0) {
-                return '<span class="badge rounded-pill bg-success">คืนเงินบางส่วนแล้ว</span>';
+                return '<span class="badge rounded-pill bg-success">คืนเงินลูกค้าแล้ว</span>';
             }
         }
 
