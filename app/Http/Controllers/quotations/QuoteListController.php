@@ -111,6 +111,7 @@ class QuoteListController extends Controller
                     }
                 });
             })
+            
             // ไม่ filter ที่ SQL สำหรับ Check List ให้ filter หลัง paginate เท่านั้น เพื่อความตรงกับ badge ที่แสดงจริง
             ->when($searchSale && $searchSale != 'all', function ($query) use ($searchSale) {
                 return $query->where('quote_sale', $searchSale);
@@ -140,7 +141,11 @@ class QuoteListController extends Controller
                 // เพิ่ม helper อื่นๆ ได้ที่นี่
             ];
         })->unique()->filter()->values();
-        $quotations = $quotationsQuery->paginate(10)->withQueryString();
+
+        $queryString = $quotationsQuery->toSql();
+        $queryBindings = $quotationsQuery->getBindings();
+
+        $quotations = $quotationsQuery->paginate($perPage)->withQueryString();
         // Filter สถานะชำระโฮลเซลล์
         if (!empty($searchPaymentWholesaleStatus) && $searchPaymentWholesaleStatus !== 'all') {
             $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchPaymentWholesaleStatus) {
@@ -193,13 +198,18 @@ class QuoteListController extends Controller
         }
 
           // Filter สถานะลูกค้าชำระเงินเกิน
-        if (!empty($searchPaymentOverpays) && $searchPaymentOverpays !== 'all') {
-            $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchPaymentOverpays) {
-                $statusText = trim(strip_tags(getQuoteStatusQuotePayment($quotation)));
-                return $statusText == $searchPaymentOverpays;
-            })->values();
-            $quotations->setCollection($filtered);
+       if (!empty($searchPaymentOverpays) && $searchPaymentOverpays !== 'all') {
+    $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchPaymentOverpays) {
+        if ($searchPaymentOverpays === 'รอใบหัก จากลูกค้า') {
+            $statusText = trim(strip_tags(getStatusWithholdingTax($quotation->quoteInvoice)));
+        } else {
+            $statusText = trim(strip_tags(getQuoteStatusQuotePayment($quotation)));
         }
+        return $statusText == $searchPaymentOverpays;
+    })->values();
+    $quotations->setCollection($filtered);
+}
+
           // Filter สถานะชำระเงินโฮลเซลเกิน
         if (!empty($searchPaymentWholesaleOverpays) && $searchPaymentWholesaleOverpays !== 'all') {
             $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchPaymentWholesaleOverpays) {
@@ -227,8 +237,10 @@ class QuoteListController extends Controller
             'คืนเงินแล้ว',
         ];
 
+
+
         // ส่ง $allQuoteStatusQuotePayment ไปที่ view
-        return view('quotations.list', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'customerPaymentStatuses', 'campaignSource', 'allQuoteStatusQuotePayment'));
+        return view('quotations.list', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'customerPaymentStatuses', 'campaignSource', 'allQuoteStatusQuotePayment','queryString', 'queryBindings'));
     }
 
     /**

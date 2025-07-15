@@ -208,6 +208,7 @@
                                     <option {{ request('search_payment_overpays') == 'all' ? 'selected' : '' }} value="all">ทั้งหมด</option>
                                     <option {{ request('search_payment_overpays') == 'รอคืนเงินลูกค้า' ? 'selected' : '' }} value="รอคืนเงินลูกค้า">รอคืนเงินให้ลูกค้า</option>
                                     <option {{ request('search_payment_overpays') == 'คืนเงินให้ลูกค้าแล้ว' ? 'selected' : '' }} value="คืนเงินให้ลูกค้าแล้ว">คืนเงินให้ลูกค้าแล้ว</option>
+                                    <option {{ request('search_payment_overpays') == 'รอใบหัก จากลูกค้า' ? 'selected' : '' }} value="รอใบหัก จากลูกค้า">รอใบหัก จากลูกค้า</option>
                                  </select>
                             </div>
 
@@ -321,21 +322,8 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    {{--
-                Badge/status ที่แสดงใน CheckList (ใช้สำหรับ mapping filter dropdown):
-                - getQuoteStatusQuotePayment:
-                    "คืนเงินลูกค้าแล้ว", "รอคืนเงินลูกค้า", "ยังไม่ได้คืนเงินลูกค้า", "รอคืนเงินบางส่วน", "คืนเงินบางส่วนแล้ว"
-                - getStatusWithholdingTax:
-                    "ได้รับใบกำกับโฮลเซลแล้ว", "รอใบกำกับภาษีโฮลเซลล์"
-                - getQuoteStatusWithholdingTax:
-                    "ออกใบหักแล้ว", "รอออกใบหัก ณ ที่จ่ายโฮลเซลล์..."
-                - getStatusWhosaleInputTax:
-                    (ไม่มี badge เฉพาะ)
-                - getStatusCustomerRefund:
-                    "คืนเงินลูกค้าแล้ว", "ยังไม่คืนเงินลูกค้า"
-                - getStatusWholesaleRefund:
-                    "โฮลเซลล์คืนเงินแล้ว", "ยังไม่ได้รับเงินคืน"
-            --}}
+               
+
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
                             @can('quotation-export')
