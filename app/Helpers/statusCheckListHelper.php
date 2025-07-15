@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Helpers;
-
-function testHelper() {
-    return "Test Helper";
-}
-
-
 if (!function_exists('getStatusBadge')) {
 function getStatusBadge($quoteLogStatus)
 {
+    if (!$quoteLogStatus) {
+        return '';
+    }
     if ($quoteLogStatus->booking_email_status === 'ยังไม่ได้ส่ง' || $quoteLogStatus->booking_email_status === null) {
         return '<span class="badge rounded-pill bg-danger">ยังไม่ส่งใบอีเมลล์จองทัวร์ให้โฮลเซลล์</span>';
     }
     if ($quoteLogStatus->invoice_status !== 'ได้แล้ว' || $quoteLogStatus->invoice_status === null) {
         return '<span class="badge rounded-pill bg-danger">ยังไม่ได้อินวอยโฮลเซลล์</span>';
+    }
+    if ($quoteLogStatus->inv_status === 'ยังไม่ได้' || $quoteLogStatus->inv_status === null) {
+        return '<span class="badge rounded-pill bg-danger">ยังไม่ได้ใบแจ้งหนี้โฮลเซลล์</span>';
     }
     if ($quoteLogStatus->slip_status === 'ยังไม่ได้ส่ง' || $quoteLogStatus->slip_status === null) {
         return '<span class="badge rounded-pill bg-danger">ยังไม่ได้ส่งสลิปให้โฮลเซลล์</span>';

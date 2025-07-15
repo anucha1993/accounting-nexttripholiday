@@ -277,6 +277,12 @@ class quotationModel extends Model
                 return $paymentWholesale->payment_wholesale_refund_total;
             });
     }
+
+     public function getWholesalePaidNet()
+    {
+        return $this->GetDepositWholesale() - $this->GetDepositWholesaleRefund();
+    }
+    
    
 
     public function GrossProfit()
@@ -360,4 +366,5 @@ public function checkfileInputtax()
     {
         return trim(strip_tags(getQuoteStatusPayment($this)));
     }
+   
 }

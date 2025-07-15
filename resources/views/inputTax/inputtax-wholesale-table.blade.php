@@ -56,7 +56,6 @@
                                 <td>
                                     {{date('d/m/Y : H:m:s',strtotime($item->created_at))}}
                                 </td>
-
                                 <td>
                                     @if ($item->input_tax_file)
                                     <a href="{{ asset('storage/' . $item->input_tax_file) }}"
@@ -65,7 +64,6 @@
                                     @else
                                         -
                                     @endif
-                                    
                                 </td>
                                 
                                 <td>{{number_format($item->input_tax_grand_total,2)}}</td>
