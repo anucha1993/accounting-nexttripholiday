@@ -4,9 +4,12 @@ use Carbon\Carbon;
 
 if (!function_exists('getQuoteStatusPayment')) {
     function getQuoteStatusPayment($quotationModel)
+     
     {
         $now = Carbon::now();
         $status = '';
+       
+          
         // ตรวจสอบ payment_status ผ่านความสัมพันธ์ quotePayment
         if ($quotationModel->quotePayment && $quotationModel->quotePayment->payment_status === 'refund') {
 

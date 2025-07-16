@@ -378,11 +378,11 @@
                         </div>
                     </div>
                     
-                    
+
                     {!! $quotations->withQueryString()->links('pagination::bootstrap-5') !!}
                     <div class="table-responsive">
                         <table class="table table-sm table-hover table-striped table-bordered" id="quote-table"
-                            style="font-size: 18px;">
+                            style="font-size: 16px;">
                             <thead class="table-dark sticky-top" style="font-size: 16px;">
                                 <tr>
                                     <th style="width: 40px;" class="text-center">#</th>
@@ -525,7 +525,7 @@
                                             <div class="d-flex flex-wrap gap-1" style="max-width: 100px;">
                                               {{-- {!! getStatusBadge($item->quoteCheckStatus) !!} --}}
                                                 @php
-                                                    $badgeCount = getStatusBadgeCount($item->quoteCheckStatus);
+                                                    $badgeCount = getStatusBadgeCount($item->quoteCheckStatus, $item);
                                                 @endphp
                                                 @if ($badgeCount > 0)
                                                 <span class="badge rounded-pill bg-danger">ยังไม่ได้ทำ {{ $badgeCount }} รายการ</span>

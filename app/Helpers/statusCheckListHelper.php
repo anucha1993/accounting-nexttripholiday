@@ -1,7 +1,7 @@
 <?php
 
 if (!function_exists('getStatusBadge')) {
-function getStatusBadge($quoteCheckStatus)
+function getStatusBadge($quoteCheckStatus, $quotations)
 {
     if (!$quoteCheckStatus) {
         return '';
@@ -39,11 +39,16 @@ function getStatusBadge($quoteCheckStatus)
     if ($quoteCheckStatus->wholesale_skip_status !== 'ไม่ต้องการออก' && (is_null($quoteCheckStatus->withholding_tax_status) || trim($quoteCheckStatus->withholding_tax_status) === 'ยังไม่ได้ออก')) {
         $badges[] = '<span class="badge rounded-pill bg-danger">ยังไม่ได้ออกใบหัก ณ ที่จ่าย</span>';
     }
-    return implode(' ', $badges);
+
+     if ($quotations->payment > 0 && $quotations->quote_status !== 'cancel') {
+            return implode(' ', $badges);
+        }
+
+   
 }
 
 
-function getStatusBadgeCount($quoteCheckStatus)
+function getStatusBadgeCount($quoteCheckStatus, $quotations)
 {
     if (!$quoteCheckStatus) {
         return 0;
@@ -73,7 +78,11 @@ function getStatusBadgeCount($quoteCheckStatus)
     if ($quoteCheckStatus->wholesale_skip_status !== 'ไม่ต้องการออก' && (is_null($quoteCheckStatus->withholding_tax_status) || trim($quoteCheckStatus->withholding_tax_status) === 'ยังไม่ได้ออก')) {
         $badges[] = 1;
     }
-    return count($badges);
+     if ($quotations->payment > 0 && $quotations->quote_status !== 'cancel') {
+            return count($badges);
+        }
+
+  
 }
 
 

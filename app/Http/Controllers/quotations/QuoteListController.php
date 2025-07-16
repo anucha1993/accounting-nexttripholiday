@@ -211,7 +211,7 @@ class QuoteListController extends Controller
         // Filter ด้วย getQuoteStatusPaymentKey (Helper) หลัง paginate เฉพาะกรณีเลือกสถานะ (เพื่อให้ตรงกับ Blade)
         if (!empty($searchNotLogStatus) && $searchNotLogStatus !== 'all') {
             $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchNotLogStatus) {
-                $statusText = trim(strip_tags(getStatusBadge($quotation->quoteCheckStatus)));
+                $statusText = trim(strip_tags(getStatusBadge($quotation->quoteCheckStatus, $quotation)));
                 // แยก badge ด้วยช่องว่าง 1 ตัวขึ้นไป (รองรับ badge หลายอัน)
                 $badgeList = preg_split('/\s{2,}|(?<=\S) (?=\S)/u', $statusText);
                 return in_array($searchNotLogStatus, array_map('trim', $badgeList));
