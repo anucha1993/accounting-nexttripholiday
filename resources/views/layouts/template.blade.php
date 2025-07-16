@@ -19,8 +19,9 @@
     <link rel="icon" type="image/png" sizes="16x16"
         href="{{ URL::asset('template/assets/images/favicon.png') }}" />
     <!-- This page plugin CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
-    
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+
     <link href="{{ URL::asset('template/assets/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css') }}"
         rel="stylesheet" />
     <link rel="stylesheet" type="text/css"
@@ -29,7 +30,8 @@
     <link rel="stylesheet" type="text/css"
         href="{{ URL::asset('template/assets/libs/select2/dist/css/select2.min.css') }}" />
     <!-- Custom CSS -->
-    <link href="{{ URL::asset('template/assets/libs/ckeditor/samples/toolbarconfigurator/lib/codemirror/neo.css') }}" rel="stylesheet" />
+    <link href="{{ URL::asset('template/assets/libs/ckeditor/samples/toolbarconfigurator/lib/codemirror/neo.css') }}"
+        rel="stylesheet" />
     <link href="{{ URL::asset('template/assets/extra-libs/prism/prism.css') }}" rel="stylesheet" />
 
 
@@ -45,7 +47,7 @@
 
     <!-- รวมไฟล์ jQuery และ jQuery UI -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
@@ -61,13 +63,15 @@
     <script src="{{ URL::asset('bootstrap-select@1.14.0-beta3/dist/js/bootstrap.bundle.min.js') }}"></script>
     <!-- Bootstrap Select JS -->
     <script src="{{ URL::asset('bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('template/assets/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('template/assets/libs/daterangepicker/daterangepicker.css') }}" />
+    <link rel="stylesheet" type="text/css"
+        href="{{ URL::asset('template/assets/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}" />
+    <link rel="stylesheet" type="text/css"
+        href="{{ URL::asset('template/assets/libs/daterangepicker/daterangepicker.css') }}" />
 
-    
 
 
-   
+
+
 
 
 
@@ -93,6 +97,7 @@
             margin-right: 5px;
             /* กำหนดระยะห่างด้านขวา (ถ้าต้องการ) */
         }
+
         .dot-danger {
             width: 10px;
             /* กำหนดความกว้าง */
@@ -107,6 +112,7 @@
             margin-right: 5px;
             /* กำหนดระยะห่างด้านขวา (ถ้าต้องการ) */
         }
+
         .dot-warning {
             width: 10px;
             /* กำหนดความกว้าง */
@@ -208,31 +214,51 @@
                             $user = Auth::user();
                             $group = getUserGroup();
                             if ($group === 'admin') {
-                                $notifications = \App\Models\NotificationSA::with(['reads' => function($q) use ($user) {
-                                    $q->where('user_id', $user->id);
-                                }])->orderByDesc('created_at')->limit(20)->get();
-                                $unreadCount = $notifications->filter(function($n) use ($user) {
-                                    return $n->reads->isEmpty();
-                                })->count();
+                                $notifications = \App\Models\NotificationSA::with([
+                                    'reads' => function ($q) use ($user) {
+                                        $q->where('user_id', $user->id);
+                                    },
+                                ])
+                                    ->orderByDesc('created_at')
+                                    ->limit(20)
+                                    ->get();
+                                $unreadCount = $notifications
+                                    ->filter(function ($n) use ($user) {
+                                        return $n->reads->isEmpty();
+                                    })
+                                    ->count();
                             } elseif ($group === 'sale') {
-                                $notifications = \App\Models\NotificationSale::where('sale_id', $user->sale_id)->orderByDesc('created_at')->limit(20)->get();
+                                $notifications = \App\Models\NotificationSale::where('sale_id', $user->sale_id)
+                                    ->orderByDesc('created_at')
+                                    ->limit(20)
+                                    ->get();
                                 $unreadCount = $notifications->where('is_read', false)->count();
                             } elseif ($group === 'accounting') {
-                                $notifications = \App\Models\NotificationAcc::with(['reads' => function($q) use ($user) {
-                                    $q->where('user_id', $user->id);
-                                }])->orderByDesc('created_at')->limit(20)->get();
-                                $unreadCount = $notifications->filter(function($n) use ($user) {
-                                    return $n->reads->isEmpty();
-                                })->count();
+                                $notifications = \App\Models\NotificationAcc::with([
+                                    'reads' => function ($q) use ($user) {
+                                        $q->where('user_id', $user->id);
+                                    },
+                                ])
+                                    ->orderByDesc('created_at')
+                                    ->limit(20)
+                                    ->get();
+                                $unreadCount = $notifications
+                                    ->filter(function ($n) use ($user) {
+                                        return $n->reads->isEmpty();
+                                    })
+                                    ->count();
                             } else {
                                 $notifications = collect();
                                 $unreadCount = 0;
                             }
                         @endphp
-                        @include('components.notifications', ['unreadCount' => $unreadCount, 'notifications' => $notifications])
+                        @include('components.notifications', [
+                            'unreadCount' => $unreadCount,
+                            'notifications' => $notifications,
+                        ])
 
                         </li>
-                        
+
                     </ul>
                     <!-- ============================================================== -->
                     <!-- Right side toggle and nav items -->
@@ -253,35 +279,36 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle waves-effect waves-dark" href="#"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                
-                                <span class="ms-2 font-weight-medium">{{auth::user()->name}}</span><span
+
+                                <span class="ms-2 font-weight-medium">{{ auth::user()->name }}</span><span
                                     class="fas fa-angle-down ms-2"></span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end user-dd animated flipInY">
                                 <div class="d-flex no-block align-items-center p-3 bg-info text-white mb-2">
                                     <div class="">
-                                      
+
                                     </div>
                                     <div class="ms-2">
                                         <h4 class="mb-0 text-white">
-                                           {{auth::user()->name}}
+                                            {{ auth::user()->name }}
                                         </h4>
-                                        <p class="mb-0">{{auth::user()->email}}</p>
+                                        <p class="mb-0">{{ auth::user()->email }}</p>
                                     </div>
                                 </div>
-                               
-                                <div class="dropdown-divider"></div>
-                               <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
                                 <div class="dropdown-divider"></div>
-                                
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                    {{ __('Logout') }}
+                                </a>
+
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                    class="d-none">
+                                    @csrf
+                                </form>
+                                <div class="dropdown-divider"></div>
+
                             </div>
                         </li>
                         <!-- ============================================================== -->
@@ -304,15 +331,15 @@
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
                         <!-- User Profile-->
-                       
-                       
+
+
                         <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark" alt href="{{ route('products.index') }}"
                                 aria-expanded="false"><i class="mdi mdi-cart-outline"></i><span
                                     class="hide-menu">รายการสินค้า
                                 </span></a>
                         </li>
-                      
+
                         <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark" href="{{ route('booking.index') }}"
                                 aria-expanded="false"><i class="mdi mdi-clipboard-text"></i><span
@@ -329,26 +356,29 @@
                                 aria-expanded="false"><i class="mdi mdi-clipboard-text"></i><span
                                     class="hide-menu">ระบบบัญชี</span></a>
                             <ul aria-expanded="false" class="collapse first-level">
-                               
+
                                 <li class="sidebar-item">
                                     <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                        href="{{route('withholding.index')}}" aria-expanded="false"><i
-                                            class="mdi mdi-cube-send"></i><span class="hide-menu">ใบหัก ณ ที่จ่าย</span></a>
+                                        href="{{ route('withholding.index') }}" aria-expanded="false"><i
+                                            class="mdi mdi-cube-send"></i><span class="hide-menu">ใบหัก ณ
+                                            ที่จ่าย</span></a>
                                 </li>
 
                                 <li class="sidebar-item">
                                     <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                        href="{{route('debit-note.index')}}" aria-expanded="false"><i
-                                            class="mdi mdi-cube-send"></i><span class="hide-menu">ใบเพิ่มหนี้ Debit Note</span></a>
+                                        href="{{ route('debit-note.index') }}" aria-expanded="false"><i
+                                            class="mdi mdi-cube-send"></i><span class="hide-menu">ใบเพิ่มหนี้ Debit
+                                            Note</span></a>
                                 </li>
 
 
                                 <li class="sidebar-item">
                                     <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                        href="{{route('credit-note.index')}}" aria-expanded="false"><i
-                                            class="mdi mdi-cube-send"></i><span class="hide-menu">ใบลดหนี้ Credit Note</span></a>
+                                        href="{{ route('credit-note.index') }}" aria-expanded="false"><i
+                                            class="mdi mdi-cube-send"></i><span class="hide-menu">ใบลดหนี้ Credit
+                                            Note</span></a>
                                 </li>
-                               
+
                             </ul>
                         </li>
                         <li class="nav-small-cap">
@@ -360,7 +390,7 @@
                                 aria-expanded="false"><i class="mdi mdi-table"></i><span
                                     class="hide-menu">ข้อมูลทั่วไป</span></a>
                             <ul aria-expanded="false" class="collapse first-level">
-                            
+
                                 @canany(['create-wholesale', 'edit-wholesale', 'delete-wholesale'])
                                     <li class="sidebar-item">
                                         <a class="sidebar-link waves-effect waves-dark sidebar-link"
@@ -372,7 +402,8 @@
                                 <li class="sidebar-item">
                                     <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                         href="{{ route('airline.index') }}" aria-expanded="false"><i
-                                            class="mdi mdi-border-style"></i><span class="hide-menu">ข้อมูลสายการบิน</span></a>
+                                            class="mdi mdi-border-style"></i><span
+                                            class="hide-menu">ข้อมูลสายการบิน</span></a>
                                 </li>
                                 <li class="sidebar-item">
                                     <a class="sidebar-link waves-effect waves-dark sidebar-link"
@@ -399,38 +430,38 @@
                                     class="hide-menu">รายงาน </span></a>
                             <ul aria-expanded="false" class="collapse first-level">
                                 <li class="sidebar-item">
-                                    <a href="{{route('report.input-tax')}}" class="sidebar-link">
+                                    <a href="{{ route('report.input-tax') }}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานภาษีซื้อ</span>
                                     </a>
-                                    <a href="{{route('report.receipt')}}" class="sidebar-link">
+                                    <a href="{{ route('report.receipt') }}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานใบเสร็จรับเงิน</span>
                                     </a>
-                                    <a href="{{route('report.invoice')}}" class="sidebar-link">
+                                    <a href="{{ route('report.invoice') }}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานใบแจ้งหนี้</span>
                                     </a>
-                                    <a href="{{route('report.taxinvoice')}}" class="sidebar-link">
+                                    <a href="{{ route('report.taxinvoice') }}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานใบกำกับภาษี</span>
                                     </a>
-                                    <a href="{{route('report.saletax')}}" class="sidebar-link">
+                                    <a href="{{ route('report.saletax') }}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานภาษีขาย</span>
                                     </a>
-                                    <a href="{{route('report.sales')}}" class="sidebar-link">
+                                    <a href="{{ route('report.sales') }}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานยอดขาย</span>
                                     </a>
-                                     <a href="{{route('report.payment-wholesale')}}" class="sidebar-link">
+                                    <a href="{{ route('report.payment-wholesale') }}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu"> รายงานใบเสร็จโฮลเซลล์</span>
                                     </a>
                                 </li>
                             </ul>
                         </li>
-                        
+
 
 
 
@@ -455,14 +486,14 @@
                                     </a>
                                 </li>
                                 <li class="sidebar-item">
-                                    <a href="{{route('commissions.index')}}" class="sidebar-link">
+                                    <a href="{{ route('commissions.index') }}" class="sidebar-link">
                                         <i class="mdi mdi-calendar"></i>
                                         <span class="hide-menu">
                                             Commissions
                                         </span>
                                     </a>
                                 </li>
-                                
+
                             </ul>
                         </li>
 
@@ -471,7 +502,14 @@
                                 aria-expanded="false"><i class="fas fa-users"></i><span
                                     class="hide-menu">ลูกค้า</span></a>
                         </li>
-                     
+                        @role('Super Admin')
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url('web-tour/sync') }}">
+                                <i class="fas fa-sync"></i> Sync WEB_TOUR
+                            </a>
+                        </li>
+                        @endrole
+
                     </ul>
                 </nav>
                 <!-- End Sidebar navigation -->
@@ -507,12 +545,14 @@
 
 
             <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 50000">
-                <div id="statusToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div id="statusToast" class="toast align-items-center text-bg-success border-0" role="alert"
+                    aria-live="assertive" aria-atomic="true">
                     <div class="d-flex">
                         <div class="toast-body text-white" id="toastMessage">
                             Status updated successfully!
                         </div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                            aria-label="Close"></button>
                     </div>
                 </div>
             </div>
@@ -537,7 +577,7 @@
     <!-- -------------------------------------------------------------- -->
     <!-- customizer Panel -->
     <!-- -------------------------------------------------------------- -->
-    
+
     <div class="chat-windows"></div>
     <!-- -------------------------------------------------------------- -->
     <!-- All Jquery -->
@@ -556,7 +596,7 @@
     <!--Wave Effects -->
     <script src="{{ URL::asset('template/dist/js/waves.js') }}"></script>
 
-    
+
     <!--Menu sidebar -->
     <script src="{{ URL::asset('template/dist/js/sidebarmenu.js') }}"></script>
     <!--Custom JavaScript -->
@@ -564,17 +604,18 @@
     <script src="{{ URL::asset('template/dist/js/custom.min.js') }}"></script>
     <!--This page plugins -->
     <script src="{{ URL::asset('template/assets/extra-libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ URL::asset('template/assets/extra-libs/datatables.net-bs4/js/dataTables.responsive.min.js') }}"> </script>
+    <script src="{{ URL::asset('template/assets/extra-libs/datatables.net-bs4/js/dataTables.responsive.min.js') }}">
+    </script>
 
-{{-- <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script> --}}
+    {{-- <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script> --}}
 
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
-   
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+
     <script src="{{ URL::asset('template/dist/js/pages/datatable/datatable-basic.init.js') }}"></script>
     {{-- Select2 --}}
     <script src="{{ URL::asset('template/assets/libs/select2/dist/js/select2.full.min.js') }}"></script>
@@ -582,14 +623,15 @@
     <script src="{{ URL::asset('template/dist/js/pages/forms/select2/select2.init.js') }}"></script>
     <script src="{{ URL::asset('template/assets/extra-libs/prism/prism.js') }}"></script>
 
-    
+
     <script src="{{ URL::asset('template/assets/libs/moment/min/moment.min.js') }}"></script>
     <script src="{{ URL::asset('template/assets/libs/daterangepicker/daterangepicker.js') }}"></script>
-    <script src="{{ URL::asset('template/assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ URL::asset('template/assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}">
+    </script>
 
     {{-- ระบบแจ้งเตือน --}}
-   
-    
+
+
 
 </body>
 

@@ -377,10 +377,12 @@
                             </div>
                         </div>
                     </div>
+                    
+                    
                     {!! $quotations->withQueryString()->links('pagination::bootstrap-5') !!}
                     <div class="table-responsive">
                         <table class="table table-sm table-hover table-striped table-bordered" id="quote-table"
-                            style="font-size: 13px;">
+                            style="font-size: 18px;">
                             <thead class="table-dark sticky-top" style="font-size: 16px;">
                                 <tr>
                                     <th style="width: 40px;" class="text-center">#</th>

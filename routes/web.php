@@ -1,4 +1,3 @@
-
 <?php
 
 ;
@@ -70,6 +69,7 @@ use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\MPDF\MPDF_WithhodingDocumentController;
 use App\Http\Controllers\reports\paymentWholesaleReportController;
 use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
+use App\Http\Controllers\WebTourSyncController;
 
 /*
 |--------------------------------------------------------------------------
@@ -463,4 +463,6 @@ Route::prefix('cus')->group(function () {
     Route::put('/{id}', [\App\Http\Controllers\cus\cusController::class, 'update'])->name('cus.update');
     Route::delete('/{id}', [\App\Http\Controllers\cus\cusController::class, 'destroy'])->name('cus.destroy');
 });
+
+Route::get('/web-tour/sync', [WebTourSyncController::class, 'syncNow']);
 
