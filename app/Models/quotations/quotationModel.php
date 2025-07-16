@@ -220,10 +220,10 @@ class quotationModel extends Model
     }
 
     // ความสัมพันธ์กับ Quote_log
-    // public function quoteLogStatus()
-    // {
-    //     return $this->belongsTo(QuoteLogModel::class, 'quote_id', 'quote_id');
-    // }
+    public function quoteCheckStatus()
+    {
+        return $this->belongsTo(QuoteLogModel::class, 'quote_id', 'quote_id');
+    }
     // ความสัมพันธ์กับ WholesaleModel
 
     public function quoteWholesale()

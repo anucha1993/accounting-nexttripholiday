@@ -225,7 +225,7 @@
         </li>
 
         <!-- ใบแจ้งหนี้โฮลเซลล์ -->
-        <li class="list-group-item">
+        {{-- <li class="list-group-item">
             <input type="checkbox" class="form-check-input me-2" id="wholesale_tax_status" disabled
                 onchange="updateOrCreateLog('wholesale_tax', this)"
                 {{ optional($quoteLog)->wholesale_tax_status === 'ได้รับแล้ว' ? 'checked' : '' }}>
@@ -242,10 +242,10 @@
                 {{ optional($quoteLog)->wholesale_tax_updated_at ? Carbon::parse($quoteLog->wholesale_tax_updated_at)->format('d-m-Y : H:m:s') : '' }}
                 โดย {{ optional($quoteLog)->withholding_tax_created_by ?? 'ไม่ทราบ' }}
             </small>
-        </li>
+        </li> --}}
 
         <!-- คืนเงินลูกค้าสำเร็จ -->
-        <li class="list-group-item">
+        {{-- <li class="list-group-item">
             <input type="checkbox" class="form-check-input me-2" id="customer_refund_status" disabled
                 onchange="updateOrCreateLog('customer_refund', this)"
                 {{ optional($quoteLog)->customer_refund_status === 'คืนเงินสำเร็จ' ? 'checked' : '' }}>
@@ -262,10 +262,10 @@
                 {{ optional($quoteLog)->customer_refund_updated_at ? Carbon::parse($quoteLog->customer_refund_updated_at)->format('d-m-Y : H:m:s') : '' }}
                 โดย {{ optional($quoteLog)->customer_refund_created_by ?? 'ไม่ทราบ' }}
             </small>
-        </li>
+        </li> --}}
 
         <!-- โฮลเซลล์คืนเงินสำเร็จ -->
-        <li class="list-group-item">
+        {{-- <li class="list-group-item">
             <input type="checkbox" class="form-check-input me-2" id="wholesale_refund_status" disabled
                 onchange="updateOrCreateLog('wholesale_refund', this)"
                 {{ optional($quoteLog)->wholesale_refund_status === 'คืนเงินสำเร็จ' ? 'checked' : '' }}>
@@ -282,7 +282,7 @@
                 {{ optional($quoteLog)->wholesale_refund_updated_at ? Carbon::parse($quoteLog->wholesale_refund_updated_at)->format('d-m-Y : H:m:s') : '' }}
                 โดย {{ optional($quoteLog)->wholesale_refund_created_by ?? 'ไม่ทราบ' }}
             </small>
-        </li>
+        </li> --}}
         
         <li>
        

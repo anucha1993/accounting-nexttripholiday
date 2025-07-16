@@ -147,8 +147,8 @@
                                     @endforelse
                                 </select>
                             </div>
-                            
-                               <div class="col-md-2">
+
+                            <div class="col-md-2">
                                 <label>เซลล์ผู้ขาย</label>
                                 <select name="search_sale" class="form-select">
                                     <option value="all">ทั้งหมด</option>
@@ -174,10 +174,10 @@
                                 </select>
                             </div>
 
-        
 
 
-                           
+
+
                             <div class="col-md-2">
                                 <label>สถานะการชำระของลูกค้า</label>
                                 <select name="search_customer_payment" class="form-select" style="width: 100%">
@@ -193,8 +193,7 @@
                                     <option
                                         {{ request('search_customer_payment') == 'เกินกำหนดชำระเงิน' ? 'selected' : '' }}
                                         value="เกินกำหนดชำระเงิน">เกินกำหนดชำระเงิน</option>
-                                        <option
-                                        {{ request('search_customer_payment') == 'ชำระเงินเกิน' ? 'selected' : '' }}
+                                    <option {{ request('search_customer_payment') == 'ชำระเงินเกิน' ? 'selected' : '' }}
                                         value="ชำระเงินเกิน">ชำระเงินเกิน</option>
                                     <option
                                         {{ request('search_customer_payment') == 'ยกเลิกการสั่งซื้อ' ? 'selected' : '' }}
@@ -202,17 +201,23 @@
                                 </select>
                             </div>
 
-                             <div class="col-md-2">
-                                 <label for="">สถานะลูกค้าชำระเงินเกิน (AutoCheck)</label>
-                                 <select name="search_payment_overpays" class="form-select" style="width: 100%">
-                                    <option {{ request('search_payment_overpays') == 'all' ? 'selected' : '' }} value="all">ทั้งหมด</option>
-                                    <option {{ request('search_payment_overpays') == 'รอคืนเงินลูกค้า' ? 'selected' : '' }} value="รอคืนเงินลูกค้า">รอคืนเงินให้ลูกค้า</option>
-                                    <option {{ request('search_payment_overpays') == 'คืนเงินให้ลูกค้าแล้ว' ? 'selected' : '' }} value="คืนเงินให้ลูกค้าแล้ว">คืนเงินให้ลูกค้าแล้ว</option>
-                                    <option {{ request('search_payment_overpays') == 'รอใบหัก จากลูกค้า' ? 'selected' : '' }} value="รอใบหัก จากลูกค้า">รอใบหัก จากลูกค้า</option>
-                                 </select>
+                            <div class="col-md-2">
+                                <label for="">สถานะลูกค้าชำระเงินเกิน (AutoCheck)</label>
+                                <select name="search_payment_overpays" class="form-select" style="width: 100%">
+                                    <option {{ request('search_payment_overpays') == 'all' ? 'selected' : '' }}
+                                        value="all">ทั้งหมด</option>
+                                    <option {{ request('search_payment_overpays') == 'รอคืนเงินลูกค้า' ? 'selected' : '' }}
+                                        value="รอคืนเงินลูกค้า">รอคืนเงินให้ลูกค้า</option>
+                                    <option
+                                        {{ request('search_payment_overpays') == 'คืนเงินให้ลูกค้าแล้ว' ? 'selected' : '' }}
+                                        value="คืนเงินให้ลูกค้าแล้ว">คืนเงินให้ลูกค้าแล้ว</option>
+                                    <option
+                                        {{ request('search_payment_overpays') == 'รอใบหัก จากลูกค้า' ? 'selected' : '' }}
+                                        value="รอใบหัก จากลูกค้า">รอใบหัก จากลูกค้า</option>
+                                </select>
                             </div>
 
-                             <div class="col-md-2">
+                            <div class="col-md-2">
                                 <label>สถานะชำระโฮลเซลล์</label>
                                 <select name="search_wholesale_payment" class="form-select">
                                     <option {{ request('search_wholesale_payment') == 'all' ? 'selected' : '' }}
@@ -225,18 +230,25 @@
                                         value="2">ชำระครบแล้ว</option>
                                 </select>
                             </div>
-                              <div class="col-md-2">
-                                 <label for="">สถานะชำระเงินโฮลเซลเกิน(AutoCheck)</label>
-                                 <select name="search_payment_wholesale_overpays" class="form-select" style="width: 100%">
-                                    <option {{ request('search_payment_wholesale_overpays') == 'all' ? 'selected' : '' }} value="all">ทั้งหมด</option>
-                                    <option {{ request('search_payment_wholesale_overpays') == 'โอนเงินให้โฮลเซลล์เกิน' ? 'selected' : '' }} value="โอนเงินให้โฮลเซลล์เกิน">โอนเงินให้โฮลเซลล์เกิน</option>
-                                    <option {{ request('search_payment_wholesale_overpays') == 'รอโฮลเซลล์คืนเงิน' ? 'selected' : '' }} value="รอโฮลเซลล์คืนเงิน">รอโฮลเซลล์คืนเงิน</option>
-                                    <option {{ request('search_payment_wholesale_overpays') == 'โฮลเซลล์คืนเงินแล้ว' ? 'selected' : '' }} value="โฮลเซลล์คืนเงินแล้ว">โฮลเซลล์คืนเงินแล้ว</option>
-                                     </select>
+                            <div class="col-md-2">
+                                <label for="">สถานะชำระเงินโฮลเซลเกิน(AutoCheck)</label>
+                                <select name="search_payment_wholesale_overpays" class="form-select" style="width: 100%">
+                                    <option {{ request('search_payment_wholesale_overpays') == 'all' ? 'selected' : '' }}
+                                        value="all">ทั้งหมด</option>
+                                    <option
+                                        {{ request('search_payment_wholesale_overpays') == 'โอนเงินให้โฮลเซลล์เกิน' ? 'selected' : '' }}
+                                        value="โอนเงินให้โฮลเซลล์เกิน">โอนเงินให้โฮลเซลล์เกิน</option>
+                                    <option
+                                        {{ request('search_payment_wholesale_overpays') == 'รอโฮลเซลล์คืนเงิน' ? 'selected' : '' }}
+                                        value="รอโฮลเซลล์คืนเงิน">รอโฮลเซลล์คืนเงิน</option>
+                                    <option
+                                        {{ request('search_payment_wholesale_overpays') == 'โฮลเซลล์คืนเงินแล้ว' ? 'selected' : '' }}
+                                        value="โฮลเซลล์คืนเงินแล้ว">โฮลเซลล์คืนเงินแล้ว</option>
+                                </select>
                             </div>
 
 
-                         
+
 
                             {{-- <div class="col-md-2">
                                 <label for="">Auto Check List</label>
@@ -248,7 +260,7 @@
                                     <option value="">คืนเงินให้ลูกค้าแล้ว</option>
                                 </select>
                             </div> --}}
-                            
+
 
 
 
@@ -276,10 +288,10 @@
                                     <option
                                         {{ request('search_not_check_list') == 'ยังไม่ได้รับใบกำกับภาษีโฮลเซลล์' ? 'selected' : '' }}
                                         value="ยังไม่ได้รับใบกำกับภาษีโฮลเซลล์">ยังไม่ได้รับใบกำกับภาษีโฮลเซลล์</option>
-                                   
+
                                 </select>
                             </div>
-{{-- 
+                            {{-- 
                             <div class="col-md-2">
                                 <label for="">ส่วนที่ต้องตาม</label>
                                 <select name="search_followed" class="form-select" style="width: 100%">
@@ -289,7 +301,7 @@
 
 
 
-                           
+
 
 
 
@@ -322,7 +334,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-               
+
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
@@ -367,224 +379,224 @@
                     </div>
                     {!! $quotations->withQueryString()->links('pagination::bootstrap-5') !!}
                     <div class="table-responsive">
-                    <table class="table table-sm table-hover table-striped table-bordered" id="quote-table"
-                        style="font-size: 13px;">
-                        <thead class="table-dark sticky-top" style="font-size: 16px;">
-                            <tr>
-                                <th style="width: 40px;" class="text-center">#</th>
-                                <th style="width: 80px;">วันที่จอง</th>
-                                <th style="width: 120px;">ใบเสนอราคา</th>
-                                <th style="width: 100px;">เลขจองทัวร์</th>
-                                <th style="width: 200px;">โปรแกรมทัวร์</th>
-                                <th style="width: 120px;">วันเดินทาง</th>
-                                <th style="width: 150px;">ลูกค้า</th>
-                                <th style="width: 120px;">ที่มา</th> <!-- New column -->
-                                <th style="width: 50px;" class="text-center">PAX</th>
-                                <th style="width: 80px;">ประเทศ</th>
-                                <th style="width: 60px;">สายการบิน</th>
-                                <th style="width: 80px;">โฮลเซลล์</th>
-                                <th style="width: 120px;">สถานะลูกค้า</th>
-                                <th style="width: 100px;" class="text-end">ยอดเงิน</th>
-                                <th style="width: 120px;">สถานะโฮลเซลล์</th>
-                                <th style="width: 100px;">ค้างชำระโฮลเซล</th>
-                                <th style="width: 100px;">CheckList</th>
-                                <th style="width: 80px;">ผู้ขาย</th>
-                                <th style="width: 80px;" class="text-center">จัดการ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                                $inputtaxTotalWholesale = 0;
-                            @endphp
-                            @forelse ($quotations as $key => $item)
-                                <tr class="align-middle" data-quote-id="{{ $item->quote_id }}">
-                                    <td class="text-center fw-bold">
-                                        {{ $quotations->total() - $quotations->firstItem() + 1 - $key }}
-                                    </td>
-                                    <td class="text-center">
-                                        <small
-                                            class="text-muted">{{ date('d/m/y', strtotime($item->quote_booking_create)) }}</small>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex flex-column">
-                                            <span class="fw-bold text-primary">{{ $item->quote_number }}</span>
-                                            <div>
-                                                @if ($item->debitNote)
-                                                    <span class="badge bg-success badge-sm">DBN</span>
-                                                @endif
-                                                @if ($item->creditNote)
-                                                    <span class="badge bg-danger badge-sm">CDN</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-light text-dark">{{ $item->quote_booking }}</span>
-                                    </td>
-                                    <td>
-                                        <div data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="{{ $item->quote_tour_name ?: $item->quote_tour_name1 }}">
-                                            {{ mb_substr($item->quote_tour_name ?: $item->quote_tour_name1, 0, 25) }}{{ strlen($item->quote_tour_name ?: $item->quote_tour_name1) > 25 ? '...' : '' }}
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="d-flex flex-column">
-                                            <small>{{ date('d/m/y', strtotime($item->quote_date_start)) }}</small> ถึง
-                                            <small
-                                                class="text-muted">{{ date('d/m/y', strtotime($item->quote_date_end)) }}</small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div data-bs-toggle="tooltip" title="{{ $item->quotecustomer->customer_name }}">
-                                            {{ mb_substr($item->quotecustomer->customer_name, 0, 20) }}{{ strlen($item->quotecustomer->customer_name) > 20 ? '...' : '' }}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        @php
-                                            $sourceName = '';
-                                            if (
-                                                isset($item->quotecustomer->customer_campaign_source) &&
-                                                !empty($item->quotecustomer->customer_campaign_source) &&
-                                                isset($campaignSource)
-                                            ) {
-                                                $source = $campaignSource->firstWhere(
-                                                    'campaign_source_id',
-                                                    $item->quotecustomer->customer_campaign_source,
-                                                );
-                                                $sourceName = $source ? $source->campaign_source_name : '';
-                                            }
-                                        @endphp
-                                        {{ $sourceName ?: 'none' }}
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-info">{{ $item->quote_pax_total }}</span>
-                                    </td>
-                                    <td>
-                                        <small>{{ $item->quoteCountry->country_name_th }}</small>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-secondary badge-sm">{{ $item->airline->code }}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span
-                                            class="badge bg-warning text-dark badge-sm">{{ $item->quoteWholesale->code }}</span>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex flex-wrap gap-1">
-                                            {!! getQuoteStatusPayment($item) !!}
-                                        </div>
-                                    </td>
-                                    <td class="text-end">
-                                        <strong
-                                            class="text-success">{{ number_format($item->quote_grand_total, 0) }}</strong>
-                                        <small class="text-muted d-block">บาท</small>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex flex-wrap gap-1">
-                                            {!! getStatusPaymentWhosale($item) !!}
-                                        </div>
-                                    </td>
-                                    <td class="text-end">
-                                        @php
-                                            $totalWholesale = $item->inputtaxTotalWholesale() ?? 0;
-                                            $wholesalePaid =
-                                                $item->GetDepositWholesale() - $item->GetDepositWholesaleRefund();
-                                            $wholesaleOutstanding = $totalWholesale - $wholesalePaid;
-                                        @endphp
-                                        @if ($totalWholesale != 0 && $wholesaleOutstanding != 0)
-                                            @php
-                                                $inputtaxTotalWholesale += $wholesaleOutstanding;
-                                            @endphp
-
-                                            <span
-                                                class="text-danger fw-bold">{{ number_format($wholesaleOutstanding, 2) }}</span>
-                                        @elseif ($totalWholesale == 0)
-                                            <span class="text-muted">ยังไม่มีต้นทุน</span>
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
-
-                                        {{-- ต้นทุน : {{ number_format($totalWholesale, 2) }} --}}
-
-
-                                        {{-- @if ($item->GetDeposit() > 0 && $item->quote_status != 'cancel' && $totalWholesale > 0 && $wholesaleOutstanding != 0)
-                                        <span class="text-danger fw-bold">{{ number_format($wholesaleOutstanding, 2) }}</span>
-                                    @else
-                                        <span class="text-muted">-</span>
-                                    @endif --}}
-
-
-                                    </td>
-                                    <td>
-                                        <div class="d-flex flex-wrap gap-1" style="max-width: 100px;">
-                                            {!! getStatusBadge($item->quoteLogStatus, $item->inputtax) !!}
-                                            {!! getQuoteStatusQuotePayment($item) !!}
-                                            {!! getStatusWithholdingTax($item->quoteInvoice) !!}
-                                            {!! getQuoteStatusWithholdingTax($item->quoteLogStatus) !!}
-
-
-                                            {!! getStatusWhosaleInputTax($item->checkfileInputtax) !!}
-                                            {!! getStatusCustomerRefund($item->quoteLogStatus) !!}
-
-                                            {!! getStatusWholesaleRefund($item->quoteLogStatus) !!}
-
-
-                                            {{-- สามารถเพิ่ม helper อื่นๆ ที่เกี่ยวข้องกับ CheckList ได้ที่นี่ --}}
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <small>{{ $item->Salename->name }}</small>
-                                    </td>
-                                    <td class="text-center">
-                                        @can('quotation-edit')
-                                            <a href="{{ route('quote.editNew', $item->quote_id) }}"
-                                                class="btn btn-primary btn-sm mb-1" data-bs-toggle="tooltip"
-                                                title="จัดการข้อมูล">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                        @endcan
-
-                                        @can('quotation-delete')
-                                            <form action="{{ route('quotelist.destroy', $item->quote_id) }}" method="POST"
-                                                style="display:inline-block;"
-                                                onsubmit="return confirm('ยืนยันการลบข้อมูลใบเสนอราคานี้?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm " title="ลบข้อมูล">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
-                                            <br>
-                                        @endcan
-
-                                    </td>
-                                </tr>
-                            @empty
+                        <table class="table table-sm table-hover table-striped table-bordered" id="quote-table"
+                            style="font-size: 13px;">
+                            <thead class="table-dark sticky-top" style="font-size: 16px;">
                                 <tr>
-                                    <td colspan="17" class="text-center py-4">
-                                        <div class="text-muted">
-                                            <i class="fas fa-search fa-2x mb-3"></i>
-                                            <p>ไม่พบข้อมูลตามเงื่อนไขที่ค้นหา</p>
-                                        </div>
+                                    <th style="width: 40px;" class="text-center">#</th>
+                                    <th style="width: 80px;">วันที่จอง</th>
+                                    <th style="width: 120px;">ใบเสนอราคา</th>
+                                    <th style="width: 100px;">เลขจองทัวร์</th>
+                                    <th style="width: 200px;">โปรแกรมทัวร์</th>
+                                    <th style="width: 120px;">วันเดินทาง</th>
+                                    <th style="width: 150px;">ลูกค้า</th>
+                                    <th style="width: 120px;">ที่มา</th> <!-- New column -->
+                                    <th style="width: 50px;" class="text-center">PAX</th>
+                                    <th style="width: 80px;">ประเทศ</th>
+                                    <th style="width: 60px;">สายการบิน</th>
+                                    <th style="width: 80px;">โฮลเซลล์</th>
+                                    <th style="width: 120px;">สถานะลูกค้า</th>
+                                    <th style="width: 100px;" class="text-end">ยอดเงิน</th>
+                                    <th style="width: 120px;">สถานะโฮลเซลล์</th>
+                                    <th style="width: 100px;">ค้างชำระโฮลเซล</th>
+                                    <th style="width: 100px;">CheckList</th>
+                                    <th style="width: 80px;">ผู้ขาย</th>
+                                    <th style="width: 80px;" class="text-center">จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $inputtaxTotalWholesale = 0;
+                                @endphp
+                                @forelse ($quotations as $key => $item)
+                                    <tr class="align-middle" data-quote-id="{{ $item->quote_id }}">
+                                        <td class="text-center fw-bold">
+                                            {{ $quotations->total() - $quotations->firstItem() + 1 - $key }}
+                                        </td>
+                                        <td class="text-center">
+                                            <small
+                                                class="text-muted">{{ date('d/m/y', strtotime($item->quote_booking_create)) }}</small>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-column">
+                                                <span class="fw-bold text-primary">{{ $item->quote_number }}</span>
+                                                <div>
+                                                    @if ($item->debitNote)
+                                                        <span class="badge bg-success badge-sm">DBN</span>
+                                                    @endif
+                                                    @if ($item->creditNote)
+                                                        <span class="badge bg-danger badge-sm">CDN</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark">{{ $item->quote_booking }}</span>
+                                        </td>
+                                        <td>
+                                            <div data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="{{ $item->quote_tour_name ?: $item->quote_tour_name1 }}">
+                                                {{ mb_substr($item->quote_tour_name ?: $item->quote_tour_name1, 0, 25) }}
+                                                {{ strlen($item->quote_tour_name ?: $item->quote_tour_name1) > 25 ? '...' : '' }}
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex flex-column">
+                                                <small>{{ date('d/m/y', strtotime($item->quote_date_start)) }}</small> ถึง
+                                                <small
+                                                    class="text-muted">{{ date('d/m/y', strtotime($item->quote_date_end)) }}</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div data-bs-toggle="tooltip" title="">
+                                                {{ mb_substr($item->quotecustomer->customer_name, 0, 20) }}{{ mb_strlen($item->quotecustomer->customer_name) > 20 ? '...' : '' }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @php
+                                                $sourceName = '';
+                                                if (
+                                                    isset($item->quotecustomer->customer_campaign_source) &&
+                                                    !empty($item->quotecustomer->customer_campaign_source) &&
+                                                    isset($campaignSource)
+                                                ) {
+                                                    $source = $campaignSource->firstWhere(
+                                                        'campaign_source_id',
+                                                        $item->quotecustomer->customer_campaign_source,
+                                                    );
+                                                    $sourceName = $source ? $source->campaign_source_name : '';
+                                                }
+                                            @endphp
+                                            {{ $sourceName ?: 'none' }}
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-info">{{ $item->quote_pax_total }}</span>
+                                        </td>
+                                        <td>
+                                            <small>{{ $item->quoteCountry->country_name_th }}</small>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-secondary badge-sm">{{ $item->airline->code }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span
+                                                class="badge bg-warning text-dark badge-sm">{{ $item->quoteWholesale->code }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                {!! getQuoteStatusPayment($item) !!}
+                                            </div>
+                                        </td>
+                                        <td class="text-end">
+                                            <strong
+                                                class="text-success">{{ number_format($item->quote_grand_total, 0) }}</strong>
+                                            <small class="text-muted d-block">บาท</small>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                {!! getStatusPaymentWhosale($item) !!}
+                                            </div>
+                                        </td>
+                                        <td class="text-end">
+                                            @php
+                                                $totalWholesale = $item->inputtaxTotalWholesale() ?? 0;
+                                                $wholesalePaid =
+                                                    $item->GetDepositWholesale() - $item->GetDepositWholesaleRefund();
+                                                $wholesaleOutstanding = $totalWholesale - $wholesalePaid;
+                                            @endphp
+                                            @if ($totalWholesale != 0 && $wholesaleOutstanding != 0)
+                                                @php
+                                                    $inputtaxTotalWholesale += $wholesaleOutstanding;
+                                                @endphp
+
+                                                <span
+                                                    class="text-danger fw-bold">{{ number_format($wholesaleOutstanding, 2) }}</span>
+                                            @elseif ($totalWholesale == 0)
+                                                <span class="text-muted">ยังไม่มีต้นทุน</span>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+
+
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-wrap gap-1" style="max-width: 100px;">
+                                              {{-- {!! getStatusBadge($item->quoteCheckStatus) !!} --}}
+                                                @php
+                                                    $badgeCount = getStatusBadgeCount($item->quoteCheckStatus);
+                                                @endphp
+                                                @if ($badgeCount > 0)
+                                                <span class="badge rounded-pill bg-danger">ยังไม่ได้ทำ {{ $badgeCount }} รายการ</span>
+                                             
+                                                @endif
+
+                                                {!! getQuoteStatusQuotePayment($item) !!}
+                                                {!! getStatusWithholdingTax($item->quoteInvoice) !!}
+                                                {!! getQuoteStatusWithholdingTax($item->quoteLogStatus) !!}
+
+
+                                                {!! getStatusWhosaleInputTax($item->checkfileInputtax) !!}
+                                                {!! getStatusCustomerRefund($item->quoteLogStatus) !!}
+
+                                                {!! getStatusWholesaleRefund($item->quoteLogStatus) !!}
+
+
+                                                {{-- สามารถเพิ่ม helper อื่นๆ ที่เกี่ยวข้องกับ CheckList ได้ที่นี่ --}}
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <small>{{ $item->Salename->name }}</small>
+                                        </td>
+                                        <td class="text-center">
+                                            @can('quotation-edit')
+                                                <a href="{{ route('quote.editNew', $item->quote_id) }}"
+                                                    class="btn btn-primary btn-sm mb-1" data-bs-toggle="tooltip"
+                                                    title="จัดการข้อมูล">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            @endcan
+
+                                            @can('quotation-delete')
+                                                <form action="{{ route('quotelist.destroy', $item->quote_id) }}"
+                                                    method="POST" style="display:inline-block;"
+                                                    onsubmit="return confirm('ยืนยันการลบข้อมูลใบเสนอราคานี้?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm " title="ลบข้อมูล">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                                <br>
+                                            @endcan
+
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="17" class="text-center py-4">
+                                            <div class="text-muted">
+                                                <i class="fas fa-search fa-2x mb-3"></i>
+                                                <p>ไม่พบข้อมูลตามเงื่อนไขที่ค้นหา</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <td colspan="7" class="text-end fw-bold">สรุปรวม:</td>
+                                    <td class="text-center fw-bold text-primary">{{ number_format($SumPax) }}</td>
+                                    <td colspan="4"></td>
+                                    <td class="text-end fw-bold text-success">{{ number_format($SumTotal, 2) }}</td>
+                                    <td colspan="1" class="text-muted"><small>บาท</small></td>
+                                    <td colspan="1" class="text-muted">ยอดค้างชำระโฮลเซล :</td>
+                                    <td class="text-end fw-bold text-danger">
+
+                                        {{ number_format($inputtaxTotalWholesale, 2) }} บาท
                                     </td>
                                 </tr>
-                            @endforelse
-                        </tbody>
-                        <tfoot class="table-light">
-                            <tr>
-                                <td colspan="7" class="text-end fw-bold">สรุปรวม:</td>
-                                <td class="text-center fw-bold text-primary">{{ number_format($SumPax) }}</td>
-                                <td colspan="4"></td>
-                                <td class="text-end fw-bold text-success">{{ number_format($SumTotal, 2) }}</td>
-                                <td colspan="1" class="text-muted"><small>บาท</small></td>
-                                <td colspan="1" class="text-muted">ยอดค้างชำระโฮลเซล :</td>
-                                <td class="text-end fw-bold text-danger">
-
-                                    {{ number_format($inputtaxTotalWholesale, 2) }} บาท
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </div>

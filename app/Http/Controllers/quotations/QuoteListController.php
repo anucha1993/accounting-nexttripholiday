@@ -16,7 +16,6 @@ use App\Models\payments\paymentWholesaleModel;
 
 class QuoteListController extends Controller
 {
-    
     public function __construct()
     {
         $this->middleware('permission:view-quote', ['only' => ['index']]);
@@ -58,13 +57,13 @@ class QuoteListController extends Controller
                     $q->whereHas('quoteCustomer', function ($q1) use ($searchKeyword) {
                         $q1->where('customer_name', 'LIKE', '%' . $searchKeyword . '%');
                     })
-                    ->orWhere('quote_number', 'LIKE', '%' . $searchKeyword . '%')
-                    ->orWhere('quote_tour_name', 'LIKE', '%' . $searchKeyword . '%')
-                    ->orWhere('quote_tour_name1', 'LIKE', '%' . $searchKeyword . '%')
-                    ->orWhere('quote_booking', 'LIKE', '%' . $searchKeyword . '%')
-                    ->orWhereHas('quoteInvoice', function ($q2) use ($searchKeyword) {
-                        $q2->where('invoice_number', 'LIKE', '%' . $searchKeyword . '%');
-                    });
+                        ->orWhere('quote_number', 'LIKE', '%' . $searchKeyword . '%')
+                        ->orWhere('quote_tour_name', 'LIKE', '%' . $searchKeyword . '%')
+                        ->orWhere('quote_tour_name1', 'LIKE', '%' . $searchKeyword . '%')
+                        ->orWhere('quote_booking', 'LIKE', '%' . $searchKeyword . '%')
+                        ->orWhereHas('quoteInvoice', function ($q2) use ($searchKeyword) {
+                            $q2->where('invoice_number', 'LIKE', '%' . $searchKeyword . '%');
+                        });
                 });
             })
             ->when($searchPeriodDateStart && $searchPeriodDateEnd, function ($query) use ($searchPeriodDateStart, $searchPeriodDateEnd) {
@@ -101,17 +100,31 @@ class QuoteListController extends Controller
             ->when($searchLogStatus, function ($query, $searchLogStatus) {
                 return $query->whereHas('quoteLog', function ($q1) use ($searchLogStatus) {
                     switch ($searchLogStatus) {
-                        case 'booking_email_status': $q1->where('booking_email_status', 'ส่งแล้ว'); break;
-                        case 'invoice_status': $q1->where('invoice_status', 'ได้แล้ว'); break;
-                        case 'slip_status': $q1->where('slip_status', 'ส่งแล้ว'); break;
-                        case 'passport_status': $q1->where('passport_status', 'ส่งแล้ว'); break;
-                        case 'appointment_status': $q1->where('appointment_status', 'ส่งแล้ว'); break;
-                        case 'withholding_tax_status': $q1->where('withholding_tax_status', 'ออกแล้ว'); break;
-                        case 'wholesale_tax_status': $q1->where('wholesale_tax_status', 'ได้รับแล้ว'); break;
+                        case 'booking_email_status':
+                            $q1->where('booking_email_status', 'ส่งแล้ว');
+                            break;
+                        case 'invoice_status':
+                            $q1->where('invoice_status', 'ได้แล้ว');
+                            break;
+                        case 'slip_status':
+                            $q1->where('slip_status', 'ส่งแล้ว');
+                            break;
+                        case 'passport_status':
+                            $q1->where('passport_status', 'ส่งแล้ว');
+                            break;
+                        case 'appointment_status':
+                            $q1->where('appointment_status', 'ส่งแล้ว');
+                            break;
+                        case 'withholding_tax_status':
+                            $q1->where('withholding_tax_status', 'ออกแล้ว');
+                            break;
+                        case 'wholesale_tax_status':
+                            $q1->where('wholesale_tax_status', 'ได้รับแล้ว');
+                            break;
                     }
                 });
             })
-            
+
             // ไม่ filter ที่ SQL สำหรับ Check List ให้ filter หลัง paginate เท่านั้น เพื่อความตรงกับ badge ที่แสดงจริง
             ->when($searchSale && $searchSale != 'all', function ($query) use ($searchSale) {
                 return $query->where('quote_sale', $searchSale);
@@ -128,19 +141,23 @@ class QuoteListController extends Controller
                 });
             })
 
-            
             ->orderBy('created_at', 'desc');
 
         // ดึง status ทั้งหมดของ getQuoteStatusQuotePayment และ getStatusWithholdingTax (ก่อน paginate/filter)
-        $allQuoteStatusQuotePayment = $quotationsQuery->get()->flatMap(function($item) {
-            return [
-                strip_tags(getQuoteStatusQuotePayment($item)),
-                strip_tags(getStatusWithholdingTax($item->quoteInvoice)),
-                strip_tags(getQuoteStatusWithholdingTax($item->quoteLogStatus)),
-                strip_tags(\getStatusWhosaleInputTax($item->checkfileInputtax)),
-                // เพิ่ม helper อื่นๆ ได้ที่นี่
-            ];
-        })->unique()->filter()->values();
+        $allQuoteStatusQuotePayment = $quotationsQuery
+            ->get()
+            ->flatMap(function ($item) {
+                return [
+                    strip_tags(getQuoteStatusQuotePayment($item)),
+                    strip_tags(getStatusWithholdingTax($item->quoteInvoice)),
+                    strip_tags(getQuoteStatusWithholdingTax($item->quoteLogStatus)),
+                    strip_tags(\getStatusWhosaleInputTax($item->checkfileInputtax)),
+                    // เพิ่ม helper อื่นๆ ได้ที่นี่
+                ];
+            })
+            ->unique()
+            ->filter()
+            ->values();
 
         $queryString = $quotationsQuery->toSql();
         $queryBindings = $quotationsQuery->getBindings();
@@ -148,74 +165,85 @@ class QuoteListController extends Controller
         $quotations = $quotationsQuery->paginate($perPage)->withQueryString();
         // Filter สถานะชำระโฮลเซลล์
         if (!empty($searchPaymentWholesaleStatus) && $searchPaymentWholesaleStatus !== 'all') {
-            $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchPaymentWholesaleStatus) {
-                // ดึงยอดชำระโฮลเซลล์
-                $paymentQuery = paymentWholesaleModel::where('payment_wholesale_quote_id', $quotation->quote_id);
-                $netPaid = $paymentQuery
-                    ->selectRaw('COALESCE(SUM(payment_wholesale_total),0) - COALESCE(SUM(payment_wholesale_refund_total),0) as net_paid')
-                    ->value('net_paid') ?? 0;
-                // ตรวจสอบไฟล์แนบสลิป paid
-                $hasPaidSlip = $paymentQuery->whereNotNull('payment_wholesale_file_path')->where('payment_wholesale_file_path', '!=', '')->exists();
-                // ตรวจสอบไฟล์แนบ refund ถ้ามียอดคืนเงิน
-                $hasRefundSlip = true;
-                $refundQuery = paymentWholesaleModel::where('payment_wholesale_quote_id', $quotation->quote_id)
-                    ->where('payment_wholesale_refund_total', '>', 0);
-                if ($refundQuery->exists()) {
-                    $hasRefundSlip = $refundQuery->whereNotNull('payment_wholesale_refund_file_path')->where('payment_wholesale_refund_file_path', '!=', '')->exists();
-                }
-                // ดึงต้นทุนโฮลเซลล์
-                $cost = inputTaxModel::where('input_tax_quote_id', $quotation->quote_id)
-                    ->whereIn('input_tax_type', [2,4,5,6,7])
-                    ->sum('input_tax_grand_total');
-                if ($searchPaymentWholesaleStatus == '0') {
-                    return $netPaid == 0;
-                } elseif ($searchPaymentWholesaleStatus == '1') {
-                    return $netPaid > 0 && $netPaid < $cost && $hasPaidSlip && $hasRefundSlip;
-                } elseif ($searchPaymentWholesaleStatus == '2') {
-                    return $netPaid >= $cost && $cost > 0 && $hasPaidSlip && $hasRefundSlip;
-                }
-                return true;
-            })->values();
+            $filtered = $quotations
+                ->getCollection()
+                ->filter(function ($quotation) use ($searchPaymentWholesaleStatus) {
+                    // ดึงยอดชำระโฮลเซลล์
+                    $paymentQuery = paymentWholesaleModel::where('payment_wholesale_quote_id', $quotation->quote_id);
+                    $netPaid = $paymentQuery->selectRaw('COALESCE(SUM(payment_wholesale_total),0) - COALESCE(SUM(payment_wholesale_refund_total),0) as net_paid')->value('net_paid') ?? 0;
+                    // ตรวจสอบไฟล์แนบสลิป paid
+                    $hasPaidSlip = $paymentQuery->whereNotNull('payment_wholesale_file_path')->where('payment_wholesale_file_path', '!=', '')->exists();
+                    // ตรวจสอบไฟล์แนบ refund ถ้ามียอดคืนเงิน
+                    $hasRefundSlip = true;
+                    $refundQuery = paymentWholesaleModel::where('payment_wholesale_quote_id', $quotation->quote_id)->where('payment_wholesale_refund_total', '>', 0);
+                    if ($refundQuery->exists()) {
+                        $hasRefundSlip = $refundQuery->whereNotNull('payment_wholesale_refund_file_path')->where('payment_wholesale_refund_file_path', '!=', '')->exists();
+                    }
+                    // ดึงต้นทุนโฮลเซลล์
+                    $cost = inputTaxModel::where('input_tax_quote_id', $quotation->quote_id)
+                        ->whereIn('input_tax_type', [2, 4, 5, 6, 7])
+                        ->sum('input_tax_grand_total');
+                    if ($searchPaymentWholesaleStatus == '0') {
+                        return $netPaid == 0;
+                    } elseif ($searchPaymentWholesaleStatus == '1') {
+                        return $netPaid > 0 && $netPaid < $cost && $hasPaidSlip && $hasRefundSlip;
+                    } elseif ($searchPaymentWholesaleStatus == '2') {
+                        return $netPaid >= $cost && $cost > 0 && $hasPaidSlip && $hasRefundSlip;
+                    }
+                    return true;
+                })
+                ->values();
             $quotations->setCollection($filtered);
         }
 
         // Filter ด้วย getQuoteStatusPaymentKey (Helper) หลัง paginate เฉพาะกรณีเลือกสถานะ (เพื่อให้ตรงกับ Blade)
         if (!empty($searchCustomerPayment) && $searchCustomerPayment !== 'all') {
-            $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchCustomerPayment) {
-                $statusKey = trim(strip_tags(getQuoteStatusPayment($quotation)));
-                return $statusKey == $searchCustomerPayment;
-            })->values();
+            $filtered = $quotations
+                ->getCollection()
+                ->filter(function ($quotation) use ($searchCustomerPayment) {
+                    $statusKey = trim(strip_tags(getQuoteStatusPayment($quotation)));
+                    return $statusKey == $searchCustomerPayment;
+                })
+                ->values();
             $quotations->setCollection($filtered);
         }
 
-         // Filter ด้วย getQuoteStatusPaymentKey (Helper) หลัง paginate เฉพาะกรณีเลือกสถานะ (เพื่อให้ตรงกับ Blade)
+        // Filter ด้วย getQuoteStatusPaymentKey (Helper) หลัง paginate เฉพาะกรณีเลือกสถานะ (เพื่อให้ตรงกับ Blade)
         if (!empty($searchNotLogStatus) && $searchNotLogStatus !== 'all') {
             $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchNotLogStatus) {
-                $statusText = trim(strip_tags(getStatusBadge($quotation->quoteLogStatus)));
-                return $statusText == $searchNotLogStatus;
+                $statusText = trim(strip_tags(getStatusBadge($quotation->quoteCheckStatus)));
+                // แยก badge ด้วยช่องว่าง 1 ตัวขึ้นไป (รองรับ badge หลายอัน)
+                $badgeList = preg_split('/\s{2,}|(?<=\S) (?=\S)/u', $statusText);
+                return in_array($searchNotLogStatus, array_map('trim', $badgeList));
             })->values();
             $quotations->setCollection($filtered);
         }
 
-          // Filter สถานะลูกค้าชำระเงินเกิน
-       if (!empty($searchPaymentOverpays) && $searchPaymentOverpays !== 'all') {
-    $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchPaymentOverpays) {
-        if ($searchPaymentOverpays === 'รอใบหัก จากลูกค้า') {
-            $statusText = trim(strip_tags(getStatusWithholdingTax($quotation->quoteInvoice)));
-        } else {
-            $statusText = trim(strip_tags(getQuoteStatusQuotePayment($quotation)));
+        // Filter สถานะลูกค้าชำระเงินเกิน
+        if (!empty($searchPaymentOverpays) && $searchPaymentOverpays !== 'all') {
+            $filtered = $quotations
+                ->getCollection()
+                ->filter(function ($quotation) use ($searchPaymentOverpays) {
+                    if ($searchPaymentOverpays === 'รอใบหัก จากลูกค้า') {
+                        $statusText = trim(strip_tags(getStatusWithholdingTax($quotation->quoteInvoice)));
+                    } else {
+                        $statusText = trim(strip_tags(getQuoteStatusQuotePayment($quotation)));
+                    }
+                    return $statusText == $searchPaymentOverpays;
+                })
+                ->values();
+            $quotations->setCollection($filtered);
         }
-        return $statusText == $searchPaymentOverpays;
-    })->values();
-    $quotations->setCollection($filtered);
-}
 
-          // Filter สถานะชำระเงินโฮลเซลเกิน
+        // Filter สถานะชำระเงินโฮลเซลเกิน
         if (!empty($searchPaymentWholesaleOverpays) && $searchPaymentWholesaleOverpays !== 'all') {
-            $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchPaymentWholesaleOverpays) {
-                $statusText = trim(strip_tags(getStatusPaymentWhosale($quotation)));
-                return $statusText == $searchPaymentWholesaleOverpays;
-            })->values();
+            $filtered = $quotations
+                ->getCollection()
+                ->filter(function ($quotation) use ($searchPaymentWholesaleOverpays) {
+                    $statusText = trim(strip_tags(getStatusPaymentWhosale($quotation)));
+                    return $statusText == $searchPaymentWholesaleOverpays;
+                })
+                ->values();
             $quotations->setCollection($filtered);
         }
 
@@ -225,22 +253,10 @@ class QuoteListController extends Controller
         $SumPax = $quotations->sum('quote_pax_total');
         $SumTotal = $quotations->sum('quote_grand_total');
 
-        
-        $customerPaymentStatuses = [
-            'รอคืนเงิน',
-            'ยกเลิกการสั่งซื้อ',
-            'ชำระเงินครบแล้ว',
-            'ชำระเงินเกิน',
-            'เกินกำหนดชำระเงิน',
-            'รอชำระเงินเต็มจำนวน',
-            'รอชำระเงินมัดจำ',
-            'คืนเงินแล้ว',
-        ];
-
-
+        $customerPaymentStatuses = ['รอคืนเงิน', 'ยกเลิกการสั่งซื้อ', 'ชำระเงินครบแล้ว', 'ชำระเงินเกิน', 'เกินกำหนดชำระเงิน', 'รอชำระเงินเต็มจำนวน', 'รอชำระเงินมัดจำ', 'คืนเงินแล้ว'];
 
         // ส่ง $allQuoteStatusQuotePayment ไปที่ view
-        return view('quotations.list', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'customerPaymentStatuses', 'campaignSource', 'allQuoteStatusQuotePayment','queryString', 'queryBindings'));
+        return view('quotations.list', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'customerPaymentStatuses', 'campaignSource', 'allQuoteStatusQuotePayment', 'queryString', 'queryBindings'));
     }
 
     /**

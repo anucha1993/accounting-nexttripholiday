@@ -25,7 +25,7 @@
              </tr>
          </thead>
          <tbody>
-             tr>
+          
              @foreach ($quotationSuccess as $item)
                  <tr>
                      <td><a href="{{ route('quote.editNew', $item->quote_id) }}">{{ $item->quote_number }}</a></td>
@@ -67,7 +67,7 @@
                      <td>
                          @php
                              $commission = calculateCommission(
-                                 $item->getNetProfit(),
+                                 $item->getNetProfitPerPax(),
                                  $item->quote_sale,
                                  'qt',
                                  $item->quote_pax_total,
