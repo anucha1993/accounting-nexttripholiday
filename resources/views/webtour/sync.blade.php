@@ -48,45 +48,44 @@
             <i class="fa fa-cogs me-2"></i> <b>ตั้งค่าการ Sync Table</b>
         </div>
         <div class="card-body">
-            <form method="GET" action="{{ url('/web-tour/sync') }}" id="syncForm">
-                <div class="mb-3">
-                    <label><b>เลือก Table ที่ต้องการ Sync</b></label>
-                    <div class="row g-2">
-                        @foreach($tableList as $table)
+            <div class="mb-3">
+                <label><b>เลือก Table ที่ต้องการ Sync (ทีละ table)</b></label>
+                <div class="row g-2">
+                    @php
+                        $selectedTables = $selectedTables ?? [];
+                    @endphp
+                    @foreach($tableList as $table)
                         @if (in_array($table, $selectedTables))
-                            
-                            <div class="col-md-3 col-6">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="tables[]" value="{{ $table }}" id="table_{{ $table }}" 
-                                        @if(is_array(old('tables', $selectedTables ?? [])) ? in_array($table, old('tables', $selectedTables ?? [])) : false) checked @endif>
-                                    <label class="form-check-label" for="table_{{ $table }}">{{ $table }}</label>
-                                </div>
-                            </div>
-                             @endif
-                        @endforeach
-                    </div>
+                        <div class="col-md-3 col-6 mb-2">
+                            <form method="GET" action="{{ url('/web-tour/sync') }}" class="d-flex align-items-center single-sync-form">
+                                <input type="hidden" name="table" value="{{ $table }}">
+                                <span class="me-2">{{ $table }}</span>
+                                <button type="submit" class="btn btn-success btn-sm"><i class="fa fa-sync"></i> Sync</button>
+                            </form>
+                        </div>
+                        @endif
+                    @endforeach
                 </div>
-                <button class="btn btn-success"><i class="fa fa-sync"></i> Sync Now</button>
-                <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content bg-transparent border-0 shadow-none">
-                      <div class="modal-body text-center">
-                        <div class="spinner-border text-success" style="width: 4rem; height: 4rem;" role="status"></div>
-                        <div class="mt-3 text-success fw-bold">กำลัง Sync ข้อมูล กรุณารอสักครู่...</div>
-                      </div>
-                    </div>
+            </div>
+            <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-transparent border-0 shadow-none">
+                  <div class="modal-body text-center">
+                    <div class="spinner-border text-success" style="width: 4rem; height: 4rem;" role="status"></div>
+                    <div class="mt-3 text-success fw-bold">กำลัง Sync ข้อมูล กรุณารอสักครู่...</div>
                   </div>
                 </div>
-            </form>
+              </div>
+            </div>
         <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var syncForm = document.getElementById('syncForm');
-            if(syncForm) {
-                syncForm.addEventListener('submit', function() {
+            var forms = document.querySelectorAll('.single-sync-form');
+            forms.forEach(function(form) {
+                form.addEventListener('submit', function() {
                     var modal = new bootstrap.Modal(document.getElementById('loadingModal'));
                     modal.show();
                 });
-            }
+            });
         });
         </script>
         </div>

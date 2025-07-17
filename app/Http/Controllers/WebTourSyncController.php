@@ -42,10 +42,21 @@ class WebTourSyncController extends Controller
         } catch (\Exception $e) {
             $tableList = [];
         }
-        // รับ table ที่เลือกจากฟอร์ม (array) ถ้าไม่เลือกอะไร default เป็น tb_tour
-        $selectedTables = $request->input('tables', ['tb_tour','tb_booking_form','tb_country','tb_travel_type','tb_wholesale','users','tb_tour_period']);
+        // รองรับทั้งแบบ sync ทีละ table (GET: ?table=xxx) และ sync หลาย table (POST/GET: ?tables[]=xxx)
+        $selectedTables = [];
         $results = [];
-        if ($request->isMethod('post') || $request->has('tables')) {
+        if ($request->has('table')) {
+            // sync ทีละ table (GET)
+            $selectedTables = [$request->input('table')];
+        } elseif ($request->has('tables')) {
+            // sync หลาย table (POST หรือ GET)
+            $selectedTables = $request->input('tables', []);
+        } else {
+            // default table
+             $selectedTables = $request->input('tables', ['tb_tour','tb_booking_form','tb_country','tb_travel_type','tb_wholesale','users','tb_tour_period']);
+        }
+
+        if ($request->isMethod('post') || $request->has('table') || $request->has('tables')) {
             if ($sourceStatus === 'success' && $targetStatus === 'success') {
                 foreach ($selectedTables as $table) {
                     $total = 0;
