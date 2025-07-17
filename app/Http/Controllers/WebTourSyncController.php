@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class WebTourSyncController extends Controller
@@ -65,25 +66,65 @@ class WebTourSyncController extends Controller
                     $status = 'success';
                     $error = null;
                     try {
-                        $source = DB::connection('mysql_web_tour')->table($table)->get();
-                        $total = $source->count();
-                        foreach ($source as $row) {
-                            $data = (array) $row;
-                            $pk = array_key_exists('id', $data) ? 'id' : (array_keys($data)[0] ?? null);
-                            if (!$pk) continue;
-                            $id = $data[$pk];
-                            $exists = DB::connection('mysql2')->table($table)->where($pk, $id)->exists();
-                            if ($exists) {
-                                DB::connection('mysql2')->table($table)->where($pk, $id)->update($data);
-                                $updated++;
-                            } else {
-                                DB::connection('mysql2')->table($table)->insert($data);
-                                $inserted++;
-                            }
+                        if ($table === 'tb_tour_period') {
+                            // sync เฉพาะ 2000 row ล่าสุด (id มากสุด)
+                            DB::connection('mysql_web_tour')->table($table)
+                                ->orderByDesc('id')
+                                ->limit(2000)
+                                ->orderBy('id') // เพื่อให้ chunk เรียง id น้อยไปมาก
+                                ->chunk(1000, function ($rows) use (&$total, &$updated, &$inserted, $table) {
+                                    foreach ($rows as $row) {
+                                        $data = (array) $row;
+                                        $pk = array_key_exists('id', $data) ? 'id' : (array_keys($data)[0] ?? null);
+                                        if (!$pk) continue;
+                                        $id = $data[$pk];
+                                        try {
+                                            $exists = DB::connection('mysql2')->table($table)->where($pk, $id)->exists();
+                                            if ($exists) {
+                                                DB::connection('mysql2')->table($table)->where($pk, $id)->update($data);
+                                                $updated++;
+                                            } else {
+                                                DB::connection('mysql2')->table($table)->insert($data);
+                                                $inserted++;
+                                            }
+                                            $total++;
+                                        } catch (\Exception $ex) {
+                                            Log::error("[SYNC-ROW-ERROR] table: $table, id: $id, error: " . $ex->getMessage(), ['data' => $data]);
+                                            continue;
+                                        }
+                                    }
+                                    return true;
+                                });
+                        } else {
+                            // table อื่น sync ทั้งหมด
+                            DB::connection('mysql_web_tour')->table($table)->orderBy('id')->chunk(1000, function ($rows) use (&$total, &$updated, &$inserted, $table) {
+                                foreach ($rows as $row) {
+                                    $data = (array) $row;
+                                    $pk = array_key_exists('id', $data) ? 'id' : (array_keys($data)[0] ?? null);
+                                    if (!$pk) continue;
+                                    $id = $data[$pk];
+                                    try {
+                                        $exists = DB::connection('mysql2')->table($table)->where($pk, $id)->exists();
+                                        if ($exists) {
+                                            DB::connection('mysql2')->table($table)->where($pk, $id)->update($data);
+                                            $updated++;
+                                        } else {
+                                            DB::connection('mysql2')->table($table)->insert($data);
+                                            $inserted++;
+                                        }
+                                        $total++;
+                                    } catch (\Exception $ex) {
+                                        Log::error("[SYNC-ROW-ERROR] table: $table, id: $id, error: " . $ex->getMessage(), ['data' => $data]);
+                                        continue;
+                                    }
+                                }
+                                return true;
+                            });
                         }
                     } catch (\Exception $e) {
                         $status = 'error';
                         $error = $e->getMessage();
+                        Log::error("[SYNC-TABLE-ERROR] table: $table, error: " . $e->getMessage());
                     }
                     // log
                     DB::connection('mysql')->table('sync_logs')->insert([

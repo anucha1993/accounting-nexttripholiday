@@ -369,12 +369,12 @@
                         <input type="hidden" id="period2" name="period2">
                         <input type="hidden" id="period3" name="period3">
                         <input type="hidden" id="period4" name="period4">
-                        <input type="hidden" id="date-start" name="quote_date_start">
+                        <input type="hidden" id="date-start" name="quote_date_start" value="{{$bookingModel->start_date}}">
                     </div>
                     <div class="col-md-3">
                         <label>วันเดินทางกลับ: </label>
                         <input type="date" class="form-control" value="{{ date('Y-m-d', strtotime($bookingModel->end_date)) }}" min="{{ date('Y-m-d') }}" id="date-end-display" placeholder="วันเดินทางกลับ..." required>
-                        <input type="hidden" id="date-end"  name="quote_date_end">
+                        <input type="hidden" id="date-end"  name="quote_date_end" value="{{$bookingModel->end_date }}">
                     </div>
                 </div>
                 </div>
