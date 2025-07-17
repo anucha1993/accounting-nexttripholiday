@@ -13,7 +13,8 @@ class WebTourSyncController extends Controller
     {
         // ดึง config database ทั้งสองฝั่ง
         $sourceConfig = config('database.connections.mysql_web_tour');
-        $targetConfig = config('database.connections.mysql');
+        $targetConfig = config('database.connections.mysql2');
+        $targetLog = config('database.connections.mysql');
         $sourceStatus = 'success';
         $sourceError = null;
         $targetStatus = 'success';
@@ -42,64 +43,66 @@ class WebTourSyncController extends Controller
             $tableList = [];
         }
         // รับ table ที่เลือกจากฟอร์ม (array) ถ้าไม่เลือกอะไร default เป็น tb_tour
-        $selectedTables = $request->input('tables', ['tb_tour']);
+        $selectedTables = $request->input('tables', ['tb_tour','tb_booking_form','tb_country','tb_travel_type','tb_wholesale','users','tb_tour_period']);
         $results = [];
-        if ($sourceStatus === 'success' && $targetStatus === 'success') {
-            foreach ($selectedTables as $table) {
-                $total = 0;
-                $updated = 0;
-                $inserted = 0;
-                $status = 'success';
-                $error = null;
-                try {
-                    $source = DB::connection('mysql_web_tour')->table($table)->get();
-                    $total = $source->count();
-                    foreach ($source as $row) {
-                        $data = (array) $row;
-                        $pk = array_key_exists('id', $data) ? 'id' : (array_keys($data)[0] ?? null);
-                        if (!$pk) continue;
-                        $id = $data[$pk];
-                        $exists = DB::table($table)->where($pk, $id)->exists();
-                        if ($exists) {
-                            DB::table($table)->where($pk, $id)->update($data);
-                            $updated++;
-                        } else {
-                            DB::table($table)->insert($data);
-                            $inserted++;
+        if ($request->isMethod('post') || $request->has('tables')) {
+            if ($sourceStatus === 'success' && $targetStatus === 'success') {
+                foreach ($selectedTables as $table) {
+                    $total = 0;
+                    $updated = 0;
+                    $inserted = 0;
+                    $status = 'success';
+                    $error = null;
+                    try {
+                        $source = DB::connection('mysql_web_tour')->table($table)->get();
+                        $total = $source->count();
+                        foreach ($source as $row) {
+                            $data = (array) $row;
+                            $pk = array_key_exists('id', $data) ? 'id' : (array_keys($data)[0] ?? null);
+                            if (!$pk) continue;
+                            $id = $data[$pk];
+                            $exists = DB::connection('mysql2')->table($table)->where($pk, $id)->exists();
+                            if ($exists) {
+                                DB::connection('mysql2')->table($table)->where($pk, $id)->update($data);
+                                $updated++;
+                            } else {
+                                DB::connection('mysql2')->table($table)->insert($data);
+                                $inserted++;
+                            }
                         }
+                    } catch (\Exception $e) {
+                        $status = 'error';
+                        $error = $e->getMessage();
                     }
-                } catch (\Exception $e) {
-                    $status = 'error';
-                    $error = $e->getMessage();
+                    // log
+                    DB::connection('mysql')->table('sync_logs')->insert([
+                        'table_name' => $table,
+                        'synced_at' => Carbon::now(),
+                        'total_synced' => $total,
+                        'total_updated' => $updated,
+                        'total_inserted' => $inserted,
+                        'status' => $status,
+                        'error_message' => $error,
+                    ]);
+                    $results[] = compact('table', 'total', 'updated', 'inserted', 'status', 'error');
                 }
-                // log
-                DB::table('sync_logs')->insert([
-                    'table_name' => $table,
-                    'synced_at' => Carbon::now(),
-                    'total_synced' => $total,
-                    'total_updated' => $updated,
-                    'total_inserted' => $inserted,
-                    'status' => $status,
-                    'error_message' => $error,
-                ]);
-                $results[] = compact('table', 'total', 'updated', 'inserted', 'status', 'error');
-            }
-        } else {
-            $status = 'error';
-            $error = $sourceError ?: $targetError;
-            foreach ($selectedTables as $table) {
-                $results[] = [
-                    'table' => $table,
-                    'total' => 0,
-                    'updated' => 0,
-                    'inserted' => 0,
-                    'status' => 'error',
-                    'error' => $error
-                ];
+            } else {
+                $status = 'error';
+                $error = $sourceError ?: $targetError;
+                foreach ($selectedTables as $table) {
+                    $results[] = [
+                        'table' => $table,
+                        'total' => 0,
+                        'updated' => 0,
+                        'inserted' => 0,
+                        'status' => 'error',
+                        'error' => $error
+                    ];
+                }
             }
         }
         // log ล่าสุด
-        $logs = DB::table('sync_logs')->orderByDesc('synced_at')->limit(10)->get();
+        $logs = DB::connection('mysql')->table('sync_logs')->orderByDesc('synced_at')->limit(10)->get();
         return view('webtour.sync', compact(
             'tableList', 'selectedTables', 'results', 'logs',
             'sourceConfig', 'targetConfig', 'sourceStatus', 'sourceError', 'targetStatus', 'targetError'

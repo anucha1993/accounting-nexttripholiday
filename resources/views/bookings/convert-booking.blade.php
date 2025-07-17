@@ -258,6 +258,7 @@
             <h2 class="text-center my-4"><i class="fa fa-file-invoice-dollar" style="color:#1976d2;margin-right:8px;"></i>Convert To Quotations </h2>
             <form action="{{ route('quote.store') }}" id="formQuoteModern" method="post">
                 @csrf
+                <input type="text" name="tb_booking_form" value="{{ $bookingModel->id }}" hidden>
                 <div class="section-card">
                     <div class="section-title"><i class="fa fa-user-tie"></i> ข้อมูลทั่วไป</div>
                     <div class="row table-custom ">
@@ -300,7 +301,7 @@
                     <div class="row table-custom">
                     <div class="col-md-6 position-relative">
                         <label>ชื่อแพคเกจทัวร์:</label>
-                        <input type="text" id="tourSearch"  value="{{ $tour->code }}-{{ $tour->name }}" class="form-control" name="quote_tour_name" placeholder="ค้นหาแพคเกจทัวร์...ENTER เพื่อค้นหา" required autocomplete="off">
+                        <input type="text" id="tourSearch"  value="{{ $tour?->code }}-{{ $tour?->name }}" class="form-control" name="quote_tour_name" placeholder="ค้นหาแพคเกจทัวร์...ENTER เพื่อค้นหา" required autocomplete="off">
                         <button type="button" id="resetTourSearch" class="btn btn-link btn-sm position-absolute end-0 top-0" style="z-index:1100;right:10px;top:30px"><i class="fa fa-times"></i></button>
                         <div id="tourResults" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
                     </div>

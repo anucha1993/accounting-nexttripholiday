@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\booking;
 
-use App\Models\User;
 use Carbon\Carbon;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
 use App\Models\mumday\numDayModel;
@@ -14,6 +14,7 @@ use App\Models\booking\bookingModel;
 
 use App\Models\products\productModel;
 use App\Models\wholesale\wholesaleModel;
+use App\Models\quotations\quotationModel;
 
 class BookingController extends Controller
 {
@@ -45,6 +46,7 @@ class BookingController extends Controller
         $sales = saleModel::select('name', 'id')
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
             ->get();
+            $quotationBookingIds = quotationModel::pluck('tb_booking_form')->toArray();
 
         $booking = DB::connection('mysql2')
             ->table('tb_booking_form')
@@ -69,21 +71,18 @@ class BookingController extends Controller
                 'tb_booking_form.price1',
                 //ราคารวมผู้ใหญ่พักคู่
                 'tb_booking_form.sum_price1',
-
                 //จำนวนผู้ใหญ่พักเดี่ยว
                 'tb_booking_form.num_single',
                 //ราคาต่อคนผู้ใหญ่พักเดี่ยว
                 'tb_booking_form.price2',
                 //ราคาต่อคนผู้ใหญ่พักเดี่ยว
                 'tb_booking_form.sum_price2',
-
                 //จำนวนเด็กมีเตียง
                 'tb_booking_form.num_child',
                 //ราคาต่อคนเด็กมีเตียง
                 'tb_booking_form.price3',
                 //ราคารวมเด็กมีเตียง
                 'tb_booking_form.sum_price3',
-
                 //จำนวนเด็กไม่มีเตียง
                 'tb_booking_form.num_childnb',
                 //	ราคาต่อคนเด็กไม่มีเตียง	
@@ -92,7 +91,6 @@ class BookingController extends Controller
                 'tb_booking_form.sum_price4',
                 //ราคารวมทั้งหมด
                 'tb_booking_form.total_price',
-
                 //tb_tour
                 'tb_tour.code as tour_code',
                 'tb_tour.id as tour_id',
@@ -109,14 +107,14 @@ class BookingController extends Controller
                 'tb_travel_type.travel_name as airline_name',
                 'tb_travel_type.id as travel_type_id',
                 //country
-                'tb_tour.country_id as country_id'
-            )
+                'tb_tour.country_id as country_id')
             ->leftJoin('tb_tour', 'tb_tour.id', 'tb_booking_form.tour_id')
             ->leftJoin('users', 'users.id', 'tb_booking_form.sale_id')
             ->leftJoin('tb_wholesale', 'tb_wholesale.id', 'tb_tour.wholesale_id')
             ->leftJoin('tb_travel_type', 'tb_travel_type.id', 'tb_tour.airline_id')
             ->leftJoin('tb_country', 'tb_country.id', 'tb_tour.country_id')
-            ->where('tb_booking_form.status', 'Success');
+            ->where('tb_booking_form.status', 'Success')
+            ->whereNotIn('tb_booking_form.id', $quotationBookingIds);
 
         if (!empty($keyword_name)) {
             $booking = $booking->where(function ($query) use ($keyword_name) {
@@ -174,18 +172,6 @@ class BookingController extends Controller
             }
         }
 
-        //     $country_name = '';
-        //     $array = json_decode($request->tour_country);
-        //     $country_ids = explode(',', $request->tour_country);
-        //     $countrys =  DB::connection('mysql2')->table('tb_country')->whereIn('id', $array)->get();
-
-        //     foreach ($countrys as $country) {
-        //         $country_name .= $country->country_name_th . ' ';
-        //     }
-        //    // dd($country_name);
-        //     return view('bookings.convert-booking', compact('checkCustomer', 'request', 'country_name'));
-
-
         $checkCustomer = DB::connection('mysql')
             ->table('customer')
             ->where('customer_name', $bookingModel->name)
@@ -202,6 +188,7 @@ class BookingController extends Controller
         $products = productModel::where('product_type','income')->get();
         $productDiscount = productModel::where('product_type','discount')->get();
 
+        //dd($wholesale);
 
         $quotationModel = [];
         $quoteProducts  = [];

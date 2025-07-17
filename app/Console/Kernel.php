@@ -33,6 +33,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('notify:appointment-checklist')
             ->timezone('Asia/Bangkok')
             ->dailyAt('16:00');
+
+     $schedule->command('sync:webtour')->dailyAt('08:00');
+    $schedule->command('sync:webtour')->dailyAt('12:00');
+    $schedule->command('sync:webtour')->dailyAt('16:00');
     }
 
     /**
