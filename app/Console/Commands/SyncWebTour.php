@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class SyncWebTour extends Command
 {
-    protected $signature = 'sync:webtour';
+    protected $signature = 'sync:webtour {table}';
     protected $description = 'Sync WEB_TOUR table from mysql_web_tour to mysql (vdragon_next)';
 
     public function handle()

@@ -41,7 +41,7 @@ class Kernel extends ConsoleKernel
     foreach ($baseTimes as $baseTime) {
         foreach ($tables as $i => $table) {
             $time = \Carbon\Carbon::parse($baseTime)->addMinutes($i * $interval)->format('H:i');
-            $schedule->command('webtour:sync-table ' . $table)->dailyAt($time);
+           $schedule->command('sync:webtour ' . $table)->dailyAt($time);
         }
     }
     }
