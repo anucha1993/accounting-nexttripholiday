@@ -697,6 +697,21 @@
                 </div>
                 </div>
                 <div class="text-end mt-3">
+                <div class="row mb-3 ">
+                    <div class="col-md-3">
+                        <label>สถานะการจ่ายค่าคอมมิชชั่น:</label>
+                        <div>
+                            <input type="radio" name="quote_commission" id="commission-yes" value="Y" {{ (isset($quotationModel) && $quotationModel->quote_commission == 'Y') ? 'checked' : '' }}>
+                            <label for="commission-yes">จ่ายค่าคอม</label>
+                            <input type="radio" name="quote_commission" id="commission-no" value="N" {{ (isset($quotationModel) && $quotationModel->quote_commission == 'N') ? 'checked' : '' }}>
+                            <label for="commission-no">ไม่จ่ายค่าคอม</label>
+                        </div>
+                    </div>
+                    <div class="col-md-9" id="note-commission-block" style="display: none;">
+                        <label>บันทึกเหตุผลกรณีไม่จ่ายค่าคอมมิชชั่น</label>
+                        <textarea name="quote_note_commission" class="form-control" id="quote_note_commission" rows="2">{{ $quotationModel->quote_note_commission ?? '' }}</textarea>
+                    </div>
+                </div>
                     <input type="hidden" name="quote_vat_exempted_amount">
                     <input type="hidden" name="quote_pre_tax_amount">
                     <input type="hidden" name="quote_discount">
@@ -716,7 +731,19 @@
 </div>
 
 <script>
-
+$(function() {
+    function toggleNoteCommission() {
+        var val = $('input[name="quote_commission"]:checked').val();
+        if (val === 'N') {
+            $('#note-commission-block').show();
+        } else {
+            $('#note-commission-block').hide();
+        }
+    }
+    $(document).on('change', 'input[name="quote_commission"]', toggleNoteCommission);
+    // เรียกครั้งแรกตอนโหลด ถ้ามีค่าเดิม
+    toggleNoteCommission();
+});
     
 $(function() {
      // เมื่อคลิก 'เลือกวันที่' ให้แสดง list วันที่เดินทางของทัวร์ที่เลือก

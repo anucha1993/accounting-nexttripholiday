@@ -75,6 +75,8 @@ class quotationModel extends Model
         'quote_cancel_note',
         'quote_payment_status',
         'tb_booking_form',
+        'quote_commission',
+        'quote_note_commission',
     ];
 
     // ความสัมพันธ์กับ CampaignSource (customer_campaign_source)

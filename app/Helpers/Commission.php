@@ -4,8 +4,12 @@ use App\Models\commissions\commissionGroupModel;
 
 
 if (!function_exists('calculateCommission')) {
-    function calculateCommission(float $profit, int $saleId, string $mode = 'qt', int $people = 1): array
+    function calculateCommission(float $profit, int $saleId, string $mode = 'qt', int $people = 1, string $noCommission = 'N'): array
     {
+        // ถ้าเลือกไม่จ่ายค่าคอมมิชชั่น (Y) return 0 ทันที
+        if ($noCommission === 'Y') {
+            return ['amount' => 0, 'group_name' => null, 'percent' => 0, 'calculated' => 0, 'type' => 'no-commission'];
+        }
         $group = \App\Models\commissions\commissionGroupModel::whereJsonContains('sale_ids', (string) $saleId)->first();
 
         if (!$group) {

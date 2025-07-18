@@ -80,8 +80,14 @@
                      <td>{{ $paxSum > 0 ? number_format($netProfitSum / $paxSum, 2) : '0.00' }}</td>
                      <td>{{ number_format($commission['calculated'] ?? 0, 2) }}</td>
                      <td>
-                         <small>{{ $commission['amount'] ?? '' }}/</small>
+                          @if ($item->quote_commission === 'N')
+                           <small><b>ไม่จ่ายค่าคอมมิชชั่น :</b> {{ $item->quote_note_commission ?? '' }}</small>
+                          @else
+                           <small>{{ $commission['amount'] ?? '' }}/</small>
                          <small>{{ $commission['group_name'] ?? '' }}</small>
+                          @endif
+
+                        
                      </td>
                  </tr>
              @endforeach
