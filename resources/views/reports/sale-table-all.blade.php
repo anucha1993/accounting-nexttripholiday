@@ -69,6 +69,7 @@
                             $item->quote_sale,
                             'all',
                             $item->quote_pax_total,
+                            $item->quote_commission
                         );
                     @endphp
                     <td>

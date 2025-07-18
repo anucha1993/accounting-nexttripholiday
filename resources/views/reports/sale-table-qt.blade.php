@@ -71,6 +71,7 @@
                                 $item->quote_sale,
                                 'qt',
                                 $item->quote_pax_total,
+                                $item->quote_commission
                             );
                         @endphp
                         {{ number_format($commission['calculated'] ?? 0, 2) }}

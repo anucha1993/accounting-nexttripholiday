@@ -33,7 +33,12 @@
                      $saleName = $group['items']->first()->Salename->name ?? '';
                      $netProfitSum = $group['net_profit_sum'];
                      $paxSum = $group['pax_sum'];
-                     $commission = calculateCommission($netProfitSum, $group['sale_id'], 'total', $paxSum);
+                     // หา commission status ของ group (ถ้าใน group มี quote_commission = 'N' อย่างน้อย 1 รายการ ให้ถือว่าไม่จ่ายค่าคอม)
+                     $hasNoCommission = $group['items']->contains(function($item) {
+                         return $item->quote_commission === 'N';
+                     }) ? 'Y' : 'N';
+                     
+                     $commission = calculateCommission($netProfitSum, $group['sale_id'], 'total', $paxSum, $hasNoCommission);
                      // รวมข้อมูล Quotes, ช่วงเวลาเดินทาง, โฮลเซลล์, ชื่อลูกค้า, ประเทศ, แพคเกจทัวร์, ที่มา
                      $quotes = $group['items']->pluck('quote_number')->implode(', ');
                      $dateRanges = $group['items']->map(function($item) {
@@ -80,14 +85,14 @@
                      <td>{{ $paxSum > 0 ? number_format($netProfitSum / $paxSum, 2) : '0.00' }}</td>
                      <td>{{ number_format($commission['calculated'] ?? 0, 2) }}</td>
                      <td>
-                          @if ($item->quote_commission === 'N')
-                           <small><b>ไม่จ่ายค่าคอมมิชชั่น :</b> {{ $item->quote_note_commission ?? '' }}</small>
-                          @else
-                           <small>{{ $commission['amount'] ?? '' }}/</small>
-                         <small>{{ $commission['group_name'] ?? '' }}</small>
-                          @endif
-
-                        
+                         @if ($hasNoCommission === 'Y')
+                             <small><b>ไม่จ่ายค่าคอมมิชชั่น :</b>
+                                 {{ optional($group['items']->first(function($item){ return $item->quote_commission === 'N'; }))->quote_note_commission ?? '' }}
+                             </small>
+                         @else
+                             <small>{{ $commission['amount'] ?? '' }}/</small>
+                             <small>{{ $commission['group_name'] ?? '' }}</small>
+                         @endif
                      </td>
                  </tr>
              @endforeach
