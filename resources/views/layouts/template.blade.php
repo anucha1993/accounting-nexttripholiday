@@ -170,22 +170,12 @@
                         <b class="logo-icon">
                             <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                             <!-- Dark Logo icon -->
+                            <a href="{{ url('/') }}">
                             <img src="{{ URL::asset('logo/Logo-docs.png') }}" alt="homepage" style="width: 150px; "
                                 class="dark-logo" />
-                            <!-- Light Logo icon -->
-                            {{-- <img src="{{ URL::asset('template/assets/images/logos/logo-light-icon.png') }}"
-                                alt="homepage" class="light-logo" /> --}}
+                        </a>
                         </b>
-                        <!--End Logo icon -->
-                        <!-- Logo text -->
-                        {{-- <span class="logo-text">
-                            <!-- dark Logo text -->
-                            <img src="{{ URL::asset('template/assets/images/logos/logo-text.png') }}" alt="homepage"
-                                class="dark-logo" />
-                            <!-- Light Logo text -->
-                            <img src="{{ URL::asset('template/assets/images/logos/logo-light-text.png') }}"
-                                class="light-logo" alt="homepage" />
-                        </span> --}}
+                        
                     </a>
                     <!-- ============================================================== -->
                     <!-- End Logo -->

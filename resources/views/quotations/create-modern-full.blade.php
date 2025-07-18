@@ -344,7 +344,7 @@
                         </select>
                     </div>
                     <div class="col-md-3 position-relative">
-                        <label>วันออกเดินทาง: <a href="#" class="" id="list-period" style="color:#1976d2;font-weight:500;">เลือกวันที่</a></label>
+                        <label>วันออกเดินทาง: <a href="javascript:void(0);"  id="list-period"  style="color:#1976d2;font-weight:500;">เลือกวันที่</a></label>
                         <input type="date" class="form-control" id="date-start-display" placeholder="วันออกเดินทาง..." required autocomplete="off">
                         <div id="date-list" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
                         <input type="hidden" id="period1" name="period1">
@@ -682,12 +682,60 @@
 
 <script>
 $(function() {
+    // เมื่อคลิก 'เลือกวันที่' ให้แสดง list วันที่เดินทางของทัวร์ที่เลือก
+    $(document).on('click', '#list-period', function(e) {
+        e.preventDefault();
+        var tourId = $('#tour-id').val();
+        $('#date-list').empty();
+        if (!tourId) {
+            $('#date-list').append('<div class="list-group-item text-danger">กรุณาเลือกแพคเกจทัวร์ก่อน</div>');
+            return;
+        }
+        $.ajax({
+            url: '{{ route('api.period') }}',
+            method: 'GET',
+            data: { search: tourId },
+            success: function(periods) {
+                if (Array.isArray(periods) && periods.length > 0) {
+                    var now = new Date();
+                    $.each(periods, function(i, period) {
+                        var dateObject = new Date(period.start_date);
+                        if (dateObject > now) {
+                            var dateText = dateObject.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+                            var periodHtml = `<a href="#" class="period-select list-group-item list-group-item-action mb-1" data-tour="${tourId}" data-numday="${$('#numday option:selected').text()}" data-airline="${$('#airline').val()}" data-wholesale="${$('#wholesale').val()}" data-code="${$('#tour-code').val()}" data-name1="${$('#tourSearch1').val()}" data-name="${$('#tourSearch').val()}" data-period1="${period.price1}" data-period2="${period.price2}" data-period3="${period.price3}" data-period4="${period.price4}" data-date="${period.start_date}">${dateText}</a>`;
+                            $('#date-list').append(periodHtml);
+                        }
+                    });
+                } else {
+                    $('#date-list').append('<div class="list-group-item text-danger">ไม่พบช่วงวันเดินทาง</div>');
+                }
+            },
+            error: function() {
+                $('#date-list').append('<div class="list-group-item text-danger">เกิดข้อผิดพลาดในการดึงข้อมูลวันเดินทาง</div>');
+            }
+        });
+    });
     // --- Customer Autocomplete (เหมือน create.blade.php) ---
     $('#customerSearch').on('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
         }
     });
+    // --- Thai date string to yyyy-MM-dd ---
+    function thaiDateToISO(thaiDateStr) {
+        if (!thaiDateStr) return '';
+        // ตัวอย่าง: "7 สิงหาคม 2568"
+        const months = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+        const parts = thaiDateStr.trim().split(' ');
+        if (parts.length !== 3) return '';
+        let [d, m, y] = parts;
+        d = d.padStart(2, '0');
+        const monthIdx = months.indexOf(m);
+        if (monthIdx === -1) return '';
+        m = (monthIdx + 1).toString().padStart(2, '0');
+        y = (parseInt(y, 10) - 543).toString();
+        return `${y}-${m}-${d}`;
+    }
     $('#customerSearch').on('input', function(e) {
         var searchTerm = $(this).val();
         if (searchTerm.length >= 2) {
@@ -955,29 +1003,26 @@ $(function() {
         oldCalculatePaymentCondition();
         syncDepositAndFullPayment();
     };
-    // เมื่อเลือกหรือเปลี่ยนวันออกเดินทาง ให้คำนวณวันเดินทางกลับอัตโนมัติ (ใช้ระยะเวลาทัวร์)
-    $('#date-start-display').on('change.auto', function() {
+    // เมื่อเลือกหรือเปลี่ยนวันออกเดินทาง (input[type=date]) ให้ sync hidden และคำนวณวันเดินทางกลับ
+    $('#date-start-display').on('change input', function() {
         var val = $(this).val();
-        var datePattern = /^\d{4}-\d{2}-\d{2}$/;
-        var dateObject = null;
-        if (datePattern.test(val)) {
-            dateObject = new Date(val);
-        } else {
-            dateObject = new Date(val);
-        }
-        if (dateObject && !isNaN(dateObject.getTime())) {
-            $('#date-start').val(dateObject.toISOString().slice(0,10));
+        if (val) {
+            // sync hidden field
+            $('#date-start').val(val);
             // คำนวณวันเดินทางกลับ
             var numDays = parseInt($('#numday option:selected').data('day')) || 0;
             if (numDays > 0) {
+                var dateObject = new Date(val);
                 var endDate = new Date(dateObject);
                 endDate.setDate(dateObject.getDate() + numDays - 1);
-                $('#date-end').val(endDate.toISOString().slice(0,10));
-                $('#date-end-display').val(endDate.toISOString().slice(0,10));
+                var endStr = endDate.toISOString().slice(0,10);
+                $('#date-end').val(endStr);
+                $('#date-end-display').val(endStr);
             }
             // ตรวจสอบวันออกเดินทางต้องไม่ย้อนหลังจากวันนี้
             var today = new Date();
             today.setHours(0,0,0,0);
+            var dateObject = new Date(val);
             if (dateObject < today) {
                 alert('วันออกเดินทางต้องไม่ย้อนหลังจากวันปัจจุบัน');
             }
@@ -1184,6 +1229,22 @@ $(function() {
     // trigger คำนวณค่าบริการทุกครั้งที่มีการเปลี่ยนแปลง
     $(document).on('input change', '.quantity, .price-per-unit, .vat-status, .vat-3, .expense-type', function() {
         calculatePaymentCondition();
+    });
+
+    // --- เลือกวันออกเดินทางจาก list (รองรับวันที่ไทย) ---
+    $(document).on('click', '#date-list .list-group-item', function(e) {
+        e.preventDefault();
+        var dateText = $(this).text().trim();
+        var isoDate = thaiDateToISO(dateText);
+        if (isoDate) {
+            $('#date-start-display').val(isoDate).trigger('change');
+            $('#date-start').val(isoDate);
+        } else {
+            // fallback: ใส่ค่าตามที่เลือก
+            $('#date-start-display').val(dateText).trigger('change');
+            $('#date-start').val(dateText);
+        }
+        $('#date-list').empty();
     });
 
 
@@ -1500,7 +1561,7 @@ $(function() {
         // แปลงวันที่เป็นไทย
         var dateObject = new Date(selectedDate);
         var thaiFormattedDate = dateObject.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
-        $('#date-start-display').val(thaiFormattedDate);
+        $('#date-start-display').val(selectedDate);
         $('#date-start').val(selectedDate);
         $('#date-list').empty();
         // คำนวณวันเดินทางกลับ
@@ -1510,7 +1571,7 @@ $(function() {
             var endDate = new Date(start);
             endDate.setDate(start.getDate() + numDays - 1);
             var thaiFormattedEndDate = endDate.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
-            $('#date-end-display').val(thaiFormattedEndDate);
+            $('#date-end-display').val(endDate.toISOString().slice(0,10));
             $('#date-end').val(endDate.toISOString().slice(0,10));
         }
         // เรียกฟังก์ชันคำนวณเงื่อนไขการชำระเงิน

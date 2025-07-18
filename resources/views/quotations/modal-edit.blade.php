@@ -716,7 +716,43 @@
 </div>
 
 <script>
+
+    
 $(function() {
+     // เมื่อคลิก 'เลือกวันที่' ให้แสดง list วันที่เดินทางของทัวร์ที่เลือก
+    $(document).on('click', '#list-period', function(e) {
+        e.preventDefault();
+        var tourId = $('#tour-id').val();
+        $('#date-list').empty();
+        if (!tourId) {
+            $('#date-list').append('<div class="list-group-item text-danger">กรุณาเลือกแพคเกจทัวร์ก่อน</div>');
+            return;
+        }
+        $.ajax({
+            url: '{{ route('api.period') }}',
+            method: 'GET',
+            data: { search: tourId },
+            success: function(periods) {
+                if (Array.isArray(periods) && periods.length > 0) {
+                    var now = new Date();
+                    $.each(periods, function(i, period) {
+                        var dateObject = new Date(period.start_date);
+                        if (dateObject > now) {
+                            var dateText = dateObject.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+                            var periodHtml = `<a href="#" class="period-select list-group-item list-group-item-action mb-1" data-tour="${tourId}" data-numday="${$('#numday option:selected').text()}" data-airline="${$('#airline').val()}" data-wholesale="${$('#wholesale').val()}" data-code="${$('#tour-code').val()}" data-name1="${$('#tourSearch1').val()}" data-name="${$('#tourSearch').val()}" data-period1="${period.price1}" data-period2="${period.price2}" data-period3="${period.price3}" data-period4="${period.price4}" data-date="${period.start_date}">${dateText}</a>`;
+                            $('#date-list').append(periodHtml);
+                        }
+                    });
+                } else {
+                    $('#date-list').append('<div class="list-group-item text-danger">ไม่พบช่วงวันเดินทาง</div>');
+                }
+            },
+            error: function() {
+                $('#date-list').append('<div class="list-group-item text-danger">เกิดข้อผิดพลาดในการดึงข้อมูลวันเดินทาง</div>');
+            }
+        });
+    });
+    // --- Customer Autocomplete (เหมือน create.blade.php) ---
     // --- Customer Autocomplete (เหมือน create.blade.php) ---
     $('#customerSearch').on('keydown', function(e) {
         if (e.key === 'Enter') {
@@ -1542,7 +1578,7 @@ $(function() {
         // แปลงวันที่เป็นไทย
         var dateObject = new Date(selectedDate);
         var thaiFormattedDate = dateObject.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
-        $('#date-start-display').val(thaiFormattedDate);
+        $('#date-start-display').val(selectedDate);
         $('#date-start').val(selectedDate);
         $('#date-list').empty();
         // คำนวณวันเดินทางกลับ
@@ -1552,7 +1588,7 @@ $(function() {
             var endDate = new Date(start);
             endDate.setDate(start.getDate() + numDays - 1);
             var thaiFormattedEndDate = endDate.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
-            $('#date-end-display').val(thaiFormattedEndDate);
+            $('#date-end-display').val(endDate.toISOString().slice(0,10));
             $('#date-end').val(endDate.toISOString().slice(0,10));
         }
         // เรียกฟังก์ชันคำนวณเงื่อนไขการชำระเงิน

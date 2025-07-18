@@ -157,7 +157,7 @@
                             {{-- เด็กไม่มีเตียง --}}
                             <input type="hidden" id="period4" name="period4">
 
-                            <input type="hidden" id="date-start" name="quote_date_start">
+                            <input type="text" id="date-start" name="quote_date_start">
                         </div>
                         <div class="col-md-3">
                             <label>วันเดินทางกลับ: </label>
@@ -1386,28 +1386,54 @@
                                     console.log("ไม่พบข้อมูลโฮลเซลล์");
                                 }
                             },
-                            error: function() {
-                                console.log("เกิดข้อผิดพลาดในการดึงข้อมูล");
-                            }
-                        });
+        $(function() {
+            // ตั้งค่าภาษาไทยให้กับ Datepicker
+            $.datepicker.regional['th'] = {
+                closeText: 'ปิด',
+                prevText: 'ย้อน',
+            };
+            $.datepicker.setDefaults($.datepicker.regional['th']);
+
+            // ฟังก์ชันคำนวณวันสิ้นสุด
+            function calculateEndDate() { /* ... */ }
+
+            // ตั้งค่า Datepicker สำหรับวันเริ่มต้น
+            $('#date-start-display').datepicker({
+                dateFormat: 'dd/mm/yy',
+                onSelect: function(dateText, inst) {
+                    // แปลงเป็น yyyy-mm-dd
+                    var d = $(this).datepicker('getDate');
+                    if (d) {
+                        var year = d.getFullYear();
+                        var month = ('0' + (d.getMonth() + 1)).slice(-2);
+                        var day = ('0' + d.getDate()).slice(-2);
+                        var isoDate = year + '-' + month + '-' + day;
+                        $('#date-start').val(isoDate);
+                        // trigger ฟังก์ชันที่เกี่ยวข้อง
+                        setPaymentDueDate30();
+                        checkPaymentCondition();
+                        // auto focus ไป field ถัดไปถ้าต้องการ
                     }
-                });
-
-
+                }
             });
 
-            // วันที่ออกเดินทาง
-            $(document).on('click', '#tour-select, #list-period', function(e) {
-                e.preventDefault();
-                var tourId = $(this).data('tour'); // ดึงค่า tour_id
-                if (tourId === undefined) {
-                    tourId = $('#tour-id').val();
+            // ตั้งค่า Datepicker สำหรับวันสิ้นสุด
+            $('#date-end-display').datepicker({
+                dateFormat: 'dd/mm/yy',
+                onSelect: function(dateText, inst) {
+                    var d = $(this).datepicker('getDate');
+                    if (d) {
+                        var year = d.getFullYear();
+                        var month = ('0' + (d.getMonth() + 1)).slice(-2);
+                        var day = ('0' + d.getDate()).slice(-2);
+                        var isoDate = year + '-' + month + '-' + day;
+                        $('#date-end').val(isoDate);
+                    }
                 }
+            });
 
-                // ส่ง tour_id ไปที่ API เพื่อดึงข้อมูล period
-                $.ajax({
-                    url: '{{ route('api.period') }}', // URL สำหรับดึงข้อมูล period
-                    method: 'GET',
+            // กำหนดให้คำนวณวันสิ้นสุดเมื่อเปลี่ยนจำนวนวัน (ถ้ามี)
+        });
                     data: {
                         search: tourId
                     },

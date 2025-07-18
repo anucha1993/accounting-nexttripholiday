@@ -170,13 +170,11 @@
                         <b class="logo-icon">
                             <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                             <!-- Dark Logo icon -->
+                            <a href="<?php echo e(url('/')); ?>">
                             <img src="<?php echo e(URL::asset('logo/Logo-docs.png')); ?>" alt="homepage" style="width: 150px; "
                                 class="dark-logo" />
-                            <!-- Light Logo icon -->
-                            
+                        </a>
                         </b>
-                        <!--End Logo icon -->
-                        <!-- Logo text -->
                         
                     </a>
                     <!-- ============================================================== -->
