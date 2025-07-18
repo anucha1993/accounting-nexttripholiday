@@ -7,44 +7,71 @@
             padding: 0.4rem;
             vertical-align: middle;
         }
-
         .badge-sm {
             font-size: 0.65rem;
             padding: 0.2rem 0.4rem;
         }
-
         .sticky-top {
             position: sticky;
             top: 0;
             z-index: 10;
         }
-
         .table-hover tbody tr:hover {
             background-color: rgba(0, 123, 255, 0.05);
         }
-
         .table-dark th {
             border-color: #495057;
             font-size: 11px;
             font-weight: 600;
         }
-
         .text-truncate-custom {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             max-width: 150px;
         }
-
         .status-badges .badge {
             margin: 1px;
             display: inline-block;
         }
-
         .quote-summary {
             background: linear-gradient(45deg, #f8f9fa, #e9ecef);
             border-radius: 8px;
             padding: 0.5rem;
+        }
+        /* Responsive table: force horizontal scroll on mobile */
+        @media (max-width: 767.98px) {
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .table th, .table td {
+                white-space: nowrap;
+                font-size: 12px;
+            }
+            .btn, .form-select, .form-control {
+                font-size: 13px !important;
+            }
+            .table thead th {
+                font-size: 13px;
+            }
+            .select2-container .select2-selection--single {
+                font-size: 13px;
+            }
+        }
+        /* Make filter/search section stack vertically on mobile */
+        @media (max-width: 767.98px) {
+            .row.mb-3 > [class^="col-md-"] {
+                flex: 0 0 100%;
+                max-width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            .d-flex.justify-content-between.align-items-center.mb-3 > div,
+            .d-flex.align-items-center.gap-2 {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 0.5rem !important;
+            }
         }
     </style>
     <div class="email-app todo-box-container container-fluid">
@@ -336,8 +363,8 @@
                 <div class="table-responsive">
 
 
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div>
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap flex-md-nowrap">
+                        <div class="mb-2 mb-md-0">
                             @can('quotation-export')
                                 <form action="{{ route('export.quote') }}" id="export-excel" method="post"
                                     class="d-inline">
@@ -345,23 +372,22 @@
                                     @method('POST')
                                     <input type="hidden" name="quote_ids" id="export-quote-ids"
                                         value="{{ $quotations->pluck('quote_id') }}">
-                                    <button class="btn btn-success btn-sm" type="submit">
+                                    <button class="btn btn-success btn-sm mb-1 mb-md-0" type="submit">
                                         <i class="fas fa-file-excel"></i> Export Excel
                                     </button>
                                 </form>
                             @endcan
-                            <a href="{{ route('quotelist.index') }}" class="btn btn-info btn-sm ms-2">
+                            <a href="{{ route('quotelist.index') }}" class="btn btn-info btn-sm ms-0 ms-md-2 mt-1 mt-md-0">
                                 <i class="fas fa-chart-bar"></i> รายงานใบเสนอราคา
                             </a>
                         </div>
-                        <div class="d-flex align-items-center gap-2">
+                        <div class="d-flex align-items-center gap-2 flex-wrap flex-md-nowrap">
                             <form method="GET" id="page" class="mb-0">
                                 <label for="per_page" class="me-1">แสดงจำนวน:</label>
                                 <select name="per_page" id="per_page"
                                     class="form-select form-select-sm d-inline-block w-auto"
                                     onchange="this.form.submit()">
-                                    <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50
-                                    </option>
+                                    <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50</option>
                                     <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                                     <option value="150" {{ request('per_page') == 150 ? 'selected' : '' }}>150</option>
                                     <option value="200" {{ request('per_page') == 200 ? 'selected' : '' }}>200</option>
@@ -370,7 +396,7 @@
                                     <input type="hidden" name="{{ $k }}" value="{{ $v }}">
                                 @endforeach
                             </form>
-                            <div class="text-muted ms-2">
+                            <div class="text-muted ms-0 ms-md-2 mt-1 mt-md-0">
                                 <small>พบข้อมูล {{ number_format($quotations->total()) }} รายการ | รวม
                                     {{ number_format($SumPax) }} PAX | มูลค่า {{ number_format($SumTotal, 2) }}
                                     บาท</small>
@@ -382,7 +408,7 @@
                     {!! $quotations->withQueryString()->links('pagination::bootstrap-5') !!}
                     <div class="table-responsive">
                         <table class="table table-sm table-hover table-striped table-bordered" id="quote-table"
-                            style="font-size: 16px;">
+                            style="font-size: 11px;">
                             <thead class="table-dark sticky-top" style="font-size: 16px;">
                                 <tr>
                                     <th style="width: 40px;" class="text-center">#</th>
@@ -587,16 +613,17 @@
                             </tbody>
                             <tfoot class="table-light">
                                 <tr>
-                                    <td colspan="7" class="text-end fw-bold">สรุปรวม:</td>
+                                    <td colspan="8" class="text-end fw-bold">สรุปรวม:</td>
                                     <td class="text-center fw-bold text-primary">{{ number_format($SumPax) }}</td>
-                                    <td colspan="4"></td>
-                                    <td class="text-end fw-bold text-success">{{ number_format($SumTotal, 2) }}</td>
+ 
+                                    <td colspan="5" class="text-end fw-bold text-success">{{ number_format($SumTotal, 2) }}</td>
                                     <td colspan="1" class="text-muted"><small>บาท</small></td>
-                                    <td colspan="1" class="text-muted">ยอดค้างชำระโฮลเซล :</td>
-                                    <td class="text-end fw-bold text-danger">
+                                     <td colspan="2" class="text-end fw-bold text-danger">
 
-                                        {{ number_format($inputtaxTotalWholesale, 2) }} บาท
+                                        ค้างชำระโฮลเซล : {{ number_format($inputtaxTotalWholesale, 2) }} บาท
                                     </td>
+                                   
+                                   
                                 </tr>
                             </tfoot>
                         </table>
