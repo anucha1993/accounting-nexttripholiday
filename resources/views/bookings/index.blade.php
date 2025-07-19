@@ -46,23 +46,12 @@
                         <input type="hidden" name="search_tour_date_end" id="search_tour_date_end"
                             value="{{ request('search_tour_date_end') }}">
                     </div>
-
-                    <div class="col-md-2">
-                        <label>ค้นหา วันที่จอง เริ่มต้น</label>
-                        <div class="input-group mb-3 pull-right">
-                            <input type="date" class="form-control" name="search_tour_date_start_created"
-                                value="{{ request('search_tour_date_start_created') }}">
-
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <label>ถึงวันที่</label>
-                        <div class="input-group mb-3 pull-right">
-                            <input type="date" class="form-control" name="search_tour_date_end_created"
-                                value="{{ request('search_tour_date_end_created') }}">
-
-                        </div>
-                    </div>
+<div class="col-md-3">
+    <label>ช่วงเวลาการจอง (Booking Date)</label>
+    <input type="text" class="form-control" id="search_booking_date_range" autocomplete="off" placeholder="เลือกช่วงเวลาการจอง">
+    <input type="hidden" name="search_tour_date_start_created" id="search_tour_date_start_created" value="{{ request('search_tour_date_start_created') }}">
+    <input type="hidden" name="search_tour_date_end_created" id="search_tour_date_end_created" value="{{ request('search_tour_date_end_created') }}">
+</div>
 
                     <div class="col-md-2">
 
@@ -235,6 +224,8 @@
     </div>
 
     <script>
+
+        
        $(function() {
     $('#search_tour_date_range').daterangepicker({
         autoUpdateInput: false,
@@ -277,4 +268,48 @@
     @endif
 });
     </script>
+
+    <script>
+$(function() {
+    $('#search_booking_date_range').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            format: 'DD/MM/YYYY',
+            cancelLabel: 'Clear',
+            applyLabel: 'เลือก',
+            daysOfWeek: ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'],
+            monthNames: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'],
+            firstDay: 0
+        },
+        ranges: {
+            'วันนี้': [moment(), moment()],
+            'เมื่อวาน': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            '7 วันที่แล้ว': [moment().subtract(6, 'days'), moment()],
+            '30 วันที่แล้ว': [moment().subtract(29, 'days'), moment()],
+            'เดือนนี้': [moment().startOf('month'), moment().endOf('month')],
+            'เดือนที่แล้ว': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    });
+
+    $('#search_booking_date_range').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+        $('#search_tour_date_start_created').val(picker.startDate.format('YYYY-MM-DD'));
+        $('#search_tour_date_end_created').val(picker.endDate.format('YYYY-MM-DD'));
+    });
+
+    $('#search_booking_date_range').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+        $('#search_tour_date_start_created').val('');
+        $('#search_tour_date_end_created').val('');
+    });
+
+    // แสดงช่วงวันที่เดิมกรณี reload หน้า
+    @if(request('search_tour_date_start_created') && request('search_tour_date_end_created'))
+        $('#search_booking_date_range').val(
+            moment("{{ request('search_tour_date_start_created') }}").format('DD/MM/YYYY') + ' - ' +
+            moment("{{ request('search_tour_date_end_created') }}").format('DD/MM/YYYY')
+        );
+    @endif
+});
+</script>
 @endsection
