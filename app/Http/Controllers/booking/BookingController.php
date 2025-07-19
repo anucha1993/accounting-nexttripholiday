@@ -230,7 +230,7 @@ class BookingController extends Controller
         
 
         $quoteProducts = array_merge($quoteProducts, $productBooking);
-        $campaignSource = DB::table('campaign_source')->get();
+        $campaignSource = DB::table('campaign_source')->where('campaign_source_id',5)->get();
         
         // เพิ่มตัวแปรที่จำเป็นสำหรับการทำงานของระบบ
         $quotationModel = []; // ข้อมูลใบเสนอราคาเปล่า

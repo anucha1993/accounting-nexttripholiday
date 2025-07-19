@@ -94,14 +94,14 @@
                     <h5 class="mb-0">
                         <i class="fas fa-file-invoice"></i> ใบเสนอราคา/ใบแจ้งหนี้
                     </h5>
-                    @can('quotation-create')
+                    {{-- @can('quotation-create')
                         <a href="{{ route('quote.createNew') }}" class="btn btn-light btn-sm">
                             <i class="fas fa-plus"></i> สร้างใบเสนอราคา
                         </a>
-                    @endcan
+                    @endcan --}}
                     @can('quotation-create')
                         <a href="{{ route('quote.createModern') }}" class="btn btn-light btn-sm">
-                            <i class="fas fa-plus"></i> สร้างใบเสนอราคา-ใหม่
+                            <i class="fas fa-plus"></i> สร้างใบเสนอราคา
                         </a>
                     @endcan
                 </div>
@@ -144,7 +144,7 @@
                                     <option value="all">ทั้งหมด</option>
                                     @forelse ($country as $item)
                                         <option {{ request('search_country') == $item->id ? 'selected' : '' }}
-                                            value="{{ $item->id }}">{{ $item->country_name_th }}</option>
+                                            value="{{ $item->id }}">{{ $item->iso2 }}-{{ $item->country_name_th }}</option>
                                     @empty
                                         <option value="" disabled>ไม่มีข้อมูล</option>
                                     @endforelse
@@ -156,7 +156,7 @@
                                     <option value="all">ทั้งหมด</option>
                                     @forelse ($airlines as $airline)
                                         <option {{ request('search_airline') == $airline->id ? 'selected' : '' }}
-                                            value="{{ $airline->id }}">{{ $airline->travel_name }}</option>
+                                            value="{{ $airline->id }}">{{ $airline->code }}-{{ $airline->travel_name }}</option>
                                     @empty
                                     @endforelse
                                 </select>
@@ -168,7 +168,7 @@
                                     @forelse ($wholesales as $item)
                                         <option {{ request('search_wholesale') == $item->id ? 'selected' : '' }}
                                             value="{{ $item->id }}">
-                                            {{ $item->wholesale_name_th }}</option>
+                                            {{ $item->code }}-{{ $item->wholesale_name_th }}</option>
                                     @empty
                                         <option value="" disabled>ไม่มีข้อมูล</option>
                                     @endforelse

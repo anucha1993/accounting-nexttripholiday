@@ -38,20 +38,13 @@
                     </div>
 
                     <div class="col-md-2">
-                        <label>ค้นหา วันที่เดินทางเริ่มต้น</label>
-                        <div class="input-group mb-3 pull-right">
-                            <input type="date" class="form-control" name="search_tour_date_start"
-                                value="{{ request('search_tour_date_start') }}">
-
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <label>ถึงวันที่</label>
-                        <div class="input-group mb-3 pull-right">
-                            <input type="date" class="form-control" name="search_tour_date_end"
-                                value="{{ request('search_tour_date_end') }}">
-
-                        </div>
+                        <label>ช่วงวันเดินทาง</label>
+                        <input type="text" class="form-control" id="search_tour_date_range" autocomplete="off"
+                            placeholder="เลือกช่วงวันเดินทาง">
+                        <input type="hidden" name="search_tour_date_start" id="search_tour_date_start"
+                            value="{{ request('search_tour_date_start') }}">
+                        <input type="hidden" name="search_tour_date_end" id="search_tour_date_end"
+                            value="{{ request('search_tour_date_end') }}">
                     </div>
 
                     <div class="col-md-2">
@@ -216,18 +209,18 @@
                                                 class=" fas fa-redo "></i> Convert</button>
                                             </form> --}}
                                     @can('edit-booking')
-                                        <a href="{{route('booking.convert',$item->id)}}" class="text-primary mx-3"><i
+                                        <a href="{{ route('booking.convert', $item->id) }}" class="text-primary mx-3"><i
                                                 class="fas fa-edit"></i> สร้างใบเสนอราคา</a>
                                     @endcan
-                                    @can('edit-booking')
+                                    {{-- @can('edit-booking')
                                         <a href="{{ route('booking.edit', $item->id) }}" class="  mx-3"><i
                                                 class="fas fa-edit"></i> แก้ไข</a>
-                                    @endcan
-                                    @can('delete-booking')
+                                    @endcan --}}
+                                    {{-- @can('delete-booking')
                                         <a href="{{ route('booking.delete', $item->id) }}" class="text-danger  mx-3"
                                             onclick="return confirm('Do you want to delete this booking?');"><i
                                                 class="fas fa-trash"></i> ลบ</a>
-                                    @endcan
+                                    @endcan --}}
                                 </td>
 
                             </tr>
@@ -240,4 +233,48 @@
             </div>
         </div>
     </div>
+
+    <script>
+       $(function() {
+    $('#search_tour_date_range').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            format: 'DD/MM/YYYY',
+            cancelLabel: 'Clear',
+            applyLabel: 'เลือก',
+            daysOfWeek: ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'],
+            monthNames: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'],
+            firstDay: 0
+        },
+        ranges: {
+            'วันนี้': [moment(), moment()],
+            'เมื่อวาน': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            '7 วันที่แล้ว': [moment().subtract(6, 'days'), moment()],
+            '30 วันที่แล้ว': [moment().subtract(29, 'days'), moment()],
+            'เดือนนี้': [moment().startOf('month'), moment().endOf('month')],
+            'เดือนที่แล้ว': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    });
+
+    $('#search_tour_date_range').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+        $('#search_tour_date_start').val(picker.startDate.format('YYYY-MM-DD'));
+        $('#search_tour_date_end').val(picker.endDate.format('YYYY-MM-DD'));
+    });
+
+    $('#search_tour_date_range').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+        $('#search_tour_date_start').val('');
+        $('#search_tour_date_end').val('');
+    });
+
+    // กรณี reload หน้า ให้แสดงช่วงวันที่เดิม
+    @if(request('search_tour_date_start') && request('search_tour_date_end'))
+        $('#search_tour_date_range').val(
+            moment("{{ request('search_tour_date_start') }}").format('DD/MM/YYYY') + ' - ' +
+            moment("{{ request('search_tour_date_end') }}").format('DD/MM/YYYY')
+        );
+    @endif
+});
+    </script>
 @endsection
