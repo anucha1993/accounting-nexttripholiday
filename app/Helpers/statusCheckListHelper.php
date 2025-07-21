@@ -54,33 +54,49 @@ function getStatusBadgeCount($quoteCheckStatus, $quotations)
         return 0;
     }
     $badges = [];
+    //ส่งใบอีเมลล์จองทัวร์ให้โฮลเซลล์ 1
     if (is_null($quoteCheckStatus->booking_email_status) || trim($quoteCheckStatus->booking_email_status) === 'ยังไม่ได้ส่ง') {
         $badges[] = 1;
     }
+    //อินวอยโฮลเซลล์ 2
     if (is_null($quoteCheckStatus->invoice_status) || trim($quoteCheckStatus->invoice_status) !== 'ได้แล้ว') {
         $badges[] = 1;
-    }
-    if (is_null($quoteCheckStatus->inv_status) || trim($quoteCheckStatus->inv_status) === 'ยังไม่ได้') {
-        $badges[] = 1;
-    }
+    } 
+     //ส่งสลิปให้โฮลเซลล์ 3
     if (is_null($quoteCheckStatus->slip_status) || trim($quoteCheckStatus->slip_status) === 'ยังไม่ได้ส่ง') {
         $badges[] = 1;
     }
+     //ส่งพาสปอตให้โฮลเซลล์ 4
     if (is_null($quoteCheckStatus->passport_status) || trim($quoteCheckStatus->passport_status) === 'ยังไม่ได้ส่ง') {
         $badges[] = 1;
     }
+     //ส่งใบนัดหมายให้ลูกค้า 5
     if (is_null($quoteCheckStatus->appointment_status) || trim($quoteCheckStatus->appointment_status) === 'ยังไม่ได้ส่ง') {
         $badges[] = 1;
     }
-    if (is_null($quoteCheckStatus->wholesale_tax_status) || trim($quoteCheckStatus->wholesale_tax_status) !== 'ได้รับแล้ว') {
-        $badges[] = 1;
-    }
+      //ออกใบหักณที่จ่าย 6
     if ($quoteCheckStatus->wholesale_skip_status !== 'ไม่ต้องการออก' && (is_null($quoteCheckStatus->withholding_tax_status) || trim($quoteCheckStatus->withholding_tax_status) === 'ยังไม่ได้ออก')) {
         $badges[] = 1;
     }
+      if (is_null($quoteCheckStatus->wholesale_tax_status) || trim($quoteCheckStatus->wholesale_tax_status) !== 'ได้รับแล้ว') {
+        $badges[] = 1;
+    }
+    //     //ไฟล์ใบแจ้งหนี้ 7
+    // if (is_null($quoteCheckStatus->inv_status) || trim($quoteCheckStatus->inv_status) === 'ยังไม่ได้') {
+    //     $badges[] = 1;
+    // }
+       //ใบกำกับภาษีโฮลเซลล์ 8
+  
+
+
+
+   
+   
+   
+ 
      if ($quotations->payment > 0 && $quotations->quote_status !== 'cancel') {
-            return count($badges);
-        }
+         return count($badges);
+    }
 
   
 }

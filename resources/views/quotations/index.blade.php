@@ -329,7 +329,7 @@
                                 @forelse ($quotations as $key => $item)
                                     <tr class="align-middle">
                                         <td class="text-center fw-bold">
-                                            {{ ($quotations->total() - $quotations->firstItem() + 1) - $key }}ไไไ
+                                            {{ ($quotations->total() - $quotations->firstItem() + 1) - $key }}
                                         </td>
                                         <td class="text-center">
                                             <small class="text-muted">{{ date('d/m/y', strtotime($item->created_at)) }}</small>
@@ -360,7 +360,7 @@
                                         <td class="text-center">
                                             <div class="d-flex flex-column">
                                                 <small>{{ date('d/m/y', strtotime($item->quote_date_start)) }}</small> ถึง
-                                                <small class="text-muted">{{ date('d/m/y', strtotime($item->quote_date_end)) }}</small>
+                                                {{-- <small class="text-muted">{{ date('d/m/y', strtotime($item->quote_date_end)) }}</small> --}}
                                             </div>
                                         </td>
                                         <td>
