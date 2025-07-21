@@ -95,7 +95,8 @@
                 </div>
                  <div class="col-md-2">
                      <label>วันที่ออกใบกำกับภาษี:</label>
-                     <input type="date" class="form-control" name="taxinvoice_date" value="{{ $taxinvoice->taxinvoice_date }}" required>
+                     <input type="date" class="form-control" name="taxinvoice_date"
+    value="{{ $taxinvoice->taxinvoice_date ?? date('Y-m-d') }}" required>
                  </div>
             </div>
             

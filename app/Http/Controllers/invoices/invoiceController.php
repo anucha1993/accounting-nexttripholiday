@@ -83,6 +83,7 @@ class invoiceController extends Controller
         $runningCode = $this->generateRunningCodeIVS();
         $request->merge([
             'invoice_sale' => $request->quote_sale,
+            'taxinvoice_date' => date('Y-m-d'),
             'invoice_number' => $runningCode,
             'invoice_status' => 'wait',
             'invoice_withholding_tax_status' => isset($request->invoice_withholding_tax_status) ? 'Y' : 'N',
