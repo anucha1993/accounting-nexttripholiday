@@ -46,7 +46,8 @@ class BookingController extends Controller
         $sales = saleModel::select('name', 'id')
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
             ->get();
-            $quotationBookingIds = quotationModel::pluck('tb_booking_form')->toArray();
+            $quotationBookingIds = quotationModel::whereNotNull('tb_booking_form')->pluck('tb_booking_form')->toArray();
+            //dd($quotationBookingIds);
 
         $booking = DB::connection('mysql2')
             ->table('tb_booking_form')
@@ -143,6 +144,8 @@ class BookingController extends Controller
 
 
         $booking = $booking->orderByDesc('id')->paginate(10);
+
+        //dd($booking->booking_number);
         return view('bookings.index', compact('booking', 'sales', 'keyword_sale'));
     }
 

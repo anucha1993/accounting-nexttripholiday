@@ -106,6 +106,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {{-- @dd($booking); --}}
                         @forelse ($booking as $key => $item)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
@@ -121,82 +122,11 @@
                                     @if ($item->status === 'Success')
                                         <span class="badge rounded-pill bg-success">Success</span>
                                     @endif
-                                    {{-- @if ($item->status === 'Cancel')
-                                <span class="badge rounded-pill bg-danger">Cancel</span>
-                                @endif
-                                @if ($item->status === 'Booked')
-                                <span class="badge rounded-pill bg-danger">Booked</span>
-                                @endif --}}
-
+                                   
                                 </td>
                                 <td>{{ date('d-m-Y H:m', strtotime($item->created_at)) }}</td>
                                 <td>
-                                    {{-- <form action="{{route('booking.convert')}}" method="get">
-
-                                        <input type="hidden" name="customer_name" value="{{ $item->name . ' ' . $item->surname }}">
-                                        <input type="hidden" name="customer_email" value="{{ $item->email }}">
-                                        <input type="hidden" name="customer_tel" value="{{ $item->phone }}">
-                                        <input type="hidden" name="sale_id" value="{{ $item->sale_id }}">
-
-                                        <input type="hidden" name="booking_number" value="{{ $item->code }}">
-                                        <input type="hidden" name="booking_sale" value="{{ $item->sale_name }}">
-                                        <input type="hidden" name="booking_tour_number" value="{{ $item->tour_code }}">
-                                        <input type="hidden" name="booking_tour_name" value="{{ $item->tour_name }}">
-                                        <input type="hidden" name="tour_country" value="{{ $item->tour_country }}">
-                                        <input type="hidden" name="wholesale_name_th" value="{{ $item->wholesale_name_th }}">
-                                        <input type="hidden" name="airline_name" value="{{ $item->airline_name }}">
-                                        <input type="hidden" name="start_date" value="{{ $item->start_date }}">
-                                        <input type="hidden" name="end_date" value="{{ $item->end_date }}">
-                                        <input type="hidden" name="num_day" value="{{ $item->num_day }}">
-                                        <input type="hidden" name="travel_type" value="{{ $item->travel_type_id }}">
-                                        <input type="hidden" name="country_id" value="{{ $item->country_id }}">
-                                        <input type="hidden" name="tour_id" value="{{ $item->tour_id }}">
-                                        <input type="hidden" name="wholesale_id" value="{{ $item->wholesale_id }}">
-                                        <input type="hidden" name="total_qty" value="{{ $item->total_qty }}">
-
-
-                                        @php
-                                        $products = [
-                                            [
-                                                'id' => 189,
-                                                'name' => 'ผู้ใหญ่พักคู่',
-                                                'qty' => $item->num_twin,
-                                                'price' => $item->price1,
-                                                'sum' => $item->sum_price1,
-                                            ],
-                                            [
-                                                'id' => 185,
-                                                'name' => 'ผู้ใหญ่พักเดี่ยว',
-                                                'qty' => $item->num_single,
-                                                'price' => $item->price2,
-                                                'sum' => $item->sum_price2,
-                                            ],
-                                            [
-                                                'id' =>  187,
-                                                'name' => 'เด็กมีเตียง',
-                                                'qty' => $item->num_child,
-                                                'price' => $item->price3,
-                                                'sum' => $item->sum_price3,
-                                            ],
-                                            [
-                                                'id' => 186,
-                                                'name' => 'เด็กไม่มีเตียง',
-                                                'qty' => $item->num_childnb,
-                                                'price' => $item->price4,
-                                                'sum' => $item->sum_price4,
-                                            ],
-                                        ];
-                                    @endphp
-                                    @foreach ($products as $index => $product)
-                                        <input type="hidden" name="products[{{ $index }}][id]" value="{{ $product['id'] }}">
-                                        <input type="hidden" name="products[{{ $index }}][name]" value="{{ $product['name'] }}">
-                                        <input type="hidden" name="products[{{ $index }}][qty]" value="{{ $product['qty'] }}">
-                                        <input type="hidden" name="products[{{ $index }}][price]" value="{{ $product['price'] }}">
-                                        <input type="hidden" name="products[{{ $index }}][sum]" value="{{ $product['sum'] }}">
-                                    @endforeach
-                                        <button type="submit" class="mx-3 btn btn-sm btn-primary"><i
-                                                class=" fas fa-redo "></i> Convert</button>
-                                            </form> --}}
+                                   
                                     @can('edit-booking')
                                         <a href="{{ route('booking.convert', $item->id) }}" class="text-primary mx-3"><i
                                                 class="fas fa-edit"></i> สร้างใบเสนอราคา</a>
