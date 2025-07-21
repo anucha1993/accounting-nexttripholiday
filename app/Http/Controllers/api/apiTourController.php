@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\customers\customerModel;
@@ -11,21 +12,34 @@ class apiTourController extends Controller
 {
     //
 
-    public function index(Request $request)
-    {
+   public function index(Request $request)
+{
+    $search = $request->input('search');
+    $today = Carbon::now()->toDateString();
+
+    $tours = DB::connection('mysql2')
+        ->table('tb_tour')
+        ->leftJoin('tb_tour_period', 'tb_tour.id', '=', 'tb_tour_period.tour_id')
+        ->where(function($query) use ($search) {
+            $query->where('tb_tour.name', 'like', "%{$search}%")
+                ->orWhere('tb_tour.code', 'like', "%{$search}%")
+                ->orWhere('tb_tour.code1', 'like', "%{$search}%");
+        })
+        ->where('tb_tour.status', 'on')
+        ->where('tb_tour_period.start_date', '>', $today)
+        ->select('tb_tour.*', 'tb_tour_period.start_date', 'tb_tour_period.end_date', 'tb_tour_period.id as period_id')
+         ->select('tb_tour.*')
+    ->distinct()
+    ->get();
+
+    return response()->json($tours);
+}
+     public function period(Request $request)
+     {
         $search = $request->input('search');
-        $tours = DB::connection('mysql2')
-            ->table('tb_tour')
-            //->select('tb_tour.wholesale_id', 'tb_tour.code', 'tb_tour.name','tb_wholesale.code as wholesale_code')
-            //->leftJoin('tb_wholesale', 'tb_wholesale.id', '=', 'tb_tour.wholesale_id')
-            ->where('tb_tour.name', 'like', "%{$search}%")
-            ->orWhere('tb_tour.code', 'like', "%{$search}%")
-            ->orWhere('tb_tour.code1', 'like', "%{$search}%")
-            ->where('tb_tour.status', 'on')
-            ->get();
-        
-        return response()->json($tours);
-    }
+        $period = DB::connection('mysql2')->table('tb_tour_period')->where('tour_id',$search)->get();
+        return response()->json($period);
+     }
     
 
      public function wholesale(Request $request)
@@ -73,12 +87,7 @@ class apiTourController extends Controller
          return response()->json($customer);
      }
 
-     public function period(Request $request)
-     {
-        $search = $request->input('search');
-        $period = DB::connection('mysql2')->table('tb_tour_period')->where('tour_id',$search)->get();
-        return response()->json($period);
-     }
+    
 
      public function invoice(Request $request) 
      {
