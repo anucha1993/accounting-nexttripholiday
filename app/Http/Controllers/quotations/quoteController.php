@@ -203,7 +203,7 @@ class quoteController extends Controller
         }
         $request->merge([
             'quote_withholding_tax_status' => isset($request->quote_withholding_tax_status) ? 'Y' : 'N',
-            'quote_tour_code' => $runningCodeTour,
+           'quote_tour_code' => $request->filled('quote_tour_code') ? $request->quote_tour_code : $runningCodeTour,
             'quote_number' => $runningCode,
             'quote_status' => 'wait',
             'quote_payment_status' => 'wait',

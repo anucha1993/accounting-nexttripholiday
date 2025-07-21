@@ -114,7 +114,7 @@
                                 <td>{{ $item->tour_code }}</td>
                                 <td>{{ 'คุณ' . $item->name . ' ' . $item->surname }}</td>
                                 <td>{{ Str::limit($item->tour_name, 30) }}</td>
-                                <td>{{ date('d-m-Y', strtotime($item->start_date)) }}</td>
+                                <td>{{ date('d-m-Y', strtotime($item->start_date)) }} ถึง {{ date('d-m-Y', strtotime($item->end_date)) }}</td>
                                 <td>{{ $item->total_qty . ' คน' }}</td>
                                 <td>{{ $item->sale_name }}</td>
                                 <td>

@@ -292,7 +292,7 @@
                 <div class="section-card">
                     <div class="section-title" style="background:linear-gradient(90deg,#d84315 60%,#ff7043 100%)"><i class="fa fa-suitcase-rolling"></i> รายละเอียดแพคเกจทัวร์</div>
                     <div class="row table-custom">
-                        <div class="col-md-9 position-relative">
+                        <div class="col-md-6 position-relative">
                             <label>ชื่อแพคเกจทัวร์:</label>
                             <input type="text" id="tourSearch" class="form-control" name="quote_tour_name" placeholder="ค้นหาแพคเกจทัวร์...ENTER เพื่อค้นหา" required autocomplete="off">
                             <button type="button" id="resetTourSearch" class="btn btn-link btn-sm position-absolute end-0 top-0" style="z-index:1100;right:10px;top:30px"><i class="fa fa-times"></i></button>
@@ -302,6 +302,11 @@
                         <label for="">รหัสทัวร์ API <small class="text-danger">แก้ไขไม่ได้*</small></label>
                          <input type="text" id="tour-code" name="quote_tour" class="form-control" readonly style="background-color: #81c7844b">
                     </div>
+                      <div class="col-md-3">
+                        <label for="">รหัสทัวร์ กำหนดเอง </label>
+                         <input type="text"  name="quote_tour_code" class="form-control" placeholder="ว่างเพื่อใช้รหัสอัตโนมัติ">
+                    </div>
+
                     <input type="hidden" id="tourSearch1" class="form-control" name="quote_tour_name1">
                    
                     <input type="hidden" id="tour-id">
@@ -443,7 +448,7 @@
                                 <select name="product_id[]" class="form-select product-select select2" id="product-select" style="width: 100%;">
                                     <option value="">--เลือกสินค้า--</option>
                                     @forelse ($products as $product)
-                                        <option data-pax="{{ $product->product_pax }}" value="{{ $product->id }}">{{ $product->product_name }}{{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
+                                        <option @if(189 === $product->id) selected @endif data-pax="{{ $product->product_pax }}" value="{{ $product->id }}">{{ $product->product_name }}{{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
                                     @empty
                                     @endforelse
                                 </select>
@@ -465,7 +470,7 @@
                                 </select>
                             </div>
                             <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="1"></div>
-                            <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01" value="0"></div>
+                            <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end period1" step="0.01" value="0"></div>
                             <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end" value="0" readonly></div>
                             <div class="col-md-1 text-center">
                                  <button type="button" class="btn btn-danger btn-sm remove-row-btn " title="ลบแถว" style="font-size: 13px 10px"><i class="fa fa-trash" ></i></button>
@@ -1558,7 +1563,7 @@ $(function() {
         var period2 = $(this).data('period2');
         var period3 = $(this).data('period3');
         var period4 = $(this).data('period4');
-        $('#period1').val(period1);
+        $('.period1').val(period1);
         $('#period2').val(period2);
         $('#period3').val(period3);
         $('#period4').val(period4);
