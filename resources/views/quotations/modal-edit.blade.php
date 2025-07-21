@@ -295,8 +295,20 @@
                         <button type="button" id="resetTourSearch" class="btn btn-link btn-sm position-absolute end-0 top-0" style="z-index:1100;right:10px;top:30px"><i class="fa fa-times"></i></button>
                         <div id="tourResults" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
                     </div>
+
+                     <div class="col-md-3">
+                        <label for="">รหัสทัวร์ API <small class="text-danger">แก้ไขไม่ได้*</small></label>
+                         <input type="text" id="tour-code" name="quote_tour" class="form-control" value="{{ $quotationModel->quote_tour ?? '' }}" readonly style="background-color: #81c7844b">
+                    </div>
+
+                      <div class="col-md-3">
+                        <label for="">รหัสทัวร์ กำหนดเอง </label>
+                         <input type="text"  name="quote_tour_code" class="form-control" value="{{ $quotationModel->quote_tour_code ?? '' }}">
+                    </div>
+
+
                     <input type="hidden" id="tourSearch1" class="form-control" name="quote_tour_name1">
-                    <input type="hidden" id="tour-code" name="quote_tour">
+                    {{-- <input type="hidden" id="tour-code" name="quote_tour"> --}}
                     <input type="hidden" id="tour-id">
                     <div class="col-md-3">
                         <label>ระยะเวลาทัวร์ (วัน/คืน): </label>
@@ -316,8 +328,7 @@
                             @endforeach
                         </select>
                     </div>
-                </div>
-                    <div class="row table-custom">
+               
                     <div class="col-md-3">
                         <label>โฮลเซลล์: </label>
                         <select name="quote_wholesale" class="form-select select2" style="width: 100%" id="wholesale" required>
