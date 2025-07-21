@@ -156,7 +156,7 @@
 
                     <td
                         style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{$quotationModel->quote_number}}</span></p>
+                        <p><span>{{$quotationModel->quote_booking}}</span></p>
                     </td>
                 </tr>
                 <tr>
