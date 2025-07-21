@@ -2,7 +2,8 @@
     <div class="card info-card">
         <div class="card-header">
             <i class="fa fa-calculator me-2"></i>รายการต้นทุน
-            <a href="javascript:void(0)" class="float-end text-white" onclick="toggleAccordion('table-inputtax', 'toggle-arrow-inputtax')">
+            <a href="javascript:void(0)" class="float-end text-white"
+                onclick="toggleAccordion('table-inputtax', 'toggle-arrow-inputtax')">
                 <i class="fas fa-chevron-down" id="toggle-arrow-inputtax"></i>
             </a>
         </div>
@@ -30,7 +31,6 @@
                     @endphp
                     <tbody>
                         @forelse ($invoiceModel as $item)
-                        
                             @php
                                 $inputTaxTotal += $invoice->getWithholdingTaxAmountAttribute();
                                 $inputTaxTotal += $item->invoice_vat;
@@ -43,7 +43,7 @@
                                 <td>
                                     <div id="invoice-file-container-{{ $item->invoice_id }}">
                                         <!-- กรณีไม่มีไฟล์ ให้แสดง input สำหรับอัปโหลด -->
-                                        
+
                                         @if (empty($item->invoice_image))
                                             <input type="file" name="invoice_file" data-id="{{ $item->invoice_id }}"
                                                 onchange="uploadInvoiceImage(this)">
@@ -114,32 +114,37 @@
                                 N/A
                         @endif
                         <td>
-                          @if ($item->input_tax_file)
-                            <a href="{{ asset('storage/' . $item->input_tax_file) }}" class="btn btn-info btn-sm" onclick="openPdfPopup(this.href); return false;">
-                             เปิดดูไฟล์</a>
+                            @if ($item->input_tax_file)
+                                <a href="{{ asset('storage/' . $item->input_tax_file) }}" class="btn btn-info btn-sm"
+                                    onclick="openPdfPopup(this.href); return false;">
+                                    เปิดดูไฟล์</a>
 
-                             <a href="{{route('inputtax.deletefile',$item->input_tax_id)}}" class="btn btn-danger btn-sm" onclick="return confirm('Do you want to delete file?');"> ลบไฟล์</a>
+                                <a href="{{ route('inputtax.deletefile', $item->input_tax_id) }}"
+                                    class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Do you want to delete file?');"> ลบไฟล์</a>
                             @elseif($item->input_tax_type !== 0)
+                                <form action="{{ route('inputtax.update', $item->input_tax_id) }}" method="POST"
+                                    enctype="multipart/form-data" id="upload-file-{{ $item->input_tax_id }}">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="customer_id"
+                                        value="{{ $quotationModel->customer_id }}">
+                                    <input type="hidden" name="input_tax_quote_number"
+                                        value="{{ $quotationModel->quote_number }}">
+                                    <input type="file" name="file" id="input-file-{{ $item->input_tax_id }}">
+                                </form>
 
-                            <form action="{{route('inputtax.update',$item->input_tax_id)}}" method="POST" enctype="multipart/form-data"  id="upload-file-{{$item->input_tax_id}}">
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" name="customer_id" value="{{$quotationModel->customer_id}}">
-                                <input type="hidden" name="input_tax_quote_number" value="{{$quotationModel->quote_number}}">
-                                <input type="file"   name="file" id="input-file-{{$item->input_tax_id}}">
-                            </form>
-                        
-                            <script>
-                                $(document).ready(function() {
-                                    $("#input-file-{{$item->input_tax_id}}").change(function() {
-                                        $(this).closest("form").submit();
+                                <script>
+                                    $(document).ready(function() {
+                                        $("#input-file-{{ $item->input_tax_id }}").change(function() {
+                                            $(this).closest("form").submit();
+                                        });
                                     });
-                                });
-                            </script>
-                             @else
-                             รอแนบไฟล์เอกสาร
-                            @endif 
-                           
+                                </script>
+                            @else
+                                รอแนบไฟล์เอกสาร
+                            @endif
+
 
 
 
@@ -149,7 +154,7 @@
 
                         </td>
                         <td>
-                            @if ($item->input_tax_withholding_status === 'Y' && ($document))
+                            @if ($item->input_tax_withholding_status === 'Y' && $document)
                                 <a href="{{ route('MPDF.generatePDFwithholding', $document->id) }}"
                                     onclick="openPdfPopup(this.href); return false;"> <i
                                         class="fa fa-file-pdf text-danger"></i> ปริ้นใบหัก ณ ที่จ่าย</a>
@@ -174,13 +179,14 @@
                         </td>
 
                         <td>
-                            @if ($item->input_tax_withholding_status === 'Y' && ($document))
-                            <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
-                              <br>
-                                <a href="{{ route('withholding.modalEdit', $document->id) }}" class="input-tax-edit text-primary">
+                            @if ($item->input_tax_withholding_status === 'Y' && $document)
+                                <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}"
+                                    class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
+                                <br>
+                                <a href="{{ route('withholding.modalEdit', $document->id) }}"
+                                    class="input-tax-edit text-primary">
                                     <i class="fa fa-edit text-primary "></i>แก้ไขใบหัก ณ ที่จ่าย</a>
                             @else
-                                
                             @endif
                             <br>
                             @if ($item->input_tax_status === 'success')
@@ -193,17 +199,16 @@
                                         class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle">
                                             ยกเลิก</i></a> --}}
                                 @else
-
-                                @if ($item->input_tax_withholding_status !== 'Y')
-                                  <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
-                                  @endif
-                                  {{-- <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a> --}}
-                                <a href="{{ route('inputtax.delete', $item->input_tax_id) }}" class="text-danger"
-                                   onclick="return confirm('Do you want to delete?');"> <i class="fa fa-trash"></i>
-                                     ลบ</a>
+                                    @if ($item->input_tax_withholding_status !== 'Y')
+                                        <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}"
+                                            class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
+                                    @endif
+                                    {{-- <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a> --}}
+                                    <a href="{{ route('inputtax.delete', $item->input_tax_id) }}" class="text-danger"
+                                        onclick="return confirm('Do you want to delete?');"> <i class="fa fa-trash"></i>
+                                        ลบ</a>
                                 @endif
                             @else
-
                             @endif
 
                         </td>
@@ -234,11 +239,26 @@
                                 }
                             @endphp
                             <td align="right" class="text-success" colspan="7">
-                                <b>(@bathText($paymentInputtaxTotal+$quotationModel->getTotalInputTaxVatType()))</b>
+                                <b>(@bathText($paymentInputtaxTotal + $quotationModel->getTotalInputTaxVatType()))</b>
                             </td>
+
+                            <td align="center" class="text-danger" colspan="1">
+    <b>
+        @if(isset($inputTax) && count($inputTax) > 0)
+            <b>(@bathText($paymentInputtaxTotal + $quotationModel->getTotalInputTaxVatType()))</b>
+        @else
+            <b>(@bathText(0))</b>
+        @endif
+    </b>
+</td>
+
                             <td align="center" class="text-danger" colspan="1">
                                 <b>
-                                    {{ number_format($paymentInputtaxTotal+$quotationModel->getTotalInputTaxVatType(), 2) }}
+                                    @if (isset($inputTax) && count($inputTax) > 0)
+                                        {{ number_format($paymentInputtaxTotal + $quotationModel->getTotalInputTaxVatType(), 2) }}
+                                    @else
+                                        {{ number_format(0, 2) }}
+                                    @endif
                                 </b>
                             </td>
                         </tr>
@@ -247,7 +267,7 @@
 
                     </tbody>
                 </table>
-                
+
                 {{-- ภาษีขาย : {{ $invoice->getWithholdingTaxAmountAttribute() }} <br>
                 ภาษีซื้อ : {{ $quotationModel->getTotalInputTaxVat() }} --}}
             </div>

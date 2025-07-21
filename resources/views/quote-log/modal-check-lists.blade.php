@@ -36,12 +36,13 @@
             <input type="checkbox" class="form-check-input me-2" id="invoice_status"
                 onchange="updateOrCreateLog('invoice', this)"
                 {{ optional($quoteLog)->invoice_status === 'ได้แล้ว' ? 'checked' : '' }}>
-            <i data-feather="{{ optional($quoteLog)->invoice_status === 'ได้แล้ว' ? 'check-circle' : 'box' }}"
-                class="{{ optional($quoteLog)->invoice_status === 'ได้แล้ว' ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
-            อินวอยโฮลเซลล์:
-            <span class="{{ optional($quoteLog)->invoice_status === 'ได้แล้ว' ? 'text-success' : 'text-muted' }}">
+                
+            <i data-feather="{{ (optional($quoteLog)->invoice_status === 'ได้แล้ว' && optional($quoteLog)->quote_status === 'ได้แล้ว' && optional($quoteLog)->inv_status === 'ได้แล้ว') ? 'check-circle' : 'box' }}"
+                class="{{ (optional($quoteLog)->invoice_status === 'ได้แล้ว' && optional($quoteLog)->quote_status === 'ได้แล้ว' && optional($quoteLog)->inv_status === 'ได้แล้ว') ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
+            อินวอยโฮลเซลล์: 
+            {{-- <span class="{{ (optional($quoteLog)->invoice_status === 'ได้แล้ว' && optional($quoteLog)->quote_status === 'ได้แล้ว' && optional($quoteLog)->inv_status === 'ได้แล้ว') ? 'text-success' : 'text-muted' }}">
                 {{ optional($quoteLog)->invoice_status ?? 'ยังไม่ได้' }}
-            </span>
+            </span> --}}
             {{-- <input type="file" name="files[]" multiple onchange="uploadFiles(event)"> --}}
             <br>
             <small class="text-secondary">
@@ -105,12 +106,12 @@
             <input type="checkbox" class="form-check-input me-2" id="slip_status"
                 onchange="updateOrCreateLog('slip', this)"
                 {{ optional($quoteLog)->slip_status === 'ส่งแล้ว' ? 'checked' : '' }}>
-            <i data-feather="{{ optional($quoteLog)->slip_status === 'ส่งแล้ว' ? 'check-circle' : 'box' }}"
-                class="{{ optional($quoteLog)->slip_status === 'ส่งแล้ว' ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
+            <i data-feather="{{ (optional($quoteLog)->slip_status === 'ส่งแล้ว' && optional($quoteLog)->depositslip_status === 'ส่งแล้ว' && optional($quoteLog)->fullslip_status === 'ส่งแล้ว') ? 'check-circle' : 'box' }}"
+                class="{{ (optional($quoteLog)->slip_status === 'ส่งแล้ว' && optional($quoteLog)->depositslip_status === 'ส่งแล้ว' && optional($quoteLog)->fullslip_status === 'ส่งแล้ว') ? 'text-success' : 'text-warning' }} feather-sm me-2"></i>
             ส่งสลิปให้โฮลเซลล์:
-            <span class="{{ optional($quoteLog)->slip_status === 'ส่งแล้ว' ? 'text-success' : 'text-muted' }}">
+            {{-- <span class="{{ (optional($quoteLog)->slip_status === 'ส่งแล้ว' && optional($quoteLog)->depositslip_status === 'ส่งแล้ว' && optional($quoteLog)->fullslip_status === 'ส่งแล้ว') ? 'text-success' : 'text-muted' }}">
                 {{ optional($quoteLog)->slip_status ?? 'ยังไม่ได้ส่ง' }}
-            </span>
+            </span> --}}
             <br>
             <small class="text-secondary">
                 อัปเดตล่าสุด:
