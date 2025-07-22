@@ -107,7 +107,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="collapse show" id="searchCollapse">
+                <div class="collapse hidden" id="searchCollapse">
                     <form action="" class="border rounded p-3 bg-light mb-3">
                         <input type="hidden" name="search" value="Y">
                         <div class="row mb-3">
@@ -409,15 +409,15 @@
                     <div class="table-responsive">
                         <table class="table table-sm table-hover table-striped table-bordered" id="quote-table"
                             style="font-size: 11px;">
-                            <thead class="table-dark sticky-top" style="font-size: 16px;">
+                            <thead class="table-dark sticky-top" >
                                 <tr>
                                     <th style="width: 40px;" class="text-center">#</th>
                                     <th style="width: 80px;">วันที่จอง</th>
-                                    <th style="width: 120px;">ใบเสนอราคา</th>
+                                    <th style="width: 80px;">ใบเสนอราคา</th>
                                     <th style="width: 100px;">เลขจองทัวร์</th>
                                     <th style="width: 200px;">โปรแกรมทัวร์</th>
                                     <th style="width: 120px;">วันเดินทาง</th>
-                                    <th style="width: 150px;">ลูกค้า</th>
+                                    <th style="width: 170px;">ลูกค้า</th>
                                     <th style="width: 120px;">ที่มา</th> <!-- New column -->
                                     <th style="width: 50px;" class="text-center">PAX</th>
                                     <th style="width: 80px;">ประเทศ</th>
@@ -437,17 +437,17 @@
                                     $inputtaxTotalWholesale = 0;
                                 @endphp
                                 @forelse ($quotations as $key => $item)
-                                    <tr class="align-middle" data-quote-id="{{ $item->quote_id }}">
+                                    <tr class="align-middle" data-quote-id="{{ $item->quote_id }} ">
                                         <td class="text-center fw-bold">
                                             {{ $quotations->total() - $quotations->firstItem() + 1 - $key }}
                                         </td>
                                         <td class="text-center">
-                                            <small
-                                                class="text-muted">{{ date('d/m/y', strtotime($item->quote_booking_create)) }}</small>
+                                            <span
+                                                class="text-muted">{{ date('d/m/y', strtotime($item->quote_booking_create)) }}</span>
                                         </td>
                                         <td>
                                             <div class="d-flex flex-column">
-                                                <span class="fw-bold text-primary">{{ $item->quote_number }}</span>
+                                                <span class="text-primary">{{ $item->quote_number }}</span>
                                                 <div>
                                                     @if ($item->debitNote)
                                                         <span class="badge bg-success badge-sm">DBN</span>
@@ -471,7 +471,7 @@
                                         <td class="text-center">
                                             
                                             <div class="d-flex flex-column">
-                                                <small>{{ date('d/m/Y', strtotime($item->quote_date_start)) }}</small> 
+                                                <span>{{ date('d/m/Y', strtotime($item->quote_date_start)) }}</span> 
                                                 {{-- <small
                                                     class="text-muted">{{ date('d/m/y', strtotime($item->quote_date_end)) }}</small> --}}
                                             </div>
@@ -502,7 +502,7 @@
                                             <span class="badge bg-info">{{ $item->quote_pax_total }}</span>
                                         </td>
                                         <td>
-                                            <small>{{ $item->quoteCountry->country_name_th }}</small>
+                                            <span>{{ $item->quoteCountry->country_name_th }}</span>
                                         </td>
                                         <td class="text-center">
                                             <span class="badge bg-secondary badge-sm">{{ $item->airline->code }}</span>
@@ -519,7 +519,7 @@
                                         <td class="text-end">
                                             <strong
                                                 class="text-success">{{ number_format($item->quote_grand_total, 0) }}</strong>
-                                            <small class="text-muted d-block">บาท</small>
+                                            <span class="text-muted d-block">บาท</span>
                                         </td>
                                         <td>
                                             <div class="d-flex flex-wrap gap-1">
@@ -574,7 +574,7 @@
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            <small>{{ $item->Salename->name }}</small>
+                                            <span>{{ $item->Salename->name }}</span>
                                         </td>
                                         <td class="text-center">
                                             @can('quotation-edit')

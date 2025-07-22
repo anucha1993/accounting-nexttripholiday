@@ -28,7 +28,7 @@ class QuoteFilesController extends Controller
     $quote = quotationModel::where('quote_number', $request->quote_number)->first();
 
     // สร้างพาธที่ถูกต้อง
-    $folderPath = 'public/' . $quote->customer_id . '/files/' . $quote->quote_number;
+    $folderPath = 'public/' . $quote->customer_id . '/files/passport/' . $quote->quote_number;
     $absolutePath = storage_path('app/' . $folderPath);
 
     // เช็คว่าไดเร็กทอรีมีอยู่แล้วหรือไม่ หากไม่มีให้สร้างขึ้นมา
