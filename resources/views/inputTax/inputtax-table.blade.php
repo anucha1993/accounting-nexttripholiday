@@ -1,7 +1,7 @@
 <div class="col-md-12">
     <div class="card info-card">
         <div class="card-header">
-            <i class="fa fa-calculator me-2"></i>รายการต้นทุน
+            <i class="fa fa-calculator me-2"></i>รายการต้นทุน 
             <a href="javascript:void(0)" class="float-end text-white"
                 onclick="toggleAccordion('table-inputtax', 'toggle-arrow-inputtax')">
                 <i class="fas fa-chevron-down" id="toggle-arrow-inputtax"></i>
@@ -238,19 +238,23 @@
                                     $paymentInputtaxTotal = $withholdingTaxAmount + $getTotalInputTaxVat;
                                 }
                             @endphp
+                             <span class="text-danger">รายการต้นทุน ภาษีมูลค่าเพิ่ม VAT + หัก ณ. ที่จ่าย  : {{$withholdingTaxAmount}} บาท </br></span>
+                            {{-- รายการต้นทุน ที่ชำระแล้ว : {{ $paymentInputtaxTotal }} </br> --}}
+
+
                             <td align="right" class="text-success" colspan="7">
                                 <b>(@bathText($paymentInputtaxTotal + $quotationModel->getTotalInputTaxVatType()))</b>
                             </td>
 
                             <td align="center" class="text-danger" colspan="1">
-    <b>
-        @if(isset($inputTax) && count($inputTax) > 0)
-            <b>(@bathText($paymentInputtaxTotal + $quotationModel->getTotalInputTaxVatType()))</b>
-        @else
-            <b>(@bathText(0))</b>
-        @endif
-    </b>
-</td>
+                                <b>
+                                    @if (isset($inputTax) && count($inputTax) > 0)
+                                        <b>(@bathText($paymentInputtaxTotal + $quotationModel->getTotalInputTaxVatType()))</b>
+                                    @else
+                                        <b>(@bathText(0))</b>
+                                    @endif
+                                </b>
+                            </td>
 
                             <td align="center" class="text-danger" colspan="1">
                                 <b>

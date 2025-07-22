@@ -174,6 +174,7 @@ Route::get('quote/edit/new/{quotationModel}',[quoteController::class,'editNew'])
 
 Route::get('quote/ajax/new/{quotationModel}',[quoteController::class,'editQuote'])->name('quote.editAjax');
 Route::get('quote/modal/edit/{quotationModel}', [quoteController::class, 'modalEdit'])->name('quote.modalEdit');
+Route::get('quote/modal/view/{quotationModel}', [quoteController::class, 'modalView'])->name('quote.modalView');
 
 
 Route::get('quote/modal/copy/edit/{quotationModel}',[quoteController::class,'modalEditCopy'])->name('quote.modalEditCopy');

@@ -73,11 +73,14 @@ class invoiceModel extends Model
 
     public function getWithholdingTaxAmountAttribute()
     {
-        // ใช้ is_null เพื่อตรวจสอบว่า invoice_image เป็น NULL หรือไม่
-        if (is_null($this->invoice_image)) {
-            return is_numeric($this->invoice_withholding_tax) ? $this->invoice_withholding_tax + $this->invoice_vat : 0;
+        // คืนค่าเฉพาะ invoice_status = 'success' เท่านั้น
+        if ($this->invoice_status === 'success') {
+            if (is_null($this->invoice_image)) {
+                return is_numeric($this->invoice_withholding_tax) ? $this->invoice_withholding_tax + $this->invoice_vat : 0;
+            }
+            return $this->invoice_vat;
         }
-        return $this->invoice_vat;
+        return 0;
     }
 
     // ความสัมพันธ์กับ BookingModel

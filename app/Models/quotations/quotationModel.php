@@ -338,18 +338,31 @@ class quotationModel extends Model
         $getWholesalePaidNet = $this->getWholesalePaidNet();
         return $getTotalOtherCost + $getWholesalePaidNet;
     }
+
     //ยอดรวมต้นทุนรวมอื่นๆ
     public function getTotalOtherCost()
     {
         // คำนวณต้นทุนอื่นๆ ตามตัวอย่างใน Blade
-        $withholdingTaxAmount = $this->withholding_tax_amount; // accessor
+        // ดึง invoice ที่มี invoice_status = success เท่านั้น
+        $invoice = $this->invoiceVat()->where('invoice_status', 'success')->first();
+        $withholdingTaxAmount = 0;
+        if ($invoice) {
+            if (is_null($invoice->invoice_image)) {
+                $withholdingTaxAmount = is_numeric($invoice->invoice_withholding_tax) ? $invoice->invoice_withholding_tax + $invoice->invoice_vat : 0;
+            } else {
+                $withholdingTaxAmount = $invoice->invoice_vat;
+            }
+        }
         $getTotalInputTaxVat = $this->getTotalInputTaxVat();
+        $getTotalInputTaxVatType = $this->getTotalInputTaxVatType();
         $hasInputTaxFile = $this->InputTaxVat()->whereNotNull('input_tax_file')->exists();
         if ($hasInputTaxFile) {
-            return $withholdingTaxAmount - $getTotalInputTaxVat;
+            return $withholdingTaxAmount - $getTotalInputTaxVat + $getTotalInputTaxVatType;
         } else {
-            return $withholdingTaxAmount + $getTotalInputTaxVat;
+            return $withholdingTaxAmount + $getTotalInputTaxVat + $getTotalInputTaxVatType;
         }
+
+
     }
 
     public function inputtaxTotalWholesale()

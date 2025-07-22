@@ -219,7 +219,7 @@
                                     @endcan
 
                                     <a class="dropdown-item modal-quote-edit"
-                                    href="{{ route('quote.modalEdit', ['quotationModel' => $quotationModel->quote_id, 'mode' => 'view']) }}">
+                                    href="{{ route('quote.modalView',$quotationModel->quote_id) }}">
                                     <i class="fa fa-eye text-info"></i> ดูรายละเอียด
                                  </a>
                                     

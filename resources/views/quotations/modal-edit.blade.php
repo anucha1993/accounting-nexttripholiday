@@ -1181,36 +1181,28 @@ $(function() {
         var vatRate = 0.07;
         var withholdingRows = [];
 
-        // ปรับ selector ให้รองรับกรณี id="table-income" อยู่ผิดที่ (ใน .row)
-        // ให้หา .item-row.table-income ที่อยู่ใน #quotation-table แทน
-        $('#quotation-table .item-row.table-income, #discount-list .item-row.table-discount').each(function() {
+        // ใช้ selector แบบเดียวกับ create-modern-full
+        $('.item-row.table-income, #discount-list .item-row.table-discount').each(function() {
             var $row = $(this);
-            var qty = parseFloat($row.find('.quantity').val()) || 0;
-            var price = parseFloat($row.find('.price-per-unit').val()) || 0;
-            var isVat = $row.find('.vat-status').val() === 'vat';
-            var select = $row.find('select.product-select');
-            var isPax = false;
-            var selectedOption = null;
-            if (select.length > 0) {
-                selectedOption = select.find('option:selected').first();
-                isPax = selectedOption.length && selectedOption.data('pax') === 'Y';
-            }
-            var isWithholding = $row.find('.vat-3').is(':checked');
-            var rowTotal = qty * price;
-            var withholding = 0;
-            // รวม 3% (ถ้ามี) เฉพาะแสดงผล ไม่เกี่ยวกับภาษีหัก ณ ที่จ่าย
-            if (isWithholding) {
-                var plus3 = rowTotal * 0.03;
-                $row.find('.total-amount').val((rowTotal + plus3).toFixed(2));
-                rowTotal = rowTotal + plus3;
+            var qty = parseFloat($row.find('input[name="quantity[]"]').val()) || 0;
+            var price = parseFloat($row.find('input[name="price_per_unit[]"]').val()) || 0;
+            var isDiscount = $row.hasClass('table-discount');
+            if (isDiscount) {
+                var total = qty * price;
+                $row.find('input[name="total_amount[]"]').val(total.toFixed(2));
+                sumDiscount += total;
             } else {
-                $row.find('.total-amount').val(rowTotal.toFixed(2));
-            }
-            // แยกประเภท income/discount
-            var expenseType = $row.find('select[name="expense_type[]"]').val() || $row.find('select[name="expense_type[]"]').find('option:selected').val();
-            if (expenseType === 'discount') {
-                sumDiscount += rowTotal;
-            } else {
+                var isVat = $row.find('select[name="vat_status[]"]').val() === 'vat';
+                var isPax = $row.find('select[name="product_id[]"] option:selected').data('pax') === 'Y';
+                var isWithholding = $row.find('input.vat-3').is(':checked');
+                var rowTotal = qty * price;
+                if (isWithholding) {
+                    var plus3 = rowTotal * 0.03;
+                    $row.find('input[name="total_amount[]"]').val((rowTotal + plus3).toFixed(2));
+                    rowTotal = rowTotal + plus3;
+                } else {
+                    $row.find('input[name="total_amount[]"]').val(rowTotal.toFixed(2));
+                }
                 if (isVat) {
                     sumTotalVat += rowTotal;
                 } else {
@@ -1225,37 +1217,29 @@ $(function() {
         // --- VAT Calculation ---
         var vatType = $('input[name="vat_type"]:checked').val();
         if (vatType === 'include') {
-            // VAT Include: ราคาสินค้า/บริการรวม VAT แล้ว
-            sumPreVat = sumTotalVat / (1 + vatRate); // ราคาก่อน VAT เฉพาะแถวที่เลือก Vat
-            sumVat = sumTotalVat - sumPreVat; // VAT เฉพาะแถวที่เลือก Vat
-            sumIncludeVat = sumTotalVat; // รวม VAT เฉพาะแถวที่เลือก Vat
-            // grand total = (nonvat + vat รวม) - discount
+            sumPreVat = sumTotalVat / (1 + vatRate);
+            sumVat = sumTotalVat - sumPreVat;
+            sumIncludeVat = sumTotalVat;
             grandTotal = sumTotalNonVat + sumIncludeVat - sumDiscount;
         } else {
-            // VAT Exclude: ราคาสินค้า/บริการยังไม่รวม VAT
-            sumPreVat = sumTotalVat; // ราคาก่อน VAT เฉพาะแถวที่เลือก Vat
-            sumVat = sumPreVat * vatRate; // VAT เฉพาะแถวที่เลือก Vat
-            sumIncludeVat = sumPreVat + sumVat; // รวม VAT เฉพาะแถวที่เลือก Vat
-            // grand total = (nonvat + vat รวม + vat) - discount
+            sumPreVat = sumTotalVat;
+            sumVat = sumPreVat * vatRate;
+            sumIncludeVat = sumPreVat + sumVat;
             grandTotal = sumTotalNonVat + sumIncludeVat - sumDiscount;
         }
 
         // withholding tax 3% รวมทุกแถวที่ติ๊ก (เฉพาะรายได้)
-        // คำนวณภาษีหัก ณ ที่จ่าย 3% (คิดจากยอดรวมเฉพาะรายการที่เลือก Vat เท่านั้น)
         withholdingAmount = 0;
         if ($('#withholding-tax').is(':checked')) {
-            // รวมยอดเฉพาะแถวที่เลือก Vat (คิดจากยอดก่อน vat)
             var sumVatRows = 0;
-            $('#quotation-table .item-row.table-income').each(function() {
+            $('.item-row.table-income').each(function() {
                 var $row = $(this);
-                var isVat = $row.find('.vat-status').val() === 'vat';
-                var qty = parseFloat($row.find('.quantity').val()) || 0;
-                var price = parseFloat($row.find('.price-per-unit').val()) || 0;
-                var isWithholding = $row.find('.vat-3').is(':checked');
+                var isVat = $row.find('select[name="vat_status[]"]').val() === 'vat';
+                var qty = parseFloat($row.find('input[name="quantity[]"]').val()) || 0;
+                var price = parseFloat($row.find('input[name="price_per_unit[]"]').val()) || 0;
                 var rowTotal = qty * price;
                 if (isVat) {
                     if (vatType === 'include') {
-                        // ถ้าเป็น include ต้องใช้ยอดก่อน VAT
                         sumVatRows += rowTotal / (1 + vatRate);
                     } else {
                         sumVatRows += rowTotal;
@@ -1264,7 +1248,6 @@ $(function() {
             });
             withholdingAmount = sumVatRows * 0.03;
         }
-        // อัปเดตแสดงผลทันทีเมื่อเปลี่ยน checkbox
         $('#withholding-amount').text(withholdingAmount.toFixed(2));
 
         // set ค่า summary
@@ -1288,7 +1271,6 @@ $(function() {
         $('input[name="quote_grand_total"]').val(grandTotal.toFixed(2));
         $('input[name="quote_withholding_tax"]').val(withholdingAmount.toFixed(2));
 
-        // เรียก syncDepositAndFullPayment() หลังคำนวณเสร็จ
         syncDepositAndFullPayment();
     }
 
@@ -1304,7 +1286,7 @@ $(function() {
         var rowCount = $('#table-income > .row').length + 1;
         var rowId = 'service-row-' + Date.now();
         var rowHtml = `
-            <div class="row align-items-center">
+           <div class="row item-row table-income align-items-center">
                 <div class="col-md-1"><span class="row-number"></span></div>
                 <div class="col-md-3">
                     <select name="product_id[]" class="form-select product-select select2" style="width: 100%;">
@@ -1346,7 +1328,7 @@ $(function() {
             dropdownParent: $select.closest('.modal-body')
         });
         updateRowNumbers();
-        calculatePaymentCondition();
+        calculatePaymentCondition(); // เรียกคำนวณยอดทันทีหลังเพิ่ม row
     });
 
     // ฟังก์ชันอัปเดตเลขลำดับ row
@@ -1395,7 +1377,7 @@ $(function() {
                     <select name="product_id[]" class="form-select product-select select2" style="width: 100%;">
                         <option value="">--เลือกส่วนลด--</option>
                         @foreach ($productDiscount as $product)
-                            <option value="{{ $product->id }}">{{ $product->product_name }}</option>
+                            <option value="{{ $product->id }}" {{ $row->product_id == $product->id ? 'selected' : '' }}>{{ $product->product_name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -1640,6 +1622,8 @@ $(function() {
             $('#tourResults').empty();
         }
     });
+
+    
     // เรียกคำนวณยอดและข้อมูลค่าบริการทันทีเมื่อโหลดหน้า modal
     calculatePaymentCondition();
 });
