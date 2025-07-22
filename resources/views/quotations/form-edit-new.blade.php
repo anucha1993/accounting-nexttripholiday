@@ -459,17 +459,15 @@
 
                         <div class="profit-item">
                             <span class="label">กำไรสุทธิ</span>
-                            <span
-                                class="value">
-                                @if ($wholesalePayment > 0 || $paymentInputtaxTotal > 0)
-                                   
+                            <span class="value">
+                                @if (
+                                    ($wholesalePayment > 0 || $paymentInputtaxTotal > 0) &&
+                                    (number_format($quotationModel->getWholesalePaidNet(), 2) === number_format($quotationModel->inputtaxTotalWholesale(), 2))
+                                )
                                     {{ number_format($quotationModel->getNetProfit(), 2) }}
-                                    
                                 @else
                                     {{ number_format(0, 2) }}
                                 @endif
-                                
-                                {{-- {{ $wholesalePayment <= 0 ? '0.00' : number_format($TotalGrand, 2) }}</span> --}}
                         </div>
                     </div>
                 </div>
