@@ -1,16 +1,59 @@
 <div class="col-md-12">
-    <div class="card info-card">
-        <div class="card-header">
-            <i class="fa fa-calculator me-2"></i>รายการต้นทุน 
-            <a href="javascript:void(0)" class="float-end text-white"
-                onclick="toggleAccordion('table-inputtax', 'toggle-arrow-inputtax')">
+    <style>
+        .inputtax-table-header {
+            background: linear-gradient(135deg, #ff9800 0%, #f44336 100%);
+            color: white;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 14px 20px;
+        }
+        .inputtax-table th {
+            background: #f3f6fb;
+            color: #495057;
+            font-weight: 500;
+            font-size: 13px;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .inputtax-table td {
+            font-size: 13px;
+            vertical-align: middle;
+        }
+        .inputtax-table .badge {
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 12px;
+        }
+        .inputtax-table .fa-calculator {
+            color: #ff9800;
+        }
+        .inputtax-table .fa-edit {
+            color: #17a2b8;
+        }
+        .inputtax-table .fa-trash {
+            color: #e74c3c;
+        }
+        .inputtax-table .fa-file {
+            color: #e74c3c;
+        }
+        .inputtax-table-summary {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #ff9800;
+            border-top: 2px solid #ff9800;
+        }
+    </style>
+    <div class="card info-card shadow-sm">
+        <div class="inputtax-table-header d-flex justify-content-between align-items-center">
+            <span><i class="fa fa-calculator me-2"></i>รายการต้นทุน</span>
+            <a href="javascript:void(0)" class="text-white" onclick="toggleAccordion('table-inputtax', 'toggle-arrow-inputtax')">
                 <i class="fas fa-chevron-down" id="toggle-arrow-inputtax"></i>
             </a>
         </div>
 
         <div class="card-body" id="table-inputtax" style="display: block">
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table inputtax-table table-hover table-bordered mb-0">
                     <thead>
                         <tr>
                             <th class="text-center" style="width: 60px;">#</th>
@@ -113,7 +156,7 @@
                             @else
                                 N/A
                         @endif
-                        <td>
+                        <td class="text-center">
                             @if ($item->input_tax_file)
                                 <a href="{{ asset('storage/' . $item->input_tax_file) }}" class="btn btn-info btn-sm"
                                     onclick="openPdfPopup(this.href); return false;">
@@ -149,7 +192,7 @@
 
 
                         </td>
-                        <td>
+                        <td class="text-end">
                             {{ number_format($item->input_tax_service_total, 2) }}
 
                         </td>
@@ -164,10 +207,10 @@
 
                         </td>
 
-                        <td>{{ number_format($item->input_tax_withholding, 2) }} </td>
-                        <td>{{ number_format($item->input_tax_vat, 2) }}</td>
+                        <td class="text-end">{{ number_format($item->input_tax_withholding, 2) }} </td>
+                        <td class="text-end">{{ number_format($item->input_tax_vat, 2) }}</td>
 
-                        <td>
+                        <td class="text-end">
                             {{-- @if ($item->input_tax_withholding_status === 'Y') 
                             {{ number_format($item->input_tax_grand_total, 2) }}
                             @elseif($item->input_tax_wholesale_type === 'Y' )
@@ -188,9 +231,12 @@
                                     <i class="fa fa-edit text-primary "></i>แก้ไขใบหัก ณ ที่จ่าย</a>
                             @else
                             @endif
-                            <br>
+                            
+
                             @if ($item->input_tax_status === 'success')
+                            
                                 @if ($item->input_tax_wholesale_type === 'Y')
+                                <br>
                                     <a href="{{ route('inputtax.inputtaxEditWholesale', $item->input_tax_id) }}"
                                         class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
 
@@ -241,12 +287,12 @@
                              <span class="text-danger">รายการต้นทุน ภาษีมูลค่าเพิ่ม VAT + หัก ณ. ที่จ่าย  : {{$withholdingTaxAmount}} บาท </br></span>
                             {{-- รายการต้นทุน ที่ชำระแล้ว : {{ $paymentInputtaxTotal }} </br> --}}
 
-
+{{-- 
                             <td align="right" class="text-success" colspan="7">
                                 <b>(@bathText($paymentInputtaxTotal + $quotationModel->getTotalInputTaxVatType()))</b>
-                            </td>
+                            </td> --}}
 
-                            <td align="center" class="text-danger" colspan="1">
+                            <td class="text-danger text-end" colspan="7">
                                 <b>
                                     @if (isset($inputTax) && count($inputTax) > 0)
                                         <b>(@bathText($paymentInputtaxTotal + $quotationModel->getTotalInputTaxVatType()))</b>
@@ -256,7 +302,7 @@
                                 </b>
                             </td>
 
-                            <td align="center" class="text-danger" colspan="1">
+                            <td  class="text-danger text-end" colspan="1">
                                 <b>
                                     @if (isset($inputTax) && count($inputTax) > 0)
                                         {{ number_format($paymentInputtaxTotal + $quotationModel->getTotalInputTaxVatType(), 2) }}

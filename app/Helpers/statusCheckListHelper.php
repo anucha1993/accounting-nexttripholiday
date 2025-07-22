@@ -11,17 +11,17 @@ function getStatusBadge($quoteCheckStatus, $quotations)
     if (is_null($quoteCheckStatus->booking_email_status) || trim($quoteCheckStatus->booking_email_status) === 'ยังไม่ได้ส่ง') {
         $badges[] = '<span class="badge rounded-pill bg-danger">ยังไม่ส่งใบอีเมลล์จองทัวร์ให้โฮลเซลล์</span>';
     }
-    // 2. invoice_status
-    if (is_null($quoteCheckStatus->invoice_status) || trim($quoteCheckStatus->invoice_status) !== 'ได้แล้ว') {
-        $badges[] = '<span class="badge rounded-pill bg-danger">ยังไม่ได้อินวอยโฮลเซลล์</span>';
+    // 2. invoice_status (ต้องได้ทั้ง quote_status และ inv_status)
+    $quoteStatusOk = !is_null($quoteCheckStatus->quote_status) && trim($quoteCheckStatus->quote_status) === 'ได้แล้ว';
+    $invStatusOk = !is_null($quoteCheckStatus->inv_status) && trim($quoteCheckStatus->inv_status) === 'ได้แล้ว';
+    if (!($quoteStatusOk && $invStatusOk)) {
+        $badges[] = '<span class="badge rounded-pill bg-danger">ยังไม่ได้อินวอยโฮลเซลล์ครบ (ใบเสนอราคา+ใบแจ้งหนี้)</span>';
     }
-    // 3. inv_status
-    if (is_null($quoteCheckStatus->inv_status) || trim($quoteCheckStatus->inv_status) === 'ยังไม่ได้') {
-        $badges[] = '<span class="badge rounded-pill bg-danger">ยังไม่ได้ใบแจ้งหนี้โฮลเซลล์</span>';
-    }
-    // 4. slip_status
-    if (is_null($quoteCheckStatus->slip_status) || trim($quoteCheckStatus->slip_status) === 'ยังไม่ได้ส่ง') {
-        $badges[] = '<span class="badge rounded-pill bg-danger">ยังไม่ได้ส่งสลิปให้โฮลเซลล์</span>';
+    // 4. slip_status (ต้องได้ทั้ง depositslip_status และ fullslip_status)
+    $depositslipOk = !is_null($quoteCheckStatus->depositslip_status) && trim($quoteCheckStatus->depositslip_status) === 'ส่งแล้ว';
+    $fullslipOk = !is_null($quoteCheckStatus->fullslip_status) && trim($quoteCheckStatus->fullslip_status) === 'ส่งแล้ว';
+    if (!($depositslipOk && $fullslipOk)) {
+        $badges[] = '<span class="badge rounded-pill bg-danger">ยังไม่ได้ส่งสลิปให้โฮลเซลล์ครบ (มัดจำ+ยอดเต็ม)</span>';
     }
     // 5. passport_status
     if (is_null($quoteCheckStatus->passport_status) || trim($quoteCheckStatus->passport_status) === 'ยังไม่ได้ส่ง') {
@@ -58,12 +58,16 @@ function getStatusBadgeCount($quoteCheckStatus, $quotations)
     if (is_null($quoteCheckStatus->booking_email_status) || trim($quoteCheckStatus->booking_email_status) === 'ยังไม่ได้ส่ง') {
         $badges[] = 1;
     }
-    //อินวอยโฮลเซลล์ 2
-    if (is_null($quoteCheckStatus->invoice_status) || trim($quoteCheckStatus->invoice_status) !== 'ได้แล้ว') {
+    //อินวอยโฮลเซลล์ 2 (ต้องได้ทั้ง quote_status และ inv_status)
+    $quoteStatusOk = !is_null($quoteCheckStatus->quote_status) && trim($quoteCheckStatus->quote_status) === 'ได้แล้ว';
+    $invStatusOk = !is_null($quoteCheckStatus->inv_status) && trim($quoteCheckStatus->inv_status) === 'ได้แล้ว';
+    if (!($quoteStatusOk && $invStatusOk)) {
         $badges[] = 1;
-    } 
-     //ส่งสลิปให้โฮลเซลล์ 3
-    if (is_null($quoteCheckStatus->slip_status) || trim($quoteCheckStatus->slip_status) === 'ยังไม่ได้ส่ง') {
+    }
+    //ส่งสลิปให้โฮลเซลล์ 3 (ต้องได้ทั้ง depositslip_status และ fullslip_status)
+    $depositslipOk = !is_null($quoteCheckStatus->depositslip_status) && trim($quoteCheckStatus->depositslip_status) === 'ส่งแล้ว';
+    $fullslipOk = !is_null($quoteCheckStatus->fullslip_status) && trim($quoteCheckStatus->fullslip_status) === 'ส่งแล้ว';
+    if (!($depositslipOk && $fullslipOk)) {
         $badges[] = 1;
     }
      //ส่งพาสปอตให้โฮลเซลล์ 4
@@ -88,11 +92,6 @@ function getStatusBadgeCount($quoteCheckStatus, $quotations)
        //ใบกำกับภาษีโฮลเซลล์ 8
   
 
-
-
-   
-   
-   
  
      if ($quotations->payment > 0 && $quotations->quote_status !== 'cancel') {
          return count($badges);

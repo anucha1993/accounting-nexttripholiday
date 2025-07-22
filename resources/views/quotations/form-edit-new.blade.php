@@ -590,14 +590,18 @@
                     .load($(this).attr("href"));
             });
 
-            $(".modal-quote-check").click("click", function(e) {
-                e.preventDefault();
-                $("#modal-quote-check")
-                    .modal("show")
-                    .addClass("modal-lg")
-                    .find(".modal-content")
-                    .load($(this).attr("href"));
-            });
+          $(".modal-quote-check").click("click", function(e) {
+    e.preventDefault();
+    $("#modal-quote-check")
+        .modal("show")
+        .addClass("modal-lg")
+        .find(".modal-content")
+        .load($(this).attr("href"), function() {
+            // เรียกฟังก์ชันหลังโหลดเนื้อหาใหม่
+            if (typeof updateInvoiceStatus === 'function') updateInvoiceStatus();
+            if (typeof updateSlipStatus === 'function') updateSlipStatus();
+        });
+});
 
             // modal add payment wholesale quote
             $(".modal-quote-copy").click("click", function(e) {

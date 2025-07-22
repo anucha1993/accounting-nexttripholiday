@@ -1,15 +1,58 @@
 <div class="col-md-12">
-    <div class="card info-card">
-        <div class="card-header">
-            <i class="fas fa-building me-2"></i>รายการชำระเงินโฮลเซลล์
-            <a href="javascript:void(0)" class="float-end text-white"
-                onclick="toggleAccordion('table-payment-wholesale', 'toggle-arrow-payment-wholesale')">
+    <style>
+        .wholesale-table-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 14px 20px;
+        }
+        .wholesale-table th {
+            background: #f3f6fb;
+            color: #495057;
+            font-weight: 500;
+            font-size: 13px;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .wholesale-table td {
+            font-size: 13px;
+            vertical-align: middle;
+        }
+        .wholesale-table .badge {
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 12px;
+        }
+        .wholesale-table .fa-building {
+            color: #007bff;
+        }
+        .wholesale-table .fa-edit {
+            color: #17a2b8;
+        }
+        .wholesale-table .fa-envelope {
+            color: #17a2b8;
+        }
+        .wholesale-table .fa-trash {
+            color: #e74c3c;
+        }
+        .wholesale-table-summary {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #28a745;
+            border-top: 2px solid #28a745;
+        }
+    </style>
+    <div class="card info-card shadow-sm">
+        <div class="wholesale-table-header d-flex justify-content-between align-items-center">
+            <span><i class="fas fa-building me-2"></i>รายการชำระเงินโฮลเซลล์</span>
+            <a href="javascript:void(0)" class="text-white" onclick="toggleAccordion('table-payment-wholesale', 'toggle-arrow-payment-wholesale')">
                 <i class="fas fa-chevron-down" id="toggle-arrow-payment-wholesale"></i>
             </a>
         </div>
         <div class="card-body">
             <div class="table-responsive" id="table-payment-wholesale" style="display: block">
-                <table class="table table-striped">
+                <table class="table wholesale-table table-hover table-bordered mb-0">
                     <thead>
                         <tr>
                             <th class="text-center" style="width: 60px;">#</th>
@@ -49,7 +92,7 @@
                                     @if ($item->payment_wholesale_refund_type !== null)
                                         {!! '<span class="text-danger">' . number_format($item->payment_wholesale_refund_total, 2) . '</span>' !!}
                                     @else
-                                        {{-- {{ number_format($item->payment_wholesale_total - $item->payment_wholesale_refund_total, 2, '.', ',') }} --}}
+                                       N/A
                                     @endif
                                 </td>
                                 <td>
@@ -59,6 +102,9 @@
                                         @elseif($item->payment_type === 'full')
                                             <span class="text-success">(ชำระเงินเต็มจำนวน)</span>
                                         @endif
+                                        
+                                        @else
+                                        N/A
                                     @endif
                                 </td>
 
@@ -79,7 +125,7 @@
                                         <a onclick="openPdfPopup(this.href); return false;" class="text-danger"
                                             href="{{ asset($item->payment_wholesale_refund_file_path2) }}">{{ $item->payment_wholesale_refund_file_name2 }}</a>
                                     @else
-                                        -
+                                        
                                     @endif
                                 </td>
                                 <td>

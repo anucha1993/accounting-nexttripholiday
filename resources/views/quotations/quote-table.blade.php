@@ -1,8 +1,112 @@
+<style>
+    .quote-table-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 8px 8px 0 0;
+        font-weight: 600;
+        font-size: 15px;
+        padding: 14px 20px;
+    }
+    .quote-table th {
+        background: #f3f6fb;
+        color: #495057;
+        font-weight: 500;
+        font-size: 13px;
+        border-bottom: 2px solid #dee2e6;
+    }
+    .quote-table td {
+        font-size: 13px;
+        vertical-align: middle;
+    }
+    .quote-table .badge {
+        font-size: 12px;
+        padding: 6px 12px;
+        border-radius: 12px;
+    }
+    .quote-table .fa-user {
+        color: #007bff;
+    }
+    .quote-table .fa-file-text {
+        color: #764ba2;
+    }
+    .quote-table .fa-eye {
+        color: #17a2b8;
+    }
+    .quote-table .fa-edit {
+        color: #17a2b8;
+    }
+    .quote-table .fa-minus-circle {
+        color: #e74c3c;
+    }
+    .quote-table .fa-print {
+        color: #e74c3c;
+    }
+    .quote-table .fa-envelope {
+        color: #17a2b8;
+    }
+    .quote-table-summary {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #007bff;
+        border-top: 2px solid #007bff;
+    }
+
+    .invoice-table-header {
+            background: linear-gradient(135deg, #28a745 0%, #007bff 100%);
+            color: white;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 14px 20px;
+        }
+        .invoice-table th {
+            background: #f3f6fb;
+            color: #495057;
+            font-weight: 500;
+            font-size: 13px;
+            border-bottom: 2px solid #dee2e6;
+            padding: 6px 12px;
+        }
+        .invoice-table td {
+            font-size: 13px;
+            vertical-align: middle;
+        }
+        .invoice-table .badge {
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 12px;
+        }
+        .invoice-table .fa-file {
+            color: #007bff;
+        }
+        .invoice-table .fa-eye {
+            color: #17a2b8;
+        }
+        .invoice-table .fa-edit {
+            color: #17a2b8;
+        }
+        .invoice-table .fa-minus-circle {
+            color: #e74c3c;
+        }
+        .invoice-table .fa-print {
+            color: #e74c3c;
+        }
+        .invoice-table .fa-envelope {
+            color: #17a2b8;
+        }
+        .invoice-table-summary {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #28a745;
+            border-top: 2px solid #28a745;
+        }
+</style>
+
 <div class="col-md-12">
-    <div class="card info-card">
-        <div class="card-header">
-            <i class="fa fa-file-text me-2"></i>รายละเอียดใบจองทัวร์
-            <div class="float-end">
+    <div class="card info-card shadow-sm">
+        <div class="quote-table-header d-flex justify-content-between align-items-center">
+            <span><i class="fa fa-file-text me-2"></i>รายละเอียดใบจองทัวร์</span>
+            <div>
                 <small class="me-3">Booking No.: {{ $quotationModel->quote_booking }}</small>
                 <a href="javascript:void(0)" class="text-white" onclick="toggleAccordion('table-quote', 'toggle-arrow')">
                     <i class="fas fa-chevron-down" id="toggle-arrow"></i>
@@ -12,10 +116,10 @@
 
         <div class="card-body" id="table-quote" style="display: block;">
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table quote-table table-hover table-bordered mb-0">
                     <thead>
                         <tr>
-                            <th class="text-center" style="width: 60px;">#</th>
+                            <th class="text-center" style="width: 48px;">#</th>
                             <th>รายการ</th>
                             <th class="text-center">จำนวน</th>
                             <th class="text-end">ราคาต่อหน่วย</th>
@@ -36,8 +140,8 @@
                                     @endif
                                     
                                 </td>
-                                <td>{{$item->product_qty}}</td>
-                                <td align="center">
+                                <td class="text-center">{{$item->product_qty}}</td>
+                                <td class="text-end">
                                     @if ($item->withholding_tax === 'N')
                                     {{  number_format( $item->product_price  , 2, '.', ',')}}
                                     @else
@@ -53,7 +157,7 @@
                                      <input type="checkbox" checked disabled>
                                     @endif
                                 </td>
-                                <td align="center">{{number_format($item->product_sum , 2, '.', ',')}}</td>
+                                <td class="text-end">{{number_format($item->product_sum , 2, '.', ',')}}</td>
                                 
                             </tr>
                         @empty
@@ -96,7 +200,7 @@
                                     {{  number_format( ($item->product_price * 0.03)  , 2, '.', ',')}}
                                     @endif
                                 </td>
-                                <td align="center">{{number_format($item->product_sum , 2, '.', ',')}}</td>
+                                <td class="text-end">{{number_format($item->product_sum , 2, '.', ',')}}</td>
                                 
                             </tr>
                         @empty
@@ -104,9 +208,9 @@
                         @endforelse
 
 
-                        <tr class="text-info">
+                        <tr class="quote-table-summary">
                             <td align="right" colspan="5"><b>(@bathText($quotationModel->quote_grand_total))</b></td>
-                            <td align="center" ><b><u>{{number_format($quotationModel->quote_grand_total , 2, '.', ',')}}</u></b></td>
+                            <td class="text-end" ><b><u>{{number_format($quotationModel->quote_grand_total , 2, '.', ',')}}</u></b></td>
                         </tr>
                     </tbody>
                 </table>
@@ -128,25 +232,27 @@
                 </span>
             </h5>
         </div>
-        <div class="card-body" id="table-invoices"style="display: block;">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="width: 100px">ปรเภท</th>
-                            <th>วันที่</th>
-                            <th>เลขที่เอกสาร</th>
-                            {{-- <th style="width: 500px">ชื่อลูกค้า</th> --}}
-                            <th style="text-align: center">ยอดรวมสิทธิ์</th>
-                            <th style="text-align: center">ยอดชำระแล้ว</th>
-                            <th style="text-align: center">ยอดคงค้าง</th>
-                            <th style="text-align: center">หัก ณ. ที่จ่าย</th>
-                            <th style="text-align: left">Actions Report</th>
 
-                            <th style="text-align: left">Actions</th>
-                            <th style="text-align: left">Cancel</th>
-                        </tr>
-                    </thead>
+
+
+<div class="card-body" id="table-invoices" style="display: block;">
+
+    <div class="table-responsive">
+        <table class="table invoice-table table-striped mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 100px">ประเภท</th>
+                    <th>วันที่</th>
+                    <th>เลขที่เอกสาร</th>
+                    <th class="text-center">ยอดรวมสิทธิ์</th>
+                    <th class="text-center">ยอดชำระแล้ว</th>
+                    <th class="text-center">ยอดคงค้าง</th>
+                    <th class="text-center">หัก ณ. ที่จ่าย</th>
+                    <th class="text-left">Actions Report</th>
+                    <th class="text-left">Actions</th>
+                    <th class="text-left">Cancel</th>
+                </tr>
+            </thead>
 
                     @php
                          $incomeTotal = 0;

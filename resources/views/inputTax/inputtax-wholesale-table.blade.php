@@ -1,15 +1,59 @@
 <div class="col-md-12">
-    <div class="card info-card">
-        <div class="card-header">
-            <i class="fa fa-receipt me-2"></i>รายการต้นทุนโฮลเซลล์
-            <a href="javascript:void(0)" class="float-end text-white" onclick="toggleAccordion('table-inputtax', 'toggle-arrow-inputtax')">
+    <style>
+        .inputtax-table-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 14px 20px;
+        }
+        .inputtax-table th {
+            background: #f3f6fb;
+            color: #495057;
+            font-weight: 500;
+            font-size: 13px;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .inputtax-table td {
+            font-size: 13px;
+            vertical-align: middle;
+        }
+        .inputtax-table .badge {
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 12px;
+        }
+        .inputtax-table .fa-receipt {
+            color: #764ba2;
+        }
+        .inputtax-table .fa-edit {
+            color: #17a2b8;
+        }
+        .inputtax-table .fa-trash {
+            color: #e74c3c;
+        }
+        .inputtax-table .fa-file {
+            color: #e74c3c;
+        }
+        .inputtax-table-summary {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #764ba2;
+            border-top: 2px solid #764ba2;
+        }
+    </style>
+    <div class="card info-card shadow-sm">
+        <div class="inputtax-table-header d-flex justify-content-between align-items-center">
+            <span><i class="fa fa-receipt me-2"></i>รายการต้นทุนโฮลเซลล์</span>
+            <a href="javascript:void(0)" class="text-white" onclick="toggleAccordion('table-inputtax', 'toggle-arrow-inputtax')">
                 <i class="fas fa-chevron-down" id="toggle-arrow-inputtax"></i>
             </a>
         </div>
 
         <div class="card-body" id="table-inputtax" style="display: block">
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table inputtax-table table-hover table-bordered mb-0">
                     <thead>
                         <tr>
                             <th class="text-center" style="width: 60px;">#</th>
@@ -66,9 +110,9 @@
                                     @endif
                                 </td>
                                 
-                                <td>{{number_format($item->input_tax_grand_total,2)}}</td>
+                                <td class="text-end">{{number_format($item->input_tax_grand_total,2)}}</td>
 
-                                <td>
+                                <td >
                                     @if ($item->input_tax_status === 'success')
                                     @if ($item->input_tax_type === 2)
                                     <a href="{{route('inputtax.inputtaxEditWholesale',$item->input_tax_id)}}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
@@ -93,8 +137,8 @@
                         <tr>
                             <tr>
  
-                                <td align="right" class="text-success"  colspan="5"><b>(@bathText($quotationModel->inputtaxTotalWholesale()))</b></td>
-                                <td align="left" class="text-danger" colspan="1"><b>{{number_format($quotationModel->inputtaxTotalWholesale(),2)}}</b></td>
+                                <td align="right" class="text-success"  colspan="4"><b>(@bathText($quotationModel->inputtaxTotalWholesale()))</b></td>
+                                <td class="text-danger text-end" colspan="1"><b>{{number_format($quotationModel->inputtaxTotalWholesale(),2)}}</b></td>
                             </tr>
                         </tr>
 
