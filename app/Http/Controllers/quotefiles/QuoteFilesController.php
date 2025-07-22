@@ -47,7 +47,7 @@ class QuoteFilesController extends Controller
         $file->move($absolutePath, $uniqueName);
 
         // สร้างพาธสัมพันธ์เพื่อจัดเก็บไฟล์ในฐานข้อมูล
-        $filePath = 'storage/' . $quote->customer_id . '/files/' . $quote->quote_number . '/' . $uniqueName;
+        $filePath = 'storage/' . $quote->customer_id . '/files/' . $quote->quote_number . '/passport/' . $uniqueName;
 
         // อัปเดตข้อมูลใน request เพื่อเก็บในฐานข้อมูล
         $request->merge([
@@ -69,7 +69,6 @@ public function delete(quoteFileModel $quoteFileModel)
     if (File::exists($quoteFileModel->quote_file_path)) {
         File::delete($quoteFileModel->quote_file_path); // ลบไฟล์
     }
-
     // ลบเรคคอร์ดออกจากฐานข้อมูล
     $quoteFileModel->delete();
     return redirect()->back()->with('success', 'ไฟล์ถูกลบเรียบร้อยแล้ว');
