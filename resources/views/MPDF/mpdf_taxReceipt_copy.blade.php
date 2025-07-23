@@ -153,7 +153,7 @@
 
                     <td
                         style="padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top; ">
-                        <p><span>{{ thaidate('j M Y', $invoiceModel->invoice_date) }}</span></p>
+                        <p><span>{{ thaidate('j M Y', $texreceipt->taxinvoice_date) }}</span></p>
                     </td>
                 </tr>
                 <tr>

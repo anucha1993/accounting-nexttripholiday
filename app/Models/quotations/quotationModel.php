@@ -308,6 +308,7 @@ class quotationModel extends Model
         return $this->hasOne(inputTaxModel::class, 'input_tax_quote_id', 'quote_id')->where('input_tax_type', 0)->where('input_tax_status', 'success');
     }
     
+
     public function inputtaxTotal()
     {
         return $this->inputtax()

@@ -276,21 +276,6 @@
 
 
 
-
-                            {{-- <div class="col-md-2">
-                                <label for="">Auto Check List</label>
-                                <select name="search_not_check_list" class="form-select" style="width: 100%">
-                                    <option value="all">ทั้งหมด</option>
-                                     <option dasabled >----คืนเงินลูกค้า---</option>
-                                    <option value="">ลูกค้าชำระเงินเกิน</option>
-                                    <option value="">รอคืนเงินให้ลูกค้า</option>
-                                    <option value="">คืนเงินให้ลูกค้าแล้ว</option>
-                                </select>
-                            </div> --}}
-
-
-
-
                             <div class="col-md-2">
                                 <label for="">ยังไม่ได้ทำ Check List</label>
                                 <select name="search_not_check_list" class="form-select" style="width: 100%">
