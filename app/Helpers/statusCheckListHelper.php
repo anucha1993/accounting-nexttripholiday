@@ -82,7 +82,7 @@ function getStatusBadgeCount($quoteCheckStatus, $quotations)
     if ($quoteCheckStatus->wholesale_skip_status !== 'ไม่ต้องการออก' && (is_null($quoteCheckStatus->withholding_tax_status) || trim($quoteCheckStatus->withholding_tax_status) === 'ยังไม่ได้ออก')) {
         $badges[] = 1;
     }
-      if (is_null($quoteCheckStatus->wholesale_tax_status) || trim($quoteCheckStatus->wholesale_tax_status) !== 'ได้รับแล้ว') {
+      if (is_null($quoteCheckStatus->wholesale_tax_status) || trim($quoteCheckStatus->wholesale_tax_status) !== 'ได้รับแล้ว' && !empty($quotations->checkfileInputtax)) {
         $badges[] = 1;
     }
     //     //ไฟล์ใบแจ้งหนี้ 7
