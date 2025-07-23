@@ -472,8 +472,9 @@
                                             
                                             <div class="d-flex flex-column">
                                                 <span>{{ date('d/m/Y', strtotime($item->quote_date_start)) }}</span> 
-                                                {{-- <small
-                                                    class="text-muted">{{ date('d/m/y', strtotime($item->quote_date_end)) }}</small> --}}
+                                                ถึง
+                                                <span
+                                                    class="text-muted">{{ date('d/m/y', strtotime($item->quote_date_end)) }}</span>
                                             </div>
                                         </td>
                                         <td>

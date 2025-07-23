@@ -123,7 +123,7 @@
                             <th>รายการ</th>
                             <th class="text-center">จำนวน</th>
                             <th class="text-end">ราคาต่อหน่วย</th>
-                            <th class="text-center">หัก 3%</th>
+                            <th class="text-center">รวม 3%</th>
                             <th class="text-end">ราคารวม</th>
                         </tr>
                     </thead>
@@ -183,8 +183,8 @@
                                     @endif
                                     
                                 </td>
-                                <td>{{$item->product_qty}}</td>
-                                <td align="center">
+                                <td class="text-center">{{$item->product_qty}}</td>
+                                <td class="text-end">
                                     @if ($item->withholding_tax === 'N')
                                     {{  number_format( $item->product_price  , 2, '.', ',')}}
                                     @else
