@@ -1515,17 +1515,23 @@
 
                 // --- VAT Calculation ---
                 var vatType = $('input[name="vat_type"]:checked').val();
-                if (vatType === 'include') {
-                    sumPreVat = sumTotalVat / (1 + vatRate);
-                    sumVat = sumTotalVat - sumPreVat;
-                    sumIncludeVat = sumTotalVat;
-                    grandTotal = sumTotalNonVat + sumIncludeVat - sumDiscount;
-                } else {
-                    sumPreVat = sumTotalVat;
-                    sumVat = sumPreVat * vatRate;
-                    sumIncludeVat = sumPreVat + sumVat;
-                    grandTotal = sumTotalNonVat + sumIncludeVat - sumDiscount;
-                }
+if (vatType === 'include') {
+    // VAT Include: ราคาสินค้า/บริการรวม VAT แล้ว
+    // ให้คำนวณจากยอดรวม VAT - ส่วนลด
+    var vatBase = sumTotalVat - sumDiscount;
+    sumPreVat = vatBase / (1 + vatRate); // ราคาก่อน VAT หลังหักส่วนลด
+    sumVat = vatBase - sumPreVat;        // VAT หลังหักส่วนลด
+    sumIncludeVat = vatBase;             // รวม VAT หลังหักส่วนลด
+    // grand total = (nonvat + vat รวม) - discount
+    grandTotal = sumTotalNonVat + vatBase;
+} else {
+    // VAT Exclude: ราคาสินค้า/บริการยังไม่รวม VAT
+    sumPreVat = sumTotalVat; // ราคาก่อน VAT เฉพาะแถวที่เลือก Vat
+    sumVat = sumPreVat * vatRate; // VAT เฉพาะแถวที่เลือก Vat
+    sumIncludeVat = sumPreVat + sumVat; // รวม VAT เฉพาะแถวที่เลือก Vat
+    // grand total = (nonvat + vat รวม + vat) - discount
+    grandTotal = sumTotalNonVat + sumIncludeVat - sumDiscount;
+}
 
                 // withholding tax 3% รวมทุกแถวที่ติ๊ก (เฉพาะรายได้)
                 withholdingAmount = 0;
@@ -1545,7 +1551,7 @@
                             }
                         }
                     });
-                    withholdingAmount = sumVatRows * 0.03;
+                    withholdingAmount = sumPreVat * 0.03;
                 }
                 $('#withholding-amount').text(withholdingAmount.toFixed(2));
 
