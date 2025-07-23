@@ -234,21 +234,21 @@ class withholdingTaxController extends Controller
     /**
      * อัปเดตเอกสาร
      */
+
     public function update(Request $request, $id)
     {
+
         // คำนวณยอดรวมและภาษี
         $totalAmount = 0;
         $totalWithholdingTax = 0;
-    
         foreach ($request->amount as $index => $amount) {
             $amount = (float) $amount;
             $taxRate = (float) $request->tax_rate[$index];
             $withholdingTax = ($amount * $taxRate) / 100;
-    
             $totalAmount += $amount;
             $totalWithholdingTax += $withholdingTax;
         }
-    
+
         $totalPayable = $totalAmount - $totalWithholdingTax;
     
         // ค้นหาเอกสาร

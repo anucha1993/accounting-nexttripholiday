@@ -143,6 +143,7 @@ Route::get('taxinvoice/edit/{invoiceModel}',[taxInvoiceController::class,'edit']
 Route::put('taxinvoice/update/{invoiceModel}',[taxInvoiceController::class,'update'])->name('taxinvoice.update');
 Route::put('taxinvoice/cancel/{taxinvoiceModel}',[taxInvoiceController::class,'cancel'])->name('taxinvoice.cancel');
 Route::get('taxinvoice/modal/cancel/{taxinvoiceModel}',[taxInvoiceController::class,'modalCancel'])->name('taxinvoice.modalCancel');
+Route::delete('taxinvoice/delete/{taxinvoiceModel}',[taxInvoiceController::class,'delete'])->name('taxinvoice.delete');
 
 //invoice booking
 Route::get('invoice/booking',[InvoiceBookingController::class,'index'])->name('invoiceBooking.index');

@@ -133,6 +133,15 @@ class taxInvoiceController extends Controller
         return redirect()->back();
     }
 
+     public function delete(taxinvoiceModel $taxinvoiceModel)
+    {
+
+        taxinvoiceModel::where('invoice_id', $taxinvoiceModel->taxinvoice_id)->delete();
+
+        return redirect()->back()->with('success', 'ลบใบแจ้งกำกับภาษีเรียบร้อยแล้ว');
+    }
+
+
     public function modalCancel(taxinvoiceModel $taxinvoiceModel)
     {
       return view('taxinvoices.modal-cancel',compact('taxinvoiceModel'));

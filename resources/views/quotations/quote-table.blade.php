@@ -562,6 +562,15 @@
                                             @endif
                                         @endcan
 
+                                         <form action="{{ route('taxinvoice.delete', $item->taxinvoice_id) }}"
+                                            method="POST" class="d-inline form-taxinvoice-delete">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn text-danger">
+                                                <i class="fas fa-trash-alt"></i> ลบใบกำกับภาษี
+                                            </button>
+                                        </form>
+
 
                                     </td>
                                 </tr>

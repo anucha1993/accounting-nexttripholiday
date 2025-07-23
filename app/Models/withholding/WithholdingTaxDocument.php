@@ -52,20 +52,20 @@ class WithholdingTaxDocument extends Model
 
         return 'WT' . date('Y') . date('m') . '-' . $newNumber;
     }
+    
     //เล่มที่
     public static function generateDocumentNumberNo()
     {
         $latestDocument = self::latest('id')->first();
-
         if ($latestDocument) {
             $lastNumber = (int) substr($latestDocument->document_no, -4);
             $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
         } else {
             $newNumber = '0001';
         }
-
         return $newNumber;
     }
+
 
     /**
      * ความสัมพันธ์กับตาราง customers
