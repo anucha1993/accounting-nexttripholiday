@@ -79,6 +79,12 @@ class quotationModel extends Model
         'quote_note_commission',
     ];
 
+    public function CountPaymentWholesale()
+    {
+        // นับจำนวนการชำระเงินโฮลเซลล์ที่เกี่ยวข้องกับ quotation นี้
+        return $this->hasMany(paymentWholesaleModel::class, 'payment_wholesale_quote_id', 'quote_id')->whereNotNull('payment_wholesale_file_path')->count();
+    }
+
     // ความสัมพันธ์กับ CampaignSource (customer_campaign_source)
     public function campaignSource()
     {

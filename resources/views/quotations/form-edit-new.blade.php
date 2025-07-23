@@ -393,7 +393,7 @@
 
                         <a href="{{ route('inputtax.inputtaxCreateWholesale', $quotationModel->quote_id) }}"
                             class="d-flex align-items-center action-btn modal-inputtax-wholesale">
-                            <i data-feather="percent"></i> ต้นทุนโฮลเซลล์
+                            <i data-feather="percent"></i> ต้นทุนโฮลเซลล์ 
                         </a>
                     </div>
 
@@ -460,6 +460,11 @@
                         <div class="profit-item">
                             <span class="label">กำไรสุทธิ</span>
                             <span class="value">
+                                {{$quotationModel->CountPaymentWholesale()}}
+
+                                @if ($quotationModel->CountPaymentWholesale() > 0 && $quotationModel->inputtaxTotalWholesale() > 0)
+
+
                                 @if (
                                     ($wholesalePayment > 0 || $paymentInputtaxTotal > 0) &&
                                     (number_format($quotationModel->getWholesalePaidNet(), 2) === number_format($quotationModel->inputtaxTotalWholesale(), 2))
@@ -468,6 +473,8 @@
                                 @else
                                     {{ number_format(0, 2) }}
                                 @endif
+
+                                 @endif
                         </div>
                     </div>
                 </div>
