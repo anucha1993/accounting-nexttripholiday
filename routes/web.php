@@ -134,6 +134,7 @@ Route::post('upload-invoice-image', [InvoiceController::class, 'uploadInvoiceIma
 Route::delete('delete-invoice-image', [InvoiceController::class, 'deleteInvoiceImage'])->name('deleteInvoiceImage');
 Route::put('invoice/mark-revised/{invoiceModel}', [invoiceController::class, 'markAsRevised'])->name('invoice.markRevised');
 Route::put('invoice/unmark-revised/{invoiceModel}', [invoiceController::class, 'unmarkRevised'])->name('invoice.unmarkRevised');
+Route::delete('invoice/delete/{invoiceModel}',[invoiceController::class,'delete'])->name('invoice.delete');
 
 
 //taxtinvoice

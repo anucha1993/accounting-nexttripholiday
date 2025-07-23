@@ -313,4 +313,14 @@ public function markAsRevised(invoiceModel $invoiceModel, Request $request)
         return response()->json(['success' => true, 'message' => 'ยกเลิกการทำเครื่องหมาย Revised แล้ว']);
     }
 
+    public function delete(invoiceModel $invoiceModel)
+    {
+        // ลบข้อมูลที่เกี่ยวข้องกับ invoice นี้
+        invoicePorductsModel::where('invoice_id', $invoiceModel->invoice_id)->delete();
+        taxinvoiceModel::where('invoice_id', $invoiceModel->invoice_id)->delete();
+        $invoiceModel->delete();
+
+        return redirect()->back()->with('success', 'ลบใบแจ้งหนี้เรียบร้อยแล้ว');
+    }
+
 }
