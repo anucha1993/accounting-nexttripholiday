@@ -74,7 +74,7 @@ class QuoteListController extends Controller
                     $q->whereBetween('quote_date_start', [$searchPeriodDateStart, $searchPeriodDateEnd])
                         // ->orWhereBetween('quote_date_end', [$searchPeriodDateStart, $searchPeriodDateEnd])
                         ->orWhere(function ($q) use ($searchPeriodDateStart, $searchPeriodDateEnd) {
-                            $q->where('quote_date_start', '<=', $searchPeriodDateStart)->where('quote_date_end', '>=', $searchPeriodDateEnd);
+                            $q->where('quote_date_start', '<=', $searchPeriodDateStart)->where('quote_date_start', '>=', $searchPeriodDateEnd);
                         });
                 });
             })
