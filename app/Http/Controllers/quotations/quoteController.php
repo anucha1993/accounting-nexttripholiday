@@ -409,10 +409,10 @@ class quoteController extends Controller
         $runningCodeTourUpdate = $this->generateRunningCodeTourUpdate($country->iso2, $request->quote_tour_code_old, $request->quote_date_start, $request->quote_wholesale);
 
         $request->merge([
-            'quote_tour_code' => $runningCodeTourUpdate,
+            'quote_tour_code' => $request->filled('quote_tour_code') ? $request->quote_tour_code : $runningCodeTourUpdate,
             'updated_by' => Auth::user()->name,
         ]);
-
+        
         //dd($runningCodeTourUpdate);
 
         $checkPaymentTotal = paymentModel::where('payment_quote_id', $quotationModel->quote_id)
