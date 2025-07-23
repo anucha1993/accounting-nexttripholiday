@@ -563,7 +563,7 @@
                             @php $rowNum = 1; @endphp
                             {{-- <div class="row " style="background:#55ffb848;border-radius:8px;padding:8px 0;" id="table-income"> --}}
                             @foreach ($quoteProducts as $row)
-                                <div class="row align-items-center item-row table-income"
+                                <div class="row align-items-center item-row table-income" 
                                     style="background:#55ffb848;border-radius:8px;padding:8px 0;">
                                     <div class="col-md-1 "><span class="row-number">{{ $rowNum++ }}</span></div>
                                     <div class="col-md-3">
@@ -614,6 +614,10 @@
                                     </div>
                                 </div>
                             @endforeach
+                            <div id="table-income" >
+                                
+
+                            </div>
                             {{-- </div> --}}
                         </div>
                         <div class="add-row">
@@ -1636,13 +1640,16 @@
             }
 
             // ลบรายการบริการ
-            $(document).on('click', '.remove-row-btn', function() {
-                if ($('#table-income .row').length > 1) {
-                    $(this).closest('.row').remove();
-                    updateRowNumbers();
-                    calculatePaymentCondition();
-                }
-            });
+          $(document).on('click', '.remove-row-btn', function() {
+    // ลบเฉพาะแถวบริการ (table-income) หรือ discount-row ที่อยู่ใกล้ที่สุด
+    var $row = $(this).closest('.item-row.table-income, .discount-row');
+    if ($row.siblings('.item-row.table-income').length > 0 || $row.hasClass('discount-row')) {
+        $row.remove();
+        updateRowNumbers();
+        updateDiscountRowNumbers && updateDiscountRowNumbers();
+        calculatePaymentCondition();
+    }
+});
 
             // อัปเดตเลขลำดับครั้งแรก (กรณีมี row เดียว)
             updateRowNumbers();
