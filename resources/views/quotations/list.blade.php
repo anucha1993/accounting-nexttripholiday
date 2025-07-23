@@ -249,8 +249,8 @@
                                 <select name="search_wholesale_payment" class="form-select">
                                     <option {{ request('search_wholesale_payment') == 'all' ? 'selected' : '' }}
                                         value="all">ทั้งหมด</option>
-                                    <option {{ request('search_wholesale_payment') == '0' ? 'selected' : '' }}
-                                        value="0">รอชำระมัดจำโฮลเซลล์</option>
+                                    <option {{ request('search_wholesale_payment') == '5' ? 'selected' : '' }}
+                                        value="5">รอชำระมัดจำโฮลเซลล์</option>
                                     <option {{ request('search_wholesale_payment') == '1' ? 'selected' : '' }}
                                         value="1">รอชำระส่วนที่เหลือ</option>
                                     <option {{ request('search_wholesale_payment') == '2' ? 'selected' : '' }}

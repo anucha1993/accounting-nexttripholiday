@@ -42,6 +42,7 @@ class QuoteListController extends Controller
         $searchCustomerPayment = $request->input('search_customer_payment', 'all');
         $searchPaymentOverpays = $request->input('search_payment_overpays', 'all');
         $searchPaymentWholesaleOverpays = $request->input('search_payment_wholesale_overpays', 'all');
+        // dd($searchPaymentWholesaleStatus);
 
         $sales = saleModel::select('name', 'id')
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
@@ -169,12 +170,15 @@ class QuoteListController extends Controller
                 ->getCollection()
                 ->filter(function ($quotation) use ($searchPaymentWholesaleStatus) {
                     // ดึงยอดชำระโฮลเซลล์
+                    
                     $paymentQuery = paymentWholesaleModel::where('payment_wholesale_quote_id', $quotation->quote_id);
                     $netPaid = $paymentQuery->selectRaw('COALESCE(SUM(payment_wholesale_total),0) - COALESCE(SUM(payment_wholesale_refund_total),0) as net_paid')->value('net_paid') ?? 0;
                     // ตรวจสอบไฟล์แนบสลิป paid
                     $hasPaidSlip = $paymentQuery->whereNotNull('payment_wholesale_file_path')->where('payment_wholesale_file_path', '!=', '')->exists();
                     // ตรวจสอบไฟล์แนบ refund ถ้ามียอดคืนเงิน
                     $hasRefundSlip = true;
+
+                    
                     $refundQuery = paymentWholesaleModel::where('payment_wholesale_quote_id', $quotation->quote_id)->where('payment_wholesale_refund_total', '>', 0);
                     if ($refundQuery->exists()) {
                         $hasRefundSlip = $refundQuery->whereNotNull('payment_wholesale_refund_file_path')->where('payment_wholesale_refund_file_path', '!=', '')->exists();
@@ -183,16 +187,20 @@ class QuoteListController extends Controller
                     $cost = inputTaxModel::where('input_tax_quote_id', $quotation->quote_id)
                         ->whereIn('input_tax_type', [2, 4, 5, 6, 7])
                         ->sum('input_tax_grand_total');
-                    if ($searchPaymentWholesaleStatus == '0') {
+
+                    
+                    if ($searchPaymentWholesaleStatus == '5') {
                         return $netPaid == 0;
                     } elseif ($searchPaymentWholesaleStatus == '1') {
                         return $netPaid > 0 && $netPaid < $cost && $hasPaidSlip && $hasRefundSlip;
                     } elseif ($searchPaymentWholesaleStatus == '2') {
                         return $netPaid >= $cost && $cost > 0 && $hasPaidSlip && $hasRefundSlip;
                     }
+                    
                     return true;
                 })
                 ->values();
+                
             $quotations->setCollection($filtered);
         }
 
