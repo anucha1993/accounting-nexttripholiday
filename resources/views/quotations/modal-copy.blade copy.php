@@ -317,9 +317,10 @@
         <div class="todo-listing">
             <div class="container border bg-white">
                 <h2 class="text-center my-4"><i class="fa fa-file-invoice-dollar"
-                        style="color:#1976d2;margin-right:8px;"></i>คัดลอกใบเสนอราคา </h2>
-                <form action="{{ route('quote.store') }}" id="formQuoteModern" method="post">
+                        style="color:#1976d2;margin-right:8px;"></i>แก้ไขใบเสนอราคา </h2>
+                <form action="{{ route('quote.update', $quotationModel->quote_id) }}" id="formQuoteModern" method="post">
                     @csrf
+                    @method('PUT')
                     <div class="section-card">
                         <div class="section-title"><i class="fa fa-user-tie"></i> ข้อมูลทั่วไป</div>
                         <div class="row table-custom ">
