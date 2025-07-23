@@ -32,7 +32,7 @@ function getStatusBadge($quoteCheckStatus, $quotations)
         $badges[] = '<span class="badge rounded-pill bg-danger">ส่งใบนัดหมายให้ลูกค้า</span>';
     }
     // 7. wholesale_tax_status
-    if (is_null($quoteCheckStatus->wholesale_tax_status) || trim($quoteCheckStatus->wholesale_tax_status) !== 'ได้รับแล้ว') {
+    if (is_null($quoteCheckStatus->wholesale_tax_status) || trim($quoteCheckStatus->wholesale_tax_status) !== 'ได้รับแล้ว' && !empty($quotations->checkfileInputtax)) {
         $badges[] = '<span class="badge rounded-pill bg-danger">ยังไม่ได้รับใบกำกับภาษีโฮลเซลล์</span>';
     }
     // 8. withholding_tax_status
