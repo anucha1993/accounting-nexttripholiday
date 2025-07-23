@@ -142,6 +142,7 @@
                         <p><span>{{$customer->customer_email}}</span></p>
                     </td>
                     <td style="border: none;"></td>
+                    
                     <td
                         style=" padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
                         <h4><b>วันที่/Date:</b></h4>
@@ -445,9 +446,15 @@
                 @endif
                 <br>
                 <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'transfer-money') DejaVuSans; @endif">&#9745;</span> <b>โอนเงินเข้าบัญชี</b>
-                @if(!empty($payment->payment_method) && $payment->payment_method === 'transfer-money') 
-                {{$payment->bank_name}}   โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_in_date) }} เวลา: {{ date('H:m', strtotime($quotationModel->payment_in_date)) }} น.
-                @endif
+               @if(
+    !empty($payment->payment_method) 
+    && $payment->payment_method === 'transfer-money' 
+    && !empty($payment->payment_in_date)
+)
+    {{$payment->bank_name}}   
+    โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_in_date) }} 
+    เวลา: {{ !empty($payment->payment_in_date) ? date('H:i', strtotime($payment->payment_in_date)) : '-' }} น.
+@endif
                 <br>
                 
             </div>

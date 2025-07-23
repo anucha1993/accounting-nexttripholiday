@@ -36,9 +36,12 @@ function getStatusBadge($quoteCheckStatus, $quotations)
         $badges[] = '<span class="badge rounded-pill bg-danger">ยังไม่ได้รับใบกำกับภาษีโฮลเซลล์</span>';
     }
     // 8. withholding_tax_status
-    if ($quoteCheckStatus->wholesale_skip_status !== 'ไม่ต้องการออก' && (is_null($quoteCheckStatus->withholding_tax_status) || trim($quoteCheckStatus->withholding_tax_status) === 'ยังไม่ได้ออก')) {
-        $badges[] = '<span class="badge rounded-pill bg-danger">ยังไม่ได้ออกใบหัก ณ ที่จ่าย</span>';
-    }
+   if (
+    (is_null($quoteCheckStatus->wholesale_skip_status) || $quoteCheckStatus->wholesale_skip_status !== 'ไม่ต้องการออก')
+    && (is_null($quoteCheckStatus->withholding_tax_status) || trim($quoteCheckStatus->withholding_tax_status) === 'ยังไม่ได้ออก')
+) {
+    $badges[] = '<span class="badge rounded-pill bg-danger">ยังไม่ได้ออกใบหัก.ณ.ที่จ่ายโฮลเซลล์</span>';
+}
 
      if ($quotations->payment > 0 && $quotations->quote_status !== 'cancel') {
             return implode(' ', $badges);
@@ -78,13 +81,18 @@ function getStatusBadgeCount($quoteCheckStatus, $quotations)
     if (is_null($quoteCheckStatus->appointment_status) || trim($quoteCheckStatus->appointment_status) === 'ยังไม่ได้ส่ง') {
         $badges[] = 1;
     }
+    
       //ออกใบหักณที่จ่าย 6
-    if ($quoteCheckStatus->wholesale_skip_status !== 'ไม่ต้องการออก' && (is_null($quoteCheckStatus->withholding_tax_status) || trim($quoteCheckStatus->withholding_tax_status) === 'ยังไม่ได้ออก')) {
-        $badges[] = 1;
-    }
+  if (
+    (is_null($quoteCheckStatus->wholesale_skip_status) || $quoteCheckStatus->wholesale_skip_status !== 'ไม่ต้องการออก')
+    && (is_null($quoteCheckStatus->withholding_tax_status) || trim($quoteCheckStatus->withholding_tax_status) === 'ยังไม่ได้ออก')
+) {
+    $badges[] = 1;
+}
       if (is_null($quoteCheckStatus->wholesale_tax_status) || trim($quoteCheckStatus->wholesale_tax_status) !== 'ได้รับแล้ว' && !empty($quotations->checkfileInputtax)) {
         $badges[] = 1;
     }
+
     //     //ไฟล์ใบแจ้งหนี้ 7
     // if (is_null($quoteCheckStatus->inv_status) || trim($quoteCheckStatus->inv_status) === 'ยังไม่ได้') {
     //     $badges[] = 1;

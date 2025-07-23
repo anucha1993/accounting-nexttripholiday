@@ -315,6 +315,9 @@
                                     <option
                                         {{ request('search_not_check_list') == 'ยังไม่ได้รับใบกำกับภาษีโฮลเซลล์' ? 'selected' : '' }}
                                         value="ยังไม่ได้รับใบกำกับภาษีโฮลเซลล์">ยังไม่ได้รับใบกำกับภาษีโฮลเซลล์</option>
+                                         <option
+                                        {{ request('search_not_check_list') == 'ยังไม่ได้ออกใบหัก.ณ.ที่จ่ายโฮลเซลล์' ? 'selected' : '' }}
+                                        value="ยังไม่ได้ออกใบหัก.ณ.ที่จ่ายโฮลเซลล์">ยังไม่ได้ออกใบหัก.ณ.ที่จ่ายโฮลเซลล์</option>
 
                                 </select>
                             </div>
@@ -551,7 +554,7 @@
                                         </td>
                                         <td>
                                             <div class="d-flex flex-wrap gap-1" style="max-width: 100px;">
-                                              {{-- {!! getStatusBadge($item->quoteCheckStatus) !!} --}}
+                                              {{-- {!! getStatusBadge($item->quoteCheckStatus, $item) !!} --}}
                                                 @php
                                                     $badgeCount = getStatusBadgeCount($item->quoteCheckStatus, $item);
                                                 @endphp

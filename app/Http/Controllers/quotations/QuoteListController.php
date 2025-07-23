@@ -42,6 +42,8 @@ class QuoteListController extends Controller
         $searchCustomerPayment = $request->input('search_customer_payment', 'all');
         $searchPaymentOverpays = $request->input('search_payment_overpays', 'all');
         $searchPaymentWholesaleOverpays = $request->input('search_payment_wholesale_overpays', 'all');
+
+       // dd($searchNotLogStatus);
         // dd($searchPaymentWholesaleStatus);
 
         $sales = saleModel::select('name', 'id')
@@ -221,12 +223,31 @@ class QuoteListController extends Controller
             $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchNotLogStatus) {
                 $statusText = trim(strip_tags(getStatusBadge($quotation->quoteCheckStatus, $quotation)));
                 // แยก badge ด้วยช่องว่าง 1 ตัวขึ้นไป (รองรับ badge หลายอัน)
+                
                 $badgeList = preg_split('/\s{2,}|(?<=\S) (?=\S)/u', $statusText);
                 return in_array($searchNotLogStatus, array_map('trim', $badgeList));
             })->values();
             $quotations->setCollection($filtered);
         }
 
+// if (!empty($searchNotLogStatus) && $searchNotLogStatus !== 'all') {
+//     $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchNotLogStatus) {
+//         $statusText = trim(strip_tags(getStatusBadge($quotation->quoteCheckStatus, $quotation)));
+//         // สมมติใช้ช่องว่าง 2 ตัวเป็นตัวคั่น
+//         $badgeList = preg_split('/\s{2,}/u', $statusText);
+//         $badgeList = array_map('trim', $badgeList);
+
+//         \Log::debug('Check badge filter', [
+//             'search' => $searchNotLogStatus,
+//             'statusText' => $statusText,
+//             'badgeList' => $badgeList,
+//             'quote_id' => $quotation->quote_id
+//         ]);
+
+//         return in_array(trim($searchNotLogStatus), $badgeList, true);
+//     })->values();
+//     $quotations->setCollection($filtered);
+// }
         // Filter สถานะลูกค้าชำระเงินเกิน
         if (!empty($searchPaymentOverpays) && $searchPaymentOverpays !== 'all') {
             $filtered = $quotations
