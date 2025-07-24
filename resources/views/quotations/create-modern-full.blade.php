@@ -567,12 +567,14 @@
                                         <input type="hidden" name="withholding_tax[]" value="N">
                                         <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y">
                                     </div>
+
                                     <div class="col-md-1 text-center">
                                         <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
                                             <option selected value="nonvat">nonVat</option>
                                             <option value="vat">Vat</option>
                                         </select>
                                     </div>
+
                                     <div class="col-md-1"><input type="number" name="quantity[]"
                                             class="quantity form-control text-end" step="1" value="1"></div>
                                     <div class="col-md-2"><input type="number" name="price_per_unit[]"
@@ -828,6 +830,17 @@
 
     <script>
         $(function() {
+
+                   function formatNumber(num) {
+                return Number(num).toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+
+            
+
             // เมื่อคลิก 'เลือกวันที่' ให้แสดง list วันที่เดินทางของทัวร์ที่เลือก
             $(document).on('click', '#list-period', function(e) {
                 e.preventDefault();
@@ -1244,6 +1257,9 @@
                     }
                 }
             });
+
+     
+
             // ฟังก์ชันคำนวณเงื่อนไขการชำระเงิน (Deposit/Full) และข้อมูลค่าบริการ (pax, รวม, vat, discount, grand total)
             function calculatePaymentCondition() {
                 // --- เงื่อนไขการชำระเงิน ---
@@ -1288,7 +1304,7 @@
                 var vatRate = 0.07;
                 var withholdingRows = [];
                 sumDiscount = 0;
-                
+
                 $('.item-row.table-income, #discount-list .item-row.table-discount').each(function() {
                     var $row = $(this);
                     var qty = parseFloat($row.find('input[name="quantity[]"]').val()) || 0;
@@ -1328,7 +1344,7 @@
                     sumPreVat = 0;
                     sumVat = 0;
                     sumIncludeVat = 0;
-                 grandTotal = sumTotalNonVat - sumDiscount;
+                    grandTotal = sumTotalNonVat - sumDiscount;
                 } else {
                     if (vatType === 'include') {
                         // VAT รวมอยู่ในยอดแล้ว
@@ -1358,14 +1374,14 @@
                 $('#withholding-amount').text(withholdingAmount.toFixed(2));
 
                 // set ค่า summary
-                $('#sum-total-nonvat').text(sumTotalNonVat.toFixed(2));
-                $('#sum-total-vat').text(sumTotalVat.toFixed(2));
-                $('#sum-discount').text(sumDiscount.toFixed(2));
-                $('#sum-pre-vat').text(sumPreVat.toFixed(2));
-                $('#vat-amount').text(sumVat.toFixed(2));
-                $('#sum-include-vat').text(sumIncludeVat.toFixed(2));
-                $('#grand-total').text(grandTotal.toFixed(2));
-                $('#withholding-amount').text(withholdingAmount.toFixed(2));
+                $('#sum-total-nonvat').text(formatNumber(sumTotalNonVat.toFixed(2)));
+                $('#sum-total-vat').text(formatNumber(sumTotalVat.toFixed(2)));
+                $('#sum-discount').text(formatNumber(sumDiscount.toFixed(2)));
+                $('#sum-pre-vat').text(formatNumber(sumPreVat.toFixed(2)));
+                $('#vat-amount').text(formatNumber(sumVat.toFixed(2)));
+                $('#sum-include-vat').text(formatNumber(sumIncludeVat.toFixed(2)));
+                $('#grand-total').text(formatNumber(grandTotal.toFixed(2)));
+                $('#withholding-amount').text(formatNumber(withholdingAmount.toFixed(2)));
                 $('#pax').text('Pax: ' + paxTotal);
                 $('#quote-pax-total').val(paxTotal);
                 // hidden fields

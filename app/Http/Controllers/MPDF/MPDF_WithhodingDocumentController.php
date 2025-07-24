@@ -35,8 +35,10 @@ class MPDF_WithhodingDocumentController extends Controller
         $imageSignature = DB::table('image_signature')->where('image_signture_id', $WithholdingTaxDocument->image_signture_id)->first();
         $item = WithholdingTaxItem::where('document_id', $WithholdingTaxDocument->id)->first();
         $quote = quotationModel::where('quote_id',$WithholdingTaxDocument->quote_id)->first();
-        $wholesale = wholesaleModel::where('id',$quote->quote_wholesale)->first();
-
+$wholesale = null;
+if ($quote && $quote->quote_wholesale) {
+    $wholesale = wholesaleModel::where('id', $quote->quote_wholesale)->first();
+}
            // การตั้งค่า font สำหรับภาษาไทย
            $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
            $fontDirs = $defaultConfig['fontDir'];

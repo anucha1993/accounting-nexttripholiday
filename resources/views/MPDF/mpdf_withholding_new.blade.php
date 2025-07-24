@@ -334,20 +334,34 @@
  
 
     <div class="text-customer">
-        <span><b>{{$WithholdingTaxDocument->customer ? $WithholdingTaxDocument->wholesale->wholesale_name_th  : $WithholdingTaxDocument->customer->customer_name}}</b> &nbsp;</span>
+        <span><b>
+            @if(!empty($WithholdingTaxDocument->quote_id) && isset($WithholdingTaxDocument->wholesale))
+    {{ $WithholdingTaxDocument->wholesale->wholesale_name_th }}
+@else
+    {{-- ถ้าไม่มี quote_id ให้แสดงข้อมูลที่มี --}}
+    @if(isset($WithholdingTaxDocument->wholesale))
+        {{ $WithholdingTaxDocument->wholesale->wholesale_name_th }}
+    @elseif(isset($WithholdingTaxDocument->customer))
+        {{ $WithholdingTaxDocument->customer->customer_name }}
+    @else
+        -
+    @endif
+@endif
+        </b> &nbsp;</span>
     </div>
 
     <div class="text-customer-tax">
         <!-- สมมติว่า $wholesale->textid = '0125558000987' -->
-        <span class="group1"><b>{{ substr($WithholdingTaxDocument->customer ? $WithholdingTaxDocument->customer->customer_texid : $WithholdingTaxDocument->wholesale->textid, 0, 1) }}</b></span>
-        <span class="group2"><b>{{ substr($WithholdingTaxDocument->customer ? $WithholdingTaxDocument->customer->customer_texid : $WithholdingTaxDocument->wholesale->textid, 1, 4) }}</b></span>
-        <span class="group3"><b>{{ substr($WithholdingTaxDocument->customer ? $WithholdingTaxDocument->customer->customer_texid : $WithholdingTaxDocument->wholesale->textid, 5, 5) }}</b></span>
-        <span class="group4"><b>{{ substr($WithholdingTaxDocument->customer ? $WithholdingTaxDocument->customer->customer_texid : $WithholdingTaxDocument->wholesale->textid, 10, 2) }}</b></span>
-        <span class="group1"><b>{{ substr($WithholdingTaxDocument->customer ? $WithholdingTaxDocument->customer->customer_texid : $WithholdingTaxDocument->wholesale->textid, 12, 1) }}</b></span>
+        <span class="group1"><b>{{ substr($WithholdingTaxDocument->quote_id ? $WithholdingTaxDocument->wholesale->textid : $WithholdingTaxDocument->customer->customer_texid, 0, 1) }}</b></span>
+        <span class="group2"><b>{{ substr($WithholdingTaxDocument->quote_id ? $WithholdingTaxDocument->wholesale->textid : $WithholdingTaxDocument->customer->customer_texid, 1, 4) }}</b></span>
+        <span class="group3"><b>{{ substr($WithholdingTaxDocument->quote_id ? $WithholdingTaxDocument->wholesale->textid : $WithholdingTaxDocument->customer->customer_texid, 5, 5) }}</b></span>
+        <span class="group4"><b>{{ substr($WithholdingTaxDocument->quote_id ? $WithholdingTaxDocument->wholesale->textid : $WithholdingTaxDocument->customer->customer_texid, 10, 2) }}</b></span>
+        <span class="group1"><b>{{ substr($WithholdingTaxDocument->quote_id ? $WithholdingTaxDocument->wholesale->textid : $WithholdingTaxDocument->customer->customer_texid, 12, 1) }}</b></span>
     </div>
 
     <div class="text-customer-addr">
-        <span><b>{{$WithholdingTaxDocument->customer ? $WithholdingTaxDocument->wholesale->address : $WithholdingTaxDocument->customer->customer_address }}</b> &nbsp;</span>
+          <span><b>{{$WithholdingTaxDocument->quote_id ? $WithholdingTaxDocument->wholesale?->address : $WithholdingTaxDocument->customer?->customer_address }}</b> &nbsp;</span>
+        {{-- <span><b>{{$WithholdingTaxDocument->customer ? $WithholdingTaxDocument->wholesale?->address : $WithholdingTaxDocument->customer?->customer_address }}</b> &nbsp;</span> --}}
     </div>
 
     {{-- <div class="text-no">

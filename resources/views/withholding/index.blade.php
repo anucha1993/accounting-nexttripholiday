@@ -114,22 +114,39 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="customer" class="form-label">ชื่อผู้ถูกหัก</label>
-                            <select name="customer" id="customer-select" class="form-select select2" style="width: 100%">
-                                <option value="">-- เลือกผู้ถูกหัก --</option>
-                                @forelse ($customerWithholding as $item)
-                                <option value="{{ $item->wholesale->wholesale_id ?? $item->customer->customer_id }}"
-                                    {{ request('customer') == ($item->wholesale->wholesale_id ?? $item->customer->customer_id) ? 'selected' : '' }}>
-                                    {{ $item->wholesale->wholesale_name_th ?? $item->customer->customer_name }}
-                                </option>
-                                @empty
-                                    
-                                @endforelse
-                            </select>
-                        </div>
-                    </div>
+                   <div class="col-md-3">
+    <div class="form-group">
+        <label for="customer" class="form-label">ชื่อบริษัท (ลูกค้า)</label>
+        <select name="customer" id="customer-select" class="form-select select2" style="width: 100%">
+            <option value="">-- เลือกบริษัท --</option>
+            @foreach ($customerWithholding as $item)
+                @if(isset($item->customer))
+                    <option value="{{ $item->customer->customer_id }}"
+                        {{ request('customer') == $item->customer->customer_id ? 'selected' : '' }}>
+                        {{ $item->customer->customer_name }}
+                    </option>
+                @endif
+            @endforeach
+        </select>
+    </div>
+</div>
+
+<div class="col-md-3">
+    <div class="form-group">
+        <label for="wholesale" class="form-label">ชื่อผู้ถูกหัก (Wholesale)</label>
+        <select name="wholesale" id="wholesale-select" class="form-select select2" style="width: 100%">
+            <option value="">-- เลือกผู้ถูกหัก --</option>
+            @foreach ($customerWithholding as $item)
+                @if(isset($item->wholesale))
+                    <option value="{{ $item->wholesale->id }}"
+                        {{ request('wholesale') == $item->wholesale->wholesale_id ? 'selected' : '' }}>
+                        {{ $item->wholesale->wholesale_name_th }}
+                    </option>
+                @endif
+            @endforeach
+        </select>
+    </div>
+</div>
                 </div>
                 
                 <div class="row">
@@ -257,23 +274,21 @@
                                         <span class="text-muted">-</span>
                                     @endif
                                 </td>
-                                <td>{{ $document->customer->customer_name ?? '-' }}</td>
                                 <td>
-                                    @php
-                                        $wholesaleName = null;
-                                        if(isset($document->quote) && isset($document->quote->wholesale)) {
-                                            $wholesaleName = $document->quote->wholesale->wholesale_name_th;
-                                        } elseif(isset($document->wholesale)) {
-                                            $wholesaleName = $document->wholesale->wholesale_name_th;
-                                        }
-                                @endphp
-                                    @if($wholesaleName)
-                                        <span class="text-primary">{{ $wholesaleName }}</span>
-                                    @elseif(isset($document->customer))
-                                        <span class="text-success">{{ $document->customer->customer_name }}</span>
-                                    @else
-                                        -
-                                    @endif
+                                    
+                                 @if ($document->quote_id)
+                                   {{ $document->quote->customer->customer_name ?? '-' }}
+                                 @else
+                                    {{ $document->quote->wholesale_name_th ?? '-'     }}
+                                 @endif
+                                </td>
+                                <td>
+                                 @if ($document->quote_id)
+                                      {{ $document->wholesale->wholesale_name_th ?? '-'     }}
+                                 @else
+                                   {{ $document->customer->customer_name ?? '-' }}
+                                 @endif
+                                    
                                 </td>
                                 <td class="text-center">
                                     @if($document->document_doc_date)

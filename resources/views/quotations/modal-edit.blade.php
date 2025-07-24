@@ -659,19 +659,15 @@
                                                 </div>
                                                 <div class="col-md-1 text-center">
                                                     <input type="hidden" name="withholding_tax[]" value="N">
-                                                    <input type="checkbox" name="withholding_tax[]" class="vat-3"
-                                                        value="Y"
-                                                        {{ $row->withholding_tax == 'Y' ? 'checked' : '' }}>
+                                                    
                                                 </div>
                                                 <div class="col-md-1 text-center">
                                                     <select name="vat_status[]" class="vat-status form-select"
                                                         style="width: 110%;">
                                                         <option value="nonvat"
-                                                            {{ $row->vat_status == 'nonvat' ? 'selected' : '' }}>nonVat
+                                                           selected>nonVat
                                                         </option>
-                                                        <option value="vat"
-                                                            {{ $row->vat_status == 'vat' ? 'selected' : '' }}>Vat
-                                                        </option>
+                                                       
                                                     </select>
                                                 </div>
                                                 <div class="col-md-1"><input type="number" name="quantity[]"
@@ -817,15 +813,16 @@
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-4">
+                                                    {{-- DEBUG : {{ $quotationModel->quote_payment_date ?? '' }} --}}
                                             <div class="input-group mb-3">
                                                 <span class="input-group-text" id="basic-addon1">ภายในวันที่</span>
                                                 <input type="datetime-local" class="form-control"
                                                     name="quote_payment_date" id="quote-payment-date"
                                                     value="{{ $quotationModel->quote_payment_date ?? '' }}">
-                                                <input type="datetime-local" class="form-control"
+                                                {{-- <input type="datetime-local" class="form-control"
                                                     name="quote_payment_date" id="quote-payment-date-new"
                                                     value="{{ $quotationModel->quote_payment_date ?? '' }}"
-                                                    style="display: none">
+                                                    style="display: none"> --}}
                                             </div>
                                         </div>
                                         <div class="col-md-3">
@@ -955,8 +952,9 @@
                                                 <label for="quote-payment-type"> ชำระเต็มจำนวน</label>
                                             </div>
                                         </div>
+
                                         <div class="col-md-4">
-                                            DEBUG : {{ $quotationModel->quote_payment_date_full ?? '' }}
+                                            {{-- DEBUG : {{ $quotationModel->quote_payment_date_full ?? '' }} --}}
                                             <div class="input-group mb-3">
                                                 <span class="input-group-text" id="basic-addon1">ภายในวันที่</span>
                                                 <input type="datetime-local" class="form-control"
@@ -964,6 +962,7 @@
                                                     value="{{ $quotationModel->quote_payment_date_full ?? '' }}">
                                             </div>
                                         </div>
+                                        
                                         <div class="col-md-4">
                                             <div class="input-group mb-3">
                                                 <span class="input-group-text" for="">จำนวนเงิน</span>
@@ -1031,6 +1030,13 @@
             });
         });
 
+           function formatNumber(num) {
+                return Number(num).toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
 
         $(function() {
             function toggleNoteCommission() {
@@ -1045,6 +1051,8 @@
             // เรียกครั้งแรกตอนโหลด ถ้ามีค่าเดิม
             toggleNoteCommission();
         });
+
+        
 
         $(function() {
             // เมื่อคลิก 'เลือกวันที่' ให้แสดง list วันที่เดินทางของทัวร์ที่เลือก
@@ -1579,14 +1587,14 @@
                 $('#withholding-amount').text(withholdingAmount.toFixed(2));
 
                 // set ค่า summary
-                $('#sum-total-nonvat').text(sumTotalNonVat.toFixed(2));
-                $('#sum-total-vat').text(sumTotalVat.toFixed(2));
-                $('#sum-discount').text(sumDiscount.toFixed(2));
-                $('#sum-pre-vat').text(sumPreVat.toFixed(2));
-                $('#vat-amount').text(sumVat.toFixed(2));
-                $('#sum-include-vat').text(sumIncludeVat.toFixed(2));
-                $('#grand-total').text(grandTotal.toFixed(2));
-                $('#withholding-amount').text(withholdingAmount.toFixed(2));
+                $('#sum-total-nonvat').text(formatNumber(sumTotalNonVat.toFixed(2)));
+                $('#sum-total-vat').text(formatNumber(sumTotalVat.toFixed(2)));
+                $('#sum-discount').text(formatNumber(sumDiscount.toFixed(2)));
+                $('#sum-pre-vat').text(formatNumber(sumPreVat.toFixed(2)));
+                $('#vat-amount').text(formatNumber(sumVat.toFixed(2)));
+                $('#sum-include-vat').text(formatNumber(sumIncludeVat.toFixed(2)));
+                $('#grand-total').text(formatNumber(grandTotal.toFixed(2)));
+                $('#withholding-amount').text(formatNumber(withholdingAmount.toFixed(2)));
                 $('#pax').text('Pax: ' + paxTotal);
                 $('#quote-pax-total').val(paxTotal);
                 // hidden fields
