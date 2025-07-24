@@ -1328,7 +1328,7 @@
                     sumPreVat = 0;
                     sumVat = 0;
                     sumIncludeVat = 0;
-                    grandTotal = sumTotalNonVat;
+                 grandTotal = sumTotalNonVat - sumDiscount;
                 } else {
                     if (vatType === 'include') {
                         // VAT รวมอยู่ในยอดแล้ว

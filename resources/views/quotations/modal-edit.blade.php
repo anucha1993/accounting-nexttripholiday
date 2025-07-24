@@ -801,7 +801,7 @@
                             <div class="col-md-12">
                                 <h5 style="color:#1976d2;">เงื่อนไขการชำระเงิน</h5>
                             </div>
-                            {{$quotationModel->quote_payment_type}}
+                            {{-- {{$quotationModel->quote_payment_type}} --}}
                             <div class="col-md-12 ">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -956,6 +956,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-4">
+                                            DEBUG : {{ $quotationModel->quote_payment_date_full ?? '' }}
                                             <div class="input-group mb-3">
                                                 <span class="input-group-text" id="basic-addon1">ภายในวันที่</span>
                                                 <input type="datetime-local" class="form-control"
@@ -1442,24 +1443,25 @@
                 }
             });
             // ฟังก์ชันคำนวณเงื่อนไขการชำระเงิน (Deposit/Full) และข้อมูลค่าบริการ (pax, รวม, vat, discount, grand total)
-            function calculatePaymentCondition() {
+            function calculatePaymentCondition(skipPaymentCondition = false) {
                 // --- เงื่อนไขการชำระเงิน ---
+                   if (!skipPaymentCondition) {
                 var bookingCreateDate = new Date($('#date-start').val());
                 var travelDate = new Date($('#date-start').val());
                 var dateNow = new Date();
                 var bookingDate = new Date($('#booking-create-date').val());
                 var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);
                 
-                // if (diffDays >= 31) {
-                //     bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
-                //     $('#quote-payment-deposit').prop('checked', true);
-                //     // set default deposit rate to 5000 when auto-select deposit
-                //     $('#quote-payment-price').val('5000');
-                // } else {
-                //     bookingCreateDate = new Date();
-                //     bookingCreateDate.setDate(dateNow.getDate() + 1);
-                //     $('#quote-payment-full').prop('checked', true);
-                // }
+                if (diffDays >= 31) {
+                    bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
+                    $('#quote-payment-deposit').prop('checked', true);
+                    // set default deposit rate to 5000 when auto-select deposit
+                    $('#quote-payment-price').val('5000');
+                } else {
+                    bookingCreateDate = new Date();
+                    bookingCreateDate.setDate(dateNow.getDate() + 1);
+                    $('#quote-payment-full').prop('checked', true);
+                }
                 bookingCreateDate.setHours(13, 0, 0, 0);
                 var year = bookingCreateDate.getFullYear();
                 var month = ('0' + (bookingCreateDate.getMonth() + 1)).slice(-2);
@@ -1472,6 +1474,7 @@
                 $('#quote-payment-date-new').val(formattedDate);
                 $('input[name="quote_payment_date_full"]').val(formattedDate);
                 $('#quote-payment-date-full').val(formattedDate);
+                }
 
                 // --- คำนวณข้อมูลค่าบริการ ---
                 var sumTotalNonVat = 0;
@@ -1976,7 +1979,7 @@
 
 
             // เรียกคำนวณยอดและข้อมูลค่าบริการทันทีเมื่อโหลดหน้า modal
-            calculatePaymentCondition();
+            calculatePaymentCondition(true);
         });
     </script>
 

@@ -1438,7 +1438,7 @@
                 }
             });
             // ฟังก์ชันคำนวณเงื่อนไขการชำระเงิน (Deposit/Full) และข้อมูลค่าบริการ (pax, รวม, vat, discount, grand total)
-            function calculatePaymentCondition() {
+            function calculatePaymentCondition(skipPaymentCondition = false) {
                 // --- เงื่อนไขการชำระเงิน ---
                 var bookingCreateDate = new Date($('#date-start').val());
                 var travelDate = new Date($('#date-start').val());
@@ -1971,7 +1971,7 @@
 
 
             // เรียกคำนวณยอดและข้อมูลค่าบริการทันทีเมื่อโหลดหน้า modal
-            calculatePaymentCondition();
+            calculatePaymentCondition(true);
         });
     </script>
 
