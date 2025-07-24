@@ -115,7 +115,7 @@
             <!-- ส่วนข้อมูลผู้จ่าย -->
             <div class="row mb-2 ">
                 <div class="col-md-6">
-                    <label for="payerName" class="form-label">ชื่อผู้จ่ายเงิน 
+                    <label for="payerName" class="form-label">ผู้ถูกหักภาษี ณ ที่จ่าย <span class="text-danger">*</span></label> 
                         <a class=" btn btn-sm px-4fs-4 btn-dark" data-bs-toggle="modal" data-bs-target="#bs-example-modal-xlg"> เพิ่มข้อมูลลูกค้าใหม่
                         </a>
                     </label>
