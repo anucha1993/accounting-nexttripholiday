@@ -338,8 +338,7 @@
 
                             <div class="col-md-3 ms-3">
                                 <label>วันที่สั่งซื้อ/จองแพคเกจ:</label>
-                                <input type="date" id="displayDatepicker" name="quote_booking_create"
-                                    class="form-control" required
+                                <input type="date" id="displayDatepicker" name="quote_booking_create" class="form-control" required
                                     value="{{ $quotationModel->quote_booking_create ?? date('Y-m-d') }}">
                                 {{-- <input type="hidden" id="submitDatepicker" name="quote_booking_create"
                                     value="{{ $quotationModel->quote_booking_create ?? date('Y-m-d') }}"> --}}
@@ -802,7 +801,7 @@
                             <div class="col-md-12">
                                 <h5 style="color:#1976d2;">เงื่อนไขการชำระเงิน</h5>
                             </div>
-                            {{ $quotationModel->quote_payment_type }}
+                            {{$quotationModel->quote_payment_type}}
                             <div class="col-md-12 ">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -948,7 +947,7 @@
                                             </div>
                                         </div>
                                         <div class="row">
-
+                                           
                                             <div class="col-md-6">
                                                 <input type="radio" name="quote_payment_type"
                                                     id="quote-payment-full" value="full"
@@ -1450,7 +1449,7 @@
                 var dateNow = new Date();
                 var bookingDate = new Date($('#booking-create-date').val());
                 var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);
-
+                
                 // if (diffDays >= 31) {
                 //     bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
                 //     $('#quote-payment-deposit').prop('checked', true);
@@ -1521,38 +1520,26 @@
                     }
                 });
 
-                 // --- VAT Calculation ---
+                // --- VAT Calculation ---
                 var vatType = $('input[name="vat_type"]:checked').val();
                 if (vatType === 'include') {
                     // VAT Include: ราคาสินค้า/บริการรวม VAT แล้ว
-                    // เฉพาะกรณีมีแถว vat เท่านั้น
-                    if (sumTotalVat > 0) {
-                        var vatBase = sumTotalVat - sumDiscount;
-                        sumPreVat = vatBase / (1 + vatRate); // ราคาก่อน VAT หลังหักส่วนลด
-                        sumVat = vatBase - sumPreVat; // VAT หลังหักส่วนลด
-                        sumIncludeVat = vatBase; // รวม VAT หลังหักส่วนลด
-                        grandTotal = sumTotalNonVat + vatBase;
-                    } else {
-                        sumPreVat = 0;
-                        sumVat = 0;
-                        sumIncludeVat = 0;
-                        grandTotal = sumTotalNonVat;
-                    }
+                    // ให้คำนวณจากยอดรวม VAT - ส่วนลด
+                    var vatBase = sumTotalVat - sumDiscount;
+                    sumPreVat = vatBase / (1 + vatRate); // ราคาก่อน VAT หลังหักส่วนลด
+                    sumVat = vatBase - sumPreVat; // VAT หลังหักส่วนลด
+                    sumIncludeVat = vatBase; // รวม VAT หลังหักส่วนลด
+                    // grand total = (nonvat + vat รวม) - discount
+                    grandTotal = sumTotalNonVat + vatBase;
                 } else {
-                    // VAT Exclude: เฉพาะกรณีมีแถว vat เท่านั้น
-                    if (sumTotalVat > 0) {
-                        var vatBase = Math.max(sumTotalVat - sumDiscount, 0);
-                        sumPreVat = vatBase;
-                        sumVat = sumPreVat * vatRate;
-                        sumIncludeVat = sumPreVat + sumVat;
-                        grandTotal = sumTotalNonVat + sumIncludeVat;
-                    } else {
-                        sumPreVat = 0;
-                        sumVat = 0;
-                        sumIncludeVat = 0;
-                        grandTotal = sumTotalNonVat;
-                    }
+                    // VAT Exclude: ราคาสินค้า/บริการยังไม่รวม VAT
+                    sumPreVat = sumTotalVat; // ราคาก่อน VAT เฉพาะแถวที่เลือก Vat
+                    sumVat = sumPreVat * vatRate; // VAT เฉพาะแถวที่เลือก Vat
+                    sumIncludeVat = sumPreVat + sumVat; // รวม VAT เฉพาะแถวที่เลือก Vat
+                    // grand total = (nonvat + vat รวม + vat) - discount
+                    grandTotal = sumTotalNonVat + sumIncludeVat - sumDiscount;
                 }
+
 
                 // withholding tax 3% รวมทุกแถวที่ติ๊ก (เฉพาะรายได้)
                 withholdingAmount = 0;
