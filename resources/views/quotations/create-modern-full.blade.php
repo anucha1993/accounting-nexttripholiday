@@ -1327,18 +1327,33 @@
                 var vatType = $('input[name="vat_type"]:checked').val();
                 if (vatType === 'include') {
                     // VAT Include: ราคาสินค้า/บริการรวม VAT แล้ว
-                    // ให้คำนวณจากยอดรวม VAT - ส่วนลด
-                    var vatBase = sumTotalVat - sumDiscount;
-                    sumPreVat = vatBase / (1 + vatRate); // ราคาก่อน VAT หลังหักส่วนลด
-                    sumVat = vatBase - sumPreVat; // VAT หลังหักส่วนลด
-                    sumIncludeVat = vatBase; // รวม VAT หลังหักส่วนลด
-                    // grand total = (nonvat + vat รวม) - discount
-                    grandTotal = sumTotalNonVat + vatBase;
+                    // เฉพาะกรณีมีแถว vat เท่านั้น
+                    if (sumTotalVat > 0) {
+                        var vatBase = sumTotalVat - sumDiscount;
+                        sumPreVat = vatBase / (1 + vatRate); // ราคาก่อน VAT หลังหักส่วนลด
+                        sumVat = vatBase - sumPreVat; // VAT หลังหักส่วนลด
+                        sumIncludeVat = vatBase; // รวม VAT หลังหักส่วนลด
+                        grandTotal = sumTotalNonVat + vatBase;
+                    } else {
+                        sumPreVat = 0;
+                        sumVat = 0;
+                        sumIncludeVat = 0;
+                        grandTotal = sumTotalNonVat;
+                    }
                 } else {
-                    sumPreVat = sumTotalVat - sumDiscount; // ราคาก่อน VAT หลังหักส่วนลด
-                    sumVat = sumPreVat * vatRate; // VAT หลังหักส่วนลด
-                    sumIncludeVat = sumPreVat + sumVat; // รวม VAT หลังหักส่วนลด
-                    grandTotal = sumTotalNonVat + sumIncludeVat; // รวม nonvat + vat รวม (ส่วนลดถูกหักแล้ว)
+                    // VAT Exclude: เฉพาะกรณีมีแถว vat เท่านั้น
+                    if (sumTotalVat > 0) {
+                        var vatBase = Math.max(sumTotalVat - sumDiscount, 0);
+                        sumPreVat = vatBase;
+                        sumVat = sumPreVat * vatRate;
+                        sumIncludeVat = sumPreVat + sumVat;
+                        grandTotal = sumTotalNonVat + sumIncludeVat;
+                    } else {
+                        sumPreVat = 0;
+                        sumVat = 0;
+                        sumIncludeVat = 0;
+                        grandTotal = sumTotalNonVat;
+                    }
                 }
 
                 // withholding tax 3% รวมทุกแถวที่ติ๊ก (เฉพาะรายได้)
@@ -1521,12 +1536,10 @@
                 </div>
                 <div class="col-md-1 text-center">
                     <input type="hidden" name="withholding_tax[]" value="N">
-                    <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y" ${isWithholding}>
                 </div>
                 <div class="col-md-1 text-center">
                     <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
-                        <option value="nonvat" ${vat==='nonvat'?'selected':''}>nonVat</option>
-                        <option value="vat" ${vat==='vat'?'selected':''}>Vat</option>
+                        <option value="nonvat" >nonVat</option>
                     </select>
                 </div>
                 <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="${qty}"></div>
