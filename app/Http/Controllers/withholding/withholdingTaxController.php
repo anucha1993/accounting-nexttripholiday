@@ -17,6 +17,7 @@ use App\Models\signTures\imageSigntureModel;
 use App\Models\withholding\WithholdingTaxItem;
 use App\Models\withholding\WithholdingTaxDocument;
 use App\Exports\WithholdingTaxExport;
+use App\Models\wholesale\wholesaleModel;
 use Maatwebsite\Excel\Facades\Excel;
 
 class withholdingTaxController extends Controller
@@ -87,7 +88,8 @@ class withholdingTaxController extends Controller
         $customers = customerModel::latest()->get();
         $imageSingture = imageSigntureModel::get();
         $campaignSource = DB::table('campaign_source')->get();
-        return view('withholding.create', compact('customers','imageSingture','campaignSource'));
+        $wholesales = wholesaleModel::latest()->get();
+        return view('withholding.create', compact('customers','imageSingture','campaignSource','wholesales'));
     }
 
     public function createModal(quotationModel $quotationModel)
@@ -157,6 +159,7 @@ class withholdingTaxController extends Controller
             'book_no' => date('Y-m'),
             'document_no' => $documentNumberNo,
             'document_doc_date' => $request->document_doc_date,
+            'wholesale_id' => $request->wholesale_id,
         ]);
 
         // บันทึกรายการ

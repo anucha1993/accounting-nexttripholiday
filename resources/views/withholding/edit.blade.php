@@ -121,7 +121,8 @@
                <!-- ส่วนข้อมูลผู้จ่าย -->
              
                <div class="row mb-2">
-               @if($document->quote_id == null)
+
+               @if($document->quote_id == null && $document->wholesale_id == null)
                 <div class="col-md-6">
                     <label for="payerName" class="form-label">ผู้ถูกหักภาษี ณ ที่จ่าย</label>
                     <select class="form-select select2" id="payerName" name="customer_id" style="width: 100%">
@@ -133,9 +134,11 @@
                         @endforeach
                     </select>
                 </div>
+
+
                 @else
                 <div class="col-md-6">
-                    <label for="payerName" class="form-label">ชื่อผู้จ่ายเงิน</label>
+                    <label for="payerName" class="form-label">ผู้ถูกหักภาษี ณ ที่จ่าย</label>
                 <select class="form-select select2" id="payerName" name="wholesale_id" style="width: 100%" disabled>
                     <option value="{{$document->wholesale->id}}" selected>{{$document->wholesale->wholesale_name_th}}</option>
                 </select>

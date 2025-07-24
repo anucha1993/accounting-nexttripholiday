@@ -115,17 +115,32 @@
             <!-- ส่วนข้อมูลผู้จ่าย -->
             <div class="row mb-2 ">
                 <div class="col-md-6">
-                    <label for="payerName" class="form-label">ผู้ถูกหักภาษี ณ ที่จ่าย <span class="text-danger">*</span></label> 
-                        <a class=" btn btn-sm px-4fs-4 btn-dark" data-bs-toggle="modal" data-bs-target="#bs-example-modal-xlg"> เพิ่มข้อมูลลูกค้าใหม่
-                        </a>
-                    </label>
+                    <label for="payerType" class="form-label">เลือกประเภทผู้ถูกหักภาษี <span class="text-danger">*</span></label>
+                    <select class="form-select" id="payerType" name="payer_type" style="width: 100%">
+                        <option value="customer" selected>ลูกค้า</option>
+                        <option value="wholesale">โฮลเซล</option>
+                    </select>
+                </div>
+                <div class="col-md-6" id="customer-section">
+                    <label for="payerName" class="form-label">ผู้ถูกหักภาษี ณ ที่จ่าย (ลูกค้า) <span class="text-danger">*</span></label>
+                    <a class="btn btn-sm px-4fs-4 btn-dark" data-bs-toggle="modal" data-bs-target="#bs-example-modal-xlg"> เพิ่มข้อมูลลูกค้าใหม่</a>
                     <select class="form-select select2" id="payerName" name="customer_id" style="width: 100%">
-                        {{-- <option value="" disabled selected>เลือกผู้จ่ายเงิน</option> --}}
                         @forelse ($customers as $item)
                             <option data-address="{{ $item->customer_address }}" data-taxid="{{ $item->customer_texid }}"
                                 value="{{ $item->customer_id }}">{{ $item->customer_name }}</option>
                         @empty
                             <option value="">ไม่มีข้อมูลลูกค้า</option>
+                        @endforelse
+                    </select>
+                </div>
+                <div class="col-md-6" id="wholesale-section" style="display:none;">
+                    <label for="wholesaleName" class="form-label">ผู้ถูกหักภาษี ณ ที่จ่าย (โฮลเซล) <span class="text-danger">*</span></label>
+                    <select class="form-select select2" id="wholesaleName" name="wholesale_id" style="width: 100%">
+                        @forelse ($wholesales as $item)
+                            <option data-address="{{ $item->address }}" data-taxid="{{ $item->taxid }}"
+                                value="{{ $item->id }}">{{ $item->wholesale_name_th }}</option>
+                        @empty
+                            <option value="">ไม่มีข้อมูลโฮลเซล</option>
                         @endforelse
                     </select>
                 </div>
@@ -250,7 +265,7 @@
             <!-- ปุ่มบันทึก -->
             <div class="text-end">
                 <button type="submit" form="submit-form" class="btn btn-success">บันทึกเอกสาร</button>
-                <button type="button" class="btn btn-secondary">ปิดหน้าต่าง</button>
+                <a href="{{ route('withholding.index') }}" class="btn btn-secondary">ปิดหน้าต่าง</a>
             </div>
     </div>
     </form>
@@ -412,27 +427,51 @@
 
 
         $(document).ready(function() {
-    // เช็คเมื่อโหลดหน้าแล้วให้ดึงข้อมูลจากค่าเริ่มต้นใน <select>
-    var selectedOption = $('#payerName').find(':selected');
-    var address = selectedOption.data('address'); // ดึงค่า data-address
-    var taxId = selectedOption.data('taxid'); // ดึงค่า data-taxid
-
-    // ถ้ามีค่า ให้แสดงในฟิลด์
-    $('#customerAddress').val(address); // แสดงที่ input address
-    $('#customerTaxId').val(taxId); // แสดงที่ input tax ID
-
-    // เพิ่มการทำงานเมื่อมีการเปลี่ยนแปลงใน <select>
-    $('#payerName').on('change', function(e) {
-        var customerId = $(this).val();
-        var selectedOption = $(this).find(':selected');
-        var address = selectedOption.data('address'); // ดึงค่า data-address
-        var taxId = selectedOption.data('taxid'); // ดึงค่า data-taxid
-
-        // แสดงข้อมูลในฟิลด์
-        $('#customerAddress').val(address); // แสดงที่ input address
-        $('#customerTaxId').val(taxId); // แสดงที่ input tax ID
-    });
-});
+            // สลับ UI ตามประเภทผู้ถูกหักภาษี
+            $('#payerType').on('change', function() {
+                if ($(this).val() === 'customer') {
+                    $('#customer-section').show();
+                    $('#wholesale-section').hide();
+                    // ดึงข้อมูลลูกค้า default
+                    var selectedOption = $('#payerName').find(':selected');
+                    var address = selectedOption.data('address');
+                    var taxId = selectedOption.data('taxid');
+                    $('#customerAddress').val(address);
+                    $('#customerTaxId').val(taxId);
+                } else {
+                    $('#customer-section').hide();
+                    $('#wholesale-section').show();
+                    // ดึงข้อมูลโฮลเซล default
+                    var selectedOption = $('#wholesaleName').find(':selected');
+                    var address = selectedOption.data('address');
+                    var taxId = selectedOption.data('taxid');
+                    $('#customerAddress').val(address);
+                    $('#customerTaxId').val(taxId);
+                }
+            });
+            // ดึงข้อมูลลูกค้า default เมื่อโหลดหน้า
+            var selectedOption = $('#payerName').find(':selected');
+            var address = selectedOption.data('address');
+            var taxId = selectedOption.data('taxid');
+            $('#customerAddress').val(address);
+            $('#customerTaxId').val(taxId);
+            // เมื่อเปลี่ยนลูกค้า
+            $('#payerName').on('change', function(e) {
+                var selectedOption = $(this).find(':selected');
+                var address = selectedOption.data('address');
+                var taxId = selectedOption.data('taxid');
+                $('#customerAddress').val(address);
+                $('#customerTaxId').val(taxId);
+            });
+            // เมื่อเปลี่ยนโฮลเซล
+            $('#wholesaleName').on('change', function(e) {
+                var selectedOption = $(this).find(':selected');
+                var address = selectedOption.data('address');
+                var taxId = selectedOption.data('taxid');
+                $('#customerAddress').val(address);
+                $('#customerTaxId').val(taxId);
+            });
+        });
 
 
 
