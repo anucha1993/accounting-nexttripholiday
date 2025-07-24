@@ -121,7 +121,7 @@
                <!-- ส่วนข้อมูลผู้จ่าย -->
              
                <div class="row mb-2">
-                @if($document->customer)
+               @if($document->quote_id == null)
                 <div class="col-md-6">
                     <label for="payerName" class="form-label">ผู้ถูกหักภาษี ณ ที่จ่าย</label>
                     <select class="form-select select2" id="payerName" name="customer_id" style="width: 100%">
