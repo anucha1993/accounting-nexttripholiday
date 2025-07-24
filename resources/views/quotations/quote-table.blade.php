@@ -543,23 +543,24 @@
                                     </td>
                                     <td>
                                         @can('cancel-invoice')
+
                                             @if ($item->taxinvoice_status === 'cancel')
                                                 <a class="modal-taxinvoice-cancel"
                                                     href="{{ route('taxinvoice.modalCancel', $item->taxinvoice_id) }}"><i
                                                         class="fas fa-minus-circle text-danger"></i> เหตุผลยกเลิกใบงาน</a>
                                                 <br>
+                                                
                                                 <a href="{{ route('quote.recancel', $quotationModel->quote_id) }}"
                                                     class="text-white"
                                                     onclick="return confirm('คุณต้องการนำใบเสนอราคากลับมาใช้ใหม่ใช่ไหม!');">
                                                     <i class=" far fa-share-square"></i> นำกลับมาใช้ใหม่</a>
                                             @else
-                                                {{-- <a class="modal-taxinvoice-cancel"
-                                    href="{{ route('taxinvoice.modalCancel', $item->taxinvoice_id) }}"><i
-                                        class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a> --}}
+                                            
                                                 <a class="modal-quote-cancel"
                                                     href="{{ route('quote.modalCancel', $quotationModel->quote_id) }}"><i
                                                         class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
                                             @endif
+
                                         @endcan
 
                                          <form action="{{ route('taxinvoice.delete', $item->taxinvoice_id) }}"

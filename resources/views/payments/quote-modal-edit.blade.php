@@ -37,7 +37,7 @@
 
                 <div class="col-md-3 mt-3">
                     <label>วันที่ชำะเงิน</label>
-                    <input type="datetime-local" name="payment_in_date" class="form-control" value="{{$paymentModel->payment_in_date}}">
+                    <input type="datetime-local" name="payment_in_date" class="form-control" value="{{$paymentModel->payment_in_date}}" required>
                 </div>
 
             </div>

@@ -83,7 +83,7 @@
                                 <td>{{ ++$key }}</td>
                                 <td>ภาษีขาย</td>
                                 <td>{{ $item->invoice_number }}</td>
-                                <td>
+                                <td class="text-center">
                                     <div id="invoice-file-container-{{ $item->invoice_id }}">
                                         <!-- กรณีไม่มีไฟล์ ให้แสดง input สำหรับอัปโหลด -->
 
@@ -285,12 +285,7 @@
                                 }
                             @endphp
                              <span class="text-danger">รายการต้นทุน ภาษีมูลค่าเพิ่ม VAT + หัก ณ. ที่จ่าย  : {{$withholdingTaxAmount}} บาท </br></span>
-                            {{-- รายการต้นทุน ที่ชำระแล้ว : {{ $paymentInputtaxTotal }} </br> --}}
 
-{{-- 
-                            <td align="right" class="text-success" colspan="7">
-                                <b>(@bathText($paymentInputtaxTotal + $quotationModel->getTotalInputTaxVatType()))</b>
-                            </td> --}}
 
                             <td class="text-danger text-end" colspan="7">
                                 <b>

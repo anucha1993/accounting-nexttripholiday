@@ -115,6 +115,7 @@
         <form action="{{ route('withholding.update', $document->id) }}" method="post">
                @csrf
                @method('PUT')
+               
                {{-- <input type="hidden" name="document_number" value="{{$document->document_number}}"> --}}
                <!-- ส่วนข้อมูลผู้จ่าย -->
              

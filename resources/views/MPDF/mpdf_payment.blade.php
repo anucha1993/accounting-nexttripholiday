@@ -286,14 +286,14 @@
                         @endif
                         @if ($paymentModel->payment_method === 'transfer-money')
                             โอนเงินผ่านธนาคาร<br>
-                            วันที่โอน : @if ($paymentModel->payment_date_time) {{ thaidate('j F Y', $paymentModel->payment_date_time) .' เวลา : '.date('H:m', strtotime($paymentModel->payment_date_time)) }} น. @else - @endif <br>
+                            วันที่โอน : @if ($paymentModel->payment_in_date) {{ thaidate('j F Y', $paymentModel->payment_in_date) .' เวลา : '.date('H:m', strtotime($paymentModel->payment_in_date)) }} น. @else - @endif <br>
                             เข้าบัญชี : {{ $bank->bank_name}}
                         @endif
                         @if ($paymentModel->payment_method === 'check')
                             วิธีการชำระเงิน : เช็ค<br>
                             เข้าบัญชี : {{ $paymentModel->payment_bank }} <br>
                             เลขที่เช็ค : {{ $paymentModel->payment_check_number }} <br>
-                            วันที่ : {{ thaidate('j F Y', $paymentModel->payment_date_time) .' เวลา : '.date('H:m', strtotime($paymentModel->payment_date_time)) }} น.<br>
+                            วันที่ : {{ thaidate('j F Y', $paymentModel->payment_in_date) .' เวลา : '.date('H:m', strtotime($paymentModel->payment_in_date)) }} น.<br>
                         @endif
 
                         @if ($paymentModel->payment_method === 'credit')

@@ -156,7 +156,7 @@ class withholdingTaxController extends Controller
             'image_signture_id' => $request->image_signture_id,
             'book_no' => date('Y-m'),
             'document_no' => $documentNumberNo,
-            'document_doc_date' => $document_doc_date,
+            'document_doc_date' => $request->document_doc_date,
         ]);
 
         // บันทึกรายการ
@@ -237,7 +237,7 @@ class withholdingTaxController extends Controller
 
     public function update(Request $request, $id)
     {
-
+        //dd($request->all());
         // คำนวณยอดรวมและภาษี
         $totalAmount = 0;
         $totalWithholdingTax = 0;
@@ -265,6 +265,7 @@ class withholdingTaxController extends Controller
             'total_payable' => $totalPayable,
             'image_signture_id' => $request->image_signture_id,
             'document_doc_date' => $request->document_doc_date,
+            'withholding_note' => $request->withholding_note,
         ]);
     
         // ลบรายการเก่าที่เกี่ยวข้องกับเอกสาร
@@ -281,7 +282,7 @@ class withholdingTaxController extends Controller
             ]);
         }
 
-        $inputTaxModel = inputTaxModel::where('input_tax_quote_id',$document->quote_id)
+        $inputTaxModel = inputTaxModel::where('input_tax_id',$document->ref_input_tax)
         ->update([
             'input_tax_service_total' => $totalAmount,
             'input_tax_vat' => $totalAmount*0.07,

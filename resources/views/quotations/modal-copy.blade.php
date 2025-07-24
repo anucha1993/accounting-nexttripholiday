@@ -473,7 +473,8 @@
                     <hr class="divider">
                     <div class="section-card">
                         <div class="section-title" style="background:linear-gradient(90deg,#43a047 60%,#81c784 100%)">
-                            <i class="fa fa-users"></i> ข้อมูลลูกค้า</div>
+                            <i class="fa fa-users"></i> ข้อมูลลูกค้า
+                        </div>
                         <div class="row table-custom">
                             <div class="col-md-3 position-relative">
                                 <label class="">ชื่อลูกค้า:</label>
@@ -562,7 +563,7 @@
                             @php $rowNum = 1; @endphp
                             {{-- <div class="row " style="background:#55ffb848;border-radius:8px;padding:8px 0;" id="table-income"> --}}
                             @foreach ($quoteProducts as $row)
-                                <div class="row align-items-center item-row table-income" 
+                                <div class="row align-items-center item-row table-income"
                                     style="background:#55ffb848;border-radius:8px;padding:8px 0;">
                                     <div class="col-md-1 "><span class="row-number">{{ $rowNum++ }}</span></div>
                                     <div class="col-md-3">
@@ -613,8 +614,8 @@
                                     </div>
                                 </div>
                             @endforeach
-                            <div id="table-income" >
-                                
+                            <div id="table-income">
+
 
                             </div>
                             {{-- </div> --}}
@@ -698,7 +699,8 @@
                     <hr class="divider">
                     <div class="section-card">
                         <div class="section-title" style="background:linear-gradient(90deg,#1976d2 60%,#42a5f5 100%)">
-                            <i class="fa fa-calculator"></i> สรุปยอดและ VAT</div>
+                            <i class="fa fa-calculator"></i> สรุปยอดและ VAT
+                        </div>
                         <div class="row">
                             <div class="col-6">
                                 <div class="row">
@@ -1010,19 +1012,19 @@
     </div>
 
     <script>
-
         $('#formQuoteModern').on('submit', function() {
-    // สำหรับทุก .vat-3 (checkbox)
-    $('.vat-3').each(function() {
-        // ถ้าไม่ได้ติ๊ก ให้ enable hidden input (N) และ disable checkbox
-        if (!$(this).is(':checked')) {
-            $(this).prop('disabled', true)
-                .siblings('input[type="hidden"][name="withholding_tax[]"]').prop('disabled', false);
-        } else {
-            $(this).siblings('input[type="hidden"][name="withholding_tax[]"]').prop('disabled', true);
-        }
-    });
-});
+            // สำหรับทุก .vat-3 (checkbox)
+            $('.vat-3').each(function() {
+                // ถ้าไม่ได้ติ๊ก ให้ enable hidden input (N) และ disable checkbox
+                if (!$(this).is(':checked')) {
+                    $(this).prop('disabled', true)
+                        .siblings('input[type="hidden"][name="withholding_tax[]"]').prop('disabled', false);
+                } else {
+                    $(this).siblings('input[type="hidden"][name="withholding_tax[]"]').prop('disabled',
+                        true);
+                }
+            });
+        });
 
 
         $(function() {
@@ -1076,13 +1078,13 @@
                         } else {
                             $('#date-list').append(
                                 '<div class="list-group-item text-danger">ไม่พบช่วงวันเดินทาง</div>'
-                                );
+                            );
                         }
                     },
                     error: function() {
                         $('#date-list').append(
                             '<div class="list-group-item text-danger">เกิดข้อผิดพลาดในการดึงข้อมูลวันเดินทาง</div>'
-                            );
+                        );
                     }
                 });
             });
@@ -1443,16 +1445,16 @@
                 var dateNow = new Date();
                 var bookingDate = new Date($('#booking-create-date').val());
                 var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);
-                if (diffDays >= 31) {
-                    bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
-                    $('#quote-payment-deposit').prop('checked', true);
-                    // set default deposit rate to 5000 when auto-select deposit
-                    $('#quote-payment-price').val('5000');
-                } else {
-                    bookingCreateDate = new Date();
-                    bookingCreateDate.setDate(dateNow.getDate() + 1);
-                    $('#quote-payment-full').prop('checked', true);
-                }
+                // if (diffDays >= 31) {
+                //     bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
+                //     $('#quote-payment-deposit').prop('checked', true);
+                //     // set default deposit rate to 5000 when auto-select deposit
+                //     $('#quote-payment-price').val('5000');
+                // } else {
+                //     bookingCreateDate = new Date();
+                //     bookingCreateDate.setDate(dateNow.getDate() + 1);
+                //     $('#quote-payment-full').prop('checked', true);
+                // }
                 bookingCreateDate.setHours(13, 0, 0, 0);
                 var year = bookingCreateDate.getFullYear();
                 var month = ('0' + (bookingCreateDate.getMonth() + 1)).slice(-2);
@@ -1515,23 +1517,21 @@
 
                 // --- VAT Calculation ---
                 var vatType = $('input[name="vat_type"]:checked').val();
-if (vatType === 'include') {
-    // VAT Include: ราคาสินค้า/บริการรวม VAT แล้ว
-    // ให้คำนวณจากยอดรวม VAT - ส่วนลด
-    var vatBase = sumTotalVat - sumDiscount;
-    sumPreVat = vatBase / (1 + vatRate); // ราคาก่อน VAT หลังหักส่วนลด
-    sumVat = vatBase - sumPreVat;        // VAT หลังหักส่วนลด
-    sumIncludeVat = vatBase;             // รวม VAT หลังหักส่วนลด
-    // grand total = (nonvat + vat รวม) - discount
-    grandTotal = sumTotalNonVat + vatBase;
-} else {
-    // VAT Exclude: ราคาสินค้า/บริการยังไม่รวม VAT
-    sumPreVat = sumTotalVat; // ราคาก่อน VAT เฉพาะแถวที่เลือก Vat
-    sumVat = sumPreVat * vatRate; // VAT เฉพาะแถวที่เลือก Vat
-    sumIncludeVat = sumPreVat + sumVat; // รวม VAT เฉพาะแถวที่เลือก Vat
-    // grand total = (nonvat + vat รวม + vat) - discount
-    grandTotal = sumTotalNonVat + sumIncludeVat - sumDiscount;
-}
+                if (vatType === 'include') {
+                    // VAT Include: ราคาสินค้า/บริการรวม VAT แล้ว
+                    // ให้คำนวณจากยอดรวม VAT - ส่วนลด
+                    var vatBase = sumTotalVat - sumDiscount;
+                    sumPreVat = vatBase / (1 + vatRate); // ราคาก่อน VAT หลังหักส่วนลด
+                    sumVat = vatBase - sumPreVat; // VAT หลังหักส่วนลด
+                    sumIncludeVat = vatBase; // รวม VAT หลังหักส่วนลด
+                    // grand total = (nonvat + vat รวม) - discount
+                    grandTotal = sumTotalNonVat + vatBase;
+                } else {
+                    sumPreVat = sumTotalVat - sumDiscount; // ราคาก่อน VAT หลังหักส่วนลด
+                    sumVat = sumPreVat * vatRate; // VAT หลังหักส่วนลด
+                    sumIncludeVat = sumPreVat + sumVat; // รวม VAT หลังหักส่วนลด
+                    grandTotal = sumTotalNonVat + sumIncludeVat; // รวม nonvat + vat รวม (ส่วนลดถูกหักแล้ว)
+                }
 
                 // withholding tax 3% รวมทุกแถวที่ติ๊ก (เฉพาะรายได้)
                 withholdingAmount = 0;
@@ -1645,16 +1645,16 @@ if (vatType === 'include') {
             }
 
             // ลบรายการบริการ
-          $(document).on('click', '.remove-row-btn', function() {
-    // ลบเฉพาะแถวบริการ (table-income) หรือ discount-row ที่อยู่ใกล้ที่สุด
-    var $row = $(this).closest('.item-row.table-income, .discount-row');
-    if ($row.siblings('.item-row.table-income').length > 0 || $row.hasClass('discount-row')) {
-        $row.remove();
-        updateRowNumbers();
-        updateDiscountRowNumbers && updateDiscountRowNumbers();
-        calculatePaymentCondition();
-    }
-});
+            $(document).on('click', '.remove-row-btn', function() {
+                // ลบเฉพาะแถวบริการ (table-income) หรือ discount-row ที่อยู่ใกล้ที่สุด
+                var $row = $(this).closest('.item-row.table-income, .discount-row');
+                if ($row.siblings('.item-row.table-income').length > 0 || $row.hasClass('discount-row')) {
+                    $row.remove();
+                    updateRowNumbers();
+                    updateDiscountRowNumbers && updateDiscountRowNumbers();
+                    calculatePaymentCondition();
+                }
+            });
 
             // อัปเดตเลขลำดับครั้งแรก (กรณีมี row เดียว)
             updateRowNumbers();
@@ -1789,13 +1789,13 @@ if (vatType === 'include') {
                                 $.each(limited, function(index, item) {
                                     $('#tourResults').append(
                                         `<a href="#" id="tour-select" class="list-group-item list-group-item-action" data-tour="${item.id}" data-numday="${item.num_day}" data-airline="${item.airline_id}" data-wholesale="${item.wholesale_id}" data-code="${item.code}" data-name1="${item.code} - ${item.name}" data-name="${item.code} - ${item.code1} - ${item.name}">${item.code} - ${item.code1} - ${item.name}</a>`
-                                        );
+                                    );
                                 });
                             }
                             // เพิ่มตัวเลือก "กำหนดเอง"
                             $('#tourResults').append(
                                 `<a href="#" class="list-group-item list-group-item-action" data-name="${searchTerm}">กำหนดเอง</a>`
-                                );
+                            );
                         }
                     });
                 } else {
@@ -1854,7 +1854,7 @@ if (vatType === 'include') {
                                 if (!$('#wholesale option[value="' + data.id + '"]').length) {
                                     $('#wholesale').append(
                                         `<option value="${data.id}">${data.wholesale_name_th}</option>`
-                                        );
+                                    );
                                 }
                                 $('#wholesale').val(data.id).trigger('change');
                             }
@@ -1874,7 +1874,7 @@ if (vatType === 'include') {
                                 if (!$('#country option[value="' + data.id + '"]').length) {
                                     $('#country').append(
                                         `<option value="${data.id}">${data.country_name_th}</option>`
-                                        );
+                                    );
                                 }
                                 $('#country').val(data.id).trigger('change');
                             }

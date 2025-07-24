@@ -432,7 +432,7 @@
 
                         <div class="profit-item">
                             <span class="label">ลูกค้าชำระแล้ว</span>
-                            <span class="value">{{ number_format($quotationModel->GetDeposit(), 2) }}</span>
+                            <span class="value">{{ number_format($quotationModel->GetDeposit()-$quotationModel->Refund(), 2) }}</span>
                         </div>
 
                         <div class="profit-item">
@@ -460,7 +460,7 @@
                         <div class="profit-item">
                             <span class="label">กำไรสุทธิ</span>
                             <span class="value">
-                                {{$quotationModel->CountPaymentWholesale()}}
+                                {{-- {{$quotationModel->CountPaymentWholesale()}} --}}
 
                                 @if ($quotationModel->CountPaymentWholesale() > 0 && $quotationModel->inputtaxTotalWholesale() > 0)
 

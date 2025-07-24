@@ -9,12 +9,13 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label>ประเภท</label>
-                <select name="input_tax_type" id="input_tax_type" class="form-select">
+                <select name="input_tax_type" id="input_tax_type" class="form-select" disabled>
                     <option @if($inputTaxModel->input_tax_type === 0) selected @endif value="0">ภาษีซื้อ</option>
                     <option @if($inputTaxModel->input_tax_type === 1) selected @endif value="1">ต้นทุนอื่นๆ</option>
                     <option @if($inputTaxModel->input_tax_type === 3) selected @endif value="3">ค่าธรรมเนียมรูดบัตร</option>
                 </select>
             </div>
+
             <input type="hidden" name="input_tax_quote_id" class="form-control" value="{{ $quotationModel->quote_id }}">
             <input type="hidden" name="input_tax_quote_number" class="form-control"value="{{ $quotationModel->quote_number }}">
             <input type="hidden" name="customer_id" class="form-control" value="{{ $quotationModel->customer_id }}">
