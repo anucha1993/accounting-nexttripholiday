@@ -1515,27 +1515,36 @@
                     }
                 });
 
-                // --- VAT Calculation ---
+                 // --- VAT Calculation ---
                 var vatType = $('input[name="vat_type"]:checked').val();
-                if (sumTotalVat === 0) {
-                    // ถ้าไม่มีรายการ vat เลย ให้ VAT, Pre-VAT, Include VAT เป็น 0
+                var listVatTotal = sumTotalVat; // ใช้ยอดรวมเฉพาะแถว vat
+                if (listVatTotal === 0) {
+                    // ไม่มีรายการ vat เลย
                     sumPreVat = 0;
                     sumVat = 0;
                     sumIncludeVat = 0;
-                    grandTotal = sumTotalNonVat - sumDiscount;
-                } else if (vatType === 'include') {
-                    // VAT Include: ราคาสินค้า/บริการรวม VAT แล้ว
-                    var vatBase = sumTotalVat - sumDiscount;
-                    sumPreVat = vatBase / (1 + vatRate);
-                    sumVat = vatBase - sumPreVat;
-                    sumIncludeVat = vatBase;
-                    grandTotal = sumTotalNonVat + vatBase;
+                 grandTotal = sumTotalNonVat - sumDiscount;
                 } else {
-                    // VAT Exclude: ราคาสินค้า/บริการยังไม่รวม VAT
-                    sumPreVat = sumTotalVat;
-                    sumVat = sumPreVat * vatRate;
-                    sumIncludeVat = sumPreVat + sumVat;
-                    grandTotal = sumTotalNonVat + sumIncludeVat - sumDiscount;
+                    if (vatType === 'include') {
+                        // VAT รวมอยู่ในยอดแล้ว
+                        var vatBase = listVatTotal - sumDiscount;
+                        sumPreVat = vatBase * 100 / 107;
+                        sumVat = sumPreVat * vatRate;
+                        sumIncludeVat = sumPreVat + sumVat;
+                        grandTotal = sumTotalNonVat + sumIncludeVat;
+                    } else {
+                        if (sumDiscount < listVatTotal) {
+                            sumPreVat = listVatTotal - sumDiscount;
+                            sumVat = sumPreVat * vatRate;
+                            sumIncludeVat = sumPreVat + sumVat;
+                            grandTotal = sumTotalNonVat + sumIncludeVat;
+                        } else {
+                            sumPreVat = 0;
+                            sumVat = 0;
+                            sumIncludeVat = 0;
+                            grandTotal = sumTotalNonVat;
+                        }
+                    }
                 }
 
 
