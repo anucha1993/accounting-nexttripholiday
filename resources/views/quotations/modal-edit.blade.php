@@ -1522,21 +1522,24 @@
 
                 // --- VAT Calculation ---
                 var vatType = $('input[name="vat_type"]:checked').val();
-                if (vatType === 'include') {
+                if (sumTotalVat === 0) {
+                    // ถ้าไม่มีรายการ vat เลย ให้ VAT, Pre-VAT, Include VAT เป็น 0
+                    sumPreVat = 0;
+                    sumVat = 0;
+                    sumIncludeVat = 0;
+                    grandTotal = sumTotalNonVat - sumDiscount;
+                } else if (vatType === 'include') {
                     // VAT Include: ราคาสินค้า/บริการรวม VAT แล้ว
-                    // ให้คำนวณจากยอดรวม VAT - ส่วนลด
                     var vatBase = sumTotalVat - sumDiscount;
-                    sumPreVat = vatBase / (1 + vatRate); // ราคาก่อน VAT หลังหักส่วนลด
-                    sumVat = vatBase - sumPreVat; // VAT หลังหักส่วนลด
-                    sumIncludeVat = vatBase; // รวม VAT หลังหักส่วนลด
-                    // grand total = (nonvat + vat รวม) - discount
+                    sumPreVat = vatBase / (1 + vatRate);
+                    sumVat = vatBase - sumPreVat;
+                    sumIncludeVat = vatBase;
                     grandTotal = sumTotalNonVat + vatBase;
                 } else {
                     // VAT Exclude: ราคาสินค้า/บริการยังไม่รวม VAT
-                    sumPreVat = sumTotalVat; // ราคาก่อน VAT เฉพาะแถวที่เลือก Vat
-                    sumVat = sumPreVat * vatRate; // VAT เฉพาะแถวที่เลือก Vat
-                    sumIncludeVat = sumPreVat + sumVat; // รวม VAT เฉพาะแถวที่เลือก Vat
-                    // grand total = (nonvat + vat รวม + vat) - discount
+                    sumPreVat = sumTotalVat;
+                    sumVat = sumPreVat * vatRate;
+                    sumIncludeVat = sumPreVat + sumVat;
                     grandTotal = sumTotalNonVat + sumIncludeVat - sumDiscount;
                 }
 

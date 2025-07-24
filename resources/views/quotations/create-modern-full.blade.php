@@ -1287,11 +1287,8 @@
                 var paxTotal = 0;
                 var vatRate = 0.07;
                 var withholdingRows = [];
-
-
-                // คำนวณแต่ละแถวสินค้าและส่วนลด (ใช้โครงสร้างเดียวกัน)
-                // รวม service row และ discount row ใน .each() เดียว
                 sumDiscount = 0;
+                
                 $('.item-row.table-income, #discount-list .item-row.table-discount').each(function() {
                     var $row = $(this);
                     var qty = parseFloat($row.find('input[name="quantity[]"]').val()) || 0;
@@ -1325,48 +1322,38 @@
 
                 // --- VAT Calculation ---
                 var vatType = $('input[name="vat_type"]:checked').val();
-                if (vatType === 'include') {
-                    // VAT Include: ราคาสินค้า/บริการรวม VAT แล้ว
-                    // ให้คำนวณจากยอดรวม VAT - ส่วนลด
-                    var vatBase = sumTotalVat - sumDiscount;
-                    sumPreVat = vatBase / (1 + vatRate); // ราคาก่อน VAT หลังหักส่วนลด
-                    sumVat = vatBase - sumPreVat; // VAT หลังหักส่วนลด
-                    sumIncludeVat = vatBase; // รวม VAT หลังหักส่วนลด
-                    // grand total = (nonvat + vat รวม) - discount
-                    grandTotal = sumTotalNonVat + vatBase;
+                var listVatTotal = sumTotalVat; // ใช้ยอดรวมเฉพาะแถว vat
+                if (listVatTotal === 0) {
+                    // ไม่มีรายการ vat เลย
+                    sumPreVat = 0;
+                    sumVat = 0;
+                    sumIncludeVat = 0;
+                    grandTotal = sumTotalNonVat;
                 } else {
-                    sumPreVat = sumTotalVat - sumDiscount; // ราคาก่อน VAT หลังหักส่วนลด
-                    sumVat = sumPreVat * vatRate; // VAT หลังหักส่วนลด
-                    sumIncludeVat = sumPreVat + sumVat; // รวม VAT หลังหักส่วนลด
-                    grandTotal = sumTotalNonVat + sumIncludeVat; // รวม nonvat + vat รวม (ส่วนลดถูกหักแล้ว)
-                }
-
-                // withholding tax 3% รวมทุกแถวที่ติ๊ก (เฉพาะรายได้)
-                // คำนวณภาษีหัก ณ ที่จ่าย 3% (คิดจากยอดรวมเฉพาะรายการที่เลือก Vat เท่านั้น)
-                withholdingAmount = 0;
-                if ($('#withholding-tax').is(':checked')) {
-                    // รวมยอดเฉพาะแถวที่เลือก Vat (คิดจากยอดก่อน vat)
-                    var sumVatRows = 0;
-                    $('#table-income .row').each(function() {
-                        var $row = $(this);
-                        var isVat = $row.find('.vat-status').val() === 'vat';
-                        var qty = parseFloat($row.find('.quantity').val()) || 0;
-                        var price = parseFloat($row.find('.price-per-unit').val()) || 0;
-                        var isWithholding = $row.find('.vat-3').is(':checked');
-                        var rowTotal = qty * price;
-                        if (isVat) {
-                            if (vatType === 'include') {
-                                // ถ้าเป็น include ต้องใช้ยอดก่อน VAT
-                                sumVatRows += rowTotal / (1 + vatRate);
-                            } else {
-                                sumVatRows += rowTotal;
-                            }
+                    if (vatType === 'include') {
+                        // VAT รวมอยู่ในยอดแล้ว
+                        var vatBase = listVatTotal - sumDiscount;
+                        sumPreVat = vatBase * 100 / 107;
+                        sumVat = sumPreVat * vatRate;
+                        sumIncludeVat = sumPreVat + sumVat;
+                        grandTotal = sumTotalNonVat + sumIncludeVat;
+                    } else {
+                        if (sumDiscount < listVatTotal) {
+                            sumPreVat = listVatTotal - sumDiscount;
+                            sumVat = sumPreVat * vatRate;
+                            sumIncludeVat = sumPreVat + sumVat;
+                            grandTotal = sumTotalNonVat + sumIncludeVat;
+                        } else {
+                            sumPreVat = 0;
+                            sumVat = 0;
+                            sumIncludeVat = 0;
+                            grandTotal = sumTotalNonVat;
                         }
-                    });
-                    withholdingAmount = sumPreVat * 0.03;
-
-
+                    }
                 }
+
+                // คำนวณหักภาษี ณ ที่จ่าย (Withholding Tax)
+                withholdingAmount = $('#withholding-tax').is(':checked') ? sumPreVat * 0.03 : 0;
                 // อัปเดตแสดงผลทันทีเมื่อเปลี่ยน checkbox
                 $('#withholding-amount').text(withholdingAmount.toFixed(2));
 
