@@ -50,18 +50,15 @@ class withholdingTaxController extends Controller
         } elseif ($request->filled('date_end')) {
             $query->whereDate('document_doc_date', '<=', $request->date_end);
         }
-
         // Filter by customer
         if ($request->filled('customer')) {
             $query->where('customer_id', $request->customer);
         }
-
         // Filter by wholesale
         if ($request->filled('wholesale')) {
             $query->where('wholesale_id', $request->wholesale);
         }
         
-
         // Order by latest document date, then by document number
         $documents = $query->orderBy('document_doc_date', 'desc')->orderBy('document_number', 'desc')->paginate(20);
 

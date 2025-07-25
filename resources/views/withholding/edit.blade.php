@@ -122,10 +122,10 @@
              
                <div class="row mb-2">
 
-               @if($document->quote_id == null && $document->wholesale_id == null)
+               @if($document->quote_id == null)
                 <div class="col-md-6">
                     <label for="payerName" class="form-label">ผู้ถูกหักภาษี ณ ที่จ่าย</label>
-                    <select class="form-select select2" id="payerName" name="customer_id" style="width: 100%">
+                    <select class="form-select select2" id="payerName" name="customer_id" style="width: 100%" disabled>
                         @foreach ($customers as $customer)
                            
                             <option data-address="{{ $customer->customer_address }}" data-taxid="{{ $customer->customer_texid }}" {{ $document->customer_id == $customer->customer_id ? 'selected' : '' }}
@@ -161,10 +161,20 @@
        
                <!-- รายละเอียด -->
                <div class="row mb-2">
-                   <div class="col-md-6">
+                
+                      @if($document->quote_id != null)
+                     <div class="col-md-6">
                        <label for="customerAddress" class="form-label">ที่อยู่</label>
-                       <textarea class="form-control" id="customerAddress" name="details" {{$document->wholesale ? 'disabled' : ''}} rows="3">{{$document->customer ? $document->customer->customer_address : $document->wholesale->address}}</textarea>
+                       <textarea class="form-control" id="customerAddress" name="details" {{$document->wholesale ? 'disabled' : ''}} rows="3">{{ $document->wholesale->address}}</textarea>
                    </div>
+                 @else
+                      <div class="col-md-6">
+                       <label for="customerAddress" class="form-label">ที่อยู่</label>
+                       <textarea class="form-control" id="customerAddress" name="details" {{$document->customer ? 'disabled' : ''}} rows="3">{{ $document->customer->customer_address}}</textarea>
+                   </div>
+                 @endif
+
+                   
                    
                    <div class="col-md-6">
                        <label for="refNumber" class="form-label">เลขที่เอกสารอ้างอิง | Ref.Quote : {{ $document->quote->quote_number ?? '-' }}</label>
