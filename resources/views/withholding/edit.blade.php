@@ -125,7 +125,7 @@
                @if($document->quote_id == null)
                 <div class="col-md-6">
                     <label for="payerName" class="form-label">ผู้ถูกหักภาษี ณ ที่จ่าย</label>
-                    <select class="form-select select2" id="payerName" name="customer_id" style="width: 100%" disabled>
+                    <select class="form-select select2" id="payerName" name="customer_id" style="width: 100%" >
                         @foreach ($customers as $customer)
                            
                             <option data-address="{{ $customer->customer_address }}" data-taxid="{{ $customer->customer_texid }}" {{ $document->customer_id == $customer->customer_id ? 'selected' : '' }}
