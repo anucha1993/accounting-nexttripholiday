@@ -170,7 +170,7 @@
                  @else
                       <div class="col-md-6">
                        <label for="customerAddress" class="form-label">ที่อยู่</label>
-                       <textarea class="form-control" id="customerAddress" name="details" {{$document->customer ? 'disabled' : ''}} rows="3">{{ $document->customer->customer_address}}</textarea>
+                       <textarea class="form-control" id="customerAddress" name="details" {{$document->customer ? 'disabled' : ''}} rows="3">{{ $document->customer->customer_address ?? '' }}</textarea>
                    </div>
                  @endif
 

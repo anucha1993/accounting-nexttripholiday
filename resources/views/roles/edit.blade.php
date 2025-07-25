@@ -47,19 +47,29 @@
                         </div>
                     </div>
                     <hr>
-                    @foreach ($permissionGroups as $group)
-                        <div class="mb-3 row">
-                            <h6 class="text-primary">{{ $group }}</h6>
-                            <div class="col-md-12">
-                                @foreach ($permissions->where('group', $group) as $perm)
-                                    <div class="form-check form-check-inline mb-1">
-                                        <input class="form-check-input" name="permissions[]" type="checkbox" id="perm-{{ $perm->id }}" value="{{ $perm->id }}" {{ in_array($perm->id, $rolePermissions ?? []) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="perm-{{ $perm->id }}">{{ $perm->label ?? $perm->name }}</label>
+                    <div class="row">
+                        @foreach ($permissionGroups as $group)
+                            <div class="col-md-6 mb-4">
+                                <div class="card border-primary h-100">
+                                    <div class="card-header bg-primary text-white py-2">
+                                        <strong>{{ $group }}</strong>
                                     </div>
-                                @endforeach
+                                    <div class="card-body py-2">
+                                        <ul class="list-unstyled mb-0">
+                                            @foreach ($permissions->where('group', $group) as $perm)
+                                                <li class="mb-1">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" name="permissions[]" type="checkbox" id="perm-{{ $perm->id }}" value="{{ $perm->id }}" {{ in_array($perm->id, $rolePermissions ?? []) ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="perm-{{ $perm->id }}">{{ $perm->label ?? $perm->name }}</label>
+                                                    </div>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                     <hr>
                     <div class="mb-3 row">
                         <input type="submit" class="col-md-3 offset-md-5 btn btn-primary" value="Update Role">
