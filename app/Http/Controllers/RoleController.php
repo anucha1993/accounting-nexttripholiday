@@ -35,19 +35,10 @@ class RoleController extends Controller
      */
     public function create(): View
     {
-        $permissions = [
-            'quotation' => Permission::where('name', 'like', 'quotation-%')->get(),
-            'user' => Permission::where('name', 'like', 'user-%')->get(),
-            'product' => Permission::where('name', 'like', 'product-%')->get(),
-            'invoice' => Permission::where('name', 'like', 'invoice-%')->get(),
-            'payment' => Permission::where('name', 'like', 'payment-%')->get(),
-            'notification' => Permission::where('name', 'like', 'notification-%')->get(),
-            'setting' => Permission::where('name', 'like', 'setting-%')->get(),
-            'role' => Permission::where('name', 'like', 'role-%')->get(),
-            'report' => Permission::where('name', 'like', 'report-%')->get(),
-            'export' => Permission::where('name', 'like', 'quotation-export')->get(),
-        ];
-        return view('roles.create', compact('permissions'));
+        // ดึง group ทั้งหมดจาก permission table (อ้างอิงจาก seeder)
+        $permissionGroups = Permission::select('group')->distinct()->pluck('group')->filter()->values();
+        $permissions = Permission::orderBy('group')->orderBy('name')->get();
+        return view('roles.create', compact('permissions', 'permissionGroups'));
     }
 
     /**
@@ -91,22 +82,13 @@ class RoleController extends Controller
         if($role->name=='Super Admin'){
             abort(403, 'SUPER ADMIN ROLE CAN NOT BE EDITED');
         }
-        $permissions = [
-            'quotation' => Permission::where('name', 'like', 'quotation-%')->get(),
-            'user' => Permission::where('name', 'like', 'user-%')->get(),
-            'product' => Permission::where('name', 'like', 'product-%')->get(),
-            'invoice' => Permission::where('name', 'like', 'invoice-%')->get(),
-            'payment' => Permission::where('name', 'like', 'payment-%')->get(),
-            'notification' => Permission::where('name', 'like', 'notification-%')->get(),
-            'setting' => Permission::where('name', 'like', 'setting-%')->get(),
-            'role' => Permission::where('name', 'like', 'role-%')->get(),
-            'report' => Permission::where('name', 'like', 'report-%')->get(),
-            'export' => Permission::where('name', 'like', 'quotation-export')->get(),
-        ];
+        // ดึง group ทั้งหมดจาก permission table (อ้างอิงจาก seeder)
+        $permissionGroups = Permission::select('group')->distinct()->pluck('group')->filter()->values();
+        $permissions = Permission::orderBy('group')->orderBy('name')->get();
         $rolePermissions = DB::table("role_has_permissions")->where("role_id",$role->id)
             ->pluck('permission_id')
             ->all();
-        return view('roles.edit', compact('role', 'permissions', 'rolePermissions'));
+        return view('roles.edit', compact('role', 'permissions', 'rolePermissions', 'permissionGroups'));
     }
 
 

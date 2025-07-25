@@ -47,17 +47,16 @@
                         </div>
                     </div>
                     <hr>
-                    @foreach ($permissions as $group => $perms)
+                    @foreach ($permissionGroups as $group)
                         <div class="mb-3 row">
-                            <h6 class="text-primary">{{ __(ucfirst($group)) }}</h6>
+                            <h6 class="text-primary">{{ $group }}</h6>
                             <div class="col-md-12">
-                                @forelse ($perms as $perm)
+                                @foreach ($permissions->where('group', $group) as $perm)
                                     <div class="form-check form-check-inline mb-1">
                                         <input class="form-check-input" name="permissions[]" type="checkbox" id="perm-{{ $perm->id }}" value="{{ $perm->id }}" {{ in_array($perm->id, $rolePermissions ?? []) ? 'checked' : '' }}>
                                         <label class="form-check-label" for="perm-{{ $perm->id }}">{{ $perm->label ?? $perm->name }}</label>
                                     </div>
-                                @empty
-                                @endforelse
+                                @endforeach
                             </div>
                         </div>
                     @endforeach

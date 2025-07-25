@@ -133,15 +133,17 @@
 
 <div class="col-md-3">
     <div class="form-group">
+           {{ request('wholesale') }}
         <label for="wholesale" class="form-label">ชื่อผู้ถูกหัก (Wholesale)</label>
         <select name="wholesale" id="wholesale-select" class="form-select select2" style="width: 100%">
             <option value="">-- เลือกผู้ถูกหัก --</option>
+         
             @foreach ($customerWithholding as $item)
                 @if(isset($item->wholesale))
-                    <option value="{{ $item->wholesale->id }}"
-                        {{ request('wholesale') == $item->wholesale->wholesale_id ? 'selected' : '' }}>
-                        {{ $item->wholesale->wholesale_name_th }}
-                    </option>
+                  <option value="{{ $item->wholesale->id }}"
+    {{ request('wholesale') == $item->wholesale->id ? 'selected' : '' }}>
+    {{ $item->wholesale->wholesale_name_th }}
+</option>
                 @endif
             @endforeach
         </select>
