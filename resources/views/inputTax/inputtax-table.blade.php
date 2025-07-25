@@ -222,9 +222,10 @@
                         </td>
 
                         <td>
-                            @if ($item->input_tax_withholding_status === 'Y' && $document)
-                                <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}"
+                             <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}"
                                     class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
+                            @if ($item->input_tax_withholding_status === 'Y' && $document)
+                               
                                 <br>
                                 <a href="{{ route('withholding.modalEdit', $document->id) }}"
                                     class="input-tax-edit text-primary">
@@ -237,8 +238,8 @@
                             
                                 @if ($item->input_tax_wholesale_type === 'Y')
                                 <br>
-                                    <a href="{{ route('inputtax.inputtaxEditWholesale', $item->input_tax_id) }}"
-                                        class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
+                                    {{-- <a href="{{ route('inputtax.inputtaxEditWholesale', $item->input_tax_id) }}"
+                                        class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a> --}}
 
 
                                     {{-- <a href="{{ route('inputtax.cancelWholesale', $item->input_tax_id) }}"
@@ -246,8 +247,8 @@
                                             ยกเลิก</i></a> --}}
                                 @else
                                    
-                                        <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}"
-                                            class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
+                                        {{-- <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}"
+                                            class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a> --}}
                                  
                                     {{-- <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a> --}}
                                     <a href="{{ route('inputtax.delete', $item->input_tax_id) }}" class="text-danger"
