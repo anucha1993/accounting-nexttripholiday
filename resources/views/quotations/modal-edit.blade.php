@@ -1063,6 +1063,40 @@ $('.form-select.select2').each(function() {
             toggleNoteCommission();
         });
 
+         function calculateDatePayment() {
+                // --- เงื่อนไขการชำระเงิน ---
+                   if (!skipPaymentCondition) {
+                var bookingCreateDate = new Date($('#date-start').val());
+                var travelDate = new Date($('#date-start').val());
+                var dateNow = new Date();
+                var bookingDate = new Date($('#booking-create-date').val());
+                var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);
+                
+                if (diffDays >= 31) {
+                    bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
+                    $('#quote-payment-deposit').prop('checked', true);
+                    // set default deposit rate to 5000 when auto-select deposit
+                    $('#quote-payment-price').val('5000');
+                } else {
+                    bookingCreateDate = new Date();
+                    bookingCreateDate.setDate(dateNow.getDate() + 1);
+                    $('#quote-payment-full').prop('checked', true);
+                }
+                bookingCreateDate.setHours(13, 0, 0, 0);
+                var year = bookingCreateDate.getFullYear();
+                var month = ('0' + (bookingCreateDate.getMonth() + 1)).slice(-2);
+                var day = ('0' + bookingCreateDate.getDate()).slice(-2);
+                var hours = ('0' + bookingCreateDate.getHours()).slice(-2);
+                var minutes = ('0' + bookingCreateDate.getMinutes()).slice(-2);
+                var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+                $('input[name="quote_payment_date"]').val(formattedDate);
+                $('#quote-payment-date').val(formattedDate);
+                $('#quote-payment-date-new').val(formattedDate);
+                $('input[name="quote_payment_date_full"]').val(formattedDate);
+                $('#quote-payment-date-full').val(formattedDate);
+                }
+            };
+
         
 
         $(function() {
@@ -1461,39 +1495,77 @@ $('.form-select.select2').each(function() {
                     }
                 }
             });
+
+            // ฟังก์ชันแยกสำหรับคำนวณเงื่อนไขการชำระเงิน (Deposit/Full) และวันที่
+function calculatePaymentDateCondition() {
+    var bookingCreateDate = new Date($('#date-start').val());
+    var travelDate = new Date($('#date-start').val());
+    var dateNow = new Date();
+    var bookingDate = new Date($('#booking-create-date').val());
+    var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);
+
+    if (diffDays >= 31) {
+        bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
+        $('#quote-payment-deposit').prop('checked', true);
+        $('#quote-payment-price').val('5000');
+    } else {
+        bookingCreateDate = new Date();
+        bookingCreateDate.setDate(dateNow.getDate() + 1);
+        $('#quote-payment-full').prop('checked', true);
+    }
+    bookingCreateDate.setHours(13, 0, 0, 0);
+    var year = bookingCreateDate.getFullYear();
+    var month = ('0' + (bookingCreateDate.getMonth() + 1)).slice(-2);
+    var day = ('0' + bookingCreateDate.getDate()).slice(-2);
+    var hours = ('0' + bookingCreateDate.getHours()).slice(-2);
+    var minutes = ('0' + bookingCreateDate.getMinutes()).slice(-2);
+    var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+    $('input[name="quote_payment_date"]').val(formattedDate);
+    $('#quote-payment-date').val(formattedDate);
+    $('#quote-payment-date-new').val(formattedDate);
+    $('input[name="quote_payment_date_full"]').val(formattedDate);
+    $('#quote-payment-date-full').val(formattedDate);
+}
+$('#date-start-display, #date-end-display, #numday').on('change.auto', function() {
+    calculatePaymentDateCondition();
+    calculatePaymentCondition(true); // ส่ง true เพื่อข้าม block เงื่อนไขใน calculatePaymentCondition
+});
+
+
+
             // ฟังก์ชันคำนวณเงื่อนไขการชำระเงิน (Deposit/Full) และข้อมูลค่าบริการ (pax, รวม, vat, discount, grand total)
             function calculatePaymentCondition(skipPaymentCondition = false) {
                 // --- เงื่อนไขการชำระเงิน ---
-                   if (!skipPaymentCondition) {
-                var bookingCreateDate = new Date($('#date-start').val());
-                var travelDate = new Date($('#date-start').val());
-                var dateNow = new Date();
-                var bookingDate = new Date($('#booking-create-date').val());
-                var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);
+                //    if (!skipPaymentCondition) {
+                // var bookingCreateDate = new Date($('#date-start').val());
+                // var travelDate = new Date($('#date-start').val());
+                // var dateNow = new Date();
+                // var bookingDate = new Date($('#booking-create-date').val());
+                // var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);
                 
-                if (diffDays >= 31) {
-                    bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
-                    $('#quote-payment-deposit').prop('checked', true);
-                    // set default deposit rate to 5000 when auto-select deposit
-                    $('#quote-payment-price').val('5000');
-                } else {
-                    bookingCreateDate = new Date();
-                    bookingCreateDate.setDate(dateNow.getDate() + 1);
-                    $('#quote-payment-full').prop('checked', true);
-                }
-                bookingCreateDate.setHours(13, 0, 0, 0);
-                var year = bookingCreateDate.getFullYear();
-                var month = ('0' + (bookingCreateDate.getMonth() + 1)).slice(-2);
-                var day = ('0' + bookingCreateDate.getDate()).slice(-2);
-                var hours = ('0' + bookingCreateDate.getHours()).slice(-2);
-                var minutes = ('0' + bookingCreateDate.getMinutes()).slice(-2);
-                var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
-                $('input[name="quote_payment_date"]').val(formattedDate);
-                $('#quote-payment-date').val(formattedDate);
-                $('#quote-payment-date-new').val(formattedDate);
-                $('input[name="quote_payment_date_full"]').val(formattedDate);
-                $('#quote-payment-date-full').val(formattedDate);
-                }
+                // if (diffDays >= 31) {
+                //     bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
+                //     $('#quote-payment-deposit').prop('checked', true);
+                //     // set default deposit rate to 5000 when auto-select deposit
+                //     $('#quote-payment-price').val('5000');
+                // } else {
+                //     bookingCreateDate = new Date();
+                //     bookingCreateDate.setDate(dateNow.getDate() + 1);
+                //     $('#quote-payment-full').prop('checked', true);
+                // }
+                // bookingCreateDate.setHours(13, 0, 0, 0);
+                // var year = bookingCreateDate.getFullYear();
+                // var month = ('0' + (bookingCreateDate.getMonth() + 1)).slice(-2);
+                // var day = ('0' + bookingCreateDate.getDate()).slice(-2);
+                // var hours = ('0' + bookingCreateDate.getHours()).slice(-2);
+                // var minutes = ('0' + bookingCreateDate.getMinutes()).slice(-2);
+                // var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+                // $('input[name="quote_payment_date"]').val(formattedDate);
+                // $('#quote-payment-date').val(formattedDate);
+                // $('#quote-payment-date-new').val(formattedDate);
+                // $('input[name="quote_payment_date_full"]').val(formattedDate);
+                // $('#quote-payment-date-full').val(formattedDate);
+                // }
 
                 // --- คำนวณข้อมูลค่าบริการ ---
                 var sumTotalNonVat = 0;
