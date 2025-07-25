@@ -397,18 +397,7 @@
                                             class="mdi mdi-border-style"></i><span
                                             class="hide-menu">ข้อมูลสายการบิน</span></a>
                                 </li>
-                                <li class="sidebar-item">
-                                    <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                        href="table-footable.html" aria-expanded="false"><i
-                                            class="mdi mdi-tab-unselected"></i><span class="hide-menu">Table
-                                            Footable</span></a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                        href="table-bootstrap.html" aria-expanded="false"><i
-                                            class="mdi mdi-border-horizontal"></i><span class="hide-menu">Table
-                                            Bootstrap</span></a>
-                                </li>
+                                
                             </ul>
                         </li>
                         <li class="nav-small-cap">

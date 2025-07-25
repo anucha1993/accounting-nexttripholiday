@@ -362,7 +362,8 @@
                         </select>
                     </div>
                     <div class="col-md-3 position-relative">
-                        <label>วันออกเดินทาง: <a href="#" class="" id="list-period" style="color:#1976d2;font-weight:500;">เลือกวันที่</a></label>
+                        <label>วันออกเดินทาง: <a href="javascript:void(0);" id="list-period"
+                                        style="color:#1976d2;font-weight:500;">เลือกวันที่</a></label>
                         <input type="date"  value="{{ date('Y-m-d', strtotime($bookingModel->start_date)) }}" min="{{ date('Y-m-d') }}" class="form-control" id="date-start-display" placeholder="วันออกเดินทาง..." required autocomplete="off">
                         <div id="date-list" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
                         <input type="hidden" id="period1" name="period1">
@@ -720,6 +721,53 @@
 
 <script>
 $(function() {
+
+    // เมื่อคลิก 'เลือกวันที่' ให้แสดง list วันที่เดินทางของทัวร์ที่เลือก
+            $(document).on('click', '#list-period', function(e) {
+                e.preventDefault();
+                var tourId = $('#tour-id').val();
+                $('#date-list').empty();
+                if (!tourId) {
+                    $('#date-list').append(
+                        '<div class="list-group-item text-danger">กรุณาเลือกแพคเกจทัวร์ก่อน</div>');
+                    return;
+                }
+                $.ajax({
+                    url: '{{ route('api.period') }}',
+                    method: 'GET',
+                    data: {
+                        search: tourId
+                    },
+                    success: function(periods) {
+                        if (Array.isArray(periods) && periods.length > 0) {
+                            var now = new Date();
+                            $.each(periods, function(i, period) {
+                                var dateObject = new Date(period.start_date);
+                                if (dateObject > now) {
+                                    var dateText = dateObject.toLocaleDateString(
+                                        'th-TH', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        });
+                                    var periodHtml =
+                                        `<a href="#" class="period-select list-group-item list-group-item-action mb-1" data-tour="${tourId}" data-numday="${$('#numday option:selected').text()}" data-airline="${$('#airline').val()}" data-wholesale="${$('#wholesale').val()}" data-code="${$('#tour-code').val()}" data-name1="${$('#tourSearch1').val()}" data-name="${$('#tourSearch').val()}" data-period1="${period.price1}" data-period2="${period.price2}" data-period3="${period.price3}" data-period4="${period.price4}" data-date="${period.start_date}">${dateText}</a>`;
+                                    $('#date-list').append(periodHtml);
+                                }
+                            });
+                        } else {
+                            $('#date-list').append(
+                                '<div class="list-group-item text-danger">ไม่พบช่วงวันเดินทาง</div>'
+                            );
+                        }
+                    },
+                    error: function() {
+                        $('#date-list').append(
+                            '<div class="list-group-item text-danger">เกิดข้อผิดพลาดในการดึงข้อมูลวันเดินทาง</div>'
+                        );
+                    }
+                });
+            });
 
      function formatNumber(num) {
                 return Number(num).toLocaleString('en-US', {
