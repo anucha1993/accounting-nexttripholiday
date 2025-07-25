@@ -136,7 +136,8 @@ class taxInvoiceController extends Controller
      public function delete(taxinvoiceModel $taxinvoiceModel)
     {
 
-        taxinvoiceModel::where('invoice_id', $taxinvoiceModel->taxinvoice_id)->delete();
+       invoiceModel::where('invoice_id', $taxinvoiceModel->invoice_id)->update(['invoice_status' => 'wait']);
+       $taxinvoiceModel->delete();
 
         return redirect()->back()->with('success', 'ลบใบแจ้งกำกับภาษีเรียบร้อยแล้ว');
     }
