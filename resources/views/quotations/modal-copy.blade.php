@@ -1008,6 +1008,14 @@
     </div>
 
     <script>
+        $('.form-select.select2').each(function() {
+    if (!$(this).hasClass('select2-hidden-accessible')) {
+        $(this).select2({
+            width: '100%',
+            dropdownParent: $(this).closest('.modal-body')
+        });
+    }
+});
         $('#formQuoteModern').on('submit', function() {
             // สำหรับทุก .vat-3 (checkbox)
             $('.vat-3').each(function() {
