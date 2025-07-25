@@ -348,15 +348,18 @@
                         <i data-feather="settings" class="feather-sm me-2"></i>การจัดการ
                     </div>
                     <div class="card-body">
+                         @can('quote.create')
                         <a href="{{ route('quote.modalEditCopy', $quotationModel->quote_id) }}"
                             class="d-flex align-items-center action-btn modal-quote-copy">
                             <i data-feather="copy"></i> คัดลอกใบเสนอราคา
                         </a>
-
+                          @endcan
+                          @can('manage.menu.payment')
                         <a href="{{ route('payment.quotation', $quotationModel->quote_id) }}"
                             class="d-flex align-items-center action-btn invoice-modal">
                             <i data-feather="credit-card"></i> แจ้งชำระเงิน / แจ้งคืนเงิน
                         </a>
+                           @endcan
                       
                     
                             <a href="{{ route('paymentWholesale.quote', $quotationModel->quote_id) }}"
@@ -483,15 +486,26 @@
 
         <!-- Content Sections -->
         <div class="row mt-4">
+            @canany(['quote.view', 'invoice.view', 'taxinvoice.view'])
             <div class="col-12" id="quote-centent"></div>
+            @endcanany
+             @canany(['payment.view'])
             <div class="col-12" id="quote-payment"></div>
+            @endcanany
+            @canany(['wholesale.payment.view'])
             <div class="col-12" id="wholesale-payment"></div>
+            @endcanany
+            @canany(['filepassport.create', 'filepassport.view'])
             <div class="col-12" id="files"></div>
+             @endcanany
+               @canany(['inputtax.create', 'inputtax.edit'])
             <div class="col-12" id="inputtax"></div>
+              @endcanany
+              @canany(['wholesale.inputtax.create', 'wholesale.inputtax.edit'])
             <div class="col-12" id="inputtax-wholesale-table"></div>
+              @endcanany
         </div>
     </div>
-
 
 
 

@@ -171,11 +171,11 @@
                             <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                             <!-- Dark Logo icon -->
                             <a href="<?php echo e(url('/')); ?>">
-                            <img src="<?php echo e(URL::asset('logo/Logo-docs.png')); ?>" alt="homepage" style="width: 150px; "
-                                class="dark-logo" />
-                        </a>
+                                <img src="<?php echo e(URL::asset('logo/Logo-docs.png')); ?>" alt="homepage" style="width: 150px; "
+                                    class="dark-logo" />
+                            </a>
                         </b>
-                        
+
                     </a>
                     <!-- ============================================================== -->
                     <!-- End Logo -->
@@ -325,36 +325,45 @@
                         <!-- User Profile-->
 
 
-                        <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark" alt href="<?php echo e(route('products.index')); ?>"
-                                aria-expanded="false"><i class="mdi mdi-cart-outline"></i><span
-                                    class="hide-menu">รายการสินค้า
-                                </span></a>
-                        </li>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('product.view')): ?>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link waves-effect waves-dark" href="<?php echo e(route('products.index')); ?>"
+                                    aria-expanded="false"><i class="mdi mdi-cart-outline"></i>
+                                    <span class="hide-menu">รายการสินค้า</span>
+                                </a>
+                            </li>
+                        <?php endif; ?>
 
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('booking.view')): ?>
                         <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark" href="<?php echo e(route('booking.index')); ?>"
                                 aria-expanded="false"><i class="mdi mdi-clipboard-text"></i><span
                                     class="hide-menu">ใบจองทัวร์</span></a>
                         </li>
+                        <?php endif; ?>
+
+                         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('quote.view')): ?>
                         <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark" href="<?php echo e(route('quote.index')); ?>"
                                 aria-expanded="false"><i class="mdi mdi-clipboard-text"></i><span
                                     class="hide-menu">ใบเสนอราคา</span></a>
                         </li>
-
+                        <?php endif; ?>
+                       
                         <li class="sidebar-item">
                             <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"
                                 aria-expanded="false"><i class="mdi mdi-clipboard-text"></i><span
                                     class="hide-menu">ระบบบัญชี</span></a>
                             <ul aria-expanded="false" class="collapse first-level">
-
+                                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('withholdingtax.view')): ?>
                                 <li class="sidebar-item">
                                     <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                         href="<?php echo e(route('withholding.index')); ?>" aria-expanded="false"><i
                                             class="mdi mdi-cube-send"></i><span class="hide-menu">ใบหัก ณ
                                             ที่จ่าย</span></a>
                                 </li>
+                                <?php endif; ?>
+                                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('debitnote.view')): ?>
 
                                 <li class="sidebar-item">
                                     <a class="sidebar-link waves-effect waves-dark sidebar-link"
@@ -362,28 +371,29 @@
                                             class="mdi mdi-cube-send"></i><span class="hide-menu">ใบเพิ่มหนี้ Debit
                                             Note</span></a>
                                 </li>
+                                <?php endif; ?>
 
 
+                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('creditnote.view')): ?>
                                 <li class="sidebar-item">
                                     <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                         href="<?php echo e(route('credit-note.index')); ?>" aria-expanded="false"><i
                                             class="mdi mdi-cube-send"></i><span class="hide-menu">ใบลดหนี้ Credit
                                             Note</span></a>
                                 </li>
+                                <?php endif; ?>
+                                
 
                             </ul>
                         </li>
-                        <li class="nav-small-cap">
-                            <i class="mdi mdi-dots-horizontal"></i>
-                            <span class="hide-menu">Tables</span>
-                        </li>
+                        
                         <li class="sidebar-item">
                             <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"
                                 aria-expanded="false"><i class="mdi mdi-table"></i><span
                                     class="hide-menu">ข้อมูลทั่วไป</span></a>
                             <ul aria-expanded="false" class="collapse first-level">
 
-                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['create-wholesale', 'edit-wholesale', 'delete-wholesale'])): ?>
+                                  <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('wholesale.view')): ?>
                                     <li class="sidebar-item">
                                         <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                             href="<?php echo e(route('wholesale.index')); ?>" aria-expanded="false"><i
@@ -391,62 +401,78 @@
                                                 class="hide-menu">ข้อมูลโฮลเซลล์</span></a>
                                     </li>
                                 <?php endif; ?>
+                                  <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('airline.view')): ?>
                                 <li class="sidebar-item">
                                     <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                         href="<?php echo e(route('airline.index')); ?>" aria-expanded="false"><i
                                             class="mdi mdi-border-style"></i><span
                                             class="hide-menu">ข้อมูลสายการบิน</span></a>
                                 </li>
-                                
+                                <?php endif; ?>
+
+                              
                             </ul>
                         </li>
-                        <li class="nav-small-cap">
-                            <i class="mdi mdi-dots-horizontal"></i>
-                            <span class="hide-menu">Appss</span>
-                        </li>
+
+                        
 
                         <li class="sidebar-item">
                             <a class="sidebar-link two-column has-arrow waves-effect waves-dark"
                                 href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-apps"></i><span
                                     class="hide-menu">รายงาน </span></a>
                             <ul aria-expanded="false" class="collapse first-level">
+                               
                                 <li class="sidebar-item">
+                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('report.inputtax.view')): ?>
                                     <a href="<?php echo e(route('report.input-tax')); ?>" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานภาษีซื้อ</span>
                                     </a>
+                                    <?php endif; ?>
+                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('report.receipt.view')): ?>
                                     <a href="<?php echo e(route('report.receipt')); ?>" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานใบเสร็จรับเงิน</span>
                                     </a>
+                                    <?php endif; ?>
+                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('report.invoice.view')): ?>
                                     <a href="<?php echo e(route('report.invoice')); ?>" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานใบแจ้งหนี้</span>
                                     </a>
+                                    <?php endif; ?>
+                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('report.taxinvoice.view')): ?>
                                     <a href="<?php echo e(route('report.taxinvoice')); ?>" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานใบกำกับภาษี</span>
                                     </a>
+                                    <?php endif; ?>
+                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('report.inputtax.view')): ?>
                                     <a href="<?php echo e(route('report.saletax')); ?>" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานภาษีขาย</span>
                                     </a>
+                                    <?php endif; ?>
+                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('report.salesreport.view')): ?>
                                     <a href="<?php echo e(route('report.sales')); ?>" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานยอดขาย</span>
                                     </a>
+                                    <?php endif; ?>
+                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('report.wholesalepayment.view')): ?>
                                     <a href="<?php echo e(route('report.payment-wholesale')); ?>" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu"> รายงานใบเสร็จโฮลเซลล์</span>
                                     </a>
+                                    <?php endif; ?>
+
                                 </li>
                             </ul>
                         </li>
 
 
 
-
-
+                         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('auth.view')): ?>
                         <li class="sidebar-item">
                             <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"
                                 aria-expanded="false"><i class="mdi mdi-account-multiple"></i><span
@@ -477,19 +503,23 @@
 
                             </ul>
                         </li>
-
+                        <?php endif; ?>
+                          <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('customer.view')): ?>
                         <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark" href="<?php echo e(route('cus.index')); ?>"
                                 aria-expanded="false"><i class="fas fa-users"></i><span
                                     class="hide-menu">ลูกค้า</span></a>
                         </li>
-                        <?php if (\Illuminate\Support\Facades\Blade::check('role', 'Super Admin')): ?>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="<?php echo e(url('web-tour/sync')); ?>">
-                                <i class="fas fa-sync"></i> Sync WEB_TOUR
-                            </a>
-                        </li>
+                         <?php endif; ?>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('sync.manage')): ?>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" href="<?php echo e(url('web-tour/sync')); ?>">
+                                    <i class="fas fa-sync"></i> Sync WEB_TOUR
+                                </a>
+                            </li>
                         <?php endif; ?>
+
+                       
 
                     </ul>
                 </nav>

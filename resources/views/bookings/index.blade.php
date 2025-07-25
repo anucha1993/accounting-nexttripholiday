@@ -28,10 +28,10 @@
 
             <form action="" method="GET">
                 <div class="row">
-                    <div class="col-md-2">
-                        <label>ค้นหา ชื่อ-นามสกุล</label>
+                    <div class="col-md-4">
+                        <label>ค้นหา เลขที่ใบจองทัวร์/รหัสทัวร์/ลูกค้า(ชื่อ)/ลูกค้า(นามสกุล)</label>
                         <div class="input-group mb-3 pull-right">
-                            <input type="text" class="form-control" placeholder="ค้นหา... ชื่อ-นามสกุล"
+                            <input type="text" class="form-control" placeholder="ค้นหา เลขที่ใบจองทัวร์/รหัสทัวร์/ลูกค้า(ชื่อ)/ลูกค้า(นามสกุล)"
                                 name="search_name" value="{{ request('search_name') }}">
 
                         </div>
@@ -131,15 +131,7 @@
                                         <a href="{{ route('booking.convert', $item->id) }}" class="text-primary mx-3"><i
                                                 class="fas fa-edit"></i> สร้างใบเสนอราคา</a>
                                     @endcan
-                                    {{-- @can('edit-booking')
-                                        <a href="{{ route('booking.edit', $item->id) }}" class="  mx-3"><i
-                                                class="fas fa-edit"></i> แก้ไข</a>
-                                    @endcan --}}
-                                    {{-- @can('delete-booking')
-                                        <a href="{{ route('booking.delete', $item->id) }}" class="text-danger  mx-3"
-                                            onclick="return confirm('Do you want to delete this booking?');"><i
-                                                class="fas fa-trash"></i> ลบ</a>
-                                    @endcan --}}
+                                 
                                 </td>
 
                             </tr>

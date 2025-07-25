@@ -171,11 +171,11 @@
                             <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                             <!-- Dark Logo icon -->
                             <a href="{{ url('/') }}">
-                            <img src="{{ URL::asset('logo/Logo-docs.png') }}" alt="homepage" style="width: 150px; "
-                                class="dark-logo" />
-                        </a>
+                                <img src="{{ URL::asset('logo/Logo-docs.png') }}" alt="homepage" style="width: 150px; "
+                                    class="dark-logo" />
+                            </a>
                         </b>
-                        
+
                     </a>
                     <!-- ============================================================== -->
                     <!-- End Logo -->
@@ -323,36 +323,45 @@
                         <!-- User Profile-->
 
 
-                        <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark" alt href="{{ route('products.index') }}"
-                                aria-expanded="false"><i class="mdi mdi-cart-outline"></i><span
-                                    class="hide-menu">รายการสินค้า
-                                </span></a>
-                        </li>
+                        @can('product.view')
+                            <li class="sidebar-item">
+                                <a class="sidebar-link waves-effect waves-dark" href="{{ route('products.index') }}"
+                                    aria-expanded="false"><i class="mdi mdi-cart-outline"></i>
+                                    <span class="hide-menu">รายการสินค้า</span>
+                                </a>
+                            </li>
+                        @endcan
 
+                        @can('booking.view')
                         <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark" href="{{ route('booking.index') }}"
                                 aria-expanded="false"><i class="mdi mdi-clipboard-text"></i><span
                                     class="hide-menu">ใบจองทัวร์</span></a>
                         </li>
+                        @endcan
+
+                         @can('quote.view')
                         <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark" href="{{ route('quote.index') }}"
                                 aria-expanded="false"><i class="mdi mdi-clipboard-text"></i><span
                                     class="hide-menu">ใบเสนอราคา</span></a>
                         </li>
-
+                        @endcan
+                       
                         <li class="sidebar-item">
                             <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"
                                 aria-expanded="false"><i class="mdi mdi-clipboard-text"></i><span
                                     class="hide-menu">ระบบบัญชี</span></a>
                             <ul aria-expanded="false" class="collapse first-level">
-
+                                 @can('withholdingtax.view')
                                 <li class="sidebar-item">
                                     <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                         href="{{ route('withholding.index') }}" aria-expanded="false"><i
                                             class="mdi mdi-cube-send"></i><span class="hide-menu">ใบหัก ณ
                                             ที่จ่าย</span></a>
                                 </li>
+                                @endcan
+                                 @can('debitnote.view')
 
                                 <li class="sidebar-item">
                                     <a class="sidebar-link waves-effect waves-dark sidebar-link"
@@ -360,102 +369,114 @@
                                             class="mdi mdi-cube-send"></i><span class="hide-menu">ใบเพิ่มหนี้ Debit
                                             Note</span></a>
                                 </li>
+                                @endcan
 
 
+                                @can('creditnote.view')
                                 <li class="sidebar-item">
                                     <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                         href="{{ route('credit-note.index') }}" aria-expanded="false"><i
                                             class="mdi mdi-cube-send"></i><span class="hide-menu">ใบลดหนี้ Credit
                                             Note</span></a>
                                 </li>
+                                @endcan
+                                
 
                             </ul>
                         </li>
-                        <li class="nav-small-cap">
+                        {{-- <li class="nav-small-cap">
                             <i class="mdi mdi-dots-horizontal"></i>
                             <span class="hide-menu">Tables</span>
-                        </li>
+                        </li> --}}
                         <li class="sidebar-item">
                             <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"
                                 aria-expanded="false"><i class="mdi mdi-table"></i><span
                                     class="hide-menu">ข้อมูลทั่วไป</span></a>
                             <ul aria-expanded="false" class="collapse first-level">
 
-                                @canany(['create-wholesale', 'edit-wholesale', 'delete-wholesale'])
+                                  @can('wholesale.view')
                                     <li class="sidebar-item">
                                         <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                             href="{{ route('wholesale.index') }}" aria-expanded="false"><i
                                                 class="mdi mdi-border-top"></i><span
                                                 class="hide-menu">ข้อมูลโฮลเซลล์</span></a>
                                     </li>
-                                @endcanany
+                                @endcan
+                                  @can('airline.view')
                                 <li class="sidebar-item">
                                     <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                         href="{{ route('airline.index') }}" aria-expanded="false"><i
                                             class="mdi mdi-border-style"></i><span
                                             class="hide-menu">ข้อมูลสายการบิน</span></a>
                                 </li>
-                                {{-- <li class="sidebar-item">
-                                    <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                        href="table-footable.html" aria-expanded="false"><i
-                                            class="mdi mdi-tab-unselected"></i><span class="hide-menu">Table
-                                            Footable</span></a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                        href="table-bootstrap.html" aria-expanded="false"><i
-                                            class="mdi mdi-border-horizontal"></i><span class="hide-menu">Table
-                                            Bootstrap</span></a>
-                                </li> --}}
+                                @endcan
+
+                              
                             </ul>
                         </li>
-                        <li class="nav-small-cap">
+
+                        {{-- <li class="nav-small-cap">
                             <i class="mdi mdi-dots-horizontal"></i>
                             <span class="hide-menu">Appss</span>
-                        </li>
+                        </li> --}}
 
                         <li class="sidebar-item">
                             <a class="sidebar-link two-column has-arrow waves-effect waves-dark"
                                 href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-apps"></i><span
                                     class="hide-menu">รายงาน </span></a>
                             <ul aria-expanded="false" class="collapse first-level">
+                               
                                 <li class="sidebar-item">
+                                     @can('report.inputtax.view')
                                     <a href="{{ route('report.input-tax') }}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานภาษีซื้อ</span>
                                     </a>
+                                    @endcan
+                                    @can('report.receipt.view')
                                     <a href="{{ route('report.receipt') }}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานใบเสร็จรับเงิน</span>
                                     </a>
+                                    @endcan
+                                    @can('report.invoice.view')
                                     <a href="{{ route('report.invoice') }}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานใบแจ้งหนี้</span>
                                     </a>
+                                    @endcan
+                                     @can('report.taxinvoice.view')
                                     <a href="{{ route('report.taxinvoice') }}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานใบกำกับภาษี</span>
                                     </a>
+                                    @endcan
+                                     @can('report.inputtax.view')
                                     <a href="{{ route('report.saletax') }}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานภาษีขาย</span>
                                     </a>
+                                    @endcan
+                                    @can('report.salesreport.view')
                                     <a href="{{ route('report.sales') }}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu">รายงานยอดขาย</span>
                                     </a>
+                                    @endcan
+                                    @can('report.wholesalepayment.view')
                                     <a href="{{ route('report.payment-wholesale') }}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
                                         <span class="hide-menu"> รายงานใบเสร็จโฮลเซลล์</span>
                                     </a>
+                                    @endcan
+
                                 </li>
                             </ul>
                         </li>
 
 
 
-
-
+                         @can('auth.view')
                         <li class="sidebar-item">
                             <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"
                                 aria-expanded="false"><i class="mdi mdi-account-multiple"></i><span
@@ -486,19 +507,23 @@
 
                             </ul>
                         </li>
-
+                        @endcan
+                          @can('customer.view')
                         <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark" href="{{ route('cus.index') }}"
                                 aria-expanded="false"><i class="fas fa-users"></i><span
                                     class="hide-menu">ลูกค้า</span></a>
                         </li>
-                        @role('Super Admin')
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="{{ url('web-tour/sync') }}">
-                                <i class="fas fa-sync"></i> Sync WEB_TOUR
-                            </a>
-                        </li>
-                        @endrole
+                         @endcan
+                        @can('sync.manage')
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" href="{{ url('web-tour/sync') }}">
+                                    <i class="fas fa-sync"></i> Sync WEB_TOUR
+                                </a>
+                            </li>
+                        @endcan
+
+                       
 
                     </ul>
                 </nav>

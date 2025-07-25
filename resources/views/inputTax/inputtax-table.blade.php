@@ -127,7 +127,9 @@
 
                             @endphp
                             <tr class="@if ($item->input_tax_status === 'cancel') text-danger @endif">
-                                <td>{{ ++$key }}</td>
+                                {{-- <td>{{ ++$key }}</td> --}}
+                                <td>input_tax_type : {{ $item->input_tax_type }}</td>
+
                                 <td>
                                     @if ($item->input_tax_type === 0)
                                         ภาษีซื้อ
@@ -290,23 +292,30 @@
 
                             <td class="text-danger text-end" colspan="7">
                                 <b>
-                                    @if (isset($inputTax) && count($inputTax) > 0)
+                                    {{-- @if (isset($inputTax) && count($inputTax) > 0)
                                         <b>(@bathText($paymentInputtaxTotal + $quotationModel->getTotalInputTaxVatType()))</b>
                                     @else
                                         <b>(@bathText(0))</b>
-                                    @endif
+                                    @endif --}}
                                 </b>
                             </td>
 
+
+
                             <td  class="text-danger text-end" colspan="1">
+                                DEBUG ต้นทุนอื่นๆ+ค่าธรรมเนียมรูดบัตร : {{$quotationModel->getTotalInputTaxVatType()}} <br>
+                                DEBUG ภาษีซื้อ  : {{$quotationModel->getTotalInputTaxVat()}} <br>
+                                DEBUG ภาษีขาย : {{$withholdingTaxAmount}} <br>
                                 <b>
                                     @if (isset($inputTax) && count($inputTax) > 0)
-                                        {{ number_format($paymentInputtaxTotal + $quotationModel->getTotalInputTaxVatType(), 2) }}
+                                        {{ number_format($withholdingTaxAmount + $quotationModel->getTotalInputTaxVatType() + $quotationModel->getTotalInputTaxVat(), 2) }}
                                     @else
                                         {{ number_format(0, 2) }}
                                     @endif
                                 </b>
                             </td>
+                            
+
                         </tr>
                         </tr>
 

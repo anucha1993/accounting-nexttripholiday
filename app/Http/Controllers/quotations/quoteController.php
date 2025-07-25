@@ -32,16 +32,14 @@ require_once app_path('Helpers/statusPaymentWhosale.php');
 
 class quoteController extends Controller
 {
-
-
     public function __construct()
     {
+        $this->middleware('auth');
         $this->middleware('permission:view-quote', ['only' => ['index']]);
         $this->middleware('permission:create-quote', ['only' => ['create', 'store']]);
         $this->middleware('permission:edit-quote', ['only' => ['edit', 'update', 'cancel']]);
         $this->middleware('permission:delete-quote', ['only' => ['destroy']]);
     }
-
 
     public function generateRunningBooking()
     {
@@ -149,11 +147,7 @@ class quoteController extends Controller
         //dd($request);
         //dd($request->quote_booking);
 
-        $country = DB::connection('mysql2')
-            ->table('tb_country')
-            ->select('iso2')
-            ->where('id', $request->quote_country)
-            ->first();
+        $country = DB::connection('mysql2')->table('tb_country')->select('iso2')->where('id', $request->quote_country)->first();
         $runningCodeTour = $this->generateRunningCodeTour($country->iso2, $request->quote_date_start, $request->quote_wholesale);
         //dd($runningCodeTour);
 
@@ -203,7 +197,7 @@ class quoteController extends Controller
         }
         $request->merge([
             'quote_withholding_tax_status' => isset($request->quote_withholding_tax_status) ? 'Y' : 'N',
-           'quote_tour_code' => $request->filled('quote_tour_code') ? $request->quote_tour_code : $runningCodeTour,
+            'quote_tour_code' => $request->filled('quote_tour_code') ? $request->quote_tour_code : $runningCodeTour,
             'quote_number' => $runningCode,
             'quote_status' => 'wait',
             'quote_payment_status' => 'wait',
@@ -216,7 +210,9 @@ class quoteController extends Controller
         // ลงข้อมูลรายการสินค้าและส่วนลด (unified row)
         if ($request->product_id && is_array($request->product_id)) {
             foreach ($request->product_id as $key => $productId) {
-                if (!$productId) continue;
+                if (!$productId) {
+                    continue;
+                }
                 $productName = productModel::where('id', $productId)->first();
                 quoteProductModel::create([
                     'quote_id' => $quote->quote_id,
@@ -251,12 +247,8 @@ class quoteController extends Controller
         $wholesale = wholesaleModel::where('status', 'on')->get();
         $products = productModel::where('product_type', '!=', 'discount')->get();
         $productDiscount = productModel::where('product_type', 'discount')->get();
-        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)
-            ->where('expense_type', 'income')
-            ->get();
-        $quoteProductsDiscount = quoteProductModel::where('quote_id', $quotationModel->quote_id)
-            ->where('expense_type', 'discount')
-            ->get();
+        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)->where('expense_type', 'income')->get();
+        $quoteProductsDiscount = quoteProductModel::where('quote_id', $quotationModel->quote_id)->where('expense_type', 'discount')->get();
         $campaignSource = DB::table('campaign_source')->get();
 
         return view('quotations.edit', compact('campaignSource', 'customer', 'quoteProducts', 'quotationModel', 'sales', 'country', 'airline', 'numDays', 'wholesale', 'products', 'productDiscount', 'quoteProductsDiscount'));
@@ -264,28 +256,21 @@ class quoteController extends Controller
 
     public function editNew(quotationModel $quotationModel, Request $request)
     {
-        $sale = saleModel::where('id', $quotationModel->quote_sale)->first();
-        $customer = customerModel::where('customer_id', $quotationModel->customer_id)
-            ->leftjoin('campaign_source', 'campaign_source.campaign_source_id', 'customer.customer_campaign_source')
-            ->first();
-        $tour = DB::connection('mysql2')
-            ->table('tb_tour')
-            ->where('id', $quotationModel->tour_id)
-            ->first();
-        $airline = DB::connection('mysql2')
-            ->table('tb_travel_type')
-            ->select('travel_name')
-            ->where('id', $quotationModel->quote_airline)
-            ->first();
+        $sale = saleModel::select('name', 'id')
+                ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->where('id', $quotationModel->quote_sale)
+                ->first();
+
+        
+        $customer = customerModel::where('customer_id', $quotationModel->customer_id)->leftjoin('campaign_source', 'campaign_source.campaign_source_id', 'customer.customer_campaign_source')->first();
+        $tour = DB::connection('mysql2')->table('tb_tour')->where('id', $quotationModel->tour_id)->first();
+        $airline = DB::connection('mysql2')->table('tb_travel_type')->select('travel_name')->where('id', $quotationModel->quote_airline)->first();
         $wholesale = wholesaleModel::where('id', $quotationModel->quote_wholesale)->first();
-        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)
-            ->select('quote_product.*', 'products.product_pax')
-            ->leftjoin('products', 'products.id', 'quote_product.product_id')
-            ->get();
+        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)->select('quote_product.*', 'products.product_pax')->leftjoin('products', 'products.id', 'quote_product.product_id')->get();
 
         $quotations = quotationModel::where('quotation.quote_id', $quotationModel->quote_id)
-            ->leftjoin('customer', 'customer.customer_id', 'quotation.customer_id')
-            ->get();
+                      ->leftjoin('customer', 'customer.customer_id', 'quotation.customer_id')
+                      ->get();
 
         $invoiceModel = invoiceModel::where('invoice_quote_id', $quotationModel->quote_id)->first();
 
@@ -294,12 +279,8 @@ class quoteController extends Controller
 
     public function editQuote(quotationModel $quotationModel, Request $request)
     {
-        $quotations = quotationModel::where('quotation.quote_id', $quotationModel->quote_id)
-            ->leftjoin('customer', 'customer.customer_id', 'quotation.customer_id')
-            ->get();
-        $invoices = invoiceModel::where('invoices.invoice_quote_id', $quotationModel->quote_id)
-            ->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')
-            ->get();
+        $quotations = quotationModel::where('quotation.quote_id', $quotationModel->quote_id)->leftjoin('customer', 'customer.customer_id', 'quotation.customer_id')->get();
+        $invoices = invoiceModel::where('invoices.invoice_quote_id', $quotationModel->quote_id)->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')->get();
         $invoicesIds = $invoices->pluck('invoice_id');
         $taxinvoices = taxinvoiceModel::whereIn('taxinvoices.invoice_id', $invoicesIds)->leftjoin('invoices', 'invoices.invoice_number', 'taxinvoices.invoice_number')->leftjoin('customer', 'customer.customer_id', 'invoices.customer_id')->get();
 
@@ -308,16 +289,8 @@ class quoteController extends Controller
         $taxinvoiceIds = $taxinvoices->pluck('taxinvoice_number');
         // $debits = debitModel::whereIn('debit_taxinvoice_number', $taxinvoiceIds)->get();
 
-        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)
-            ->select('quote_product.*', 'products.product_pax')
-            ->leftJoin('products', 'products.id', '=', 'quote_product.product_id')
-            ->where('quote_product.expense_type', 'income')
-            ->get();
-        $quoteProductsDiscount = quoteProductModel::where('quote_id', $quotationModel->quote_id)
-            ->select('quote_product.*', 'products.product_pax')
-            ->leftJoin('products', 'products.id', '=', 'quote_product.product_id')
-            ->where('expense_type', 'discount')
-            ->get();
+        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)->select('quote_product.*', 'products.product_pax')->leftJoin('products', 'products.id', '=', 'quote_product.product_id')->where('quote_product.expense_type', 'income')->get();
+        $quoteProductsDiscount = quoteProductModel::where('quote_id', $quotationModel->quote_id)->select('quote_product.*', 'products.product_pax')->leftJoin('products', 'products.id', '=', 'quote_product.product_id')->where('expense_type', 'discount')->get();
         $document = WithholdingTaxDocument::where('quote_id', $quotationModel->quote_id)->first();
         return View::make('quotations.quote-table', compact('document', 'quoteProductsDiscount', 'quoteProducts', 'quotations', 'quotationModel', 'invoices', 'taxinvoices', 'invoiceModel'))->render();
     }
@@ -326,26 +299,28 @@ class quoteController extends Controller
     {
         $bookingModel = bookingModel::where('code', $quotationModel->quote_booking)->first();
         $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
-        $sales = saleModel::select('name', 'id')
-            ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
-            ->get();
+        if (Auth::user()->getRoleNames()->contains('sale')) {
+            $sales = saleModel::select('name', 'id')
+                ->where('id', Auth::user()->sale_id)
+                ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->get();
+        } else {
+            $sales = saleModel::select('name', 'id')
+                ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->get();
+        }
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
         $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
         $numDays = numDayModel::orderBy('num_day_total')->get();
         $wholesale = wholesaleModel::where('status', 'on')->get();
         $products = productModel::where('product_type', '!=', 'discount')->get();
         $productDiscount = productModel::where('product_type', 'discount')->get();
-        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)
-            ->where('expense_type', 'income')
-            ->get();
-        $quoteProductsDiscount = quoteProductModel::where('quote_id', $quotationModel->quote_id)
-            ->where('expense_type', 'discount')
-            ->get();
+        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)->where('expense_type', 'income')->get();
+        $quoteProductsDiscount = quoteProductModel::where('quote_id', $quotationModel->quote_id)->where('expense_type', 'discount')->get();
         $campaignSource = DB::table('campaign_source')->get();
         $mode = $request->get('mode', 'view');
         return view('quotations.modal-edit', compact('mode', 'campaignSource', 'customer', 'quoteProducts', 'quotationModel', 'sales', 'country', 'airline', 'numDays', 'wholesale', 'products', 'productDiscount', 'quoteProductsDiscount'));
     }
-
 
     public function modalView(quotationModel $quotationModel, Request $request)
     {
@@ -354,44 +329,43 @@ class quoteController extends Controller
         $sales = saleModel::select('name', 'id')
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
             ->get();
+
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
         $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
         $numDays = numDayModel::orderBy('num_day_total')->get();
         $wholesale = wholesaleModel::where('status', 'on')->get();
         $products = productModel::where('product_type', '!=', 'discount')->get();
         $productDiscount = productModel::where('product_type', 'discount')->get();
-        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)
-            ->where('expense_type', 'income')
-            ->get();
-        $quoteProductsDiscount = quoteProductModel::where('quote_id', $quotationModel->quote_id)
-            ->where('expense_type', 'discount')
-            ->get();
-            
+        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)->where('expense_type', 'income')->get();
+        $quoteProductsDiscount = quoteProductModel::where('quote_id', $quotationModel->quote_id)->where('expense_type', 'discount')->get();
+
         $campaignSource = DB::table('campaign_source')->get();
         $mode = $request->get('mode', 'view');
         return view('quotations.modal-view', compact('mode', 'campaignSource', 'customer', 'quoteProducts', 'quotationModel', 'sales', 'country', 'airline', 'numDays', 'wholesale', 'products', 'productDiscount', 'quoteProductsDiscount'));
     }
 
-
     public function modalEditCopy(quotationModel $quotationModel)
     {
         $bookingModel = bookingModel::where('code', $quotationModel->quote_booking)->first();
         $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
-        $sales = saleModel::select('name', 'id')
-            ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
-            ->get();
+        if (Auth::user()->getRoleNames()->contains('sale')) {
+            $sales = saleModel::select('name', 'id')
+                ->where('id', Auth::user()->sale_id)
+                ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->get();
+        } else {
+            $sales = saleModel::select('name', 'id')
+                ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->get();
+        }
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
         $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
         $numDays = numDayModel::orderBy('num_day_total')->get();
         $wholesale = wholesaleModel::where('status', 'on')->get();
         $products = productModel::where('product_type', '!=', 'discount')->get();
         $productDiscount = productModel::where('product_type', 'discount')->get();
-        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)
-            ->where('expense_type', 'income')
-            ->get();
-        $quoteProductsDiscount = quoteProductModel::where('quote_id', $quotationModel->quote_id)
-            ->where('expense_type', 'discount')
-            ->get();
+        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)->where('expense_type', 'income')->get();
+        $quoteProductsDiscount = quoteProductModel::where('quote_id', $quotationModel->quote_id)->where('expense_type', 'discount')->get();
         $campaignSource = DB::table('campaign_source')->get();
 
         return view('quotations.modal-copy', compact('campaignSource', 'customer', 'quoteProducts', 'quotationModel', 'sales', 'country', 'airline', 'numDays', 'wholesale', 'products', 'productDiscount', 'quoteProductsDiscount'));
@@ -400,11 +374,7 @@ class quoteController extends Controller
     public function update(quotationModel $quotationModel, Request $request)
     {
         //dd($request);
-        $country = DB::connection('mysql2')
-            ->table('tb_country')
-            ->select('iso2')
-            ->where('id', $request->quote_country)
-            ->first();
+        $country = DB::connection('mysql2')->table('tb_country')->select('iso2')->where('id', $request->quote_country)->first();
 
         $runningCodeTourUpdate = $this->generateRunningCodeTourUpdate($country->iso2, $request->quote_tour_code_old, $request->quote_date_start, $request->quote_wholesale);
 
@@ -412,12 +382,10 @@ class quoteController extends Controller
             'quote_tour_code' => $request->filled('quote_tour_code') ? $request->quote_tour_code : $runningCodeTourUpdate,
             'updated_by' => Auth::user()->name,
         ]);
-        
+
         //dd($runningCodeTourUpdate);
 
-        $checkPaymentTotal = paymentModel::where('payment_quote_id', $quotationModel->quote_id)
-            ->where('payment_status', 'success')
-            ->sum('payment_total');
+        $checkPaymentTotal = paymentModel::where('payment_quote_id', $quotationModel->quote_id)->where('payment_status', 'success')->sum('payment_total');
         $quotePaymentStatus = 'wait';
         if ($checkPaymentTotal >= $quotationModel->quote_grand_total) {
             $quotePaymentStatus = 'success';
@@ -455,7 +423,9 @@ class quoteController extends Controller
         // Create product & discount rows (unified)
         if ($request->product_id && is_array($request->product_id)) {
             foreach ($request->product_id as $key => $productId) {
-                if (!$productId) continue;
+                if (!$productId) {
+                    continue;
+                }
                 $productName = productModel::where('id', $productId)->first();
                 quoteProductModel::create([
                     'quote_id' => $quotationModel->quote_id,
@@ -471,20 +441,14 @@ class quoteController extends Controller
             }
         }
 
-
-
-        return redirect()
-            ->route('quote.editNew', $quotationModel->quote_id)
-            ->with('success', 'Update Quotation Successfully.');
+        return redirect()->route('quote.editNew', $quotationModel->quote_id)->with('success', 'Update Quotation Successfully.');
     }
 
     public function cancel(Request $request, quotationModel $quotationModel)
     {
         $quotationModel->update(['quote_cancel_note' => $request->quote_cancel_note, 'quote_status' => 'cancel']);
         $invoice = invoiceModel::where('invoice_quote_id', $quotationModel->quote_id)->update(['invoice_status' => 'cancel']);
-        $checkInvioce = invoiceModel::select('invoice_id')
-            ->where('invoice_quote_id', $quotationModel->quote_id)
-            ->first();
+        $checkInvioce = invoiceModel::select('invoice_id')->where('invoice_quote_id', $quotationModel->quote_id)->first();
         if ($invoice) {
             taxinvoiceModel::where('invoice_id', $checkInvioce->invoice_id)->update(['taxinvoice_status' => 'cancel']);
         }
@@ -505,14 +469,10 @@ class quoteController extends Controller
             'quote_payment_status' => $quotePaymentStatus,
         ]);
         //ตรวจสอบว่ามีการเปิดใบแจ้งหนี้หรือยัง
-        $checkInvoice = invoiceModel::select('invoice_id')
-            ->where('invoice_quote_id', $quotationModel->quote_id)
-            ->first();
+        $checkInvoice = invoiceModel::select('invoice_id')->where('invoice_quote_id', $quotationModel->quote_id)->first();
         if ($checkInvoice) {
             // Update สถานะ ใบแจ้งหนี้
-            $checkTaxinvoice = taxinvoiceModel::select('invoice_id')
-                ->where('invoice_id', $checkInvoice->invoice_id)
-                ->first();
+            $checkTaxinvoice = taxinvoiceModel::select('invoice_id')->where('invoice_id', $checkInvoice->invoice_id)->first();
             // Update สถานะ กรณีมีการออกกำกับแล้ว
             if ($checkTaxinvoice) {
                 taxinvoiceModel::where('invoice_id', $checkInvoice->invoice_id)->update(['taxinvoice_status' => 'success']);
@@ -532,14 +492,22 @@ class quoteController extends Controller
         return view('quotations.modal-cancel', compact('quotationModel'));
     }
 
-
-     public function createModern()
+    public function createModern()
     {
         $products = productModel::where('product_type', '!=', 'discount')->get();
         $customers = DB::table('customer')->get();
-        $sales = saleModel::select('name', 'id')
-            ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
-            ->get();
+
+        if (Auth::user()->getRoleNames()->contains('sale')) {
+            $sales = saleModel::select('name', 'id')
+                ->where('id', Auth::user()->sale_id)
+                ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->get();
+        } else {
+            $sales = saleModel::select('name', 'id')
+                ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->get();
+        }
+
         $tours = DB::connection('mysql2')->table('tb_tour')->where('status', 'on')->get();
         $numDays = numDayModel::orderBy('num_day_total')->get();
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
@@ -550,14 +518,20 @@ class quoteController extends Controller
         return view('quotations.create-modern-full', compact('productDiscount', 'campaignSource', 'airline', 'wholesale', 'country', 'numDays', 'products', 'customers', 'sales', 'tours'));
     }
 
-
     public function createNew()
     {
         $products = productModel::where('product_type', '!=', 'discount')->get();
         $customers = DB::table('customer')->get();
-        $sales = saleModel::select('name', 'id')
-            ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
-            ->get();
+        if (Auth::user()->getRoleNames()->contains('sale')) {
+            $sales = saleModel::select('name', 'id')
+                ->where('id', Auth::user()->sale_id)
+                ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->get();
+        } else {
+            $sales = saleModel::select('name', 'id')
+                ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->get();
+        }
         $tours = DB::connection('mysql2')->table('tb_tour')->where('status', 'on')->get();
         $numDays = numDayModel::orderBy('num_day_total')->get();
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
@@ -570,11 +544,7 @@ class quoteController extends Controller
 
     public function AjaxUpdate(quotationModel $quotationModel, Request $request)
     {
-        $country = DB::connection('mysql2')
-            ->table('tb_country')
-            ->select('iso2')
-            ->where('id', $request->quote_country)
-            ->first();
+        $country = DB::connection('mysql2')->table('tb_country')->select('iso2')->where('id', $request->quote_country)->first();
         $runningCodeTourUpdate = $this->generateRunningCodeTourUpdate($country->iso2, $request->quote_tour_code_old, $request->quote_date_start, $request->quote_wholesale);
         $request->merge(['quote_tour_code' => $runningCodeTourUpdate]);
         $request->merge(['quote_withholding_tax_status' => isset($request->quote_withholding_tax_status) ? 'Y' : 'N']);

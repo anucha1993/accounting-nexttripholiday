@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Models\booking\countryModel;
+use Illuminate\Support\Facades\Auth;
 use App\Models\inputTax\inputTaxModel;
 use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
@@ -53,6 +54,8 @@ class QuoteListController extends Controller
         $country = countryModel::get();
         $wholesales = wholesaleModel::get();
         $campaignSource = DB::table('campaign_source')->get();
+        $user = Auth::user();
+        $userRoles = $user->getRoleNames();
 
         $quotationsQuery = quotationModel::with('Salename', 'quoteCustomer', 'quoteWholesale', 'paymentWholesale', 'quoteInvoice', 'quoteLogStatus', 'airline', 'quoteCountry')
             ->when($searchKeyword, function ($query, $searchKeyword) {
@@ -68,6 +71,10 @@ class QuoteListController extends Controller
                             $q2->where('invoice_number', 'LIKE', '%' . $searchKeyword . '%');
                         });
                 });
+            })
+            // กำหนดสิทธิ์ Sale จะเห็นเฉพาะข้อมูลตนเอง
+             ->when($userRoles->contains('sale'), function ($query) use ($user) {
+            return $query->where('quote_sale', $user->sale_id);
             })
             ->when($searchPeriodDateStart && $searchPeriodDateEnd, function ($query) use ($searchPeriodDateStart, $searchPeriodDateEnd) {
                 return $query->where(function ($q) use ($searchPeriodDateStart, $searchPeriodDateEnd) {

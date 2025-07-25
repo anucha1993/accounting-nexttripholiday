@@ -6,11 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Models\invoices\taxinvoiceModel;
 use App\Models\wholesale\wholesaleModel;
+use App\Models\quotations\quotationModel;
 use App\Models\commissions\commissionListModel;
 use App\Models\commissions\commissionGroupModel;
-use App\Models\quotations\quotationModel;
 
 class saleReportController extends Controller
 {
@@ -29,9 +30,17 @@ class saleReportController extends Controller
         $campaignSource = DB::table('campaign_source')->get();
         $wholesales = WholesaleModel::where('status', 'on')->get();
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
-        $sales = saleModel::select('name', 'id')
-            ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
-            ->get();
+        
+        if (Auth::user()->getRoleNames()->contains('sale')) {
+            $sales = saleModel::select('name', 'id')
+                ->where('id', Auth::user()->sale_id)
+                ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->get();
+        } else {
+            $sales = saleModel::select('name', 'id')
+                ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->get();
+        }
 
         // ดึงใบเสนอราคาทั้งหมดที่สำเร็จ
         $quotationSuccess = quotationModel::where('quote_status', 'success')
