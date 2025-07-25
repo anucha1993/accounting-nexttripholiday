@@ -119,11 +119,12 @@
                 </div>
 
                 <div class="col-md-2">
+                    {{-- {{ $invoiceModel->invoice_date }} --}}
                     <label>วันที่ออกใบแจ้งหนี้</label>
-                    <input type="text" id="displayDatepickerQuoteDate" class="form-control">
+                    {{-- <input type="text" id="displayDatepickerQuoteDate" class="form-control"> --}}
 
-                    <input type="hidden" id="submitDatepickerQuoteDate" name="invoice_date"
-                        value="{{ $invoiceModel->invoice_date }}" class="form-control">
+                    <input type="date" name="invoice_date"
+                        value="{{ date('Y-m-d', strtotime($invoiceModel->invoice_date)) }}" class="form-control">
                 </div>
 
               
@@ -131,13 +132,13 @@
 
                 <div class="col-md-2 ms-3">
                     <label>วันที่สั่งซื้อทัวร์:</label>
-                    <input type="text" id="displayDatepicker" class="form-control">
-                    <input type="hidden" id="submitDatepicker" name="quote_booking_create"
+                    {{-- <input type="text" id="displayDatepicker" class="form-control"> --}}
+                    <input type="date"  name="quote_booking_create" class="form-control" disabled style="background-color: aliceblue"
                         value="{{ date('Y-m-d', strtotime($quotationModel->quote_booking_create)) }}">
                 </div>
                 <div class="col-md-2">
                     <label>เลขที่ใบจองทัวร์</label>
-                    <input type="text" name="quote_booking" value="{{ $quotationModel->quote_booking }}"
+                    <input type="text" name="quote_booking" value="{{ $quotationModel->quote_booking }}" style="background-color: aliceblue"
                         class="form-control" readonly>
 
                         <input type="hidden" name="invoice_booking" value="{{ $quotationModel->quote_booking }}">
@@ -145,10 +146,10 @@
                 <div class="col-md-2">
                     <label>รหัสทัวร์</label>
                     @if ($quotationModel->quote_tour)
-                        <input type="text" name="quote_tour" value="{{ $quotationModel->quote_tour }}"
+                        <input type="text" name="quote_tour" value="{{ $quotationModel->quote_tour }}" style="background-color: aliceblue"
                             class="form-control" readonly>
                     @else
-                        <input type="text" name="quote_tour_code_old" value="{{ $quotationModel->quote_tour_code }}"
+                        <input type="text" name="quote_tour_code_old" value="{{ $quotationModel->quote_tour_code }}" style="background-color: aliceblue"
                             class="form-control" readonly>
                     @endif
                 </div>
