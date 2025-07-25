@@ -406,7 +406,7 @@
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">หักเงินมัดจำ / Deposit</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($quotationModel->payment, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->deposit, 2, '.', ',') }}</td>
                 </tr>
 
                 <tr>
