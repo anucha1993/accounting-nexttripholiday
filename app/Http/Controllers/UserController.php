@@ -101,6 +101,7 @@ class UserController extends Controller
         }
           $sales = saleModel::select('name', 'id')
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+            ->where('status', 'active')
             ->get();
 
         return view('users.edit', [

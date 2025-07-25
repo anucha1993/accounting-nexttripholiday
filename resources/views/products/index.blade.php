@@ -346,6 +346,7 @@
                             alert('Error: ' + response.responseJSON.errors);
                         }
                     });
+                    window.location.reload();
                 });
 
                 // Delete product
