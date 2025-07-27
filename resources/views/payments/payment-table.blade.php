@@ -154,9 +154,11 @@
                                 </td>
                                 <td class="text">
                                     @if ($item->payment_type !== 'refund')
+                                    @canany(['payment.view'])
                                         <a href="{{ route('mpdf.payment', $item->payment_id) }}"
                                             onclick="openPdfPopup(this.href); return false;"><i
                                                 class="fa fa-print text-danger"></i> พิมพ์</a>
+                                     @endcanany
                                     @endif
                                     <a class="dropdown-item payment-sendmail" href="#"
                                         data-payment-id="{{ $item->payment_id }}"
@@ -349,26 +351,31 @@
 
                                 <td>
                                     @if ($item->payment_status !== 'cancel')
+                                    @canany(['payment.edit'])
                                         <a class="dropdown-item payment-modal"
                                             href="{{ route('payment.edit', $item->payment_id) }}"><i
                                                 class="fa fa-edit text-info"></i>
                                             แก้ไข</a>
-
+                                        @endcanany
+                                        @canany(['payment.edit'])
                                         <a class="dropdown-item text-danger payment-modal-cancel"
                                             href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
                                                 class=" fas fa-minus-circle"></i> ยกเลิก</a>
+                                        @endcanany
                                     @else
                                         {{ $item->payment_cancel_note }}
-
+                                        @canany(['payment.edit'])
                                         <a href="{{ route('payment.RefreshCancel', $item->payment_id) }}"
                                             class="dropdown-item text-primary"
                                             onclick="return confirm('ยืนยันการคืนสถานะ');"> <i
                                                 class="fas fa-recycle"></i> นำกลับมาใช้ใหม่ </a>
+                                        @endcanany
                                     @endif
-
+                                    @canany(['payment.delete'])
                                     <a href="{{ route('payment.delete', $item->payment_id) }}"
                                         onclick="return confirm('ยืนยันการลบ');"><i
                                             class="fa fa-trash text-danger"></i> ลบ</a>
+                                        @endcanany
 
 
 

@@ -7,8 +7,9 @@
                 <h3>Commission Groups</h3>
             </div>
             <div class="card-body">
+                @canany(['commission.manage'])
                 <button class="btn btn-success mb-3" id="newCommission">+ เพิ่มกลุ่มค่าคอมมิชชั่น</button>
-
+                @endcanany
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -41,12 +42,15 @@
                                     @endforeach
                                 </td>
                                 <td>
+                                    @canany(['commission.manage'])
                                     <button class="btn btn-warning edit-btn" data-id="{{ $item->id }}"
                                         data-name="{{ $item->name }}" data-type="{{ $item->type }}"
                                         data-sale_ids='@json($item->sale_ids)'
                                         data-lists='@json($item->commissionLists)'>
                                         แก้ไข
                                     </button>
+                                    @endcanany
+                                    @canany(['commission.manage'])
                                     <form action="{{ route('commissions.destroy', $item->id) }}" method="POST"
                                         class="d-inline">
                                         @csrf
@@ -54,6 +58,8 @@
                                         <button type="submit" class="btn btn-danger"
                                             onclick="return confirm('ยืนยันการลบ?')">ลบ</button>
                                     </form>
+                                    @endcanany
+                                    
                                 </td>
                             </tr>
                         @endforeach

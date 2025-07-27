@@ -24,8 +24,9 @@
             <h4 class="card-title">Wholesales</h4>
             <h6 class="card-subtitle lh-base">
                 รายชื่อโฮลเซลล์ทั้งหมด
-
+                @canany(['wholesale.create','wholesale.edit'])
                 <a href="{{route('wholesale.create')}}" class="btn btn-info btn-sm float-end mb-3"><i class="fas fa-plus"></i> เพิ่มข้อมูล</a>
+                @endcanany
             </h6>
             <form action="" method="GET">
                <div class="input-group mb-3 pull-right">
@@ -69,11 +70,11 @@
                             </td>
                             <td>{{ date('d-m-Y', strtotime($item->updated_at)) }}</td>
                             <td>
-                              @canany(['edit-wholesale'])
+                              @canany(['wholesale.edit'])
                               <a href="{{route('wholesale.edit',$item->id)}}" class="ml-3"><i class=" fas fa-edit "> </i> แก้ไข</a>
                               @endcanany
 
-                              @canany(['delete-wholesale'])
+                              @canany(['wholesale.delete'])
                            
                               <a href="{{ route('wholesale.destroy', $item->id) }}" type="submit" class="text-danger mx-3" onclick="return confirm('Do you want to delete this Wholesale?');"><i class=" fas fa-trash"> </i> ลบ</a>
                              

@@ -540,9 +540,8 @@
                         <div class="row align-items-center row item-row"> --}}
 
                             <div id="table-income" style="background:#55ffb848;border-radius:8px;padding:8px 0;">
+                                
                                 <div class="row item-row table-income align-items-center">
-
-
                                     <div class="col-md-1 "><span class="row-number"></span></div>
                                     <div class="col-md-3">
                                         <select name="product_id[]" class="form-select product-select select2"

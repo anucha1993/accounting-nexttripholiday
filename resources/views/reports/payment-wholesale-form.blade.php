@@ -230,6 +230,7 @@
                 <h5>ค้นหาข้อมูล Payment Wholesale</h5>
             </div>
             <div class="card-body">
+
                 <form method="GET" action="{{ route('report.payment-wholesale') }}" class="row g-3">
                     <div class="col-md-3">
                         <label for="daterange" class="form-label">วันที่ทำรายการ</label>
@@ -278,7 +279,9 @@
                     <div class="col-md-12 text-end">
                         <button type="submit" class="btn btn-primary">ค้นหา</button>
                         <a href="{{ route('report.payment-wholesale') }}" class="btn btn-secondary">รีเซ็ต</a>
+                        @canany('report.wholesalepayment.export')
                         <a href="{{ route('report.payment-wholesale.export', request()->all()) }}" class="btn btn-success">Export Excel</a>
+                        @endcanany
                     </div>
                 </form>
             </div>
@@ -362,7 +365,12 @@
                                     </td>
 
                                     <td>{{ $item->quote?->quoteWholesale->wholesale_name_th }}</td>
-                                    <td> <a href="{{ route('quote.editNew',$item->quote->quote_id) }}">{{ $item->quote?->quote_number }}</a> </td>
+                                    <td> 
+                                        @canany(['quote.edit','quote.view'])
+                                        <a href="{{ route('quote.editNew',$item->quote->quote_id) }}">{{ $item->quote?->quote_number }}
+                                            </a> 
+                                        @endcanany
+                                        </td>
                                     <td>{{ $item->payment_wholesale_type === 'full' ? 'ชำระเงินเต็มจำนวน' : 'ชำระมัดจำ' }}</td>
                                 </tr>
                             @empty

@@ -94,12 +94,8 @@
                     <h5 class="mb-0">
                         <i class="fas fa-file-invoice"></i> ใบเสนอราคา/ใบแจ้งหนี้
                     </h5>
-                    {{-- @can('quotation-create')
-                        <a href="{{ route('quote.createNew') }}" class="btn btn-light btn-sm">
-                            <i class="fas fa-plus"></i> สร้างใบเสนอราคา
-                        </a>
-                    @endcan --}}
-                    @can('quotation-create')
+                  
+                    @can('quote.create')
                         <a href="{{ route('quote.createModern') }}" class="btn btn-light btn-sm">
                             <i class="fas fa-plus"></i> สร้างใบเสนอราคา
                         </a>
@@ -353,7 +349,7 @@
 
                     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap flex-md-nowrap">
                         <div class="mb-2 mb-md-0">
-                            @can('quotation-export')
+                            @can('report.salesreport.export')
                                 <form action="{{ route('export.quote') }}" id="export-excel" method="post"
                                     class="d-inline">
                                     @csrf
@@ -365,9 +361,12 @@
                                     </button>
                                 </form>
                             @endcan
+                            @can('report.salesreport.view')
                             <a href="{{ route('quotelist.index') }}" class="btn btn-info btn-sm ms-0 ms-md-2 mt-1 mt-md-0">
                                 <i class="fas fa-chart-bar"></i> รายงานใบเสนอราคา
                             </a>
+                            @endcan
+
                         </div>
                         <div class="d-flex align-items-center gap-2 flex-wrap flex-md-nowrap">
                             <form method="GET" id="page" class="mb-0">
@@ -566,15 +565,15 @@
                                             <span>{{ $item->Salename->name }}</span>
                                         </td>
                                         <td class="text-center">
-                                            @can('quotation-edit')
+                                            @canany(['quote.view', 'quote.edit'])
                                                 <a href="{{ route('quote.editNew', $item->quote_id) }}"
                                                     class="btn btn-primary btn-sm mb-1" data-bs-toggle="tooltip"
                                                     title="จัดการข้อมูล">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                            @endcan
+                                            @endcanany
 
-                                            @can('quotation-delete')
+                                            @can('quote.delete')
                                                 <form action="{{ route('quotelist.destroy', $item->quote_id) }}"
                                                     method="POST" style="display:inline-block;"
                                                     onsubmit="return confirm('ยืนยันการลบข้อมูลใบเสนอราคานี้?');">

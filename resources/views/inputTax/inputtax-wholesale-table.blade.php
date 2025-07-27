@@ -115,13 +115,21 @@
                                 <td >
                                     @if ($item->input_tax_status === 'success')
                                     @if ($item->input_tax_type === 2)
+                                    @canany(['wholesale.inputtax.edit'])
                                     <a href="{{route('inputtax.inputtaxEditWholesale',$item->input_tax_id)}}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
+                                    @endcanany
                                     {{-- <a href="{{route('inputtax.cancelWholesale',$item->input_tax_id)}}" class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle"> ยกเลิก</i></a> --}}
+                                    @canany(['inputtax.delete'])
                                     <a href="{{route('inputtax.delete',$item->input_tax_id)}}" class="text-danger input-tax-delete" onclick="return confirm('Do you want to delete?');"> <i class="fa fa-trash"> ลบ</i></a>
+                                    @endcanany
                                     @else
+                                    @canany(['wholesale.inputtax.edit'])
                                     <a href="{{route('inputtax.inputtaxEditWholesale',$item->input_tax_id)}}" class="input-tax-edit" > <i class="fa fa-edit"> แก้ไข</i></a>
+                                    @endcanany
                                     {{-- <a href="{{route('inputtax.cancelWholesale',$item->input_tax_id)}}" class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle"> ยกเลิก</i></a> --}}
+                                    @canany(['inputtax.delete'])
                                     <a href="{{route('inputtax.delete',$item->input_tax_id)}}" class="text-danger input-tax-delete" onclick="return confirm('Do you want to delete?');"> <i class="fa fa-trash"> ลบ</i></a>
+                                    @endcanany
                                     @endif
                                     @else
                                         {{$item->input_tax_cancel}}

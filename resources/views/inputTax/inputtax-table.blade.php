@@ -164,10 +164,13 @@
                                     onclick="openPdfPopup(this.href); return false;">
                                     เปิดดูไฟล์</a>
 
+                                    @canany(['filepassport.delete'])
                                 <a href="{{ route('inputtax.deletefile', $item->input_tax_id) }}"
                                     class="btn btn-danger btn-sm"
                                     onclick="return confirm('Do you want to delete file?');"> ลบไฟล์</a>
+                                    @endcanany
                             @elseif($item->input_tax_type !== 0)
+                            @canany(['inputtax.edit'])
                                 <form action="{{ route('inputtax.update', $item->input_tax_id) }}" method="POST"
                                     enctype="multipart/form-data" id="upload-file-{{ $item->input_tax_id }}">
                                     @csrf
@@ -178,6 +181,7 @@
                                         value="{{ $quotationModel->quote_number }}">
                                     <input type="file" name="file" id="input-file-{{ $item->input_tax_id }}">
                                 </form>
+                                @endcanany
 
                                 <script>
                                     $(document).ready(function() {
@@ -199,6 +203,7 @@
 
                         </td>
                         <td>
+                            @canany(['withholdingtax.export'])
                             @if ($item->input_tax_withholding_status === 'Y' && $document)
                                 <a href="{{ route('MPDF.generatePDFwithholding', $document->id) }}"
                                     onclick="openPdfPopup(this.href); return false;"> <i
@@ -206,6 +211,7 @@
                             @else
                                 N/A
                             @endif
+                            @endcanany
 
                         </td>
 
@@ -213,25 +219,23 @@
                         <td class="text-end">{{ number_format($item->input_tax_vat, 2) }}</td>
 
                         <td class="text-end">
-                            {{-- @if ($item->input_tax_withholding_status === 'Y') 
-                            {{ number_format($item->input_tax_grand_total, 2) }}
-                            @elseif($item->input_tax_wholesale_type === 'Y' )
-                            {{ number_format($item->input_tax_grand_total, 2) }}
-                            @else
-                            {{ number_format(0, 2) }}
-                            @endif --}}
+                          
                             {{ $item->input_tax_grand_total }}
                         </td>
 
                         <td>
+                            @canany(['wholesale.inputtax.edit'])
                              <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}"
                                     class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a>
                             @if ($item->input_tax_withholding_status === 'Y' && $document)
-                               
+                            @endcanany
+                            
+                            @canany(['withholdingtax.edit'])
                                 <br>
                                 <a href="{{ route('withholding.modalEdit', $document->id) }}"
                                     class="input-tax-edit text-primary">
                                     <i class="fa fa-edit text-primary "></i>แก้ไขใบหัก ณ ที่จ่าย</a>
+                            @endcanany
                             @else
                             @endif
                             
@@ -240,22 +244,12 @@
                             
                                 @if ($item->input_tax_wholesale_type === 'Y')
                                 <br>
-                                    {{-- <a href="{{ route('inputtax.inputtaxEditWholesale', $item->input_tax_id) }}"
-                                        class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a> --}}
-
-
-                                    {{-- <a href="{{ route('inputtax.cancelWholesale', $item->input_tax_id) }}"
-                                        class="text-danger input-tax-cancel"> <i class="fas fa-minus-circle">
-                                            ยกเลิก</i></a> --}}
                                 @else
-                                   
-                                        {{-- <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}"
-                                            class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a> --}}
-                                 
-                                    {{-- <a href="{{ route('inputtax.editWholesale', $item->input_tax_id) }}" class="input-tax-edit"> <i class="fa fa-edit"> แก้ไข</i></a> --}}
+                                @canany(['inputtax.delete'])
                                     <a href="{{ route('inputtax.delete', $item->input_tax_id) }}" class="text-danger"
                                         onclick="return confirm('Do you want to delete?');"> <i class="fa fa-trash"></i>
                                         ลบ</a>
+                                @endcanany
                                 @endif
                             @else
                             @endif
@@ -270,10 +264,7 @@
                             @php
                                 $withholdingTaxAmount = $invoice?->getWithholdingTaxAmountAttribute() ?? 0;
                                 $getTotalInputTaxVat = $quotationModel?->getTotalInputTaxVat() ?? 0;
-                                // echo $withholdingTaxAmount."</br>";
-                                // echo $getTotalInputTaxVat."</br>";
-
-                                // ตรวจสอบว่า input_tax_file === NULL หรือไม่
+                              
                                 $hasInputTaxFile = $quotationModel
                                     ->InputTaxVat()
                                     ->whereNotNull('input_tax_file')

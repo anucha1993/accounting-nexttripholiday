@@ -91,12 +91,14 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="text-info">Report Vat</h3><br>
+                @canany(['report.salestax.export'])
                 <form action="{{route('export.saletax')}}" method="post">
                     @csrf
                     @method('post')
                     <input type="hidden" name="taxinvoice_ids" value="{{$taxinvoiceSum->pluck('taxinvoice_id')}}">
                     <button type="submit" class="btn btn-success"> <i class="fa fa-file-excel"></i> Export To Excel</button>
                 </form>
+                @endcanany
             </div>
             <div class="card-body">
 
@@ -121,8 +123,16 @@
                          
                             <td>{{++$key}}</td>
                             <td>{{date('d/m/Y',strtotime($item->taxinvoice_date))}}</td>
-                            <td> <a target="_blank" href="{{route('mpdf.invoice',$item->invoice_id)}}">{{$item->invoice_number}}</a> </td>
-                            <td> <a target="_blank" href="{{route('mpdf.taxreceipt',$item->invoice_id)}}">{{$item->taxinvoice_number}}</a> </td>
+                            <td> 
+                                @canany(['invoice.view','invoice.edit'])
+                                <a target="_blank" href="{{route('mpdf.invoice',$item->invoice_id)}}">{{$item->invoice_number}}</a> 
+                                @endcanany
+                            </td>
+                            <td> 
+                                @canany(['report.receipt.view'])
+                                <a target="_blank" href="{{route('mpdf.taxreceipt',$item->invoice_id)}}">{{$item->taxinvoice_number}}</a> 
+                                @endcanany
+                            </td>
                             <td>{{$item->invoice->customer->customer_name}}</td>
                             <td>{{$item->invoice->customer?->customer_texid ?? '0000000000000' }}</td>
                             <td>{{number_format($item->invoice->invoice_pre_vat_amount,2)}}</td>

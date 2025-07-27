@@ -295,6 +295,7 @@
                         </div>
                     </div>
 
+
                     <div class="col-md-6">
                         <div class="card info-card">
                             <div class="card-header">
@@ -361,24 +362,19 @@
                         </a>
                            @endcan
                       
-                    
+                          @canany('wholesale.payment.create')
                             <a href="{{ route('paymentWholesale.quote', $quotationModel->quote_id) }}"
                                 class="d-flex align-items-center action-btn payment-wholesale{{ ($quotationModel->inputtaxTotalWholesale() <= 0) ? ' disabled' : '' }}"
                                 @if($quotationModel->inputtaxTotalWholesale() <= 0) tabindex="-1" aria-disabled="true" style="pointer-events: none; opacity: 0.6;" @endif>
                                 <i data-feather="dollar-sign"></i> ชำระเงินโฮลเซลล์
                             </a>
-                        
-
-
-                        {{-- <a href="{{ route('paymentWholesale.quote', $quotationModel->quote_id) }}"
-                            class="d-flex align-items-center action-btn payment-wholesale">
-                            <i data-feather="dollar-sign"></i> ชำระเงินโฮลเซลล์
-                        </a> --}}
-
+                            @endcanany
+                            @canany(['inputtax.create'])
                         <a href="{{ route('inputtax.createWholesale', $quotationModel->quote_id) }}"
                             class="d-flex align-items-center action-btn modal-input-tax">
                             <i data-feather="file-minus"></i> บันทึกภาษีซื้อ / ต้นทุนอืนๆ
                         </a>
+                        @endcanany
 
                         @php
                             use Illuminate\Support\Facades\Crypt;
@@ -388,16 +384,19 @@
                             class="d-flex align-items-center action-btn">
                             <i data-feather="share-2"></i> แชร์ลิงก์
                         </a>
-
+                        
+                        @canany(['manage.menu.checklist'])
                         <a href="{{ route('quoteLog.index', $quotationModel->quote_id) }}"
                             class="d-flex align-items-center action-btn modal-quote-check">
                             <i data-feather="check-circle"></i> เช็คลิสต์
                         </a>
-
+                        @endcanany
+                        @canany(['wholesale.inputtax.create'])
                         <a href="{{ route('inputtax.inputtaxCreateWholesale', $quotationModel->quote_id) }}"
                             class="d-flex align-items-center action-btn modal-inputtax-wholesale">
                             <i data-feather="percent"></i> ต้นทุนโฮลเซลล์ 
                         </a>
+                        @endcanany
                     </div>
 
                     <!-- Profit Calculation -->
@@ -431,6 +430,7 @@
                                 $quotationModel->GetDepositWholesale() - $quotationModel->GetDepositWholesaleRefund();
                         @endphp
 
+                        @canany(['quote.report'])
                         <h6><i data-feather="trending-up" class="feather-sm me-2"></i>สรุปกำไร</h6>
 
                         <div class="profit-item">
@@ -479,6 +479,7 @@
 
                                  @endif
                         </div>
+                        @endcanany
                     </div>
                 </div>
             </div>
@@ -531,7 +532,7 @@
 
     <div class="modal fade bd-example-modal-sm modal-lg" id="modal-quote-copy" tabindex="-1" role="dialog"
         aria-labelledby="mySmallModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 ...
             </div>

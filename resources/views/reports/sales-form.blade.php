@@ -735,9 +735,11 @@
 
             <!-- Convert to Excel button and table -->
             <div class="d-flex justify-content-end mb-2">
+                @canany(['report.salestax.export'])
                 <button class="btn btn-outline-success" onclick="exportTableToExcel(this)">
                     <i class="fas fa-file-excel me-1"></i>Convert to Excel
                 </button>
+                @endcanany
             </div>
             
               @if ($mode === 'qt')

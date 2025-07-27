@@ -81,12 +81,14 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="text-info">Report Tax Invoice</h3><br>
+                @canany(['report.taxinvoice.export'])
                 <form action="{{route('export.taxinvoice')}}" method="post">
                     @csrf
                     @method('post')
                     <input type="hidden" name="taxinvoice_ids" value="{{$taxinvoices->pluck('taxinvoice_id')}}">
                     <button type="submit" class="btn btn-success"> <i class="fa fa-file-excel"></i> Export To Excel</button>
                 </form>
+                @endcanany
             </div>
             <div class="card-body">
 
@@ -112,11 +114,23 @@
                         <tr>
                          
                             <td>{{++$key}}</td>
-                            <td> <a href="{{route('mpdf.taxreceipt',$item->invoice_id)}}" target="_blank">{{$item->taxinvoice_number}}</a></td>
-                            <td> <a target="_blank" href="{{route('mpdf.invoice',$item->invoice_id)}}">{{$item->invoice_number}}</a> </td>
+                            <td> 
+                                @canany(['report.receipt.view'])
+                                <a href="{{route('mpdf.taxreceipt',$item->invoice_id)}}" target="_blank">{{$item->taxinvoice_number}}</a>
+                                @endcanany
+                            </td>
+                            <td> 
+                                @canany(['invoice.view','invoice.edit','report.invoice.view'])
+                                <a target="_blank" href="{{route('mpdf.invoice',$item->invoice_id)}}">{{$item->invoice_number}}</a> 
+                                @endcanany
+                            </td>
                             <td>{{date('d/m/Y',strtotime($item->taxinvoice_date))}}</td>
                             <td>{{$item->invoice->customer->customer_name}}</td>
-                            <td> <a target="_blank" href="{{route('quote.editNew',$item->invoice->quote->quote_id)}}">{{$item->invoice->quote->quote_number ? $item->invoice->quote->quote_number : 'ใบเสนอราคาถูกลบ'}}</a> </td>
+                            <td> 
+                                @canany(['quote.view','quote.edit'])
+                                <a target="_blank" href="{{route('quote.editNew',$item->invoice->quote->quote_id)}}">{{$item->invoice->quote->quote_number ? $item->invoice->quote->quote_number : 'ใบเสนอราคาถูกลบ'}}</a>
+                                @endcanany
+                            </td>
                             <td>{{number_format($item->invoice->invoice_grand_total,2)}}</td>
                             <td>{{number_format($item->invoice->invoice_withholding_tax,2)}}</td>
                             <td>{{$item->taxinvoice_status === 'success' ? 'สำเร็จ' : 'ยกเลิก'  }}</td>

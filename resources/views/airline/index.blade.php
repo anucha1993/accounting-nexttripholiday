@@ -64,11 +64,11 @@
                             </td>
                             <td>{{ date('d-m-Y', strtotime($item->updated_at)) }}</td>
                             <td>
-                              @canany(['edit-airline'])
+                              @canany(['airline.edit'])
                               <a href="{{route('airline.edit',$item->id)}}" class="ml-3"><i class=" fas fa-edit "> </i> แก้ไข</a>
                               @endcanany
 
-                              @canany(['delete-airline'])
+                              @canany(['airline.delete'])
                            
                               <a href="{{ route('airline.destroy', $item->id) }}" type="submit" class="text-danger mx-3" onclick="return confirm('Do you want to delete this Airline?');"><i class=" fas fa-trash"> </i> ลบ</a>
                              

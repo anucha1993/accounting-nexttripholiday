@@ -496,6 +496,7 @@
                                             การกำหนดสิทธิ์</span>
                                     </a>
                                 </li>
+                                @can('commissions.manage')
                                 <li class="sidebar-item">
                                     <a href="{{ route('commissions.index') }}" class="sidebar-link">
                                         <i class="mdi mdi-calendar"></i>
@@ -503,6 +504,7 @@
                                             Commissions
                                         </span>
                                     </a>
+                                    @endcan
                                 </li>
 
                             </ul>

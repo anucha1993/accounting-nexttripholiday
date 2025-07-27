@@ -308,24 +308,28 @@
                                     </td>
 
                                     <td>
+                                        @canany(['quote.view'])
                                         <a class="dropdown-item" target="_blank"
                                             href="{{ route('mpdf.quote', $quotationModel->quote_id) }}"
                                             onclick="openPdfPopup(this.href); return false;">
                                             <i class="fa fa-print text-danger "></i>
                                             พิมพ์ใบเสนอราคา
                                         </a>
+                                        @endcanany
+                                        @canany(['quote.edit'])
                                         <a class="dropdown-item mail-quote"
                                             href="{{ route('mail.quote.formMail', $quotationModel->quote_id) }}">
                                             <i class="fas fa-envelope text-info"></i>
                                             ส่งเมล
                                         </a>
+                                        @endcanany
                                     </td>
 
 
                                     <td align="left">
 
                                         @if ($quotationModel->quote_status != 'cancel')
-                                            @can('edit-quote')
+                                            @can('quote.edit')
                                                 {{-- <a class="dropdown-item modal-quote-edit"
                                                 href="{{ route('quote.modalEdit', $quotationModel->quote_id) }}"><i
                                                     class="fa fa-edit text-info"></i> แก้ไข</a> --}}
@@ -334,7 +338,7 @@
                                                     <i class="fa fa-edit text-info"></i> แก้ไข
                                                 </a>
                                             @endcan
-                                            @can('create-invoice')
+                                            @can('invoice.create')
                                                 @if (empty($invoiceModel))
                                                     <a class="dropdown-item modal-invoice"
                                                         href="{{ route('invoice.create', $quotationModel->quote_id) }}"><i
@@ -354,12 +358,12 @@
 
                                     <td>
 
-                                        @can('edit-quote')
+                                        @can('quote.edit')
                                             @if ($quotationModel->quote_status === 'cancel')
                                                 <a class="modal-quote-cancel"
                                                     href="{{ route('quote.modalCancel', $quotationModel->quote_id) }}"><i
                                                         class="fas fa-minus-circle text-danger"></i>
-                                                    เหตุผลยกเลิกใบงานsss</a>
+                                                    เหตุผลยกเลิกใบงาน</a>
                                                 <br>
                                                 <a href="{{ route('quote.recancel', $quotationModel->quote_id) }}"
                                                     class="text-black"
@@ -404,38 +408,45 @@
                                         @endif
                                     </td>
                                     <td>
+                                        @canany(['invoice.view'])
                                         <a class="dropdown-item" onclick="openPdfPopup(this.href); return false;"
                                             href="{{ route('mpdf.invoice', $itemInvoice->invoice_id) }}"><i
                                                 class="fa fa-print text-danger"></i>
                                             พิมพ์ใบแจ้งหนี้</a>
-
+                                            @endcanany
+                                        @canany(['invoice.edit'])
                                         <a class="dropdown-item mail-quote"
                                             href="{{ route('mail.invoice.formMail', $itemInvoice->invoice_id) }}"><i
                                                 class="fas fa-envelope text-info"></i>
                                             ส่งเมล</a>
+                                        @endcanany
                                     </td>
 
                                     <td>
-                                        @can('edit-invoice')
+                                        @can('invoice.edit')
                                             @if ($itemInvoice->invoice_status !== 'cancel')
                                                 <a class="dropdown-item modal-invoice-edit"
                                                     href="{{ route('invoice.edit', ['invoiceModel' => $itemInvoice->invoice_id, 'mode' => 'edit']) }}">
                                                     <i class="fa fa-edit text-info"></i> แก้ไข</a>
 
                                                 @if ($itemInvoice->invoice_status === 'wait' && $quotationModel->quote_payment_status === 'success')
+                                                   @canany(['taxinvoice.create'])
                                                     <a class="dropdown-item"
                                                         href="{{ route('invoice.taxinvoice', $itemInvoice->invoice_id) }}"
                                                         onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
                                                             class="fas fa-file-alt"></i> ออกใบกำกับภาษี</a>
+                                                    @endcanany
                                                 @endif
                                             @else
                                                 <span class="dot-danger"></span>ใบงานถูกยกเลิก
                                             @endif
                                         @endcan
+                                        @can('invoice.edit')
                                         <a class="dropdown-item modal-invoice-edit"
                                             href="{{ route('invoice.edit', ['invoiceModel' => $itemInvoice->invoice_id, 'mode' => 'view']) }}">
                                             <i class="fa fa-eye text-info"></i> ดูรายละเอียด
                                         </a>
+                                        
                                         <script>
                                             $(document).on('submit', '.form-invoice-delete', function(e) {
                                                 if (!confirm('คุณต้องการลบใบงานนี้ใช่ไหม!')) {
@@ -443,10 +454,11 @@
                                                 }
                                             });
                                         </script>
+                                        @endcan
 
                                     </td>
                                     <td>
-                                        @can('cancel-invoice')
+                                        @can('invoice.edit')
                                             @if ($itemInvoice->invoice_status === 'cancel')
                                                 <a class="modal-invoice-cancel"
                                                     href="{{ route('invoice.modalCancel', $itemInvoice->invoice_id) }}"><i
@@ -464,6 +476,7 @@
                                                         class="fas fa-minus-circle text-danger"></i> ยกเลิกใบงาน</a>
                                             @endif
                                         @endcan
+                                        @can('invoice.delete')
 
                                         <form action="{{ route('invoice.delete', $itemInvoice->invoice_id) }}"
                                             method="POST" class="d-inline form-invoice-delete">
@@ -473,6 +486,7 @@
                                                 <i class="fas fa-trash-alt"></i> ลบใบแจ้งหนี้
                                             </button>
                                         </form>
+                                        @endcan
 
                                     </td>
                                 </tr>
@@ -506,27 +520,23 @@
                                     </td>
 
                                     <td>
+                                        @canany(['taxinvoice.view'])
                                         <a class="dropdown-item" onclick="openPdfPopup(this.href); return false;"
                                             href="{{ route('mpdf.taxreceipt', $item->invoice_id) }}"><i
                                                 class="fa fa-print text-danger"></i>
                                             พิมพ์ใบกำกับภาษี</a>
-
-
-
+                                        @endcanany
+                                        @canany(['taxinvoice.edit'])
                                         <a class="dropdown-item mail-quote"
                                             href="{{ route('mail.taxreceipt.formMail', $item->invoice_id) }}"><i
                                                 class="fas fa-envelope text-info"></i>
                                             ส่งเมล</a>
+                                        @endcanany
                                     </td>
 
-                                    {{-- <td>
-                                 <a class="dropdown-item"
-                                 href="{{ route('invoice.taxinvoice', $item->invoice_id) }}"
-                                 onclick="return confirm('ระบบจะอ้างอิงรายการสินค้าจากใบแจ้งหนี้');"><i
-                                     class="fas fa-file-alt"></i> ออกใบกำกับภาษี</a>
-                             </td> --}}
+                    
                                     <td>
-                                        @can('edit-invoice')
+                                        @can('invoice.edit')
                                             @if ($item->taxinvoice_status !== 'cancel')
                                                 <a class="dropdown-item modal-invoice-edit"
                                                     href="{{ route('invoice.edit', ['invoiceModel' => $itemInvoice->invoice_id, 'mode' => 'edit']) }}">
@@ -535,14 +545,16 @@
                                                 <span class="dot-danger"></span>ใบงานถูกยกเลิก
                                             @endif
                                         @endcan
+                                        @can('invoice.view')
                                         <a class="dropdown-item modal-invoice-edit"
                                             href="{{ route('invoice.edit', ['invoiceModel' => $itemInvoice->invoice_id, 'mode' => 'view']) }}">
                                             <i class="fa fa-eye text-info"></i> ดูรายละเอียด
                                         </a>
+                                        @endcan
 
                                     </td>
                                     <td>
-                                        @can('cancel-invoice')
+                                        @can('invoice.edit')
 
                                             @if ($item->taxinvoice_status === 'cancel')
                                                 <a class="modal-taxinvoice-cancel"
@@ -562,7 +574,7 @@
                                             @endif
 
                                         @endcan
-
+                                        @can('taxinvoice.delete')
                                          <form action="{{ route('taxinvoice.delete', $item->taxinvoice_id) }}"
                                             method="POST" class="d-inline form-taxinvoice-delete">
                                             @csrf
@@ -571,6 +583,7 @@
                                                 <i class="fas fa-trash-alt"></i> ลบใบกำกับภาษี
                                             </button>
                                         </form>
+                                        @endcan
 
 
                                     </td>
@@ -661,7 +674,7 @@
     {{-- Edit form quote --}}
     <div class="modal fade bd-example-modal-sm modal-xl" id="modal-quote-edit" tabindex="-1" role="dialog"
         aria-labelledby="mySmallModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 ...
             </div>

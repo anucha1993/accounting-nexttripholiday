@@ -87,7 +87,9 @@
             </div>
         </div>
         <div class="todo-listing ">
+            @canany(['creditnote.create'])
          <a href="{{route('credit-note.create')}}" class="btn btn-info mt-4">สร้างใบลดหนี้</a>
+         @endcanany
         </div>
         <br>
 
@@ -136,15 +138,24 @@
                                             </button>
 
                                             <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                                @canany(['creditnote.create'])
                                                 <a href="{{route('credit-note.edit',$item->creditnote_id)}}" class=" dropdown-item text-info"> <i
                                                         class="fa fa-edit"></i> แก้ไข</a>
+                                                @endcanany
+                                                @canany(['creditnote.view'])
                                                 <a class="dropdown-item" href="{{route('MPDF.credit-note.generatePDF',$item->creditnote_id)}}" target="_blink"><i
                                                         class="fa fa-print text-danger"></i> พิมพ์</a>
+                                                @endcanany
+                                                @canany(['creditnote.edit'])
                                                 <a class="dropdown-item mail-creditnote" href="{{route('mail.creditNoteModel.formMail',$item->creditnote_id)}}"><i
                                                         class="fas fa-envelope text-info"></i> ส่งเมล</a>
+                                                @endcanany
+                                                @canany(['creditnote.create'])
                                                 <a class="dropdown-item" href="{{route('credit-note.copy',$item->creditnote_id)}}" target="_blink" ><i class="fas fa-share-square text-info"></i> สร้างซ้ำ</a>
+                                                @endcanany
+                                                @canany(['creditnote.delete'])
                                                 <a  onclick="return confirm('คุณต้องการลบ ใบลดหนี้ ใช่ หรือ ไม่')" class="dropdown-item" href="{{route('credit-note.delete',$item->creditnote_id)}}"><i class="fas fa-trash text-danger"></i> ลบ</a>
-
+                                                @endcanany
                                             </div>
                                         </div>
                                 </td>

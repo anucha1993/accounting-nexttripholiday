@@ -105,6 +105,7 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                             </div>
                             <div class="col-md-1">
                                 <br>
+                                
                                  <a href="{{route('report.invoice')}}"  class="btn  btn-danger float-end ml-2">ล้างการค้นหา</a>
                              </div>
                         </div>
@@ -123,12 +124,16 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
         <div class="card">
             <div class="card-header">
                 <h3 class="text-info">Report Invoice</h3><br>
+
+                @canany(['report.invoice.export'])
                 <form action="{{route('export.invoice')}}" method="post">
                     @csrf
                     @method('post')
                     <input type="hidden" name="invoice_ids" value="{{$invoices->pluck('invoice_id')}}">
                     <button type="submit" class="btn btn-success"> <i class="fa fa-file-excel"></i> Export To Excel</button>
                 </form>
+                @endcanany
+
             </div>
             <div class="card-body">
 
@@ -157,8 +162,17 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                         <tr>
                           
                             <td>{{++$key}}</td>
-                            <td> <a href="{{route('mpdf.invoice',$item->invoice_id)}}" target="_blank">{{$item->invoice_number}}</a></td>
-                            <td> <a target="_blank" href="{{route('quote.editNew',$item->quote->quote_id)}}">{{$item->quote->quote_number ? $item->quote->quote_number : 'ใบเสนอราคาถูกลบ'}}</a> </td>
+                            <td> 
+                                @canany(['invoice.view'])
+                                <a href="{{route('mpdf.invoice',$item->invoice_id)}}" target="_blank">{{$item->invoice_number}}</a>
+                                @endcanany
+                            </td>
+
+                            <td> 
+                                @canany(['quote.view','quote.edit'])
+                                <a target="_blank" href="{{route('quote.editNew',$item->quote->quote_id)}}">{{$item->quote->quote_number ? $item->quote->quote_number : 'ใบเสนอราคาถูกลบ'}}</a> 
+                                @endcanany
+                            </td>
                             <td>{{date('d/m/Y',strtotime($item->invoice_date))}}</td>
                             <td>{{$item->customer->customer_name}}</td>
                             <td>{{$item->invoice_booking}}</td>

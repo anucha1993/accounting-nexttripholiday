@@ -138,7 +138,9 @@
         </div>
         <div class="todo-listing ">
             <div class="d-flex justify-content-between align-items-center mb-3">
+                @canany(['debitnote.create'])
                 <a href="{{route('debit-note.create')}}" class="btn btn-info">สร้างใบเพิ่มหนี้</a>
+                @endcanany
                 @if($debitNote->count() > 0)
                     <div class="text-muted">
                         แสดงรายการที่ {{ $debitNote->firstItem() }}-{{ $debitNote->lastItem() }} จากทั้งหมด {{ $debitNote->total() }} รายการ
@@ -179,6 +181,7 @@
                                     @endif
                                 </td>
                                 <td>
+                                    @canany(['quote.edit'])
                                     @if($item->quote)
                                         <a href="{{ route('quote.editNew', $item->quote->quote_id) }}" target="_blank" class="text-decoration-none">
                                             {{ $item->quote->quote_number }}
@@ -186,8 +189,10 @@
                                     @else
                                         <span class="text-muted">-</span>
                                     @endif
+                                    @endcanany
                                 </td>
                                 <td>
+                                    @canany(['taxinvoice.view'])
                                     @if($item->taxinvoice)
                                         <a href="{{ route('mpdf.taxreceipt', $item->invoice->invoice_id) }}" target="_blank" class="text-decoration-none">
                                             {{ $item->taxinvoice->taxinvoice_number }}
@@ -195,6 +200,7 @@
                                     @else
                                         <span class="text-muted">-</span>
                                     @endif
+                                    @endcanany
                                 </td>
                                 <td>
                                     @if($item->quote && $item->quote->customer)
@@ -219,15 +225,24 @@
                                             </button>
 
                                             <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                                @canany(['debitnote.edit'])
                                                 <a href="{{route('debit-note.edit',$item->debitnote_id)}}" class=" dropdown-item text-info"> <i
                                                         class="fa fa-edit"></i> แก้ไข</a>
+                                                @endcanany
+                                                @canany(['debitnote.view'])
                                                 <a class="dropdown-item" href="{{route('MPDF.debit-note.generatePDF',$item->debitnote_id)}}" target="_blink"><i
                                                         class="fa fa-print text-danger"></i> พิมพ์</a>
+                                                @endcanany
+                                                @canany(['debitnote.edit'])
                                                 <a class="dropdown-item mail-debitnote" href="{{route('mail.debitNoteModel.formMail',$item->debitnote_id)}}"><i
                                                         class="fas fa-envelope text-info"></i> ส่งเมล</a>
+                                                @endcanany
+                                                @canany(['debitnote.create'])
                                                 <a class="dropdown-item" href="{{route('debit-note.copy',$item->debitnote_id)}}" target="_blink" ><i class="fas fa-share-square text-info"></i> สร้างซ้ำ</a>
+                                                @endcanany
+                                                @canany(['debitnote.delete'])
                                                 <a  onclick="return confirm('คุณต้องการลบ ใบเพิ่มหนี้ ใช่ หรือ ไม่')" class="dropdown-item" href="{{route('debit-note.delete',$item->debitnote_id)}}"><i class="fas fa-trash text-danger"></i> ลบ</a>
-
+                                                @endforelse
                                             </div>
                                         </div>
                                 </td>

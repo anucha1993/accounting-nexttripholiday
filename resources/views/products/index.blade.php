@@ -26,8 +26,10 @@
                 <label>
                     <h4>รายการสินค้า และค่าบริการ</h4>
                 </label>
+                @canany(['product.create'])
                 <button type="button" class="btn btn-primary btn-sm float-end font-weight-medium" data-bs-toggle="modal"
                     data-bs-target="#productModal"> เพิ่มข้อมูล</button>
+                @endcanany
             </div>
             <div class="card-body">
                 <div class="table-responsive">

@@ -242,6 +242,8 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>สรุปผลการค้นหา</h6>
+                   @canany(['report.inputtax.export'])
+    
                     <form action="{{route('export.inputtax')}}" method="post" class="d-inline">
                         @csrf
                         @method('post')
@@ -249,7 +251,9 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                         <button type="submit" class="btn btn-sm btn-outline-success">
                             <i class="fas fa-file-excel me-1"></i>Export Excel
                         </button>
+                        
                     </form>
+                    @endcanany
                 </div>
                 <div class="card-body py-2">
                     <div class="row text-center">
@@ -314,10 +318,12 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                                             @endif
                                         </td>
                                         <td>
+                                            @canany(['quote.edit','quote.view'])
                                             <a href="{{route('quote.editNew',$item->quote->quote_id)}}" 
                                                class="text-decoration-none">
                                                 <small>{{ $item->invoice->taxinvoice->taxinvoice_number ?? 'ไม่มีข้อมูล' }}</small>
                                             </a>
+                                            @endcanany
                                         </td>
                                         <td>
                                             <small>

@@ -15,9 +15,11 @@
         
         <div class="card-body" id="table-files" style="display: block">
             <br>
+            @canany(['filepassport.create'])
                 <button class="btn btn-danger btn-sm  mb-3" data-bs-toggle="modal" data-bs-target="#bs-example-modal-xlg">
                               <i class="fa fa-file me-1"></i>เพิ่มไฟล์เอกสาร
                             </button>
+             @endcanany
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead class="table">
@@ -38,13 +40,19 @@
                                 </td>
                                 <td>{{date('d-m-Y H:m:s',strtotime($item->created_at))}}</td>
                                 <td>
+                                    @canany(['filepassport.view'])
                                     <a  onclick="openPdfPopup(this.href); return false;"
                                         href="{{ asset($item->quote_file_path) }}">{{ $item->quote_file_name }}</a>
+                                    @endcanany
                                 </td>
                                 <td>
                                     {{-- <a href="" class="btn btn-outline-primary btn-sm me-1"><i class="fa fa-edit me-1"></i>แก้ไข</a> --}}
+                                    @canany(['filepassport.mail'])
                                     <a class="btn btn-outline-info btn-sm me-1 modal-mail-file" href="{{route('quotefile.modalMail',$item->quote_file_id)}}"><i class="fas fa-envelope me-1"></i>ส่งเมล</a>
+                                    @endcanany
+                                    @canany(['filepassport.delete'])
                                     <a href="{{ route('quotefile.delete', $item->quote_file_id) }}" onclick="return confirm('ยืนยันการลบ');" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash me-1"></i>Delete</a>
+                                    @endcanany
                                 </td>
                             </tr>
                         @empty

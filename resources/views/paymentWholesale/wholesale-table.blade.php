@@ -140,21 +140,27 @@
                                 </td>
 
                                 <td>
+                                    @canany(['wholesale.payment.edit'])
                                     <a href="{{ route('paymentWholesale.edit', $item->payment_wholesale_id) }}"
                                         class=" text-info payment-wholesale-edit"><i class="fa fa-edit"></i> แก้ไข</a>
+                                        @endcanany
                                     &nbsp;
+                                    @canany(['wholesale.payment.mail'])
                                     <a class="wholesale-mail"
                                         href="{{ route('paymentWholesale.modalMailWholesale', $item->payment_wholesale_id) }}"><i
                                             class="fas fa-envelope text-info"></i>ส่งเมล</a>
                                     &nbsp;
-
+                                    @endcanany
+                                    @canany(['wholesale.payment.refund'])
                                     <a href="{{ route('paymentWholesale.editRefund', $item->payment_wholesale_id) }}"
                                         class="text-primary edit-refund"><i class="fa fas fa-edit"></i>การคืนยอด</a>
+                                        @endcanany
                                     &nbsp;
-
+                                    @canany(['wholesale.payment.delete'])
                                     <a href="{{ route('paymentWholesale.delete', $item->payment_wholesale_id) }}"
                                         onclick="return confirm('คุณต้องการลบข้อมูลใช่ไหม');" class="text-danger"><i
                                             class="fa fas fa-trash"></i> ลบ</a>
+                                    @endcanany
                                 </td>
                             </tr>
                         @endforeach

@@ -28,7 +28,11 @@
 
             @foreach ($quotationSuccess as $item)
                 <tr>
-                    <td><a href="{{ route('quote.editNew', $item->quote_id) }}">{{ $item->quote_number }}</a></td>
+                    <td>
+                        @canany(['quote.view','quote.edit'])
+                        <a href="{{ route('quote.editNew', $item->quote_id) }}">{{ $item->quote_number }}</a>
+                        @endcanany
+                    </td>
                     <td>{{ date('d/m/Y', strtotime($item->quote_date_start)) . '-' . date('d/m/Y', strtotime($item->quote_date_end)) }}
                     </td>
                     <td>{{ $item->quoteWholesale->code }}</td>

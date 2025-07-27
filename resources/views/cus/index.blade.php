@@ -13,6 +13,7 @@
     @endif
     <div class="card shadow mb-4">
         <div class="card-header bg-light border-bottom-0">
+            
             <form method="GET" action="{{ route('cus.index') }}">
                 <div class="row align-items-end">
                     <div class="col-md-3 mb-2">
@@ -36,7 +37,9 @@
             </form>
         </div>
         <div class="card-body">
+            @canany(['customer.create'])
             <a href="{{ route('cus.create') }}" class="btn btn-success mb-3 rounded-pill px-4"><i class="fas fa-plus"></i> เพิ่มลูกค้า</a>
+            @endcanany
             <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle bg-white shadow-sm rounded">
                     <thead class="thead-light">
@@ -62,12 +65,16 @@
                             <td class="d-none">{{ $customer->customer_address }}</td>
                             <td>{{ $customer->created_at }}</td>
                             <td class="text-center">
+                                @canany(['customer.edit'])
                                 <a href="{{ route('cus.edit', $customer->customer_id) }}" class="btn btn-warning btn-sm rounded-pill mr-1"><i class="fas fa-edit"></i> แก้ไข</a>
+                                @endcanany
+                                @canany(['customer.delete'])
                                 <form action="{{ route('cus.destroy', $customer->customer_id) }}" method="POST" style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm rounded-pill" onclick="return confirm('ยืนยันการลบ?')"><i class="fas fa-trash"></i> ลบ</button>
                                 </form>
+                                @endcanany
                             </td>
                         </tr>
                         @empty

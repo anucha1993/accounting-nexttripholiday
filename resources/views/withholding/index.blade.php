@@ -168,6 +168,7 @@
                                 <button type="submit" class="btn btn-success">
                                     <i class="fas fa-search"></i> ค้นหา
                                 </button>
+                              
                                 <a href="{{ route('withholding.index') }}" class="btn btn-secondary">
                                     <i class="fas fa-refresh"></i> รีเซ็ต
                                 </a>
@@ -215,9 +216,11 @@
                             </li>
                         </ul>
                     </div>
+                    @canany(['withholdingtax.create'])
                     <a href="{{ route('withholding.create') }}" class="btn btn-primary">
                         <i class="fas fa-plus"></i> เพิ่มเอกสารใหม่
                     </a>
+                    @endcanany
                 </div>
             </div>
             @if($documents->isNotEmpty())
@@ -267,11 +270,13 @@
                                 </td>
                                 <td>
                                     @if($document->quote)
+                                    @canany(['quote.view','quote.edit'])
                                         <a href="{{route('quote.editNew', $document->quote->quote_id)}}" 
                                            target="_blank" 
                                            class="btn btn-link btn-sm p-0 text-decoration-none">
                                             {{ $document->quote->quote_number }}
                                         </a>
+                                        @endcanany
                                     @else
                                         <span class="text-muted">-</span>
                                     @endif
@@ -315,28 +320,36 @@
                                         </button>
                                         <ul class="dropdown-menu">
                                             <li>
+                                                @canany(['withholdingtax.view'])
                                                 <a href="{{route('MPDF.generatePDFwithholding',$document->id)}}" 
                                                    onclick="openPdfPopup(this.href); return false;" 
                                                    class="dropdown-item">
                                                     <i class="fa fa-eye text-success"></i> ดู
                                                 </a>
+                                                @endcanany
                                             </li>
                                             <li>
+                                                @canany(['withholdingtax.edit'])
                                                 <a href="{{ route('withholding.edit', $document->id) }}" class="dropdown-item">
                                                     <i class="fa fa-edit text-info"></i> แก้ไข
                                                 </a>
+                                                @endcanany
                                             </li>
                                             <li><hr class="dropdown-divider"></li>
                                             <li>
+                                                @canany(['withholdingtax.edit'])
                                                 <a href="{{route('MPDF.generatePDFwithholding',$document->id)}}" 
                                                    target="_blank" class="dropdown-item">
                                                     <i class="fa fa-print text-danger"></i> พิมพ์
                                                 </a>
+                                                @endcanany
                                             </li>
                                             <li>
+                                                @canany(['withholdingtax.edit'])
                                                 <a href="{{route('MPDF.downloadPDFwithholding',$document->id)}}" class="dropdown-item">
                                                     <i class="fa fa-file-pdf text-danger"></i> ดาวน์โหลด
                                                 </a>
+                                                @endcanany
                                             </li>
                                             <li>
                                                 <a href="{{route('MPDF.printEnvelope',$document->id)}}" class="dropdown-item">
@@ -344,12 +357,15 @@
                                                 </a>
                                             </li>
                                             <li>
+                                                @canany(['withholdingtax.create'])
                                                 <a href="{{route('withholding.editRepear',$document->id)}}" class="dropdown-item">
                                                     <i class="fas fa-copy text-info"></i> สร้างซ้ำ
                                                 </a>
+                                                @endcanany
                                             </li>
                                             <li><hr class="dropdown-divider"></li>
                                             <li>
+                                                @canany(['withholdingtax.delete'])
                                                 <form action="{{ route('withholding.destroy',$document->id) }}" 
                                                       method="POST" 
                                                       onsubmit="return confirm('คุณแน่ใจหรือไม่ที่จะลบข้อมูลนี้?')" 
@@ -360,6 +376,7 @@
                                                         <i class="fa fa-trash"></i> ลบ
                                                     </button>
                                                 </form>
+                                                @endcanany
                                             </li>
                                         </ul>
                                     </div>
@@ -389,9 +406,11 @@
                     <i class="fas fa-file-alt fa-4x text-muted mb-3 no-data-icon"></i>
                     <h5 class="text-muted">ไม่พบข้อมูลใบหัก ณ ที่จ่าย</h5>
                     <p class="text-muted">ลองปรับเปลี่ยนเงื่อนไขการค้นหา หรือเพิ่มเอกสารใหม่</p>
+                    @canany(['withholdingtax.create'])
                     <a href="{{ route('withholding.create') }}" class="btn btn-primary">
                         <i class="fas fa-plus"></i> เพิ่มเอกสารใหม่
                     </a>
+                    @endcanany
                 </div>
             @endif
 </div>

@@ -153,9 +153,17 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                         @forelse ($receipts as $key => $item)
                         <tr>
                           <td>{{++$key}}</td>
-                          <td> <a href="{{route('mpdf.payment',$item->payment_id)}}" target="_bank">{{$item->payment_number}}</a></td>
+                          <td> 
+                            @canany(['report.receipt.view','payment.view'])
+                            <a href="{{route('mpdf.payment',$item->payment_id)}}" target="_bank">{{$item->payment_number}}</a>
+                            @endcanany
+                          </td>
                            <td>{{date('d/m/Y ',strtotime($item->payment_in_date))}}</td>
-                          <td><a href="{{route('quote.editNew',$item->quote->quote_id)}}">{{$item->quote->quote_number}}</a></td>
+                          <td>
+                            @canany(['quote.edit','quote.view'])
+                            <a href="{{route('quote.editNew',$item->quote->quote_id)}}">{{$item->quote->quote_number}}</a>
+                            @endcanany
+                        </td>
                           <td>{{$item->quote->quote_booking}} </td>
                           <td>
                             @if ($item->payment_method === 'cash')
