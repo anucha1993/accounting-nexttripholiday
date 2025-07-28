@@ -1347,34 +1347,88 @@ $('.form-select.select2').each(function() {
             });
 
             // ฟังก์ชันแยกสำหรับคำนวณเงื่อนไขการชำระเงิน (Deposit/Full) และวันที่
+// function calculatePaymentDateCondition() {
+//     var bookingCreateDate = new Date($('#date-start').val());
+//     var travelDate = new Date($('#date-start').val());
+//     var dateNow = new Date();
+//     var bookingDate = new Date($('#booking-create-date').val());
+//     var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);
+
+//     if (diffDays >= 31) {
+//         bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
+//         $('#quote-payment-deposit').prop('checked', true);
+//         $('#quote-payment-price').val('5000');
+//     } else {
+//         bookingCreateDate = new Date();
+//         bookingCreateDate.setDate(dateNow.getDate() + 1);
+//         $('#quote-payment-full').prop('checked', true);
+//     }
+//     bookingCreateDate.setHours(13, 0, 0, 0);
+//     var year = bookingCreateDate.getFullYear();
+//     var month = ('0' + (bookingCreateDate.getMonth() + 1)).slice(-2);
+//     var day = ('0' + bookingCreateDate.getDate()).slice(-2);
+//     var hours = ('0' + bookingCreateDate.getHours()).slice(-2);
+//     var minutes = ('0' + bookingCreateDate.getMinutes()).slice(-2);
+//     var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+//     $('input[name="quote_payment_date"]').val(formattedDate);
+//     $('#quote-payment-date').val(formattedDate);
+//     $('#quote-payment-date-new').val(formattedDate);
+//     $('input[name="quote_payment_date_full"]').val(formattedDate);
+//     $('#quote-payment-date-full').val(formattedDate);
+// }
 function calculatePaymentDateCondition() {
-    var bookingCreateDate = new Date($('#date-start').val());
+    // วันเดินทาง
     var travelDate = new Date($('#date-start').val());
-    var dateNow = new Date();
+    // วันจอง (หรือวันที่สร้าง booking)
     var bookingDate = new Date($('#booking-create-date').val());
+    // วันปัจจุบัน
+    var dateNow = new Date();
+    // จำนวนวันห่างระหว่างวันเดินทางกับวันจอง
     var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);
 
+    // ฟังก์ชันช่วย format date
+    function formatDateTime(dateObj) {
+        var year = dateObj.getFullYear();
+        var month = ('0' + (dateObj.getMonth() + 1)).slice(-2);
+        var day = ('0' + dateObj.getDate()).slice(-2);
+        var hours = ('0' + dateObj.getHours()).slice(-2);
+        var minutes = ('0' + dateObj.getMinutes()).slice(-2);
+        return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+    }
+
     if (diffDays >= 31) {
-        bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
+        // มัดจำ: วันจอง + 1 วัน
+        var depositDate = new Date(bookingDate);
+        depositDate.setDate(depositDate.getDate() + 1);
+        depositDate.setHours(13, 0, 0, 0);
+
+        // เต็มจำนวน: วันเดินทาง - 30 วัน
+        var fullPayDate = new Date(travelDate);
+        fullPayDate.setDate(fullPayDate.getDate() - 30);
+        fullPayDate.setHours(13, 0, 0, 0);
+
         $('#quote-payment-deposit').prop('checked', true);
         $('#quote-payment-price').val('5000');
+        $('input[name="quote_payment_date"]').val(formatDateTime(depositDate));
+        $('#quote-payment-date').val(formatDateTime(depositDate));
+        $('#quote-payment-date-new').val(formatDateTime(depositDate));
+        $('input[name="quote_payment_date_full"]').val(formatDateTime(fullPayDate));
+        $('#quote-payment-date-full').val(formatDateTime(fullPayDate));
     } else {
-        bookingCreateDate = new Date();
-        bookingCreateDate.setDate(dateNow.getDate() + 1);
+        // เต็มจำนวน: วันจอง + 1 วัน
+        var fullPayDate = new Date(bookingDate);
+        fullPayDate.setDate(fullPayDate.getDate() + 1);
+        fullPayDate.setHours(13, 0, 0, 0);
+
         $('#quote-payment-full').prop('checked', true);
+        $('input[name="quote_payment_date_full"]').val(formatDateTime(fullPayDate));
+        $('#quote-payment-date-full').val(formatDateTime(fullPayDate));
+        // clear deposit
+        $('input[name="quote_payment_date"]').val('');
+        $('#quote-payment-date').val('');
+        $('#quote-payment-date-new').val('');
+        $('#quote-payment-price').val('0');
     }
-    bookingCreateDate.setHours(13, 0, 0, 0);
-    var year = bookingCreateDate.getFullYear();
-    var month = ('0' + (bookingCreateDate.getMonth() + 1)).slice(-2);
-    var day = ('0' + bookingCreateDate.getDate()).slice(-2);
-    var hours = ('0' + bookingCreateDate.getHours()).slice(-2);
-    var minutes = ('0' + bookingCreateDate.getMinutes()).slice(-2);
-    var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
-    $('input[name="quote_payment_date"]').val(formattedDate);
-    $('#quote-payment-date').val(formattedDate);
-    $('#quote-payment-date-new').val(formattedDate);
-    $('input[name="quote_payment_date_full"]').val(formattedDate);
-    $('#quote-payment-date-full').val(formattedDate);
 }
 $('#date-start-display, #date-end-display, #numday').on('change.auto', function() {
     calculatePaymentDateCondition();

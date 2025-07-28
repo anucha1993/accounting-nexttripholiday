@@ -492,6 +492,7 @@
                                             การกำหนดสิทธิ์</span>
                                     </a>
                                 </li>
+                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('commissions.manage')): ?>
                                 <li class="sidebar-item">
                                     <a href="<?php echo e(route('commissions.index')); ?>" class="sidebar-link">
                                         <i class="mdi mdi-calendar"></i>
@@ -499,6 +500,7 @@
                                             Commissions
                                         </span>
                                     </a>
+                                    <?php endif; ?>
                                 </li>
 
                             </ul>
