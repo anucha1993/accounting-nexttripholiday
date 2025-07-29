@@ -32,6 +32,10 @@ class paymentModel extends Model
     {
         return $this->belongsTo(bankModel::class, 'payment_bank', 'bank_id');
     }
+       public function banktransfer()
+    {
+        return $this->belongsTo(bankModel::class, 'payment_bank_number', 'bank_id');
+    }
 
 
 

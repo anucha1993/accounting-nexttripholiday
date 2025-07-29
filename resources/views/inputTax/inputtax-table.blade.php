@@ -127,8 +127,8 @@
 
                             @endphp
                             <tr class="@if ($item->input_tax_status === 'cancel') text-danger @endif">
-                                {{-- <td>{{ ++$key }}</td> --}}
-                                <td>input_tax_type : {{ $item->input_tax_type }}</td>
+                                <td>{{ ++$key }}</td>
+                                {{-- <td>input_tax_type : {{ $item->input_tax_type }}</td> --}}
 
                                 <td>
                                     @if ($item->input_tax_type === 0)

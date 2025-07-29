@@ -297,7 +297,11 @@
                                         {{ number_format($quotationModel->GetDeposit() - $quotationModel->Refund(), 2, '.', ',') }}
                                     </td>
                                     <td align="center">
-                                        {{ number_format($quotationModel->quote_grand_total - $quotationModel->GetDeposit() + $quotationModel->Refund(), 2, '.', ',') }}
+                                        @php
+                                            $paymentTotal = $quotationModel->quote_grand_total - $quotationModel->GetDeposit() + $quotationModel->Refund();
+                                          
+                                        @endphp
+                                        {{ number_format($paymentTotal, 2, '.', ',') }}
                                     </td>
                                     <td align="center">
                                         @if ($item->quote_withholding_tax_status === 'Y')
@@ -429,7 +433,7 @@
                                                     href="{{ route('invoice.edit', ['invoiceModel' => $itemInvoice->invoice_id, 'mode' => 'edit']) }}">
                                                     <i class="fa fa-edit text-info"></i> แก้ไข</a>
 
-                                                @if ($itemInvoice->invoice_status === 'wait' && $quotationModel->quote_payment_status === 'success')
+                                                @if ($itemInvoice->invoice_status === 'wait' && $quotationModel->quote_payment_status === 'success' && $paymentTotal == 0)
                                                    @canany(['taxinvoice.create'])
                                                     <a class="dropdown-item"
                                                         href="{{ route('invoice.taxinvoice', $itemInvoice->invoice_id) }}"

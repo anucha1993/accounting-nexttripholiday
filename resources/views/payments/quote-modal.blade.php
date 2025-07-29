@@ -35,7 +35,7 @@
                 </div>
                 <div class="col-md-3 mt-3" id="payment-in-date">
                     <label>วันที่ชำะเงิน</label>
-                    <input type="datetime-local" name="payment_in_date" class="form-control">
+                    <input type="datetime-local" name="payment_in_date" class="form-control" required>
                 </div>
 
             </div>
@@ -99,7 +99,7 @@
             <div class="row mt-3" id="payment-file">
                 <div class="col-md-3">
                     <label for="">แนบไฟล์เอกสาร</label>
-                    <input type="file" name="payment_file" >
+                    <input type="file" name="payment_file" required>
                 </div>
             </div>
             

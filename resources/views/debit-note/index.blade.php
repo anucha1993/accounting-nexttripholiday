@@ -137,6 +137,7 @@
             </div>
         </div>
         <div class="todo-listing ">
+            <br>
             <div class="d-flex justify-content-between align-items-center mb-3">
                 @canany(['debitnote.create'])
                 <a href="{{route('debit-note.create')}}" class="btn btn-info">สร้างใบเพิ่มหนี้</a>

@@ -35,7 +35,7 @@ class saleTaxReportController extends Controller
             })
             ->when($seller_id, function ($query) use ($seller_id) {
                 return $query->whereHas('invoice', function ($q1) use ($seller_id) {
-                    $q1->where('seller_id', $seller_id);
+                    $q1->where('invoice_sale', $seller_id);
                 });
             })
             ->when($document_number, function ($query) use ($document_number) {

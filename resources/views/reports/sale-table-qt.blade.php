@@ -29,8 +29,8 @@
             @foreach ($quotationSuccess as $item)
                 <tr>
                     <td>
-                        @canany(['quote.view','quote.edit'])
-                        <a href="{{ route('quote.editNew', $item->quote_id) }}">{{ $item->quote_number }}</a>
+                        @canany(['quote.view', 'quote.edit'])
+                            <a href="{{ route('quote.editNew', $item->quote_id) }}">{{ $item->quote_number }}</a>
                         @endcanany
                     </td>
                     <td>{{ date('d/m/Y', strtotime($item->quote_date_start)) . '-' . date('d/m/Y', strtotime($item->quote_date_end)) }}
@@ -75,22 +75,31 @@
                                 $item->quote_sale,
                                 'qt',
                                 $item->quote_pax_total,
-                                $item->quote_commission
+                                $item->quote_commission,
                             );
+                            // Debug ค่า commission และค่าที่ส่งเข้าไป
+                            // dump([
+                            //     'profit' =>  $item->getNetProfitPerPax(),
+                            //     'sale_id' => $item->quote_sale,
+                            //     'mode' => 'qt',
+                            //     'people' => $item->quote_pax_total,
+                            //     'commission' => $commission,
+                            // ]);
                         @endphp
                         {{ number_format($commission['calculated'] ?? 0, 2) }}
 
                     </td>
-                    <td>
-
-                        @if ($item->quote_commission === 'N')
-                           <small><b>ไม่จ่ายค่าคอมมิชชั่น :</b> {{ $item->quote_note_commission ?? '' }}</small>
-                        @else
-                            <small>{{ $commission['amount'] ?? '' }}/</small>
-                            <small>{{ $commission['group_name'] ?? '' }}</small>
-                        @endif
-
-                    </td>
+                   <td>
+    {{-- <pre>
+    {{ var_export($item->quote_commission, true) }}
+    </pre> --}}
+    @if ($item->quote_commission === 'N')
+        <small><b>ไม่จ่ายค่าคอมมิชชั่น :</b> {{ $item->quote_note_commission ?? '' }}</small>
+    @else
+        <small>{{ $commission['amount'] ?? '' }}/</small>
+        <small>{{ $commission['group_name'] ?? '' }}</small>
+    @endif
+</td>
 
 
                 </tr>

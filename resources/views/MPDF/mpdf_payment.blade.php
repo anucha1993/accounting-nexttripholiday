@@ -291,9 +291,9 @@
                         @endif
                         @if ($paymentModel->payment_method === 'check')
                             วิธีการชำระเงิน : เช็ค<br>
-                            เข้าบัญชี : {{ $paymentModel->payment_bank }} <br>
+                            เข้าบัญชี : {{ $bank->bank_name }} <br>
                             เลขที่เช็ค : {{ $paymentModel->payment_check_number }} <br>
-                            วันที่ : {{ thaidate('j F Y', $paymentModel->payment_in_date) .' เวลา : '.date('H:m', strtotime($paymentModel->payment_in_date)) }} น.<br>
+                            วันที่ : {{ thaidate('j F Y', $paymentModel->payment_check_date) .' เวลา : '.date('H:m', strtotime($paymentModel->payment_in_date)) }} น.<br>
                         @endif
 
                         @if ($paymentModel->payment_method === 'credit')

@@ -100,6 +100,10 @@ class invoiceModel extends Model
     {
         return $this->belongsTo(wholesaleModel::class, 'wholesale_id', 'id');
     }
+       public function sale()
+    {
+        return $this->belongsTo(saleModel::class, 'invoice_sale', 'id');
+    }
 
     // Accessor เพื่อดึงข้อมูล country
     public function getInvoiceCountriesAttribute()

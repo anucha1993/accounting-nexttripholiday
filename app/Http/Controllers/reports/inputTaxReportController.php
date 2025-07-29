@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\reports;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Models\inputTax\inputTaxModel;
-use App\Models\quotations\quotationModel;
 use App\Models\sales\saleModel;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\inputTax\inputTaxModel;
+use App\Models\wholesale\wholesaleModel;
+use App\Models\quotations\quotationModel;
 
 class inputTaxReportController extends Controller
 {
@@ -22,6 +23,7 @@ class inputTaxReportController extends Controller
         $documentNumber = $request->input('document_number');
         $referenceNumber = $request->input('reference_number');
         $sellerName = $request->input('seller_name');
+        $wholesale = wholesaleModel::where('status', 'on')->get();
 
         $inputTaxs = inputTaxModel::whereNotNull('input_tax_number_tax')
         ->when($searchDateStart && $searchDateEnd, function ($query) use ($searchDateStart, $searchDateEnd) {
@@ -58,6 +60,11 @@ class inputTaxReportController extends Controller
                 $q->whereIn('quote_wholesale', $wholesaleIds);
             });
         })
+        ->when($request->input('wholesale_id'), function ($query) use ($request) {
+            return $query->whereHas('quote', function ($q) use ($request) {
+                $q->where('quote_wholesale', $request->input('wholesale_id'));
+            });
+        })
         ->get();
 
         $grandTotalSum = $inputTaxs->sum(function ($inputTax) {
@@ -71,7 +78,7 @@ class inputTaxReportController extends Controller
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
             ->get();
 
-        return view('reports.input-tax-form',compact('inputTaxs','grandTotalSum','vat','sellers'));
+        return view('reports.input-tax-form',compact('inputTaxs','grandTotalSum','vat','sellers','wholesale'));
     }
 
 

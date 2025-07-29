@@ -107,62 +107,67 @@ class quotationModel extends Model
         return $this->belongsTo(customerModel::class, 'customer_id', 'customer_id');
     }
 
+    // public function InputTaxVat()
+    // {
+    //     return $this->belongsTo(inputTaxModel::class, 'quote_id', 'input_tax_quote_id');
+    // }
+    //   public function InputTaxVat()
+    // {
+    //     return $this->hasMany(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
+    // }
+
+
+    // public function getTotalInputTaxVat()
+    // {
+    //     // ตรวจสอบว่ามีแถวที่ input_tax_file ไม่เป็น NULL หรือไม่
+    //     $hasFile = $this->InputTaxVat()->whereNotNull('input_tax_file')->exists();
+
+    //     if ($hasFile) {
+    //         // กรณีที่ input_tax_file ไม่เป็น NULL
+    //         $total = $this->InputTaxVat()
+    //             ->whereNotNull('input_tax_file')
+    //             ->whereNotIn('input_tax_type', [1, 3])
+    //             ->where('input_tax_status', 'success')
+    //             ->sum(\DB::raw('COALESCE(input_tax_vat, 0) - COALESCE(input_tax_withholding, 0)'));
+    //     } else {
+    //         // กรณีที่ input_tax_file เป็น NULL
+    //         $total = $this->InputTaxVat()
+    //             ->whereNotIn('input_tax_type', [1, 3])
+    //             ->whereNull('input_tax_file')
+    //             ->sum('input_tax_withholding');
+    //     }
+
+    //     return $total ?? 0; // คืนค่า 0 หากไม่มีผลลัพธ์
+    // }
+
     public function InputTaxVat()
     {
-        return $this->belongsTo(inputTaxModel::class, 'quote_id', 'input_tax_quote_id');
+       return $this->hasMany(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
     }
-
-    public function getTotalInputTaxVat()
+     public function InputTaxVatNew()
     {
-        // ตรวจสอบว่ามีแถวที่ input_tax_file ไม่เป็น NULL หรือไม่
-        $hasFile = $this->InputTaxVat()->whereNotNull('input_tax_file')->exists();
-
-        if ($hasFile) {
-            // กรณีที่ input_tax_file ไม่เป็น NULL
-            $total = $this->InputTaxVat()
-                ->whereNotNull('input_tax_file')
-                ->whereNotIn('input_tax_type', [1, 3])
-                ->where('input_tax_status', 'success')
-                ->sum(\DB::raw('COALESCE(input_tax_vat, 0) - COALESCE(input_tax_withholding, 0)'));
-        } else {
-            // กรณีที่ input_tax_file เป็น NULL
-            $total = $this->InputTaxVat()
-                ->whereNotIn('input_tax_type', [1, 3])
-                ->whereNull('input_tax_file')
-                ->sum('input_tax_withholding');
-        }
-
-        return $total ?? 0; // คืนค่า 0 หากไม่มีผลลัพธ์
+         return $this->hasMany(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
     }
 
-//     public function InputTaxVat()
-//     {
-//        return $this->hasMany(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
-//     }
-//      public function InputTaxVatNew()
-//     {
-//          return $this->hasMany(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
-//     }
+public function getTotalInputTaxVat()
+{
+    // 1. รวม input_tax_vat ของภาษีซื้อ (type 0) ที่ยังไม่มีไฟล์
+    $pendingVat = $this->InputTaxVat()
+        // ->where('input_tax_type', 0)
+        ->whereNotIn('input_tax_type', [1, 3])
+        ->whereNull('input_tax_file')
+        ->sum('input_tax_vat');
 
-// public function getTotalInputTaxVat()
-// {
-//     // 1. รวม input_tax_vat ของภาษีซื้อ (type 0) ที่ยังไม่มีไฟล์
-//     $pendingVat = $this->InputTaxVat()
-//         // ->where('input_tax_type', 0)
-//         ->whereNotIn('input_tax_type', [1, 3])
-//         ->whereNull('input_tax_file')
-//         ->sum('input_tax_vat');
+    // 2. รวม input_tax_vat - input_tax_withholding ของ type อื่นๆ ที่มีไฟล์และ success
+    $fileVat = $this->InputTaxVat()
+        ->whereNotNull('input_tax_file')
+        ->whereNotIn('input_tax_type', [1, 3])
+        ->where('input_tax_status', 'success')
+        ->sum(\DB::raw('COALESCE(input_tax_vat, 0) - COALESCE(input_tax_withholding, 0)'));
 
-//     // 2. รวม input_tax_vat - input_tax_withholding ของ type อื่นๆ ที่มีไฟล์และ success
-//     $fileVat = $this->InputTaxVat()
-//         ->whereNotNull('input_tax_file')
-//         ->whereNotIn('input_tax_type', [1, 3])
-//         ->where('input_tax_status', 'success')
-//         ->sum(\DB::raw('COALESCE(input_tax_vat, 0) - COALESCE(input_tax_withholding, 0)'));
-
-//     // 3. รวมสองส่วนเข้าด้วยกัน
-//     return ($pendingVat + $fileVat) ?? 0;
-// }
+    // 3. รวมสองส่วนเข้าด้วยกัน
+    return ($pendingVat + $fileVat) ?? 0;
+}
 
   
 

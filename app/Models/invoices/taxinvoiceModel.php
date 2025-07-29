@@ -2,10 +2,11 @@
 
 namespace App\Models\invoices;
 
+use App\Models\sales\saleModel;
 use App\Models\invoices\invoiceModel;
 use App\Models\customers\customerModel;
-use App\Models\quotations\quotationModel;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\quotations\quotationModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class taxinvoiceModel extends Model
@@ -42,6 +43,8 @@ class taxinvoiceModel extends Model
         );
     }
 
+
+   
 
     
 

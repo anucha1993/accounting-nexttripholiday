@@ -43,8 +43,17 @@ class saleReportController extends Controller
         }
 
         // ดึงใบเสนอราคาทั้งหมดที่สำเร็จ
-        $quotationSuccess = quotationModel::where('quote_status', 'success')
-            ->get()
+        $quotationQuery = quotationModel::where('quote_status', 'success');
+
+        // Filter วันที่ออกเดินทาง (quote_date_start)
+        if ($searchDateStart) {
+            $quotationQuery = $quotationQuery->where('quote_date_start', '>=', $searchDateStart);
+        }
+        if ($searchDateEnd) {
+            $quotationQuery = $quotationQuery->where('quote_date_start', '<=', $searchDateEnd);
+        }
+
+        $quotationSuccess = $quotationQuery->get()
             ->filter(function ($item) {
                 // ลูกค้าต้องชำระเงินครบ (GetDeposit() >= quote_grand_total)
                 $customerPaid = $item->GetDeposit()?? 0;
@@ -115,7 +124,7 @@ class saleReportController extends Controller
                 ->filter(function ($item) use ($mode) {
                     $commission = calculateCommission($item->getNetProfit(), $item->quote_sale, 'qt', $item->quote_pax_total);
                     if ($mode === 'qt') {
-                        return in_array($commission['type'], ['step-QT', 'percent-QT']);
+                       return in_array($commission['type'], ['step-QT', 'percent-QT', 'no-commission']);
                     }
                     return true;
                 })

@@ -173,13 +173,13 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                             @if ($item->payment_method === 'transfer-money')
                                 วิธีการชำระเงิน : โอนเงิน</br>
                                 วันที่ :{{ date('d/m/Y : H:m', strtotime($item->payment_in_date)) }}</br>
-                                เช็คธนาคาร : {{ $item->bank->bank_name }}
+                                เช็คธนาคาร : {{ $item->banktransfer->bank_name }}
                             @endif
                             @if ($item->payment_method === 'check')
                                 วิธีการชำระเงิน : เช็ค</br>
-                                โอนเข้าบัญชี : {{ $item->bank }} </br>
+                                โอนเข้าบัญชี : {{ $item->bank->bank }} </br>
                                 เลขที่เช็ค : {{ $item->bank->bank_name }} </br>
-                                วันที่ :{{ date('d/m/Y : H:m', strtotime($item->payment_in_date)) }}</br>
+                                วันที่ :{{ date('d/m/Y : H:m', strtotime($item->payment_check_date)) }}</br>
                             @endif
 
                             @if ($item->payment_method === 'credit')

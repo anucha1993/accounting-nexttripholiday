@@ -69,10 +69,12 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
 
                                 <div class="col-md-2">
                                     <label for="">ช่วงเวลา</label>
-                                    <input type="text" name="daterange" id="rangDate" class="form-control rangDate" autocomplete="off" value="" placeholder="Search by Range Date" />
+                                    <input type="text" name="daterange" id="rangDate" class="form-control rangDate" autocomplete="off"
+                                        value="{{ $request->date_start && $request->date_end ? (\Carbon\Carbon::parse($request->date_start)->format('d/m/Y') . ' - ' . \Carbon\Carbon::parse($request->date_end)->format('d/m/Y')) : '' }}"
+                                        placeholder="Search by Range Date" />
 
-                                    <input type="hidden" name="date_start">
-                                    <input type="hidden" name="date_end">
+                                    <input type="hidden" name="date_start" value="{{ $request->date_start }}">
+                                    <input type="hidden" name="date_end" value="{{ $request->date_end }}">
                                 </div>
 
                             <div class="col-md-2">

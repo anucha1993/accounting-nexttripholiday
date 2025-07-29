@@ -456,36 +456,36 @@ class quoteController extends Controller
         return redirect()->back();
     }
 
-    public function Recancel(Request $request, quotationModel $quotationModel)
-    {
-        // ตรวจสอบสถานะการชำระเงินก่อน คืนสถานะ
-        $deposit = $quotationModel->GetDeposit();
-        $quotePaymentStatus = $deposit <= 0 ? 'wait' : 'payment';
-        $quoteStatus = $deposit >= $quotationModel->quote_grand_total ? 'success' : 'wait';
-        // อัปเดตข้อมูล quotationModel
-        $quotationModel->update([
-            'payment' => $deposit,
-            'quote_status' => $quoteStatus,
-            'quote_payment_status' => $quotePaymentStatus,
-        ]);
-        //ตรวจสอบว่ามีการเปิดใบแจ้งหนี้หรือยัง
-        $checkInvoice = invoiceModel::select('invoice_id')->where('invoice_quote_id', $quotationModel->quote_id)->first();
-        if ($checkInvoice) {
-            // Update สถานะ ใบแจ้งหนี้
-            $checkTaxinvoice = taxinvoiceModel::select('invoice_id')->where('invoice_id', $checkInvoice->invoice_id)->first();
-            // Update สถานะ กรณีมีการออกกำกับแล้ว
-            if ($checkTaxinvoice) {
-                taxinvoiceModel::where('invoice_id', $checkInvoice->invoice_id)->update(['taxinvoice_status' => 'success']);
-            }
-        }
+   public function Recancel(Request $request, quotationModel $quotationModel)
+{
+    // ตรวจสอบสถานะการชำระเงินก่อน คืนสถานะ
+    $deposit = $quotationModel->GetDeposit();
+    $quotePaymentStatus = $deposit <= 0 ? 'wait' : 'payment';
+    $quoteStatus = $deposit >= $quotationModel->quote_grand_total ? 'success' : 'wait';
+    // อัปเดตข้อมูล quotationModel
+    $quotationModel->update([
+        'payment' => $deposit,
+        'quote_status' => $quoteStatus,
+        'quote_payment_status' => $quotePaymentStatus,
+    ]);
+    // ตรวจสอบว่ามีการเปิดใบแจ้งหนี้หรือยัง
+    $checkInvoice = invoiceModel::select('invoice_id')->where('invoice_quote_id', $quotationModel->quote_id)->first();
+    $checkTaxinvoice = null; // กำหนดค่าเริ่มต้น
+
+    if ($checkInvoice) {
+        // Update สถานะ ใบแจ้งหนี้
+        $checkTaxinvoice = taxinvoiceModel::select('invoice_id')->where('invoice_id', $checkInvoice->invoice_id)->first();
+        // Update สถานะ กรณีมีการออกกำกับแล้ว
         if ($checkTaxinvoice) {
+            taxinvoiceModel::where('invoice_id', $checkInvoice->invoice_id)->update(['taxinvoice_status' => 'success']);
             $checkInvoice->update(['invoice_status' => 'success']);
         } else {
             $checkInvoice->update(['invoice_status' => 'wait']);
         }
-
-        return redirect()->back();
     }
+
+    return redirect()->back();
+}
 
     public function modalCancel(quotationModel $quotationModel)
     {

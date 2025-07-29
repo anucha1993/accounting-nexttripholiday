@@ -107,9 +107,10 @@
                         <tr>
                             <th>ลำดับ</th>
                             <th>วันเดือนปี</th>
-                            <th>เลขที่ใบแจ้งหนี้</th>
-                            <th>เลขที่ใบกำกับภาษี</th>
+                            <th>เลขที่เอกสารอ้างอิง</th>
+                            <th>เลขที่เอกสาร</th>
                             <th>ชื่อลูกค้า</th>
+                            <th>เซลผู้ขาย</th>
                             <th>เลขผู้เสียกับภาษี</th>
                             <th>มูลค่าสินค้า/บริการ</th>
                             <th>ภาษีมูลค่าเพิ่ม</th>
@@ -135,6 +136,7 @@
                             </td>
                             <td>{{$item->invoice->customer->customer_name}}</td>
                             <td>{{$item->invoice->customer?->customer_texid ?? '0000000000000' }}</td>
+                             <td>{{$item->invoice->sale->name}}</td>
                             <td>{{number_format($item->invoice->invoice_pre_vat_amount,2)}}</td>
                             <td>{{number_format($item->invoice->invoice_vat,2)}}</td>
                             <td>{{$item->taxinvoice_status === 'success' ? 'สำเร็จ' : 'ยกเลิก'  }}</td>

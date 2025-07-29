@@ -27,8 +27,8 @@
             @foreach ($quotationSuccess as $item)
                 <tr>
                     <td>
-                        @canany(['quote.view','quote.edit'])
-                        <a href="{{ route('quote.editNew', $item->quote_id) }}">{{ $item->quote_number }}</a>
+                        @canany(['quote.view', 'quote.edit'])
+                            <a href="{{ route('quote.editNew', $item->quote_id) }}">{{ $item->quote_number }}</a>
                         @endcanany
                     </td>
                     <td>{{ date('d/m/Y', strtotime($item->quote_date_start)) . '-' . date('d/m/Y', strtotime($item->quote_date_end)) }}
@@ -70,20 +70,30 @@
                     @php
                         $commission = calculateCommission(
                             $item->getNetProfit(),
-                            $item->quote_sale,
+                            (string) $item->quote_sale, // สำคัญ! ต้องแปลงเป็น string
                             'all',
                             $item->quote_pax_total,
-                            $item->quote_commission
+                            $item->quote_commission,
                         );
                     @endphp
+
+                    {{-- @php dd($commission); @endphp --}}
                     <td>
                         @if ($item->quote_commission === 'N')
                             <small><b>ไม่จ่ายค่าคอมมิชชั่น :</b> {{ $item->quote_note_commission ?? '' }}</small>
+                            
                         @else
                             <small>{{ $commission['amount'] ?? '' }}/</small>
                             <small>{{ $commission['group_name'] ?? 'ไม่ได้กำหนด' }}</small>
+                            <br>
+                            {{-- <span style="color: #888; font-size: 11px;">
+                                [debug]
+                                sale_id: {{ (string)$item->quote_sale }} |
+                                profit: {{ $item->getNetProfit() }} |
+                                group_name: {{ $commission['group_name'] ?? 'null' }} |
+                                type: {{ $commission['type'] ?? 'null' }}
+                            </span> --}}
                         @endif
-
                     </td>
 
                 </tr>

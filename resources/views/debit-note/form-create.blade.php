@@ -33,7 +33,7 @@
         <!-- Todo list-->
         <div class="todo-listing ">
             <div class="container border bg-white">
-                <h4 class="text-center my-4">สร้างใบลดหนี้ Debit Note
+                <h4 class="text-center my-4">สร้างใบเพิ่มหนี้ Debit Note
                 </h4>
                 <form action="{{ route('debit-note.store') }}" id="formQuote" method="post">
                     @csrf
@@ -65,7 +65,7 @@
 
 
                         <div class="col-md-3">
-                            <label>วันที่ออกใบลดหนี้</label>
+                            <label>วันที่ออกใบเพิ่มหนี้</label>
                             <input type="date"   class="form-control"  name="debitnote_date" required >
                         </div>
 
@@ -100,8 +100,8 @@
                         </div>
 
                         <div class="col-md-12">
-                            <label for="">สาเหตุที่ออกใบลดหนี้</label>
-                            <textarea name="debitnote_cause" id="" cols="30" rows="3" class="form-control" placeholder="สาเหตุที่ออกใบลดหนี้" required></textarea>
+                            <label for="">สาเหตุที่ออกใบเพิ่มหนี้</label>
+                            <textarea name="debitnote_cause" id="" cols="30" rows="3" class="form-control" placeholder="สาเหตุที่ออกใบเพิ่มหนี้" required></textarea>
                         </div>
 
 
@@ -315,7 +315,7 @@
                     </div>
 
 
-                    <button form="formQuote" class="btn btn-info float-end">สร้างใบลดหนี้</button>
+                    <button form="formQuote" class="btn btn-info float-end">สร้างใบเพิ่มหนี้</button>
                     <br>
                     <br>
             </div>

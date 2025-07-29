@@ -214,11 +214,23 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                                        placeholder="เลขที่เอกสารอ้างอิง">
                             </div>
 
-                            <div class="col-lg-2 col-md-4 col-sm-6">
+                            {{-- <div class="col-lg-2 col-md-4 col-sm-6">
                                 <label class="form-label"><i class="fas fa-building me-1"></i>ชื่อผู้จำหน่าย</label>
                                 <input type="text" name="seller_name" class="form-control" 
                                        value="{{request('seller_name')}}" 
                                        placeholder="ชื่อผู้จำหน่าย">
+                            </div> --}}
+
+                            <div class="col-lg-2 col-md-4 col-sm-6">
+                                <label class="form-label"><i class="fas fa-building me-1"></i>ชื่อผู้จำหน่าย</label>
+                                <select name="wholesale_id" id="" class="form-select select2" style="width: 100%;">
+                                    <option value="">ทั้งหมด</option>
+                                    @foreach($wholesale as $item)
+                                        <option value="{{ $item->id }}" {{ request('wholesale_id') == $item->id ? 'selected' : '' }}>
+                                            {{ $item->wholesale_name_th }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 
@@ -282,7 +294,7 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                     <div class="table-responsive">
                         <table class="table mb-0">
                             <thead>
-                                <tr>
+                                <tr >
                                     <th style="width: 60px;">#</th>
                                     <th style="width: 110px;">วันที่</th>
                                     <th style="width: 140px;">เลขที่เอกสาร</th>
@@ -297,15 +309,15 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                             </thead>
                             <tbody>
                                 @forelse ($inputTaxs as $key => $item)
-                                    <tr>
-                                        <td class="text-center">{{++$key}}</td>
+                                    <tr class="text-center">
+                                        <td >{{++$key}}</td>
                                         <td>
                                             <small>{{date('d/m/Y',strtotime($item->input_tax_date_tax))}}</small>
                                         </td>
                                         <td>
                                             <small>{{$item->input_tax_number_tax}}</small>
                                         </td>
-                                        <td class="text-center">
+                                        <td >
                                             @if ($item->input_tax_file)
                                                 <button class="btn btn-outline-info btn-sm" 
                                                         onclick="openPdfPopup('{{ asset('storage/' . $item->input_tax_file) }}'); return false;">
@@ -332,17 +344,17 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                                             </small>
                                         </td>
                                         <td>
-                                            <small class="text-muted">
+                                            <small>
                                                 {{$item->quote->quoteWholesale->textid ?? 'ไม่มีข้อมูล'}}
                                             </small>
                                         </td>
-                                        <td class="text-end">
+                                        <td >
                                             <small>{{number_format($item->input_tax_service_total,2)}}</small>
                                         </td>
-                                        <td class="text-end">
+                                        <td >
                                             <small>{{number_format($item->input_tax_vat,2)}}</small>
                                         </td>
-                                        <td class="text-center">
+                                        <td >
                                             @if ($item->input_tax_file)
                                                 <span class="badge bg-success">
                                                     <i class="fas fa-check"></i>

@@ -52,9 +52,9 @@
                                     <option @if($request->column_name === 'customer_texid') selected @endif value="customer_texid">เลขประจำตัวผู้เสียภาษี</option>
                                 </select>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <label for="">คียร์เวิร์ด</label>
-                                <input type="text" name="keyword" class="form-control" placeholder="คียร์เวิร์ด" value="{{$request->keyword}}">
+                                <input type="text" name="keyword" class="form-control" placeholder="เลขที่ใบกำกับภาษี/เลขที่ใบแจ้งหนี้/เลขที่ใบเสนอราคา/ชื่อลูกค้า" value="{{$request->keyword}}">
                             </div>
 
                             <div class="col-md-2">

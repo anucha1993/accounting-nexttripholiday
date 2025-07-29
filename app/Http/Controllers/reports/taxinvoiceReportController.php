@@ -48,6 +48,22 @@ class taxinvoiceReportController extends Controller
                     $q1->where('customer_name', 'LIKE', '%' . $customer_name . '%');
                 });
             })
+            // เพิ่ม filter keyword
+            ->when($request->filled('keyword'), function ($query) use ($request) {
+                $keyword = $request->keyword;
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('taxinvoice_number', 'LIKE', "%$keyword%")
+                      ->orWhereHas('invoice', function ($q1) use ($keyword) {
+                          $q1->where('invoice_number', 'LIKE', "%$keyword%")
+                             ->orWhereHas('quote', function ($q2) use ($keyword) {
+                                 $q2->where('quote_number', 'LIKE', "%$keyword%") ;
+                             });
+                      })
+                      ->orWhereHas('taxinvoiceCustomer', function ($q1) use ($keyword) {
+                          $q1->where('customer_name', 'LIKE', "%$keyword%") ;
+                      });
+                });
+            })
             ->get();
 
         $grandTotalSum = $taxinvoices->sum(function ($taxinvoice) {

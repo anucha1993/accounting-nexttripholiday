@@ -24,11 +24,11 @@
             
             <div class="col-md-3">
                 <label for="">วันที่ชำระ</label>
-                <input type="datetime-local" name="payment_wholesale_date" class="form-control" value="{{date('Y-m-d H:i:s')}}">
+                <input type="datetime-local" name="payment_wholesale_date" class="form-control" required>
             </div>
             <div class="col-md-3">
                 <label>หลักฐานการชำระเงิน</label>
-                <input type="file" name="file">
+                <input type="file" name="file" required>
             </div>
         </div>
    
