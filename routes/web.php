@@ -199,14 +199,7 @@ Route::resources([
 ]);
 
 
-// Customer
-Route::post('customer/ajax/edit',[customerController::class,'ajaxEdit'])->name('customer.ajaxEdit');
-Route::post('customer/ajax/update',[customerController::class,'ajaxUpdate'])->name('customer.ajaxUpdate');
 
-
-//Debits
-Route::get('debit',[debitController::class,'index'])->name('debit.index');
-Route::get('debit/form-create',[debitController::class,'create'])->name('debit.create');
 // Credits 
 Route::get('credit/create/{invoiceModel}',[creditController::class,'create'])->name('credit.create');
 Route::get('credit/edit/{creditModel}',[creditController::class,'edit'])->name('credit.edit');
@@ -364,19 +357,18 @@ Route::post('mpdf/mail/creditnote/{creditNoteModel}',[MPDF_creditNoteController:
 Route::get('/credit-note/modal/mail/creditnote/{creditNoteModel}',[MailController::class,'formMailCreditNote'])->name('mail.creditNoteModel.formMail');
 
 //Report
-Route::middleware(['auth', 'permission:report-inputtax'])->get('/report/inputtax/form',[inputTaxReportController::class,'index'])->name('report.input-tax');
-Route::middleware(['auth', 'permission:report-invoice'])->get('/report/invoice/form',[invoiceReportController::class,'index'])->name('report.invoice');
-Route::middleware(['auth', 'permission:report-taxinvoice'])->get('/report/taxinvoice/form',[taxinvoiceReportController::class,'index'])->name('report.taxinvoice');
-Route::middleware(['auth', 'permission:report-receipt'])->get('/report/receipt/form',[receiptReportController::class,'index'])->name('report.receipt');
-Route::middleware(['auth', 'permission:report-saletax'])->get('/report/saletax/form',[saleTaxReportController::class,'index'])->name('report.saletax');
-Route::middleware(['auth', 'permission:report-sales'])->get('/report/sales/form',[saleReportController::class,'index'])->name('report.sales');
-Route::middleware(['auth', 'permission:report-payment-wholesale'])->get('/report/payment-wholesale/form',[paymentWholesaleReportController::class,'index'])->name('report.payment-wholesale');
-Route::middleware(['auth', 'permission:report-payment-wholesale'] )->get('/report/payment-wholesale/export', [paymentWholesaleReportController::class, 'exportExcel'])->name('report.payment-wholesale.export');
+Route::get('/report/inputtax/form',[inputTaxReportController::class,'index'])->name('report.input-tax');
+Route::get('/report/invoice/form',[invoiceReportController::class,'index'])->name('report.invoice');
+Route::get('/report/taxinvoice/form',[taxinvoiceReportController::class,'index'])->name('report.taxinvoice');
+Route::get('/report/receipt/form',[receiptReportController::class,'index'])->name('report.receipt');
+Route::get('/report/saletax/form',[saleTaxReportController::class,'index'])->name('report.saletax');
+Route::get('/report/sales/form',[saleReportController::class,'index'])->name('report.sales');
+Route::get('/report/payment-wholesale/form',[paymentWholesaleReportController::class,'index'])->name('report.payment-wholesale');
+Route::get('/report/payment-wholesale/export', [paymentWholesaleReportController::class, 'exportExcel'])->name('report.payment-wholesale.export');
 
 // Export Excel 
 Route::post('export/excel/quote', [QuoteExportController::class, 'export'])->name('export.quote');
 Route::post('export/excel/invoice', [invoiceExportController::class, 'export'])->name('export.invoice');
-Route::post('export/excel/taxinvoice', [taxinvoiceExportController::class, 'export'])->name('export.taxinvoice');
 Route::post('export/excel/receipt', [receiptExportControlle::class, 'export'])->name('export.receipt');
 Route::post('export/excel/saletax', [saleTaxExportController::class, 'export'])->name('export.saletax');
 Route::post('export/excel/inputtax', [inputTaxExportController::class, 'export'])->name('export.inputtax');
@@ -392,32 +384,32 @@ Route::delete('/commissions/{id}', [CommissionController::class, 'destroy'])->na
 // กลุ่ม route ที่ต้องการ auth และ permission
 Route::middleware(['auth'])->group(function () {
     // Products
-    Route::get('/products', [productController::class, 'index'])->name('product.index')->middleware('permission:product-view');
-    Route::get('/products/list', [productController::class, 'products'])->name('product.products')->middleware('permission:product-view');
-    Route::get('/product/edit/{id}', [productController::class, 'edit'])->name('product.edit')->middleware('permission:product-edit');
-    Route::delete('/product/delete/{id}', [productController::class, 'destroy'])->name('product.destroy')->middleware('permission:product-delete');
-    Route::put('/product/update/{id}', [productController::class, 'update'])->name('product.update')->middleware('permission:product-edit');
-    Route::post('/product/store', [productController::class, 'store'])->name('product.store')->middleware('permission:product-create');
+    Route::get('/products', [productController::class, 'index'])->name('product.index');
+    Route::get('/products/list', [productController::class, 'products'])->name('product.products');
+    Route::get('/product/edit/{id}', [productController::class, 'edit'])->name('product.edit');
+    Route::delete('/product/delete/{id}', [productController::class, 'destroy'])->name('product.destroy');
+    Route::put('/product/update/{id}', [productController::class, 'update'])->name('product.update');
+    Route::post('/product/store', [productController::class, 'store'])->name('product.store');
 
     // Quotes
-    Route::get('quotations/', [QuoteListController::class, 'index'])->name('quote.index')->middleware('permission:quotation-view');
-    Route::get('/', [QuoteListController::class, 'index'])->name('quote.index')->middleware('permission:quotation-view');
-    Route::post('quote/store', [quoteController::class, 'store'])->name('quote.store')->middleware('permission:quotation-create');
-    Route::get('quote/edit/{quotationModel}', [quoteController::class, 'edit'])->name('quote.edit')->middleware('permission:quotation-edit');
-    Route::put('quote/update/{quotationModel}', [quoteController::class, 'update'])->name('quote.update')->middleware('permission:quotation-edit');
-    Route::put('quote/update/ajax/{quotationModel}', [quoteController::class, 'AjaxUpdate'])->name('quote.AjaxUpdate')->middleware('permission:quotation-edit');
-    Route::put('quote/cancel/{quotationModel}', [quoteController::class, 'cancel'])->name('quote.cancel')->middleware('permission:quotation-edit');
-    Route::get('quote/create/new', [quoteController::class, 'createNew'])->name('quote.createNew')->middleware('permission:quotation-create');
-    Route::get('quote/edit/new/{quotationModel}', [quoteController::class, 'editNew'])->name('quote.editNew')->middleware('permission:quotation-edit');
-    Route::get('quote/ajax/new/{quotationModel}', [quoteController::class, 'editQuote'])->name('quote.editAjax')->middleware('permission:quotation-edit');
-    Route::get('quote/modal/edit/{quotationModel}', [quoteController::class, 'modalEdit'])->name('quote.modalEdit')->middleware('permission:quotation-edit');
-    Route::get('quote/modal/copy/edit/{quotationModel}', [quoteController::class, 'modalEditCopy'])->name('quote.modalEditCopy')->middleware('permission:quotation-edit');
-    Route::get('quote/modal/cancel/{quotationModel}', [quoteController::class, 'modalCancel'])->name('quote.modalCancel')->middleware('permission:quotation-edit');
-    Route::get('quote/recancel/{quotationModel}', [quoteController::class, 'Recancel'])->name('quote.recancel')->middleware('permission:quotation-edit');
+    Route::get('quotations/', [QuoteListController::class, 'index'])->name('quote.index');
+    Route::get('/', [QuoteListController::class, 'index'])->name('quote.index');
+    Route::post('quote/store', [quoteController::class, 'store'])->name('quote.store');
+    Route::get('quote/edit/{quotationModel}', [quoteController::class, 'edit'])->name('quote.edit');
+    Route::put('quote/update/{quotationModel}', [quoteController::class, 'update'])->name('quote.update');
+    Route::put('quote/update/ajax/{quotationModel}', [quoteController::class, 'AjaxUpdate'])->name('quote.AjaxUpdate');
+    Route::put('quote/cancel/{quotationModel}', [quoteController::class, 'cancel'])->name('quote.cancel');
+    Route::get('quote/create/new', [quoteController::class, 'createNew'])->name('quote.createNew');
+    Route::get('quote/edit/new/{quotationModel}', [quoteController::class, 'editNew'])->name('quote.editNew');
+    Route::get('quote/ajax/new/{quotationModel}', [quoteController::class, 'editQuote'])->name('quote.editAjax');
+    Route::get('quote/modal/edit/{quotationModel}', [quoteController::class, 'modalEdit'])->name('quote.modalEdit');
+    Route::get('quote/modal/copy/edit/{quotationModel}', [quoteController::class, 'modalEditCopy'])->name('quote.modalEditCopy');
+    Route::get('quote/modal/cancel/{quotationModel}', [quoteController::class, 'modalCancel'])->name('quote.modalCancel');
+    Route::get('quote/recancel/{quotationModel}', [quoteController::class, 'Recancel'])->name('quote.recancel');
 
     // Sales info
-    Route::get('quote/sales/{quotationModel}', [salesInformationController::class, 'index'])->name('saleInfo.index')->middleware('permission:quotation-view');
-    Route::get('quote/sales/info/{quotationModel}', [salesInformationController::class, 'info'])->name('saleInfo.info')->middleware('permission:quotation-view');
+    Route::get('quote/sales/{quotationModel}', [salesInformationController::class, 'index'])->name('saleInfo.index');
+    Route::get('quote/sales/info/{quotationModel}', [salesInformationController::class, 'info'])->name('saleInfo.info');
     // selects
     Route::get('/selects/period', [periodSelect::class, 'index'])->name('select.period');
 
@@ -429,22 +421,22 @@ Route::middleware(['auth'])->group(function () {
     ]);
 
     // notifications (ต้อง login และมีสิทธิ์ดู notification)
-    Route::middleware(['permission:notification-view'])->group(function () {
+    // Route::middleware(['permission:notification-view'])->group(function () {
         Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
         Route::get('/notifications/fetch-latest', [App\Http\Controllers\NotificationController::class, 'fetchLatest'])->name('notifications.fetchLatest');
         Route::post('/notifications/mark-as-read/{id}', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
         Route::post('/notifications/mark-all-as-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
     });
-});
+// });
 
 // notifications (ต้อง login และมีสิทธิ์ดู notification)
-Route::middleware(['auth', 'permission:notification-view'])->group(function () {
+// Route::middleware(['auth', 'permission:notification-view'])->group(function () {
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/fetch-latest', [App\Http\Controllers\NotificationController::class, 'fetchLatest'])->name('notifications.fetchLatest');
     Route::post('/notifications/mark-as-read/{id}', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::post('/notifications/mark-all-as-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
     Route::get('/notifications/go/{id}', [App\Http\Controllers\NotificationController::class, 'goToNotification'])->name('notifications.goTo');
-});
+// });
 
 Route::get('quotelist', [QuoteListController::class, 'index'])->name('quotelist.index');
 Route::delete('quotelist/destroy/{id}', [QuoteListController::class, 'destroy'])->name('quotelist.destroy');
