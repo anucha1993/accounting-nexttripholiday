@@ -26,7 +26,7 @@
                 {{-- File1 --}}
                 @if ($paymentWholesaleModel->payment_wholesale_refund_file_name)
                 <input type="file" name="file">
-                <a onclick="openPdfPopup(this.href); return false;" href="{{ asset($paymentWholesaleModel->payment_wholesale_refund_file_path) }}">{{ $paymentWholesaleModel->payment_wholesale_refund_file_name1 }}</a>
+                <a onclick="openPdfPopup(this.href); return false;" href="{{ asset($paymentWholesaleModel->payment_wholesale_refund_file_path) }}">{{ $paymentWholesaleModel->payment_wholesale_refund_file_name }}</a>
                 @elseif($paymentWholesaleModel->payment_wholesale_refund_total > 0)
                 <input type="file" name="file">
                 @endif
