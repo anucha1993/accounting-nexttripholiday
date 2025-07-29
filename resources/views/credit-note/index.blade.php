@@ -76,8 +76,12 @@
                                 <input type="date" name="date_end" class="form-control">
                             </div>
 
-                            <div class="col-md-12 mt-2">
+                            {{-- <div class="col-md-12 mt-2">
                                 <button type="submit" class="btn btn-info">ค้นหา</button>
+                            </div> --}}
+                             <div class="col-md-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-info me-2">ค้นหา</button>
+                                <a href="{{ route('credit-note.index') }}" class="btn btn-secondary">รีเซ็ต</a>
                             </div>
                         </div>
                     </form>

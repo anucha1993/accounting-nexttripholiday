@@ -71,7 +71,7 @@
 
 
                         <div class="col-md-3">
-                            <label>วันที่ออกใบลดหนี้</label>
+                            <label>วันที่ออกใบเพิ่มหนี้</label>
                             <input type="date"   class="form-control" name="debitnote_date" value="{{date('Y-m-d')}}" required >
                         </div>
 
@@ -106,8 +106,8 @@
                         </div>
 
                         <div class="col-md-12">
-                            <label for="">สาเหตุที่ออกใบลดหนี้</label>
-                            <textarea name="debitnote_cause" id="" cols="30" rows="3" class="form-control" placeholder="สาเหตุที่ออกใบลดหนี้" required>{{$debitNoteModel->debitnote_cause}}</textarea>
+                            <label for="">สาเหตุที่ออกใบเพิ่มหนี้</label>
+                            <textarea name="debitnote_cause" id="" cols="30" rows="3" class="form-control" placeholder="สาเหตุที่ออกใบเพิ่มหนี้" required>{{$debitNoteModel->debitnote_cause}}</textarea>
                         </div>
 
 
@@ -389,7 +389,7 @@
                     </div>
 
 
-                    <button form="formQuote" class="btn btn-info float-end">ยื่นยันทำซ้ำ ใบลดหนี้</button>
+                    <button form="formQuote" class="btn btn-info float-end">ยื่นยันทำซ้ำ ใบเพิ่มหนี้</button>
                     <br>
                     <br>
             </div>

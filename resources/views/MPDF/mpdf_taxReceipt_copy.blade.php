@@ -437,7 +437,7 @@
 
                 @if(!empty($payment->payment_method) && $payment->payment_method === 'check') 
                 {{-- {{$payment->bank_name}}  --}}
-                เลขที่เช็ค : {{$payment->payment_check_number}}  เช็คลงวันที่ : {{ thaidate('j F Y', $payment->payment_in_date) }} เวลา: {{ date('H:i', strtotime($quotationModel->payment_in_date)) }} น.
+                เลขที่เช็ค : {{$payment->payment_check_number}}  เช็คลงวันที่ : {{ thaidate('j F Y', $payment->payment_check_date) }} เวลา: {{ date('H:i', strtotime($quotationModel->payment_check_date)) }} น.
                 @endif
                 <br>
 

@@ -833,6 +833,8 @@ label {
                         </div>
                     </div>
                     <div class="text-end mt-3">
+                        @can('quote.comission')
+                            
                         <div class="row mb-3 ">
                             <div class="col-md-3">
                                 <label>สถานะการจ่ายค่าคอมมิชชั่น:</label>
@@ -852,6 +854,7 @@ label {
                             </div>
 
                         </div>
+                         @endcan
 
                         <input type="hidden" name="quote_vat_exempted_amount">
                         <input type="hidden" name="quote_pre_tax_amount">
