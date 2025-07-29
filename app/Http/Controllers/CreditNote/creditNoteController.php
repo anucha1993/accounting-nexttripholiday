@@ -116,7 +116,7 @@ class creditNoteController extends Controller
              }
          }
  
-         return redirect()->back();
+         return redirect()->route('credit-note.index')->with('success', 'ใบลดหนี้ถูกสร้างเรียบร้อยแล้ว');
      }
  
      public function edit(creditNoteModel $creditNoteModel)
