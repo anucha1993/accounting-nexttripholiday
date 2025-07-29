@@ -53,7 +53,42 @@ class saleReportController extends Controller
             $quotationQuery = $quotationQuery->where('quote_date_start', '<=', $searchDateEnd);
         }
 
+        // Filter เซลล์ผู้ขาย
+        if ($saleId) {
+            $quotationQuery = $quotationQuery->where('quote_sale', $saleId);
+        }
+
+        // Filter ที่มาของลูกค้า (campaign source) จาก customer
+        if ($request->filled('campaign_source_id')) {
+            $quotationQuery = $quotationQuery->whereHas('customer', function($q) use ($request) {
+                $q->where('customer_campaign_source', $request->campaign_source_id);
+            });
+        }
+
+        // Filter โฮลเซลล์
+        if ($wholesaleId) {
+            $quotationQuery = $quotationQuery->where('quote_wholesale', $wholesaleId);
+        }
+
+        // Filter ประเทศ
+        if ($countryId) {
+            $quotationQuery = $quotationQuery->where('quote_country', $countryId);
+        }
+
+        // Filter คีย์เวิร์ด (Quotes/ชื่อลูกค้า/แพคเกจทัวร์ที่ซื้อ)
+        if ($keyword) {
+            $quotationQuery = $quotationQuery->where(function($q) use ($keyword) {
+                $q->where('quote_number', 'LIKE', "%$keyword%") // Quotes
+                  ->orWhere('quote_tour_name', 'LIKE', "%$keyword%") // แพคเกจทัวร์ที่ซื้อ
+                  ->orWhereHas('customer', function($q2) use ($keyword) { // ชื่อลูกค้า (ต้องมี relation customer)
+                      $q2->where('customer_name', 'LIKE', "%$keyword%");
+                  });
+            });
+        }
+
         $quotationSuccess = $quotationQuery->get()
+
+        
             ->filter(function ($item) {
                 // ลูกค้าต้องชำระเงินครบ (GetDeposit() >= quote_grand_total)
                 $customerPaid = $item->GetDeposit()?? 0;

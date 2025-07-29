@@ -231,10 +231,13 @@
                             @endcanany
                             
                             @canany(['withholdingtax.edit'])
-                                <br>
+                             @if ($document)
+                                   <br>
                                 <a href="{{ route('withholding.modalEdit', $document->id) }}"
                                     class="input-tax-edit text-primary">
                                     <i class="fa fa-edit text-primary "></i>แก้ไขใบหัก ณ ที่จ่าย</a>
+                             @endif
+                              
                             @endcanany
                             @else
                             @endif
@@ -283,23 +286,29 @@
 
                             <td class="text-danger text-end" colspan="7">
                                 <b>
-                                    {{-- @if (isset($inputTax) && count($inputTax) > 0)
-                                        <b>(@bathText($paymentInputtaxTotal + $quotationModel->getTotalInputTaxVatType()))</b>
+                                    @if (isset($inputTax) && count($inputTax) > 0)
+                                        <b>(@bathText($quotationModel->getTotalOtherCost()))</b>
                                     @else
                                         <b>(@bathText(0))</b>
-                                    @endif --}}
+                                    @endif
                                 </b>
                             </td>
 
 
 
                             <td  class="text-danger text-end" colspan="1">
-                                DEBUG ต้นทุนอื่นๆ+ค่าธรรมเนียมรูดบัตร : {{$quotationModel->getTotalInputTaxVatType()}} <br>
-                                DEBUG ภาษีซื้อ  : {{$quotationModel->getTotalInputTaxVat()}} <br>
+                                {{-- DEBUG getTotalInputTaxVatType  : {{$quotationModel->getTotalInputTaxVatType()}} <br>
+                                DEBUG ภาษีซื้อ getTotalInputTaxVat  : {{$quotationModel->getTotalInputTaxVat()}} <br>
                                 DEBUG ภาษีขาย : {{$withholdingTaxAmount}} <br>
+                                DEBUG getTotalOtherCost : {{$quotationModel->getTotalOtherCost()}} <br>
+                                <br/>
+                                ------------------------
+                                DEBUG ภาษีซื้อ ยังไม่มีไฟล์ : {{ $quotationModel->getTotalInputTaxVatNULL() }} <br>
+                                DEBUG ภาษีซื้อ มีไฟล์ : {{ $quotationModel->getTotalInputTaxVatNotNULL() }} <br> --}}
+
                                 <b>
                                     @if (isset($inputTax) && count($inputTax) > 0)
-                                        {{ number_format($withholdingTaxAmount + $quotationModel->getTotalInputTaxVatType() + $quotationModel->getTotalInputTaxVat(), 2) }}
+                                        {{ number_format($quotationModel->getTotalOtherCost(), 2) }}
                                     @else
                                         {{ number_format(0, 2) }}
                                     @endif
