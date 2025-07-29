@@ -15,6 +15,16 @@
                     <option @if($inputTaxModel->input_tax_type === 3) selected @endif value="3">ค่าธรรมเนียมรูดบัตร</option>
                 </select>
             </div>
+             <div class="col-md-6" style="display: none" id="withholding-show">
+                @if (!$document)
+                <label for="">ต้องการออกใบหัก ณ ที่จ่ายหรือไม่</label>
+                <br>
+                <input type="radio" id="input_tax_withholding_status1" name="input_tax_withholding_status" value="Y" @if($inputTaxModel->input_tax_withholding_status === 'Y') checked @endif>
+                <label for="html">ใช่</label>
+                <input type="radio" id="input_tax_withholding_status2" name="input_tax_withholding_status" value="N" @if($inputTaxModel->input_tax_withholding_status === 'N') checked @endif>
+                <label for="css">ไม่ใช่</label><br>
+                @endif
+            </div>
 
             <input type="hidden" name="input_tax_quote_id" class="form-control" value="{{ $quotationModel->quote_id }}">
             <input type="hidden" name="input_tax_quote_number" class="form-control"value="{{ $quotationModel->quote_number }}">
@@ -52,17 +62,17 @@
 
             <div class="col-md-12 mb-3">
                 <label for="">ภาษี ณ ที่จ่าย </label>
-                <input type="number" name="input_tax_withholding" step="0.01" value="{{$inputTaxModel->input_tax_withholding}}" class="form-control" placeholder="0.0" id="withholding" readonly style="background-color: antiquewhite">
+                <input type="number" name="input_tax_withholding" step="0.01" min="0" value="{{$inputTaxModel->input_tax_withholding}}" class="form-control" placeholder="0.0" id="withholding" readonly style="background-color: antiquewhite">
             </div>
 
             <div class="col-md-12 mb-3">
                 <label for="">ภาษีซื้อ</label>
-                <input type="number" name="input_tax_vat" step="0.01" value="{{$inputTaxModel->input_tax_vat}}" class="form-control" placeholder="0.0" id="vat">
+                <input type="number" name="input_tax_vat" step="0.01"  min="0" value="{{$inputTaxModel->input_tax_vat}}" class="form-control" placeholder="0.0" id="vat">
             </div>
 
             <div class="col-md-12 mb-3">
                 <label for="">ผลรวมต้นทุน</label>
-                <input type="number" name="input_tax_grand_total" step="0.01" value="{{$inputTaxModel->input_tax_grand_total}}"  class="form-control" placeholder="0.0" id="total" >
+              <input type="number" name="input_tax_grand_total" step="0.01" min="0" value="{{ $inputTaxModel->input_tax_grand_total ?? 0 }}" class="form-control" placeholder="0.0" id="total">
             </div>
 
             <div class="col-md-12" id="tax-input" style="display: none">
@@ -104,16 +114,7 @@
           
 
 
-            <div class="col-md-12" style="display: none" id="withholding-show">
-                @if (!$document)
-                <label for="">ต้องการออกใบหัก ณ ที่จ่ายหรือไม่</label>
-                <br>
-                <input type="radio" id="input_tax_withholding_status1" name="input_tax_withholding_status" value="Y" @if($inputTaxModel->input_tax_withholding_status === 'Y') checked @endif>
-                <label for="html">ใช่</label>
-                <input type="radio" id="input_tax_withholding_status2" name="input_tax_withholding_status" value="N" @if($inputTaxModel->input_tax_withholding_status === 'N') checked @endif>
-                <label for="css">ไม่ใช่</label><br>
-                @endif
-            </div>
+           
             
         </div>
        

@@ -26,6 +26,8 @@ class saleReportController extends Controller
         $countryId = $request->input('country_id');
         $saleId = $request->input('sale_id');
         $mode = $request->commission_mode ?? 'qt';
+         $user = Auth::user();
+        $userRoles = $user->getRoleNames();
 
         $taxinvoices = taxinvoiceModel::with('invoice', 'taxinvoiceCustomer')
             ->when($searchDateStart && $searchDateEnd, fn($q) => $q->whereBetween('taxinvoice_date', [$searchDateStart, $searchDateEnd]))
@@ -44,6 +46,10 @@ class saleReportController extends Controller
                         ->orWhereHas('invoice', fn($q1) => $q1->where('invoice_number', 'LIKE', "%{$keyword}%"))
                         ->orWhereHas('invoice.quotation', fn($q1) => $q1->where('quote_number', 'LIKE', "%{$keyword}%"));
                 });
+            })
+            ->when($userRoles->contains('sale'), function ($query) use ($user) {
+            // return $query->where('quote_sale', $user->sale_id);
+            return $q->whereHas('invoice.quotation', fn($q1) => $q1->where('quote_sale', $user->sale_id));
             })
             ->when($wholesaleId, function ($q) use ($wholesaleId) {
                 return $q->whereHas('invoice.quotation', fn($q1) => $q1->where('quote_wholesale', $wholesaleId));

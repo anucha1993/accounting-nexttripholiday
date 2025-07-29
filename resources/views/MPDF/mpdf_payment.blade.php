@@ -286,14 +286,14 @@
                         @endif
                         @if ($paymentModel->payment_method === 'transfer-money')
                             โอนเงินผ่านธนาคาร<br>
-                            วันที่โอน : @if ($paymentModel->payment_in_date) {{ thaidate('j F Y', $paymentModel->payment_in_date) .' เวลา : '.date('H:m', strtotime($paymentModel->payment_in_date)) }} น. @else - @endif <br>
+                            วันที่โอน : @if ($paymentModel->payment_in_date) {{ thaidate('j F Y', $paymentModel->payment_in_date) .' เวลา : '.date('H:i', strtotime($paymentModel->payment_in_date)) }} น. @else - @endif <br>
                             เข้าบัญชี : {{ $bank->bank_name}}
                         @endif
                         @if ($paymentModel->payment_method === 'check')
                             วิธีการชำระเงิน : เช็ค<br>
                             เข้าบัญชี : {{ $bank->bank_name }} <br>
                             เลขที่เช็ค : {{ $paymentModel->payment_check_number }} <br>
-                            วันที่ : {{ thaidate('j F Y', $paymentModel->payment_check_date) .' เวลา : '.date('H:m', strtotime($paymentModel->payment_in_date)) }} น.<br>
+                            วันที่ : {{ thaidate('j F Y', $paymentModel->payment_check_date) .' เวลา : '.date('H:i', strtotime($paymentModel->payment_in_date)) }} น.<br>
                         @endif
 
                         @if ($paymentModel->payment_method === 'credit')
@@ -361,7 +361,7 @@
                             <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;">
                                 <b>ก่อนเวลา</b></td>
                             <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">
-                                {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.</td>
+                                {{ date('H:i', strtotime($quotationModel->quote_payment_date)) }} น.</td>
                             <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;">
                                 <b>จำนวนเงิน</b></td>
                             <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">-</td>
@@ -394,7 +394,7 @@
                             <td style="width: 100px; border-right: none; border-left: none; border-top: none;">
                                 <b>ก่อนเวลา</b></td>
                             <td style="width: 110px; border-right: none; border-left: none; border-top: none;">
-                                {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.</td>
+                                {{ date('H:i', strtotime($quotationModel->quote_payment_date)) }} น.</td>
                             <td style="width: 100px; border-right: none; border-left: none; border-top: none;">
                                 <b>จำนวนเงิน</b></td>
                             <td style="width: 110px; border-right: none; border-left: none; border-top: none;">

@@ -240,7 +240,7 @@
                         {{-- <p style="margin: 0; padding: 10px;">
                             @if ($quotationModel->quote_payment_type === 'deposit')
                                 <span> {{ thaidate('j M Y', $quotationModel->quote_payment_date) }} เวลา
-                                    {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.</span>
+                                    {{ date('H:i', strtotime($quotationModel->quote_payment_date)) }} น.</span>
                             @else
                                 - ก่อนเวลา - น.
                             @endif
@@ -265,7 +265,7 @@
                         <p style="margin: 0; padding: 10px;">
                             @if ($quotationModel->quote_payment_type === 'full')
                                 <span> {{ thaidate('j M Y', $quotationModel->quote_payment_date) }} เวลา
-                                    {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.</span>
+                                    {{ date('H:i', strtotime($quotationModel->quote_payment_date)) }} น.</span>
                             @else
                                 - ก่อนเวลา - น.
                             @endif
@@ -437,7 +437,7 @@
 
                 @if(!empty($payment->payment_method) && $payment->payment_method === 'check') 
                 {{-- {{$payment->bank_name}}  --}}
-                เลขที่เช็ค : {{$payment->payment_check_number}}  โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_in_date) }} เวลา: {{ date('H:m', strtotime($quotationModel->payment_in_date)) }} น.
+                เลขที่เช็ค : {{$payment->payment_check_number}}  เช็คลงวันที่ : {{ thaidate('j F Y', $payment->payment_in_date) }} เวลา: {{ date('H:i', strtotime($quotationModel->payment_in_date)) }} น.
                 @endif
                 <br>
 
@@ -470,7 +470,7 @@
                       <table style="margin-right: -41px; margin-left: -37px;">
                         <tr style="border-right: none;">
                             <td style="width: 276.6px; padding: 5x; text-align: center;">
-                                <b>{{ $sale->name }}</b></br>
+                                 <b>{{ $invoiceModel->quote->Salename->name }}</b></br>
                                 <p>___________________________</p>
                                 <p><b>Sale / Operation</b></p>
                                 <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p>

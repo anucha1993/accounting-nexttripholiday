@@ -241,7 +241,7 @@
                         <p style="margin: 0; padding: 10px;">
                             @if ($quotationModel->quote_payment_type === 'full')
                                 <span> {{ thaidate('j M Y', $quotationModel->quote_payment_date) }} เวลา
-                                    {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.</span>
+                                    {{ date('H:i', strtotime($quotationModel->quote_payment_date)) }} น.</span>
                             @else
                                 - ก่อนเวลา - น.
                             @endif
@@ -435,7 +435,7 @@
                 <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'check') DejaVuSans; @endif">&#9745;</span> <b>เช็คธนาคาร</b><br>
 
                 @if(!empty($payment->payment_method) && $payment->payment_method === 'check') 
-                {{$payment->bank_name}} เลขที่เช็ค : {{$payment->payment_check_number}}  โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_date_time) }} เวลา: {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.
+                {{$payment->bank_name}} เลขที่เช็ค : {{$payment->payment_check_number}}  โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_date_time) }} เวลา: {{ date('H:i', strtotime($quotationModel->quote_payment_date)) }} น.
                 @endif
 
                 <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'credit') DejaVuSans; @endif">&#9745;</span> <b>บัตรเครดิต</b><br>
@@ -446,7 +446,7 @@
 
                 <span style="font-family: @if(!empty($payment->payment_method) && $payment->payment_method === 'transfer-money') DejaVuSans; @endif">&#9745;</span> <b>โอนเงินเข้าบัญชี</b>
                 @if(!empty($payment->payment_method) && $payment->payment_method === 'transfer-money') 
-                {{$payment->bank_name}}   โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_date_time) }} เวลา: {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.
+                {{$payment->bank_name}}   โอนเมื่อวันที่ : {{ thaidate('j F Y', $payment->payment_date_time) }} เวลา: {{ date('H:i', strtotime($quotationModel->quote_payment_date)) }} น.
                 @endif
                 <br>
                 

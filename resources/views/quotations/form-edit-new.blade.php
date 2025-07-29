@@ -160,7 +160,7 @@
                 <div class="quote-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5><i data-feather="file-text" class="feather-sm me-2"></i>{{ $quotationModel->quote_number }}</h5>
-                        <p class="quote-date mb-0">{{ thaidate('j M Y', $quotationModel->created_at) }}
+                        <p class="quote-date mb-0">วันที่ออกเอกสาร : {{ thaidate('j M Y', $quotationModel->created_at) }}
                             {{ date('H:i', strtotime($quotationModel->created_at)) }}</p>
                     </div>
                 </div>
@@ -234,8 +234,8 @@
                                         <td class="value">{{ $sale->name }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="label">วันที่จอง:</td>
-                                        <td class="value">{{ thaidate('j M Y', $quotationModel->quote_booking_create) }}
+                                        <td class="label">วันที่เสนอราคา:</td>
+                                        <td class="value">{{ thaidate('j M Y', $quotationModel->quote_date) }}
                                         </td>
                                     </tr>
                                     <tr>

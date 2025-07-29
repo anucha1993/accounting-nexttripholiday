@@ -237,7 +237,7 @@
                         {{-- <p style="margin: 0; padding: 10px;">
                             @if ($quotationModel->quote_payment_type === 'deposit')
                                 <span> {{ thaidate('j M Y', $quotationModel->quote_payment_date) }} เวลา
-                                    {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.</span>
+                                    {{ date('H:i', strtotime($quotationModel->quote_payment_date)) }} น.</span>
                             @else
                                 - ก่อนเวลา - น.
                             @endif
@@ -262,7 +262,7 @@
                         {{-- <p style="margin: 0; padding: 10px;">
                          
                                 <span> {{ thaidate('j M Y', $quotationModel->quote_payment_date_full) }} เวลา
-                                    {{ date('H:m', strtotime($quotationModel->quote_payment_date_full)) }} น.</span>
+                                    {{ date('H:i', strtotime($quotationModel->quote_payment_date_full)) }} น.</span>
                            
 
                         </p> --}}
@@ -469,7 +469,7 @@
                       <table style="margin-right: -41px; margin-left: -37px;">
                         <tr style="border-right: none;">
                             <td style="width: 276.6px; padding: 5x; text-align: center;">
-                                <b>{{ $sale->name }}</b></br>
+                                <b>{{ $invoiceModel->quote->Salename->name }}</b></br>
                                 <p>___________________________</p>
                                 <p><b>Sale / Operation</b></p>
                                 <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p>

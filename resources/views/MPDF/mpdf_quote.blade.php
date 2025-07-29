@@ -433,7 +433,7 @@
                             <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;">
                                 <b>ก่อนเวลา</b></td>
                             <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">
-                                {{ date('H:m', strtotime($quotationModel->quote_payment_date)) }} น.</td>
+                                {{ date('H:i', strtotime($quotationModel->quote_payment_date)) }} น.</td>
                             <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;">
                                 <b>จำนวนเงิน</b></td>
                             <td
@@ -468,8 +468,9 @@
                             {{ thaidate('j F Y', $quotationModel->quote_payment_date_full) }}</td>
                         <td style="width: 100px; border-right: none; border-left: none; border-top: none;">
                             <b>ก่อนเวลา</b></td>
+                            {{ $quotationModel->quote_payment_date_full }};;
                         <td style="width: 110px; border-right: none; border-left: none; border-top: none;">
-                            {{ date('H:m', strtotime($quotationModel->quote_payment_date_full)) }} น.</td>
+                            {{ date('H:i', strtotime($quotationModel->quote_payment_date_full)) }} น.</td>
                         <td style="width: 100px; border-right: none; border-left: none; border-top: none;">
                             <b>จำนวนเงิน</b></td>
                         <td

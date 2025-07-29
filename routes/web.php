@@ -12,14 +12,15 @@ use App\Http\Controllers\MPDF\MailController;
 use App\Http\Controllers\quotations\quoteLog;
 use App\Http\Controllers\selects\periodSelect;
 use App\Http\Controllers\api\apiTourController;
+use App\Http\Controllers\WebTourSyncController;
 use App\Http\Controllers\debits\debitController;
 use App\Http\Controllers\CommissionRuleController;
 use App\Http\Controllers\credits\creditController;
 use App\Http\Controllers\MPDF\MailQuoteController;
 use App\Http\Controllers\airline\airlineController;
 use App\Http\Controllers\booking\BookingController;
-use App\Http\Controllers\reports\saleTaxController;
 
+use App\Http\Controllers\reports\saleTaxController;
 use App\Http\Controllers\invoices\invoiceController;
 use App\Http\Controllers\payments\paymentController;
 use App\Http\Controllers\products\productController;
@@ -43,8 +44,8 @@ use App\Http\Controllers\MPDF\MPDF_taxReceiptController;
 use App\Http\Controllers\quotations\QuoteListController;
 use App\Http\Controllers\wholeSales\wholeSaleController;
 use App\Http\Controllers\CreditNote\creditNoteController;
-use App\Http\Controllers\exports\invoiceExportController;
 
+use App\Http\Controllers\exports\invoiceExportController;
 use App\Http\Controllers\exports\saleTaxExportController;
 use App\Http\Controllers\MPDF\MPDF_WithholdingController;
 use App\Http\Controllers\payments\paymentDebitController;
@@ -59,8 +60,9 @@ use App\Http\Controllers\MPDF\MPDF_PaymentDebitController;
 use App\Http\Controllers\payments\paymentCreditController;
 use App\Http\Controllers\reports\inputTaxReportController;
 use App\Http\Controllers\Invoices\InvoiceBookingController;
+
 use App\Http\Controllers\MPDF\MPDF_CreditReceiptController;
-use AppHttp\Controllers\exports\taxinvoiceExportController;
+use App\Http\Controllers\exports\taxinvoiceExportController;
 use App\Http\Controllers\quotations\quotationViewController;
 use App\Http\Controllers\reports\taxinvoiceReportController;
 use App\Http\Controllers\invoices\invoiceDashboardController;
@@ -69,7 +71,6 @@ use App\Http\Controllers\quotations\salesInformationController;
 use App\Http\Controllers\MPDF\MPDF_WithhodingDocumentController;
 use App\Http\Controllers\reports\paymentWholesaleReportController;
 use App\Http\Controllers\paymentWholesale\paymentWholesaleController;
-use App\Http\Controllers\WebTourSyncController;
 
 /*
 |--------------------------------------------------------------------------
@@ -369,6 +370,7 @@ Route::get('/report/payment-wholesale/export', [paymentWholesaleReportController
 // Export Excel 
 Route::post('export/excel/quote', [QuoteExportController::class, 'export'])->name('export.quote');
 Route::post('export/excel/invoice', [invoiceExportController::class, 'export'])->name('export.invoice');
+Route::post('export/excel/taxinvoice', [taxinvoiceExportController::class, 'export'])->name('export.taxinvoice');
 Route::post('export/excel/receipt', [receiptExportControlle::class, 'export'])->name('export.receipt');
 Route::post('export/excel/saletax', [saleTaxExportController::class, 'export'])->name('export.saletax');
 Route::post('export/excel/inputtax', [inputTaxExportController::class, 'export'])->name('export.inputtax');

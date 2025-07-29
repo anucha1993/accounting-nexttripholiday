@@ -38,6 +38,7 @@ class invoiceReportController extends Controller
                     $q1->where('customer_name', 'LIKE', '%' . $keyword . '%');
                 });
             })
+            
 
             ->when($column_name === 'customer_texid', function ($query) use ($keyword) {
                 return $query->whereHas('invoiceCustomer', function ($q1) use ($keyword) {
@@ -49,6 +50,9 @@ class invoiceReportController extends Controller
                 return $query->where(function ($q) use ($keyword) {
                     $q->where('invoice_number', 'LIKE', '%' . $keyword . '%')
                       ->orWhere('invoice_booking', 'LIKE', '%' . $keyword . '%')
+                      ->orWhereHas('quote', function ($q2) use ($keyword) {
+              $q2->where('quote_number', 'LIKE', '%' . $keyword . '%');
+          })
                       ->orWhereHas('invoiceCustomer', function ($q1) use ($keyword) {
                           $q1->where('customer_name', 'LIKE', '%' . $keyword . '%')
                              ->orWhere('customer_texid', 'LIKE', '%' . $keyword . '%');

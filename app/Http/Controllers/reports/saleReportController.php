@@ -30,7 +30,8 @@ class saleReportController extends Controller
         $campaignSource = DB::table('campaign_source')->get();
         $wholesales = WholesaleModel::where('status', 'on')->get();
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
-        
+          $user = Auth::user();
+        $userRoles = $user->getRoleNames();
         if (Auth::user()->getRoleNames()->contains('sale')) {
             $sales = saleModel::select('name', 'id')
                 ->where('id', Auth::user()->sale_id)
@@ -43,7 +44,11 @@ class saleReportController extends Controller
         }
 
         // ดึงใบเสนอราคาทั้งหมดที่สำเร็จ
-        $quotationQuery = quotationModel::where('quote_status', 'success');
+        $quotationQuery = quotationModel::where('quote_status', 'success')
+         ->when($userRoles->contains('sale'), function ($query) use ($user) {
+            return $query->where('quote_sale', $user->sale_id);
+            });
+        
 
         // Filter วันที่ออกเดินทาง (quote_date_start)
         if ($searchDateStart) {
