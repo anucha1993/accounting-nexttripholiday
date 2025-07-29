@@ -8,7 +8,7 @@ if (!function_exists('getQuoteStatusPayment')) {
     {
         $now = Carbon::now();
         $status = '';
-       
+        $paymentTotal = $quotationModel->quote_grand_total - $quotationModel->GetDeposit() + $quotationModel->Refund();
           
         // ตรวจสอบ payment_status ผ่านความสัมพันธ์ quotePayment
         if ($quotationModel->quotePayment && $quotationModel->quotePayment->payment_status === 'refund') {
@@ -19,7 +19,7 @@ if (!function_exists('getQuoteStatusPayment')) {
     
         } elseif ($quotationModel->quote_status === 'success') {
             
-            if ($quotationModel->payment === $quotationModel->quote_grand_total) {
+            if ($paymentTotal == 0) {
                 $status = '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>';
             } elseif ($quotationModel->payment > $quotationModel->quote_grand_total) {
                 $status = '<span class="badge rounded-pill bg-info">ชำระเงินเกิน</span>';
