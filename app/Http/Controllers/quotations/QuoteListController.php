@@ -19,10 +19,7 @@ class QuoteListController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:view-quote', ['only' => ['index']]);
-        $this->middleware('permission:create-quote', ['only' => ['create', 'store']]);
-        $this->middleware('permission:edit-quote', ['only' => ['edit', 'update', 'cancel']]);
-        $this->middleware('permission:delete-quote', ['only' => ['destroy']]);
+        $this->middleware('auth');
     }
     public function index(Request $request)
     {
