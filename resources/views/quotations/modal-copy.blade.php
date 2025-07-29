@@ -829,6 +829,7 @@ label {
                         </div>
                     </div>
                     <div class="text-end mt-3">
+                        @can('quote.comission')
                         <div class="row mb-3 ">
                             <div class="col-md-3">
                                 <label>สถานะการจ่ายค่าคอมมิชชั่น:</label>
@@ -846,6 +847,7 @@ label {
                                 <textarea name="quote_note_commission" class="form-control" id="quote_note_commission" rows="2">{{ $quotationModel->quote_note_commission ?? '' }}</textarea>
                             </div>
                         </div>
+                        @endcan
                         <input type="hidden" name="quote_vat_exempted_amount">
                         <input type="hidden" name="quote_pre_tax_amount">
                         <input type="hidden" name="quote_discount">
