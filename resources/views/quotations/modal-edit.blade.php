@@ -278,7 +278,7 @@ label {
                             <div class="col-md-3 position-relative">
                                 <label>วันออกเดินทาง: <a href="#" class="" id="list-period"
                                         style="color:#1976d2;font-weight:500;">เลือกวันที่</a></label>
-                                <input type="date" class="form-control" id="date-start-display"
+                                <input type="hidden" class="form-control" id="date-start-display"
                                     placeholder="วันออกเดินทาง..." required autocomplete="off">
                                 <div id="date-list" class="list-group position-absolute w-100"
                                     style="z-index: 1000;"></div>
@@ -660,6 +660,8 @@ label {
                                 </div>
                             </div>
 
+
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="row">
@@ -676,6 +678,7 @@ label {
                                                     style="display: none"> --}}
                                             </div>
                                         </div>
+
                                         <div class="col-md-4">
                                             <div class="input-group mb-4">
                                                 <span class="input-group-text" for="">เรทเงินมัดจำ</span>
@@ -842,11 +845,14 @@ label {
                                     <label for="commission-no">ไม่จ่ายค่าคอม</label>
                                 </div>
                             </div>
+
                             <div class="col-md-9" id="note-commission-block" style="display: none;">
                                 <label>บันทึกเหตุผลกรณีไม่จ่ายค่าคอมมิชชั่น</label>
                                 <textarea name="quote_note_commission" class="form-control" id="quote_note_commission" rows="2">{{ $quotationModel->quote_note_commission ?? '' }}</textarea>
                             </div>
+
                         </div>
+
                         <input type="hidden" name="quote_vat_exempted_amount">
                         <input type="hidden" name="quote_pre_tax_amount">
                         <input type="hidden" name="quote_discount">
@@ -859,6 +865,7 @@ label {
                         <button type="submit" class="btn btn-primary btn-sm mx-3" form="formQuoteModern"><i
                                 class="fa fa-save"></i> บันทึกการเปลียนแปลง</button>
                     </div>
+                    
                     <br>
                 </form>
             </div>
@@ -1939,44 +1946,44 @@ $('#date-start-display, #date-end-display, #numday').on('change.auto', function(
             });
 
             // เมื่อคลิกเลือกวันที่จาก list
-            $(document).on('click', '.period-select', function(e) {
-                e.preventDefault();
-                var selectedDate = $(this).data('date');
-                var period1 = $(this).data('period1');
-                var period2 = $(this).data('period2');
-                var period3 = $(this).data('period3');
-                var period4 = $(this).data('period4');
-                $('#period1').val(period1);
-                $('#period2').val(period2);
-                $('#period3').val(period3);
-                $('#period4').val(period4);
-                // แปลงวันที่เป็นไทย
-                var dateObject = new Date(selectedDate);
-                var thaiFormattedDate = dateObject.toLocaleDateString('th-TH', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-                $('#date-start-display').val(selectedDate);
-                $('#date-start').val(selectedDate);
-                $('#date-list').empty();
-                // คำนวณวันเดินทางกลับ
-                var numDays = parseInt($('#numday option:selected').data('day')) || 0;
-                if (numDays > 0 && selectedDate) {
-                    var start = new Date(selectedDate);
-                    var endDate = new Date(start);
-                    endDate.setDate(start.getDate() + numDays - 1);
-                    var thaiFormattedEndDate = endDate.toLocaleDateString('th-TH', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
-                    $('#date-end-display').val(endDate.toISOString().slice(0, 10));
-                    $('#date-end').val(endDate.toISOString().slice(0, 10));
-                }
-                // เรียกฟังก์ชันคำนวณเงื่อนไขการชำระเงิน
-                calculatePaymentCondition();
-            });
+          $(document).on('click', '.period-select', function(e) {
+    e.preventDefault();
+    var selectedDate = $(this).data('date');
+    var period1 = $(this).data('period1');
+    var period2 = $(this).data('period2');
+    var period3 = $(this).data('period3');
+    var period4 = $(this).data('period4');
+    $('#period1').val(period1);
+    $('#period2').val(period2);
+    $('#period3').val(period3);
+    $('#period4').val(period4);
+    var dateObject = new Date(selectedDate);
+    var thaiFormattedDate = dateObject.toLocaleDateString('th-TH', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    $('#date-start-display').val(selectedDate);
+    $('#date-start').val(selectedDate);
+    $('#date-list').empty();
+    var numDays = parseInt($('#numday option:selected').data('day')) || 0;
+    if (numDays > 0 && selectedDate) {
+        var start = new Date(selectedDate);
+        var endDate = new Date(start);
+        endDate.setDate(start.getDate() + numDays - 1);
+        var thaiFormattedEndDate = endDate.toLocaleDateString('th-TH', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        $('#date-end-display').val(endDate.toISOString().slice(0, 10));
+        $('#date-end').val(endDate.toISOString().slice(0, 10));
+    }
+    // เรียกฟังก์ชันคำนวณวันครบกำหนดชำระเงิน
+    calculatePaymentDateCondition();
+    // เรียกฟังก์ชันคำนวณยอดอื่นๆ
+    calculatePaymentCondition();
+});
 
             // ลบ logic/handler สำหรับปุ่มหรือข้อความ "ระบุวันเดินทางเอง" (ไม่ต้องมีอีกต่อไป)
             // ปิดผลลัพธ์เมื่อคลิกนอก
