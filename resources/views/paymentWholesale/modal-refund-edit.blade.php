@@ -23,24 +23,36 @@
                 @if ($paymentWholesaleModel->payment_wholesale_refund_file_name)
                 <label>หลักฐานการคืนยอด</label>
                 @endif
+
                 {{-- File1 --}}
+                <br>
+                  <label for=""> สลิปคืนเงินครั้งที่ 1 : </label>
                 @if ($paymentWholesaleModel->payment_wholesale_refund_file_name)
+                
+              
                 <input type="file" name="file">
+               
                 <a onclick="openPdfPopup(this.href); return false;" href="{{ asset($paymentWholesaleModel->payment_wholesale_refund_file_path) }}">{{ $paymentWholesaleModel->payment_wholesale_refund_file_name }}</a>
                 @elseif($paymentWholesaleModel->payment_wholesale_refund_total > 0)
                 <input type="file" name="file">
                 @endif
+                <hr>
 
                  {{-- File1 --}}
+                  <label for=""> สลิปคืนเงินครั้งที่ 2 : </label>
                  @if ($paymentWholesaleModel->payment_wholesale_refund_file_name1)
+                
                  <input type="file" name="file1">
                  <a onclick="openPdfPopup(this.href); return false;" href="{{ asset($paymentWholesaleModel->payment_wholesale_refund_file_path1) }}">{{ $paymentWholesaleModel->payment_wholesale_refund_file_name1 }}</a>
                  @elseif($paymentWholesaleModel->payment_wholesale_refund_total > 0)
                  <input type="file" name="file1">
                  @endif
+                   <hr>
 
                  {{-- File2 --}}
+                  <label for=""> สลิปคืนเงินครั้งที่ 3 : </label>
                  @if ($paymentWholesaleModel->payment_wholesale_refund_file_name2)
+                  <label for=""> สลิปคืนเงินครั้งที่  : </label>
                  <input type="file" name="file2">
                  <a onclick="openPdfPopup(this.href); return false;" href="{{ asset($paymentWholesaleModel->payment_wholesale_refund_file_path2) }}">{{ $paymentWholesaleModel->payment_wholesale_refund_file_name2 }}</a>
                  @elseif($paymentWholesaleModel->payment_wholesale_refund_total > 0)
