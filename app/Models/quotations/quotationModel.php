@@ -148,6 +148,52 @@ class quotationModel extends Model
 
 
 
+
+// ภาษีซื้อยังไม่มีไฟล์
+public function getTotalInputTaxVatNULL()
+{
+    $total = $this->InputTaxVat()
+        // ->where('input_tax_type', 0)
+        ->whereNotIn('input_tax_type', [1, 3])
+        ->whereNull('input_tax_file')
+        ->sum('input_tax_grand_total');
+    return $total ?? 0; // 
+}
+
+// ภาษีซื้อมีไฟล์
+public function getTotalInputTaxVatNotNULL()
+{
+    $total = $this->InputTaxVat()
+        // ->where('input_tax_type', 0)
+        ->whereNotIn('input_tax_type', [1, 3])
+        ->whereNotNull('input_tax_file')
+        ->sum('input_tax_grand_total');
+    return $total ?? 0; // 
+}
+
+// ภาษีซื้อภาษีหัก
+public function getTotalInputTaxVatWithholding()
+{
+    $total = $this->InputTaxVat()
+        // ->where('input_tax_type', 0)
+        ->whereNotIn('input_tax_type', [1, 3])
+        ->sum('input_tax_withholding');
+    return $total ?? 0; // คืนค่า 0 หากไม่มีผลลัพธ์
+}
+
+
+
+
+
+    public function getTotalInputTaxVatType()
+    {
+        // ตรวจสอบว่า input_tax_type = 3 หรือไม่
+        $total = $this->InputTaxVat()
+            ->whereIn('input_tax_type', [3, 1])
+            ->sum('input_tax_grand_total');
+        return $total ?? 0; // คืนค่า 0 หากไม่มีผลลัพธ์
+    }
+
     public function calculateNetProfit()
     {
         $paymentCustomer = $this->GetDeposit(); // ลูกค้าชำระเงิน
@@ -360,67 +406,30 @@ class quotationModel extends Model
         // ->where('input_tax_type', 0)
         ->whereNotIn('input_tax_type', [1, 3])
         ->whereNull('input_tax_file')
-        ->sum('input_tax_vat');
+        ->sum('input_tax_grand_total');
 
     // 2. รวม input_tax_vat - input_tax_withholding ของ type อื่นๆ ที่มีไฟล์และ success
     $fileVat = $this->InputTaxVat()
         ->whereNotNull('input_tax_file')
         ->whereNotIn('input_tax_type', [1, 3])
         ->where('input_tax_status', 'success')
-        ->sum('input_tax_withholding');
+        ->sum('input_tax_grand_total');
         // ->sum(\DB::raw('COALESCE(input_tax_vat, 0) - COALESCE(input_tax_withholding, 0)'));
 
     // 3. รวมสองส่วนเข้าด้วยกัน
     return ($pendingVat + $fileVat) ?? 0;
 }
 
-// ภาษีซื้อยังไม่มีไฟล์
-public function getTotalInputTaxVatNULL()
+
+public function checkfileInputtaxVat()
 {
-    $total = $this->InputTaxVat()
+  $input_tax = $this->InputTaxVat()
         // ->where('input_tax_type', 0)
-        ->whereNotIn('input_tax_type', [1, 3])
-        ->whereNull('input_tax_file')
-        ->sum('input_tax_vat');
-    return $total ?? 0; // 
+           ->where('input_tax_type', 0)
+            ->whereNotNull('input_tax_file')
+            ->sum('input_tax_vat');
+return $input_tax ?? 0;
 }
-
-// ภาษีซื้อมีไฟล์
-public function getTotalInputTaxVatNotNULL()
-{
-    $total = $this->InputTaxVat()
-        // ->where('input_tax_type', 0)
-        ->whereNotIn('input_tax_type', [1, 3])
-        ->whereNotNull('input_tax_file')
-        ->sum('input_tax_vat');
-    return $total ?? 0; // 
-}
-
-// ภาษีซื้อภาษีหัก
-public function getTotalInputTaxVatWithholding()
-{
-    $total = $this->InputTaxVat()
-        // ->where('input_tax_type', 0)
-        ->whereNotIn('input_tax_type', [1, 3])
-        ->sum('input_tax_withholding');
-    return $total ?? 0; // คืนค่า 0 หากไม่มีผลลัพธ์
-}
-
-
-
-
-
-    public function getTotalInputTaxVatType()
-    {
-        // ตรวจสอบว่า input_tax_type = 3 หรือไม่
-        $total = $this->InputTaxVat()
-            ->whereIn('input_tax_type', [3, 1])
-            ->sum('input_tax_grand_total');
-        return $total ?? 0; // คืนค่า 0 หากไม่มีผลลัพธ์
-    }
-
-
-
     //ยอดรวมต้นทุนรวมอื่นๆ
     public function getTotalOtherCost()
 {
@@ -429,28 +438,33 @@ public function getTotalInputTaxVatWithholding()
     if ($invoice) {
         if (is_null($invoice->invoice_image)) {
             $withholdingTaxAmount = is_numeric($invoice->invoice_withholding_tax) ? $invoice->invoice_withholding_tax + $invoice->invoice_vat : 0;
+            $withholdingTaxAmount = $withholdingTaxAmount-$this->checkfileInputtaxVat();
         } else {
-            $withholdingTaxAmount = $invoice->invoice_vat;
+            // ถ้ามีไฟล์ input_tax_file จะใช้ invoice_vat แทน`
+          
+            $withholdingTaxAmount = $invoice->invoice_vat - $this->checkfileInputtaxVat();
         }
     }
     // $getTotalInputTaxVat = $this->getTotalInputTaxVat();
     // $getTotalInputTaxVatType = $this->getTotalInputTaxVatType();
 
-    $getTotalInputTaxVatNULL = $this->getTotalInputTaxVatNULL();
-    $getTotalInputTaxVatNotNULL = $this->getTotalInputTaxVatNotNULL();
+    //  $getTotalInputTaxVatNULL = $this->getTotalInputTaxVatNULL();
+    //  $getTotalInputTaxVatNotNULL = $this->getTotalInputTaxVatNotNULL();
+     $getTotalInputTaxVat = $this->getTotalInputTaxVat();
      $getTotalInputTaxVatType = $this->getTotalInputTaxVatType();
      $getTotalInputTaxVatWithholding = $this->getTotalInputTaxVatWithholding();
+     $checkfileInputtaxVat = $this->checkfileInputtaxVat();
 
-    $hasInputTaxFile = $this->InputTaxVat()->whereNotNull('input_tax_file')->exists();
+    $hasInputTaxFile = $this->quoteInvoice()->whereNotNull('invoice_image')->exists();
 
     if ($hasInputTaxFile) {
         // ถ้ามีไฟล์ input_tax_file
-        return $withholdingTaxAmount - $getTotalInputTaxVatNotNULL + $getTotalInputTaxVatType+ $getTotalInputTaxVatWithholding;
+        return $withholdingTaxAmount+$getTotalInputTaxVatWithholding+$getTotalInputTaxVatType;
+        // return $withholdingTaxAmount+$getTotalInputTaxVatWithholding+$getTotalInputTaxVatType;
     }else {
         // ถ้าไม่มีไฟล์ input_tax_file
-        return $withholdingTaxAmount - $getTotalInputTaxVatNULL + $getTotalInputTaxVatType + $getTotalInputTaxVatWithholding;
+        return $withholdingTaxAmount + $getTotalInputTaxVat + $getTotalInputTaxVatType;
     }
-
 
 }
 
