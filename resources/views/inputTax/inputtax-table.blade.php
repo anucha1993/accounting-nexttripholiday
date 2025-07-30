@@ -297,14 +297,14 @@
 
 
                             <td  class="text-danger text-end" colspan="1">
-                                {{-- DEBUG getTotalInputTaxVatType  : {{$quotationModel->getTotalInputTaxVatType()}} <br>
+                                DEBUG getTotalInputTaxVatType  : {{$quotationModel->getTotalInputTaxVatType()}} <br>
                                 DEBUG ภาษีซื้อ getTotalInputTaxVat  : {{$quotationModel->getTotalInputTaxVat()}} <br>
                                 DEBUG ภาษีขาย : {{$withholdingTaxAmount}} <br>
                                 DEBUG getTotalOtherCost : {{$quotationModel->getTotalOtherCost()}} <br>
                                 <br/>
                                 ------------------------
                                 DEBUG ภาษีซื้อ ยังไม่มีไฟล์ : {{ $quotationModel->getTotalInputTaxVatNULL() }} <br>
-                                DEBUG ภาษีซื้อ มีไฟล์ : {{ $quotationModel->getTotalInputTaxVatNotNULL() }} <br> --}}
+                                DEBUG ภาษีซื้อ มีไฟล์ : {{ $quotationModel->getTotalInputTaxVatNotNULL() }} <br>
 
                                 <b>
                                     @if (isset($inputTax) && count($inputTax) > 0)
