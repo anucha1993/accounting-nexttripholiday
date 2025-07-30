@@ -128,12 +128,14 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                 <h3 class="text-info">Report Invoice</h3><br>
 
                 @canany(['report.invoice.export'])
-                <form action="{{route('export.invoice')}}" method="post">
+                <button id="export-table-excel" class="btn btn-warning mb-3"><i class="fa fa-download"></i> Export Table to Excel</button>
+
+                {{-- <form action="{{route('export.invoice')}}" method="post">
                     @csrf
                     @method('post')
                     <input type="hidden" name="invoice_ids" value="{{$invoices->pluck('invoice_id')}}">
                     <button type="submit" class="btn btn-success"> <i class="fa fa-file-excel"></i> Export To Excel</button>
-                </form>
+                </form> --}}
                 @endcanany
 
             </div>
@@ -208,7 +210,19 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
     </div>
     
 
-    
+    <!-- ปุ่ม Export Excel ฝั่ง client -->
+
+<!-- SheetJS CDN -->
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+<script>
+    document.getElementById('export-table-excel').addEventListener('click', function () {
+        // เลือก table ที่ต้องการ export
+        var table = document.querySelector('.quote-table');
+        var wb = XLSX.utils.table_to_book(table, {sheet:"Sheet1"});
+        XLSX.writeFile(wb, 'invoice-report.xlsx');
+    });
+</script>
+
     <script>
         $(function() {
             $(".rangDate").daterangepicker({

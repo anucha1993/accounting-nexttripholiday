@@ -51,6 +51,7 @@ class QuoteExport implements FromCollection, WithHeadings, WithMapping, WithColu
             'การชำระของลูกค้า', 
             'ยอดใบแจ้งหนี้',
             'การชำระโฮลเซลล์', 
+            'ค้างชำระโฮลเซล', 
             'ผู้ขาย'
         ]);
     }
@@ -85,6 +86,7 @@ class QuoteExport implements FromCollection, WithHeadings, WithMapping, WithColu
             $quotations->quoteWholesale->code,
             getQuoteStatusPaymentReport($quotations),
             number_format($quotations->quote_grand_total),
+            number_format($quotations->inputtaxTotalWholesale() - $quotations->getWholesalePaidNet(), 2),
             $paymentwhosale,
             $quotations->Salename->name
         ]);

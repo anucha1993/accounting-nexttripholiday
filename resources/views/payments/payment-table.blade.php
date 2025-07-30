@@ -212,7 +212,23 @@
                                                             <div class="mb-3">
                                                                 <label for="mail-pdf-payment-detail-{{ $key }}"
                                                                     class="form-label">รายละเอียด</label>
-                                                                <textarea class="form-control" name="text_detail" id="mail-pdf-payment-detail-{{ $key }}" rows="6"><p>เรียนลูกค้า</p><p>แนบใบเสร็จรับเงินตามไฟล์ PDF ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p></textarea>
+                                                                <textarea class="form-control" name="text_detail" id="mail-pdf-payment-detail-{{ $key }}" rows="6">
+                                                                     <p>เรียน คุณ {{  $item->paymentCustomer->customer_name }}</p>
+                                                                     <p>ใบเสร็จรับเงินเลขที่ {{ $item->receipt_number }}</p>
+                                                                     <p>กรุณาตรวจสอบไฟล์แนบที่ส่งมาพร้อมกับอีเมลล์นี้</p>
+                                                                     <br>
+                                                                     
+                                                                     <p>**Email นี้ เป็น Email ตอบรับอัตโนมัติ ไม่สามารถตอบกลับได้</p>
+                                                                     <p>สอบถามรายละเอียดและจองทัวร์ได้ที่   Line: @nexttripholiday</p>
+                                                 
+                                                                     <p>ขอแสดงความนับถือ</p>
+                                                                     
+                                                                     <p>บริษัท เน็กซ์ ทริป ฮอลิเดย์ จำกัด (สำนักงานใหญ่)</p>
+                                                                     <p>โทรศัพท์:02-136-9144 อัตโนมัติ 16 คู่สาย โทรสาร(Fax): 02-136-9146</p>
+                                                                     <p>Hotline: 091-091-6364 ,091-091-6463</p>
+                                                                     <p>TAT License: 11/07440 ,TTAA License:1469</p>
+                                                                     <p>Website: https://www.nexttripholiday.com , Email : nexttripholiday@gmail.com</p>
+                                                                </textarea>
                                                             </div>
                                                             <div class="text-end">
                                                                 <button type="submit" class="btn btn-success"><i
@@ -235,14 +251,29 @@
                                                     $('#mail-pdf-payment-id-{{ $key }}').val(paymentId);
                                                     $('#mail-pdf-payment-number-{{ $key }}').val(paymentNumber);
                                                     $('#mail-pdf-payment-email-{{ $key }}').val(paymentEmail);
-                                                    $('#mail-pdf-payment-subject-{{ $key }}').val('แจ้งใบเสร็จรับเงิน');
+                                                    $('#mail-pdf-payment-subject-{{ $key }}').val('ใบเสร็จรับเงิน จองทัวร์ที่ Next Trip Holiday');
                                                     // CKEditor สำหรับรายละเอียดใบเสร็จ
                                                     if (typeof CKEDITOR !== 'undefined') {
                                                         if (CKEDITOR.instances['mail-pdf-payment-detail-{{ $key }}']) {
                                                             CKEDITOR.instances['mail-pdf-payment-detail-{{ $key }}'].destroy(true);
                                                         }
                                                         CKEDITOR.replace('mail-pdf-payment-detail-{{ $key }}', { height: 200 });
-                                                        CKEDITOR.instances['mail-pdf-payment-detail-{{ $key }}'].setData('<p>เรียนลูกค้า</p><p>แนบใบเสร็จรับเงินตามไฟล์ PDF ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p>');
+                                                        CKEDITOR.instances['mail-pdf-payment-detail-{{ $key }}'].setData(`
+                                                                    <p>เรียน คุณ {{  $item->paymentCustomer->customer_name }}</p>
+                                                                     <p>ใบเสร็จรับเงินเลขที่ {{ $item->payment_number }}</p>
+                                                                     <p>กรุณาตรวจสอบไฟล์แนบที่ส่งมาพร้อมกับอีเมลล์นี้</p>
+                                                                     <br>
+                                                                     
+                                                                     <p>**Email นี้ เป็น Email ตอบรับอัตโนมัติ ไม่สามารถตอบกลับได้</p>
+                                                                     <p>สอบถามรายละเอียดและจองทัวร์ได้ที่   Line: @nexttripholiday</p>
+                                                 
+                                                                     <p>ขอแสดงความนับถือ</p>
+                                                                     
+                                                                     <p>บริษัท เน็กซ์ ทริป ฮอลิเดย์ จำกัด (สำนักงานใหญ่)</p>
+                                                                     <p>โทรศัพท์:02-136-9144 อัตโนมัติ 16 คู่สาย โทรสาร(Fax): 02-136-9146</p>
+                                                                     <p>Hotline: 091-091-6364 ,091-091-6463</p>
+                                                                     <p>TAT License: 11/07440 ,TTAA License:1469</p>
+                                                                     <p>Website: https://www.nexttripholiday.com , Email : nexttripholiday@gmail.com</p>`);
                                                     } else {
                                                         $('#mail-pdf-payment-detail-{{ $key }}').val('<p>เรียนลูกค้า</p><p>แนบใบเสร็จรับเงินตามไฟล์ PDF ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p>');
                                                     }
@@ -388,13 +419,28 @@
                                                     $('#mail-payment-id-{{ $key }}').val(paymentId);
                                                     $('#mail-payment-number-{{ $key }}').val(paymentNumber);
                                                     $('#mail-payment-email-{{ $key }}').val(paymentEmail);
-                                                    $('#mail-payment-subject-{{ $key }}').val('แจ้งรายการคืนเงินลูกค้า');
+                                                    $('#mail-payment-subject-{{ $key }}').val('สลิปคืนเงิน จองทัวร์ที่ Next Trip Holiday');
                                                     if (typeof CKEDITOR !== 'undefined') {
                                                         if (CKEDITOR.instances['mail-payment-detail-{{ $key }}']) {
                                                             CKEDITOR.instances['mail-payment-detail-{{ $key }}'].destroy(true);
                                                         }
                                                         CKEDITOR.replace('mail-payment-detail-{{ $key }}', { height: 250 });
-                                                        CKEDITOR.instances['mail-payment-detail-{{ $key }}'].setData('<p>เรียนลูกค้า</p><p>แนบรายละเอียดการคืนเงินตามไฟล์ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p>');
+                                                        CKEDITOR.instances['mail-payment-detail-{{ $key }}'].setData(`
+                                                         <p>เรียน คุณ {{  $item->paymentCustomer->customer_name }}</p>
+                                                                     <p>บริษัทได้จัดส่งสลิปคืนเงิน กรุณาตรวจสอบไฟล์แนบที่ส่งมาพร้อมกับอีเมลล์นี้</p>
+                                                                    
+                                                                     
+                                                                     <p>**Email นี้ เป็น Email ตอบรับอัตโนมัติ ไม่สามารถตอบกลับได้</p>
+                                                                     <p>สอบถามรายละเอียดและจองทัวร์ได้ที่   Line: @nexttripholiday</p>
+                                                 
+                                                                     <p>ขอแสดงความนับถือ</p>
+                                                                     
+                                                                     <p>บริษัท เน็กซ์ ทริป ฮอลิเดย์ จำกัด (สำนักงานใหญ่)</p>
+                                                                     <p>โทรศัพท์:02-136-9144 อัตโนมัติ 16 คู่สาย โทรสาร(Fax): 02-136-9146</p>
+                                                                     <p>Hotline: 091-091-6364 ,091-091-6463</p>
+                                                                     <p>TAT License: 11/07440 ,TTAA License:1469</p>
+                                                                     <p>Website: https://www.nexttripholiday.com , Email : nexttripholiday@gmail.com</p>
+                                                        `);
                                                     } else {
                                                         $('#mail-payment-detail-{{ $key }}').val('<p>เรียนลูกค้า</p><p>แนบรายละเอียดการคืนเงินตามไฟล์ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p>');
                                                     }

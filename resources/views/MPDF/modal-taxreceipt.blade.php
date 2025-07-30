@@ -21,9 +21,14 @@
                     <h4 class="card-title mb-0">รายละเอียด</h4>
                 </div>
                 <textarea cols="80" id="testedit" name="text_detail" rows="15" data-sample="1" data-sample-short >
-                    <p><strong>**Email นี้ เป็น Email ตอบรับอัตโนมัติ ลูกค้าไม่สามารถส่งหลักฐานการโอนเงินในนี้ได้</strong></p>
-                    <p>ขอบคุณที่ไว้วางใจในการให้บริการของ&nbsp;Next Trip Holiday&nbsp;</p>
+                     <p>เรียน คุณ {{ $customer->customer_name }}</p>
+                    <p>ใบกำกับภาษีเลขที่ {{ $taxReceipt->taxinvoice_number }}</p>
+                    <p>กรุณาตรวจสอบไฟล์แนบที่ส่งมาพร้อมกับอีเมลล์นี้</p>
                     <br>
+                    
+                    <p>**Email นี้ เป็น Email ตอบรับอัตโนมัติ ไม่สามารถตอบกลับได้</p>
+                    <p>สอบถามรายละเอียดและจองทัวร์ได้ที่   Line: @nexttripholiday</p>
+
                     <p>ขอแสดงความนับถือ</p>
                     
                     <p>บริษัท เน็กซ์ ทริป ฮอลิเดย์ จำกัด (สำนักงานใหญ่)</p>

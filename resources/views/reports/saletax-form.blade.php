@@ -137,7 +137,7 @@
                             <td>{{$item->invoice->customer->customer_name}}</td>
                           
                              <td>{{$item->invoice->quote->Salename->name}}</td>
-                               <td>{{$item->invoice->customer?->customer_texid ?? '0000000000000' }}</td>
+                               <td>{{$item->invoice->customer?->customer_texid ?? '0000000000000' }}`</td>
                             <td>{{number_format($item->invoice->invoice_pre_vat_amount,2)}}</td>
                             <td>{{number_format($item->invoice->invoice_vat,2)}}</td>
                             <td>{{$item->taxinvoice_status === 'success' ? 'สำเร็จ' : 'ยกเลิก'  }}</td>

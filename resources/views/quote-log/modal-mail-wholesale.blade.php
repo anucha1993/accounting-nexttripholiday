@@ -7,7 +7,7 @@
                 <hr>
                 <div class="col-md-12 mb-3">
                     <label for="">Subject</label>
-                    <input type="text" name="subject" class="form-control" value="ข้อมูลจองทัวร์ Next Trip Holiday {{'ชื่อแพคเกจ:'.$quotationModel->quote_tour_name }}">
+                    <input type="text" name="subject" class="form-control" value="ส่งจองทัวร์  รหัสทัวร์ :{{ $quotationModel->quote_tour ?: $quotationModel->quote_tour_code }}  ชื่อลูกค้า : {{$customer->customer_name}}">
                 </div>
                 <div class="col-md-12 mb-3">
                     <label for="">Mail</label>
@@ -21,13 +21,18 @@
                     <h4 class="card-title mb-0">รายละเอียด</h4>
                 </div>
                 <textarea cols="80" id="testeditWholesale" name="text_detail" rows="15" data-sample="1" data-sample-short >
-                    <p><strong>**Email นี้ เป็น Email ตอบรับอัตโนมัติ โฮลเซลไม่สามารถส่งหลักฐานการโอนเงินในนี้ได้</strong></p>
-                    <p>ขอบคุณที่ไว้วางใจในการให้บริการของ&nbsp;Next Trip Holiday&nbsp;</p>
-                    <br>
-                   <table class="info-table w-100">
+                    <p>เรียน  {{$quotationModel->quoteWholesale->wholesale_name_th}}</p>  
+                    <p>บริษัทได้ส่งรายละเอียดการจองทัวร์ ดังนี้</p>
+
+                    <table class="info-table w-100">
                      <tr>
                                         <td class="label">ชื่อลูกค้า:</td>
                                         <td class="value">{{ $customer->customer_name }}</td>
+                                    </tr>
+                                     <tr>
+                                        <td class="label">รหัสทัวร์:</td>
+                                        <td class="value">
+                                            {{ $quotationModel->quote_tour ?: $quotationModel->quote_tour_code }}</td>
                                     </tr>
                                      <tr>
                                         <td class="label">เบอร์โทร:</td>
@@ -63,11 +68,13 @@
                                         <td class="value">{{ $quotationModel->quoteWholesale->wholesale_name_th }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="label">รหัสทัวร์:</td>
-                                        <td class="value">
-                                            {{ $quotationModel->quote_tour ?: $quotationModel->quote_tour_code }}</td>
+                                        <td class="label">พนักงานขาย:</td>
+                                        <td class="value">{{ $quotationModel->Salename->name }}</td>
                                     </tr>
+                                   
                                 </table>
+                               
+                                <br>
 
                     <p>ขอแสดงความนับถือ</p>
                     

@@ -7,7 +7,7 @@
                            <hr>
                            <div class="col-md-12 mb-3">
                                <label for="">Subject</label>
-                               <input type="text" name="subject" class="form-control" value="ไฟล์เอกสาร">
+                                 <input type="text" name="subject" class="form-control" value="ส่งพาสปอร์ต   รหัสทัวร์ :{{ $quotationModel->quote_tour ?: $quotationModel->quote_tour_code }}  ชื่อลูกค้า : {{$customer->customer_name}}">
                            </div>
                            <div class="col-md-12 mb-3">
                                <label for="">Mail</label>
@@ -20,10 +20,60 @@
                            <div class="border-bottom title-part-padding">
                                <h4 class="card-title mb-0">รายละเอียด</h4>
                            </div>
-                           <textarea cols="80" id="testedit" name="text_detail" rows="15" data-sample="1" data-sample-short >
-                               <p><strong>**Email นี้ เป็น Email ตอบรับอัตโนมัติ ลูกค้าไม่สามารถส่งหลักฐานการโอนเงินในนี้ได้</strong></p>
-                               <p>ขอบคุณที่ไว้วางใจในการให้บริการของ&nbsp;Next Trip Holiday&nbsp;</p>
-                               <br>
+                           <textarea cols="80" id="testedit-passport" name="text_detail" rows="15" data-sample="1" data-sample-short >
+                                 <table class="info-table w-100">
+                                     <p>เรียน  {{$quotationModel->quoteWholesale->wholesale_name_th}}</p>  
+                                     <p>บริษัทได้จัดส่งพาสปอร์ตตามรายละเอียดดังนี้</p>
+                     <tr>
+                                        <td class="label">ชื่อลูกค้า:</td>
+                                        <td class="value">{{ $customer->customer_name }}</td>
+                                    </tr>
+                                     <tr>
+                                        <td class="label">รหัสทัวร์:</td>
+                                        <td class="value">
+                                            {{ $quotationModel->quote_tour ?: $quotationModel->quote_tour_code }}</td>
+                                    </tr>
+                                     <tr>
+                                        <td class="label">เบอร์โทร:</td>
+                                        <td class="value">{{ $customer->customer_tel ?: '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">ชื่อแพคเกจ:</td>
+                                        <td class="value">{{ $quotationModel->quote_tour_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">สายการบิน:</td>
+                                        <td class="value">{{ $quotationModel->airline->travel_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">วันเดินทาง:</td>
+                                        <td class="value">
+                                            @if ($quotationModel->quote_date_start && $quotationModel->quote_date_end)
+                                                {{ thaidate('j M Y', $quotationModel->quote_date_start) }} -
+                                            {{ thaidate('j M Y', $quotationModel->quote_date_end) }}
+                                            <small class="text-muted">({{ $quotationModel->quote_numday }})</small>
+                                            @else
+                                                -
+                                            @endif
+                                            
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">ผู้เดินทาง:</td>
+                                        <td class="value">{{ $quotationModel->quote_pax_total ?: '-' }} ท่าน</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">โฮลเซลล์:</td>
+                                        <td class="value">{{ $quotationModel->quoteWholesale->wholesale_name_th }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">พนักงานขาย:</td>
+                                        <td class="value">{{ $quotationModel->Salename->name }}</td>
+                                    </tr>
+                                   
+                                </table>
+                               
+                                <br>
                                <p>ขอแสดงความนับถือ</p>
                                
                                <p>บริษัท เน็กซ์ ทริป ฮอลิเดย์ จำกัด (สำนักงานใหญ่)</p>
@@ -43,7 +93,7 @@
            
            <!-- CKEditor initialization -->
            <script data-sample="1">
-               CKEDITOR.replace("testedit", {
+               CKEDITOR.replace("testedit-passport", {
                  height: 300,
                });
            </script>

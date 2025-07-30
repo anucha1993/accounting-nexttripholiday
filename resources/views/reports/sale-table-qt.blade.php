@@ -25,6 +25,9 @@
             </tr>
         </thead>
         <tbody>
+            @php
+                $commission_amount = 0;
+            @endphp
 
             @foreach ($quotationSuccess as $item)
                 <tr>
@@ -77,29 +80,23 @@
                                 $item->quote_pax_total,
                                 $item->quote_commission,
                             );
-                            // Debug ค่า commission และค่าที่ส่งเข้าไป
-                            // dump([
-                            //     'profit' =>  $item->getNetProfitPerPax(),
-                            //     'sale_id' => $item->quote_sale,
-                            //     'mode' => 'qt',
-                            //     'people' => $item->quote_pax_total,
-                            //     'commission' => $commission,
-                            // ]);
+                            $commission_amount += $commission['calculated'] ?? 0;
                         @endphp
+
                         {{ number_format($commission['calculated'] ?? 0, 2) }}
 
                     </td>
-                   <td>
-    {{-- <pre>
+                    <td>
+                        {{-- <pre>
     {{ var_export($item->quote_commission, true) }}
     </pre> --}}
-    @if ($item->quote_commission === 'N')
-        <small><b>ไม่จ่ายค่าคอมมิชชั่น :</b> {{ $item->quote_note_commission ?? '' }}</small>
-    @else
-        <small>{{ $commission['amount'] ?? '' }}/</small>
-        <small>{{ $commission['group_name'] ?? '' }}</small>
-    @endif
-</td>
+                        @if ($item->quote_commission === 'N')
+                            <small><b>ไม่จ่ายค่าคอมมิชชั่น :</b> {{ $item->quote_note_commission ?? '' }}</small>
+                        @else
+                            <small>{{ $commission['amount'] ?? 0 }}/</small>
+                            <small>{{ $commission['group_name'] ?? '' }}</small>
+                        @endif
+                    </td>
 
 
                 </tr>
@@ -123,13 +120,8 @@
                 </th>
                 <th>{{ number_format($quotationSuccess->sum(function ($item) {return $item->getNetProfitPerPax();}),2) }}
                 </th>
-                <th>{{ number_format(
-                    $quotationSuccess->sum(function ($item) {
-                        $commission = calculateCommission($item->getNetProfit(), $item->quote_sale, 'qt', $item->quote_pax_total);
-                        return $commission['calculated'] ?? 0;
-                    }),
-                    2,
-                ) }}
+                <th>
+                    {{ number_format($commission_amount, 2) }}
                 </th>
                 <th>CommissionGroup</th>
             </tr>

@@ -59,7 +59,7 @@ class saleTaxExport implements FromCollection, WithHeadings, WithMapping, WithCo
             $taxinvoices->invoice_number,
             $taxinvoices->taxinvoice_number,
             $taxinvoices->invoice->customer->customer_name,
-            $item->invoice->customer?->customer_texid ?? '0000000000000',
+            ' '.$taxinvoices->invoice->customer?->customer_texid ?? '0000000000000',
             number_format($taxinvoices->invoice->invoice_pre_vat_amount,2),
             number_format($taxinvoices->invoice->invoice_vat,2),
             $taxinvoices->taxinvoice_status === 'success' ? 'สำเร็จ' : 'ยกเลิก'
