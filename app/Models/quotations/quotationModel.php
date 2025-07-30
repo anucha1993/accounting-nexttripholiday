@@ -436,14 +436,15 @@ public function getTotalInputTaxVatWithholding()
      $getTotalInputTaxVatType = $this->getTotalInputTaxVatType();
      $getTotalInputTaxVatWithholding = $this->getTotalInputTaxVatWithholding();
 
-    $hasInputTaxFile = $this->InputTaxVat()->whereNotNull('input_tax_file')->exists();
+    $hasInputTaxFile = $this->quoteInvoice()->whereNotNull('invoice_image')->exists();
 
     if ($hasInputTaxFile) {
         // ถ้ามีไฟล์ input_tax_file
         return $withholdingTaxAmount - $getTotalInputTaxVatNotNULL + $getTotalInputTaxVatType+ $getTotalInputTaxVatWithholding;
     }else {
         // ถ้าไม่มีไฟล์ input_tax_file
-        return $withholdingTaxAmount - $getTotalInputTaxVatNULL + $getTotalInputTaxVatType + $getTotalInputTaxVatWithholding;
+        return $withholdingTaxAmount + $getTotalInputTaxVatNotNULL + $getTotalInputTaxVatType;
+        // return 1000;
     }
 
 

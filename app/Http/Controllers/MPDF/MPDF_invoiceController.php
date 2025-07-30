@@ -93,7 +93,7 @@ class MPDF_invoiceController extends Controller
         $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
 
-        $quotationModel = quotationModel::where('quote_number', $invoiceModel->invoice_quote)->first();
+       $quotationModel = quotationModel::where('quote_id', $invoiceModel->invoice_quote_id)->first();
 
         $customer = customerModel::where('customer_id', $invoiceModel->customer_id)->first();
         $sale = saleModel::where('id', $invoiceModel->invoice_sale)->first();

@@ -28,6 +28,8 @@ class MailController extends Controller
         $customer = customerModel::where('customer_id',$invoiceModel->customer_id)->first();
         return view('MPDF.modal-invoice',compact('invoiceModel','customer'));
     }
+
+    
   
     public function formMailtaxReceipt(invoiceModel $invoiceModel)
     {
