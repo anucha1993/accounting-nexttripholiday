@@ -174,11 +174,19 @@ public function getTotalInputTaxVatNotNULL()
 // ภาษีซื้อภาษีหัก
 public function getTotalInputTaxVatWithholding()
 {
-    $total = $this->InputTaxVat()
-        // ->where('input_tax_type', 0)
-        ->whereNotIn('input_tax_type', [1, 3])
-        ->sum('input_tax_withholding');
-    return $total ?? 0; // คืนค่า 0 หากไม่มีผลลัพธ์
+    // กรณี input_tax_file ไม่เป็น NULL → sum input_tax_withholding
+    // $totalWithFile = $this->InputTaxVat()
+    //     ->whereNotNull('input_tax_file')
+    //     ->where('input_tax_type', 0)
+    //     ->sum('input_tax_withholding');
+
+    // กรณี input_tax_file เป็น NULL → sum input_tax_grand_total
+    $totalNoFile = $this->InputTaxVat()
+        ->whereNotNull('input_tax_file')
+        ->where('input_tax_type', 0)
+        ->sum('input_tax_grand_total');
+
+    return $totalNoFile ?? 0;
 }
 
 
@@ -459,7 +467,8 @@ return $input_tax ?? 0;
 
     if ($hasInputTaxFile) {
         // ถ้ามีไฟล์ input_tax_file
-        return $withholdingTaxAmount+$getTotalInputTaxVatWithholding+$getTotalInputTaxVatType;
+     // return $getTotalInputTaxVatWithholding;
+       return $withholdingTaxAmount+$getTotalInputTaxVatWithholding+$getTotalInputTaxVatType;
         // return $withholdingTaxAmount+$getTotalInputTaxVatWithholding+$getTotalInputTaxVatType;
     }else {
         // ถ้าไม่มีไฟล์ input_tax_file
