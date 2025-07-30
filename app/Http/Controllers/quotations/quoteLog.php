@@ -146,4 +146,30 @@ public function deleteFile(Request $request, $quote)
     return response()->json(['error' => 'File not found'], 404);
 }
 
+    public function sendWholesaleMail(quotationModel $quotationModel, Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'subject' => 'required|string|max:255',
+            'text_detail' => 'nullable|string',
+        ]);
+
+        $to = $request->input('email');
+        $subject = $request->input('subject', 'แจ้งข้อมูลโฮลเซลล์');
+        $detail = $request->input('text_detail', '');
+
+        try {
+            \Mail::send([], [], function ($message) use ($to, $subject, $detail) {
+                $message->to($to)
+                    ->subject($subject)
+                    ->html($detail, 'text/html');
+            });
+            return response()->json(['success' => true, 'message' => 'ส่งอีเมลโฮลเซลล์สำเร็จ']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'เกิดข้อผิดพลาด: ' . $e->getMessage()]);
+        }
+    }
+
+
+
 }

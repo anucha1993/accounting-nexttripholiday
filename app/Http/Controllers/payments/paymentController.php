@@ -31,14 +31,22 @@ class paymentController extends Controller
                     ->subject($subject)
                     ->html($detail, 'text/html');
                 if ($slipUrl) {
-                    // ดึง path ไฟล์จาก storage/app/public (Laravel storage:link)
-                    $storagePrefix = '/storage/';
-                    if (strpos($slipUrl, $storagePrefix) !== false) {
-                        $relativePath = str_replace($storagePrefix, '', $slipUrl);
+                    // รองรับทั้ง asset('storage/xxx'), /storage/xxx, หรือ path ตรงจากฐานข้อมูล
+                    $storagePath = null;
+                    if (strpos($slipUrl, asset('storage')) === 0) {
+                        // กรณีเป็น asset('storage/xxx')
+                        $relativePath = str_replace(asset('storage') . '/', '', $slipUrl);
                         $storagePath = storage_path('app/public/' . $relativePath);
-                        if (file_exists($storagePath)) {
-                            $message->attach($storagePath);
-                        }
+                    } elseif (strpos($slipUrl, '/storage/') === 0) {
+                        // กรณีเป็น /storage/xxx
+                        $relativePath = ltrim(str_replace('/storage/', '', $slipUrl), '/');
+                        $storagePath = storage_path('app/public/' . $relativePath);
+                    } else {
+                        // กรณี path ตรงจากฐานข้อมูล เช่น customer_id/quote_number/filename
+                        $storagePath = storage_path('app/public/' . ltrim($slipUrl, '/'));
+                    }
+                    if ($storagePath && file_exists($storagePath)) {
+                        $message->attach($storagePath);
                     }
                 }
             });

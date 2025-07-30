@@ -22,6 +22,13 @@ class MailController extends Controller
         return view('MPDF.modal-quote',compact('quotationModel','customer'));
     }
 
+     public function formMailQuoteWholesale(quotationModel $quotationModel)
+    {
+        $customer = customerModel::where('customer_id',$quotationModel->customer_id)->first();
+        return view('quote-log.modal-mail-wholesale',compact('quotationModel','customer'));
+    }
+
+
     public function formMailInvoice(invoiceModel $invoiceModel)
     
     {

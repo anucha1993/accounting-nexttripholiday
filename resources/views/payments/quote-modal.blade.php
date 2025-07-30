@@ -34,8 +34,8 @@
                     
                 </div>
                 <div class="col-md-3 mt-3" id="payment-in-date">
-                    <label>วันที่ชำะเงิน</label>
-                    <input type="datetime-local" name="payment_in_date" class="form-control" required>
+                    <label>วันที่ชำะเงิน/วันที่คืนเงิน</label>
+                    <input type="datetime-local" name="payment_in_date" class="form-control" value="{{date('Y-m-d\TH:i')}}">
                 </div>
 
             </div>
@@ -65,8 +65,6 @@
 
             
             </div>
-
-
             {{-- เช็คธนาคาร check --}}
             <div class="row mt-3" id="check" style="display: none">
                <div class="col-md-3">
@@ -99,7 +97,7 @@
             <div class="row mt-3" id="payment-file">
                 <div class="col-md-3">
                     <label for="">แนบไฟล์เอกสาร</label>
-                    <input type="file" name="payment_file" required>
+                    <input type="file" name="payment_file" >
                 </div>
             </div>
             
@@ -136,20 +134,24 @@
 $(document).ready(function () {
     paymentAccount()
   function paymentAccount() {
-     var paymentType = $('#payment-type').val();
-     if(paymentType === 'refund') {
+    var paymentType = $('#payment-type').val();
+    if(paymentType === 'refund') {
         $('#payment-account').show();
         $('#payment-refund-note').show();
         $('#payment-in-date').hide();
         $('#payment-file').hide();
-     }else{
+        // remove required attribute when hidden
+        $('input[name="payment_in_date"]').removeAttr('required');
+        $('input[name="payment_file"]').removeAttr('required');
+    }else{
         $('#payment-account').hide();
         $('#payment-refund-note').hide();
         $('#payment-in-date').show();
         $('#payment-file').show();
-     }
-     
-     
+        // add required attribute when shown
+        $('input[name="payment_in_date"]').attr('required', true);
+        $('input[name="payment_file"]').attr('required', true);
+    }
   }
 
   $('#payment-type').on('change', function() {

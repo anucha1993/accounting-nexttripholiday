@@ -7,12 +7,14 @@
         font-size: 15px;
         padding: 14px 20px;
     }
+
     .payment-table-summary {
         background: #f8f9fa;
         font-weight: 600;
         color: #28a745;
         border-top: 2px solid #28a745;
     }
+
     .payment-table th {
         background: #f3f6fb;
         color: #495057;
@@ -20,33 +22,42 @@
         font-size: 13px;
         border-bottom: 2px solid #dee2e6;
     }
+
     .payment-table td {
         font-size: 13px;
         vertical-align: middle;
     }
+
     .payment-table .badge {
         font-size: 12px;
         padding: 6px 12px;
         border-radius: 12px;
     }
+
     .payment-table .fa-file {
         color: #e74c3c;
     }
+
     .payment-table .fa-print {
         color: #007bff;
     }
+
     .payment-table .fa-edit {
         color: #17a2b8;
     }
+
     .payment-table .fa-trash {
         color: #e74c3c;
     }
+
     .payment-table .fa-minus-circle {
         color: #e67e22;
     }
+
     .payment-table .fa-recycle {
         color: #28a745;
     }
+
     .payment-table .fa-envelope {
         color: #17a2b8;
     }
@@ -78,6 +89,7 @@
                             <th class="text-center">จัดการ</th>
                         </tr>
                     </thead>
+
                     @php
                         $paymentTotal = 0;
                         $paymentDebitTotal = 0;
@@ -128,12 +140,6 @@
                                         -
                                     @endif
 
-                                    {{-- @if ($item->payment_status === 'cancel' || $item->payment_status === 'refund')
-                                    <a href="{{ asset('storage/' . $item->payment_cancel_file_path) }}" class="dropdown-item"
-                                        onclick="openPdfPopup(this.href); return false;"><i
-                                            class="fa fa-file text-danger"></i> สลิปคืนเงิน</a>
-                                    @else
-                                    @endif --}}
 
                                 </td>
                                 <td class="text-center">
@@ -154,145 +160,111 @@
                                 </td>
                                 <td class="text">
                                     @if ($item->payment_type !== 'refund')
-                                    @canany(['payment.view'])
-                                        <a href="{{ route('mpdf.payment', $item->payment_id) }}"
-                                            onclick="openPdfPopup(this.href); return false;"><i
-                                                class="fa fa-print text-danger"></i> พิมพ์</a>
-                                     @endcanany
+                                        @canany(['payment.view'])
+                                            <a href="{{ route('mpdf.payment', $item->payment_id) }}"
+                                                onclick="openPdfPopup(this.href); return false;"><i
+                                                    class="fa fa-print text-danger"></i> พิมพ์</a>
+                                        @endcanany
+                                        @if (!empty($item->payment_file_path))
+                                        <a class="dropdown-item payment-sendmail-pdf" href="#"
+                                            data-payment-id="{{ $item->payment_id }}"
+                                            data-payment-number="{{ $item->payment_number }}"
+                                            data-payment-email="{{ $item->paymentCustomer->customer_email ?? '' }}"
+                                            data-modal-index="{{ $key }}">
+                                            <i class="fas fa-envelope text-success"></i> ส่งอีเมลใบเสร็จรับเงิน
+                                        </a>
                                     @endif
-                                    <a class="dropdown-item payment-sendmail" href="#"
-                                        data-payment-id="{{ $item->payment_id }}"
-                                        data-payment-number="{{ $item->payment_number }}"
-                                        data-payment-email="{{ $item->paymentCustomer->customer_email ?? '' }}"><i
-                                            class="fas fa-envelope text-info"></i> ส่งอีเมล</a>
-                                    <!-- Modal ส่งเมลรายการชำระเงิน -->
-                                    <div class="modal fade" id="modal-payment-sendmail" tabindex="-1"
-                                        aria-labelledby="modalPaymentSendMailLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="modalPaymentSendMailLabel">
-                                                        ส่งอีเมลรายการชำระเงิน</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form id="sendPaymentMailForm" method="post">
-                                                        @csrf
-                                                        <input type="hidden" name="payment_id" id="mail-payment-id">
-                                                        <div class="mb-3">
-                                                            <label for="mail-payment-number"
-                                                                class="form-label">เลขที่ชำระ</label>
-                                                            <input type="text" class="form-control"
-                                                                id="mail-payment-number" readonly>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="mail-payment-email"
-                                                                class="form-label">อีเมลผู้รับ</label>
-                                                            <input type="email" class="form-control" name="email"
-                                                                id="mail-payment-email" required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="mail-payment-subject"
-                                                                class="form-label">หัวข้อ</label>
-                                                            <input type="text" class="form-control" name="subject"
-                                                                id="mail-payment-subject" value="แจ้งรายการชำระเงิน">
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="mail-payment-detail"
-                                                                class="form-label">รายละเอียด</label>
-                                                            <textarea class="form-control" name="text_detail" id="mail-payment-detail" rows="8"><p>เรียนลูกค้า</p><p>แนบรายละเอียดการชำระเงินตามไฟล์ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p></textarea>
-                                                        </div>
-                                                        <div class="mb-3" id="mail-payment-slip-group"
-                                                            style="display:none;">
-                                                            <label class="form-label">ไฟล์แนบสลิป</label>
-                                                            <div id="mail-payment-slip-link"></div>
-                                                            <input type="hidden" name="payment_file_path"
-                                                                id="mail-payment-file-path">
-                                                        </div>
-                                                        <div class="text-end">
-                                                            <button type="submit" class="btn btn-info"><i
-                                                                    class="fas fa-paper-plane"></i> ส่งอีเมล</button>
-                                                        </div>
-                                                    </form>
+                                        <!-- Modal ส่งเมลใบเสร็จ PDF (แยก index) -->
+                                        <div class="modal fade" id="modal-payment-sendmail-pdf-{{ $key }}" tabindex="-1"
+                                            aria-labelledby="modalPaymentSendMailPDFLabel-{{ $key }}" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="modalPaymentSendMailPDFLabel-{{ $key }}">
+                                                            ส่งอีเมลใบเสร็จรับเงิน (PDF)</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form id="sendPaymentPDFMailForm-{{ $key }}" method="post">
+                                                            @csrf
+                                                            <input type="hidden" name="payment_id"
+                                                                id="mail-pdf-payment-id-{{ $key }}">
+                                                            <div class="mb-3">
+                                                                <label for="mail-pdf-payment-number-{{ $key }}"
+                                                                    class="form-label">เลขที่ชำระ</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="mail-pdf-payment-number-{{ $key }}" readonly>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="mail-pdf-payment-email-{{ $key }}"
+                                                                    class="form-label">อีเมลผู้รับ</label>
+                                                                <input type="email" class="form-control"
+                                                                    name="email" id="mail-pdf-payment-email-{{ $key }}" required>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="mail-pdf-payment-subject-{{ $key }}"
+                                                                    class="form-label">หัวข้อ</label>
+                                                                <input type="text" class="form-control"
+                                                                    name="subject" id="mail-pdf-payment-subject-{{ $key }}"
+                                                                    value="แจ้งใบเสร็จรับเงิน">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="mail-pdf-payment-detail-{{ $key }}"
+                                                                    class="form-label">รายละเอียด</label>
+                                                                <textarea class="form-control" name="text_detail" id="mail-pdf-payment-detail-{{ $key }}" rows="6"><p>เรียนลูกค้า</p><p>แนบใบเสร็จรับเงินตามไฟล์ PDF ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p></textarea>
+                                                            </div>
+                                                            <div class="text-end">
+                                                                <button type="submit" class="btn btn-success"><i
+                                                                        class="fas fa-paper-plane"></i>
+                                                                    ส่งอีเมล</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <!-- CKEditor 4 CDN -->
-                                    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
-                                    <script>
-                                        $(document).ready(function() {
-                                            // Initialize CKEditor for the payment detail textarea
-                                            if (typeof CKEDITOR !== 'undefined') {
-                                                if (CKEDITOR.instances['mail-payment-detail']) {
-                                                    CKEDITOR.instances['mail-payment-detail'].destroy(true);
-                                                }
-                                                CKEDITOR.replace('mail-payment-detail', {
-                                                    height: 250
-                                                });
-                                            }
-
-                                            // เปิด modal ส่งเมล
-                                            $(document).on('click', '.payment-sendmail', function(e) {
-                                                e.preventDefault();
-                                                var paymentId = $(this).data('payment-id');
-                                                var paymentNumber = $(this).data('payment-number');
-                                                var paymentEmail = $(this).data('payment-email') || '';
-                                                // Find the payment row and get the slip file path
-                                                var $row = $(this).closest('tr');
-                                                var slipLink = $row.find(
-                                                    'a[href$=".pdf"], a[href$=".jpg"], a[href$=".jpeg"], a[href$=".png"], a[href$=".gif"]'
-                                                    );
-                                                var slipUrl = '';
-                                                if (slipLink.length > 0) {
-                                                    slipUrl = slipLink.attr('href');
-                                                }
-                                                if (slipUrl) {
-                                                    $('#mail-payment-slip-group').show();
-                                                    $('#mail-payment-slip-link').html('<a href="' + slipUrl +
-                                                        '" target="_blank">ดูไฟล์สลิป</a>');
-                                                    $('#mail-payment-file-path').val(slipUrl);
-                                                } else {
-                                                    $('#mail-payment-slip-group').hide();
-                                                    $('#mail-payment-slip-link').html('');
-                                                    $('#mail-payment-file-path').val('');
-                                                }
-                                                $('#mail-payment-id').val(paymentId);
-                                                $('#mail-payment-number').val(paymentNumber);
-                                                $('#mail-payment-email').val(paymentEmail);
-                                                $('#mail-payment-subject').val('แจ้งรายการชำระเงิน');
-                                                if (CKEDITOR.instances['mail-payment-detail']) {
-                                                    CKEDITOR.instances['mail-payment-detail'].setData(
-                                                        '<p>เรียนลูกค้า</p><p>แนบรายละเอียดการชำระเงินตามไฟล์ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p>'
-                                                        );
-                                                } else {
-                                                    $('#mail-payment-detail').val(
-                                                        '<p>เรียนลูกค้า</p><p>แนบรายละเอียดการชำระเงินตามไฟล์ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p>'
-                                                        );
-                                                }
-                                                $('#modal-payment-sendmail').modal('show');
-                                            });
-
-                                            // ส่งเมลผ่าน Ajax
-                                            $('#sendPaymentMailForm').on('submit', function(e) {
-                                                e.preventDefault();
-                                                // Update textarea with CKEditor data before sending
-                                                if (CKEDITOR.instances['mail-payment-detail']) {
-                                                    CKEDITOR.instances['mail-payment-detail'].updateElement();
-                                                }
-                                                var form = this;
-                                                var formData = new FormData(form);
-                                                Swal.fire({
-                                                    title: 'กำลังส่งอีเมล...',
-                                                    html: 'กรุณารอสักครู่...',
-                                                    allowOutsideClick: false,
-                                                    showConfirmButton: false,
-                                                    didOpen: () => {
-                                                        Swal.showLoading();
+                                        <script>
+                                            $(document).ready(function() {
+                                                // เปิด modal ส่ง PDF เฉพาะ index
+                                                $(document).on('click', '.payment-sendmail-pdf[data-modal-index="{{ $key }}"]', function(e) {
+                                                    e.preventDefault();
+                                                    var paymentId = $(this).data('payment-id');
+                                                    var paymentNumber = $(this).data('payment-number');
+                                                    var paymentEmail = $(this).data('payment-email') || '';
+                                                    $('#mail-pdf-payment-id-{{ $key }}').val(paymentId);
+                                                    $('#mail-pdf-payment-number-{{ $key }}').val(paymentNumber);
+                                                    $('#mail-pdf-payment-email-{{ $key }}').val(paymentEmail);
+                                                    $('#mail-pdf-payment-subject-{{ $key }}').val('แจ้งใบเสร็จรับเงิน');
+                                                    // CKEditor สำหรับรายละเอียดใบเสร็จ
+                                                    if (typeof CKEDITOR !== 'undefined') {
+                                                        if (CKEDITOR.instances['mail-pdf-payment-detail-{{ $key }}']) {
+                                                            CKEDITOR.instances['mail-pdf-payment-detail-{{ $key }}'].destroy(true);
+                                                        }
+                                                        CKEDITOR.replace('mail-pdf-payment-detail-{{ $key }}', { height: 200 });
+                                                        CKEDITOR.instances['mail-pdf-payment-detail-{{ $key }}'].setData('<p>เรียนลูกค้า</p><p>แนบใบเสร็จรับเงินตามไฟล์ PDF ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p>');
+                                                    } else {
+                                                        $('#mail-pdf-payment-detail-{{ $key }}').val('<p>เรียนลูกค้า</p><p>แนบใบเสร็จรับเงินตามไฟล์ PDF ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p>');
                                                     }
+                                                    $('#modal-payment-sendmail-pdf-{{ $key }}').modal('show');
                                                 });
-                                                fetch("{{ route('payments.sendMail') }}", {
+                                                // ส่งเมล PDF ผ่าน Ajax เฉพาะ index
+                                                $('#sendPaymentPDFMailForm-{{ $key }}').on('submit', function(e) {
+                                                    e.preventDefault();
+                                                    // อัปเดต textarea ด้วยข้อมูลจาก CKEditor ก่อนส่ง
+                                                    if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances['mail-pdf-payment-detail-{{ $key }}']) {
+                                                        CKEDITOR.instances['mail-pdf-payment-detail-{{ $key }}'].updateElement();
+                                                    }
+                                                    var form = this;
+                                                    var formData = new FormData(form);
+                                                    Swal.fire({
+                                                        title: 'กำลังส่งอีเมล...',
+                                                        html: 'กรุณารอสักครู่...',
+                                                        allowOutsideClick: false,
+                                                        showConfirmButton: false,
+                                                        didOpen: () => { Swal.showLoading(); }
+                                                    });
+                                                    fetch("{{ route('payments.sendMailWithPDF') }}", {
                                                         method: 'POST',
                                                         headers: {
                                                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -307,7 +279,158 @@
                                                                 title: 'ส่งอีเมลสำเร็จ!',
                                                                 text: 'อีเมลได้ถูกส่งแล้ว'
                                                             });
-                                                            $('#modal-payment-sendmail').modal('hide');
+                                                            $('#modal-payment-sendmail-pdf-{{ $key }}').modal('hide');
+                                                        } else {
+                                                            Swal.fire({
+                                                                icon: 'error',
+                                                                title: 'เกิดข้อผิดพลาด',
+                                                                text: data.message || 'ไม่สามารถส่งอีเมลได้'
+                                                            });
+                                                        }
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('Error:', error);
+                                                        Swal.fire({
+                                                            icon: 'error',
+                                                            title: 'เกิดข้อผิดพลาด',
+                                                            text: 'ไม่สามารถส่งอีเมลได้'
+                                                        });
+                                                    });
+                                                });
+                                            });
+                                        </script>
+                                    @elseif($item->payment_type === 'refund' && !empty($item->payment_file_path))
+                                        <a class="dropdown-item payment-sendmail-refund" href="#"
+                                            data-payment-id="{{ $item->payment_id }}"
+                                            data-payment-number="{{ $item->payment_number }}"
+                                            data-payment-email="{{ $item->paymentCustomer->customer_email ?? '' }}"
+                                            data-payment-file-path="{{ $item->payment_file_path ?? '' }}"
+                                            data-modal-index="{{ $key }}"><i
+                                                class="fas fa-envelope text-info"></i> ส่งอีเมลคืนเงินลูกค้า</a>
+                                        <!-- Modal ส่งเมลรายการชำระเงิน (แยก index) -->
+                                        <div class="modal fade" id="modal-payment-sendmail-refund-{{ $key }}" tabindex="-1"
+                                            aria-labelledby="modalPaymentSendMailLabel-{{ $key }}" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+
+                                                        <h5 class="modal-title" id="modalPaymentSendMailLabel-{{ $key }}">
+                                                            ส่งอีเมลรายการคืนเงินลูกค้า</h5>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <form id="sendPaymentMailForm-{{ $key }}" method="post">
+                                                            @csrf
+                                                            <input type="hidden" name="payment_id"
+                                                                id="mail-payment-id-{{ $key }}">
+                                                            <div class="mb-3">
+                                                                <label for="mail-payment-number-{{ $key }}"
+                                                                    class="form-label">เลขที่ชำระ</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="mail-payment-number-{{ $key }}" readonly>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="mail-payment-email-{{ $key }}"
+                                                                    class="form-label">อีเมลผู้รับ</label>
+                                                                <input type="email" class="form-control"
+                                                                    name="email" id="mail-payment-email-{{ $key }}" required>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="mail-payment-subject-{{ $key }}"
+                                                                    class="form-label">หัวข้อ</label>
+                                                                <input type="text" class="form-control"
+                                                                    name="subject" id="mail-payment-subject-{{ $key }}"
+                                                                    value="แจ้งรายการชำระเงิน">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="mail-payment-detail-{{ $key }}"
+                                                                    class="form-label">รายละเอียด</label>
+                                                                <textarea class="form-control" name="text_detail" id="mail-payment-detail-{{ $key }}" rows="8"><p>เรียนลูกค้า</p><p>แนบรายละเอียดการชำระเงินตามไฟล์ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p></textarea>
+                                                            </div>
+                                                            <div class="mb-3" id="mail-payment-slip-group-{{ $key }}"
+                                                                style="display:none;">
+                                                                <label class="form-label">ไฟล์แนบสลิป</label>
+                                                                <div id="mail-payment-slip-link-{{ $key }}"></div>
+                                                                <input type="hidden" name="payment_file_path"
+                                                                    id="mail-payment-file-path-{{ $key }}">
+                                                            </div>
+                                                            <div class="text-end">
+                                                                <button type="submit" class="btn btn-info"><i
+                                                                        class="fas fa-paper-plane"></i>
+                                                                    ส่งอีเมล</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <script>
+                                            $(document).ready(function() {
+                                                // เปิด modal ส่ง refund เฉพาะ index
+                                                $(document).on('click', '.payment-sendmail-refund[data-modal-index="{{ $key }}"]', function(e) {
+                                                    e.preventDefault();
+                                                    var paymentId = $(this).data('payment-id');
+                                                    var paymentNumber = $(this).data('payment-number');
+                                                    var paymentEmail = $(this).data('payment-email') || '';
+                                                    var slipPath = $(this).data('payment-file-path') || '';
+                                                    if (slipPath) {
+                                                        $('#mail-payment-slip-group-{{ $key }}').show();
+                                                        var slipUrl = "{{ asset('storage') }}/" + slipPath;
+                                                        $('#mail-payment-slip-link-{{ $key }}').html('<a href="' + slipUrl + '" target="_blank">ดูไฟล์สลิป</a>');
+                                                        $('#mail-payment-file-path-{{ $key }}').val(slipPath);
+                                                    } else {
+                                                        $('#mail-payment-slip-group-{{ $key }}').hide();
+                                                        $('#mail-payment-slip-link-{{ $key }}').html('');
+                                                        $('#mail-payment-file-path-{{ $key }}').val('');
+                                                    }
+                                                    $('#mail-payment-id-{{ $key }}').val(paymentId);
+                                                    $('#mail-payment-number-{{ $key }}').val(paymentNumber);
+                                                    $('#mail-payment-email-{{ $key }}').val(paymentEmail);
+                                                    $('#mail-payment-subject-{{ $key }}').val('แจ้งรายการคืนเงินลูกค้า');
+                                                    if (typeof CKEDITOR !== 'undefined') {
+                                                        if (CKEDITOR.instances['mail-payment-detail-{{ $key }}']) {
+                                                            CKEDITOR.instances['mail-payment-detail-{{ $key }}'].destroy(true);
+                                                        }
+                                                        CKEDITOR.replace('mail-payment-detail-{{ $key }}', { height: 250 });
+                                                        CKEDITOR.instances['mail-payment-detail-{{ $key }}'].setData('<p>เรียนลูกค้า</p><p>แนบรายละเอียดการคืนเงินตามไฟล์ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p>');
+                                                    } else {
+                                                        $('#mail-payment-detail-{{ $key }}').val('<p>เรียนลูกค้า</p><p>แนบรายละเอียดการคืนเงินตามไฟล์ที่แนบมานี้</p><br><p>ขอบคุณที่ใช้บริการ Next Trip Holiday</p>');
+                                                    }
+                                                    $('#modal-payment-sendmail-refund-{{ $key }}').modal('show');
+                                                });
+                                                // ส่งเมล refund ผ่าน Ajax เฉพาะ index
+                                                $('#sendPaymentMailForm-{{ $key }}').on('submit', function(e) {
+                                                    e.preventDefault();
+                                                    if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances['mail-payment-detail-{{ $key }}']) {
+                                                        CKEDITOR.instances['mail-payment-detail-{{ $key }}'].updateElement();
+                                                    }
+                                                    var form = this;
+                                                    var formData = new FormData(form);
+                                                    Swal.fire({
+                                                        title: 'กำลังส่งอีเมล...',
+                                                        html: 'กรุณารอสักครู่...',
+                                                        allowOutsideClick: false,
+                                                        showConfirmButton: false,
+                                                        didOpen: () => { Swal.showLoading(); }
+                                                    });
+                                                    fetch("{{ route('payments.sendMail') }}", {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                                        },
+                                                        body: formData
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        if (data.success) {
+                                                            Swal.fire({
+                                                                icon: 'success',
+                                                                title: 'ส่งอีเมลสำเร็จ!',
+                                                                text: 'อีเมลได้ถูกส่งแล้ว'
+                                                            });
+                                                            $('#modal-payment-sendmail-refund-{{ $key }}').modal('hide');
                                                         } else {
                                                             Swal.fire({
                                                                 icon: 'error',
@@ -324,9 +447,10 @@
                                                             text: 'ไม่สามารถส่งอีเมลได้'
                                                         });
                                                     });
+                                                });
                                             });
-                                        });
-                                    </script>
+                                        </script>
+                                    @endif
                                 </td>
 
 
@@ -351,31 +475,31 @@
 
                                 <td>
                                     @if ($item->payment_status !== 'cancel')
-                                    @canany(['payment.edit'])
-                                        <a class="dropdown-item payment-modal"
-                                            href="{{ route('payment.edit', $item->payment_id) }}"><i
-                                                class="fa fa-edit text-info"></i>
-                                            แก้ไข</a>
+                                        @canany(['payment.edit'])
+                                            <a class="dropdown-item payment-modal"
+                                                href="{{ route('payment.edit', $item->payment_id) }}"><i
+                                                    class="fa fa-edit text-info"></i>
+                                                แก้ไข</a>
                                         @endcanany
                                         @canany(['payment.edit'])
-                                        <a class="dropdown-item text-danger payment-modal-cancel"
-                                            href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
-                                                class=" fas fa-minus-circle"></i> ยกเลิก</a>
+                                            <a class="dropdown-item text-danger payment-modal-cancel"
+                                                href="{{ route('payment.cancelModal', $item->payment_id) }}"><i
+                                                    class=" fas fa-minus-circle"></i> ยกเลิก</a>
                                         @endcanany
                                     @else
                                         {{ $item->payment_cancel_note }}
                                         @canany(['payment.edit'])
-                                        <a href="{{ route('payment.RefreshCancel', $item->payment_id) }}"
-                                            class="dropdown-item text-primary"
-                                            onclick="return confirm('ยืนยันการคืนสถานะ');"> <i
-                                                class="fas fa-recycle"></i> นำกลับมาใช้ใหม่ </a>
+                                            <a href="{{ route('payment.RefreshCancel', $item->payment_id) }}"
+                                                class="dropdown-item text-primary"
+                                                onclick="return confirm('ยืนยันการคืนสถานะ');"> <i
+                                                    class="fas fa-recycle"></i> นำกลับมาใช้ใหม่ </a>
                                         @endcanany
                                     @endif
                                     @canany(['payment.delete'])
-                                    <a href="{{ route('payment.delete', $item->payment_id) }}"
-                                        onclick="return confirm('ยืนยันการลบ');"><i
-                                            class="fa fa-trash text-danger"></i> ลบ</a>
-                                        @endcanany
+                                        <a href="{{ route('payment.delete', $item->payment_id) }}"
+                                            onclick="return confirm('ยืนยันการลบ');"><i
+                                                class="fa fa-trash text-danger"></i> ลบ</a>
+                                    @endcanany
 
 
 
@@ -393,7 +517,8 @@
                                 <b>{{ number_format($quotation->GetDeposit() - $quotation->Refund(), 2) }}</b>
                             </td>
                             <td align="center" colspan="2"><b><span class="text-danger">( ยอดค้างชำระ :
-                                    {{ number_format($quotation->quote_grand_total - $quotation->GetDeposit() + $quotation->Refund(), 2, '.', ',') }} )</span></b></td>
+                                        {{ number_format($quotation->quote_grand_total - $quotation->GetDeposit() + $quotation->Refund(), 2, '.', ',') }}
+                                        )</span></b></td>
                         </tr>
 
 

@@ -215,6 +215,7 @@ Route::get('payments/cancelModal/{paymentModel}',[paymentController::class,'canc
 Route::get('payments/delete/{paymentModel}',[paymentController::class,'delete'])->name('payment.delete');
 Route::get('payments/refresh/cancel/{paymentModel}',[paymentController::class,'RefreshCancel'])->name('payment.RefreshCancel');
 Route::post('payments/send-mail', [paymentController::class, 'sendMail'])->name('payments.sendMail');
+Route::post('payments/send-mail/pdf', [MPDF_PaymentController::class, 'sendMailWithPDF'])->name('payments.sendMailWithPDF');
 
 Route::get('payment/quotation/{quotationModel}',[paymentController::class,'quotation'])->name('payment.quotation');
 Route::put('payment/cancel/{paymentModel}',[paymentController::class,'cancel'])->name('payment.cancel');
@@ -306,6 +307,8 @@ Route::get('quotation/view/{encryptedId}', [quotationViewController::class, 'ind
 
 
 Route::get('quote/logs/{quotationModel}',[quoteLog::class,'index'])->name('quoteLog.index');
+Route::post('/send-wholesale-mail/{quotationModel}', [quoteLog::class, 'sendWholesaleMail'])->name('quote.sendWholesaleMail');
+Route::get('modal/mail/quote/wholesale/{quotationModel}',[MailController::class,'formMailQuoteWholesale'])->name('mail.quote.formMailQuoteWholesale');
 // ตรวจสอบเส้นทางนี้ใน web.php หรือ api.php
 Route::post('quote-logs/update-status/{quoteId}', [quoteLog::class, 'updateLogStatus'])->name('quote.updateLogStatus');
 Route::post('quote/{quote}/upload-files', [quoteLog::class, 'uploadFiles'])->name('quote.uploadFiles');

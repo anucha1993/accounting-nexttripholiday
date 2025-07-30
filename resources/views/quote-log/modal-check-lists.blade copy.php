@@ -19,7 +19,7 @@
             <span class="{{ optional($quoteLog)->booking_email_status === 'ส่งแล้ว' ? 'text-success' : 'text-muted' }}">
                 {{ optional($quoteLog)->booking_email_status ?? 'ยังไม่ได้ส่ง' }}
             </span>
-            <a class="mail-quote-wholesale" href="{{ route('mail.quote.formMailQuoteWholesale', $quotationModel->quote_id) }}">
+            <a class="mail-quote" href="{{ route('mail.quote.formMail', $quotationModel->quote_id) }}">
                 <i class="fas fa-envelope text-info"></i>
                 ส่งเมล
             </a>
@@ -293,7 +293,7 @@
 
 
     {{-- mail form quote --}}
-    <div class="modal fade bd-example-modal-sm modal-lg modal-mail-quote-wholesale" id="modal-mail-quote-wholesale" tabindex="-1"
+    <div class="modal fade bd-example-modal-sm modal-lg modal-mail-quote" id="modal-mail-quote" tabindex="-1"
         role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -306,10 +306,10 @@
     <script>
         $(document).ready(function() {
             // modal add payment wholesale quote
-            $(".mail-quote-wholesale").on("click", function(e) {
+            $(".mail-quote").on("click", function(e) {
                 e.preventDefault();
                 // Show modal and load content
-                $(".modal-mail-quote-wholesale").modal("show").find(".modal-content").load($(this).attr("href"));
+                $(".modal-mail-quote").modal("show").find(".modal-content").load($(this).attr("href"));
                 // Hide another modal if open
                 $(".modal-quote-check").modal("hide");
             });

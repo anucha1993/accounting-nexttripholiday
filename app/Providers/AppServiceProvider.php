@@ -25,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+         date_default_timezone_set(config('app.timezone'));
+    \Carbon\Carbon::setLocale('th');
         Paginator::useBootstrapFive();
         // Register PaymentWholesaleObserver
         // \App\Models\payments\paymentWholesaleModel::observe(\App\Observers\PaymentWholesaleObserver::class);

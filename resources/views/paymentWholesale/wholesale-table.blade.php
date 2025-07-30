@@ -220,14 +220,22 @@
     $(document).ready(function() {
 
         // modal 
-        $(".wholesale-mail").click("click", function(e) {
-            e.preventDefault();
-            $("#wholesale-mail")
-                .modal("show")
-                .addClass("modal-lg")
-                .find(".modal-content")
-                .load($(this).attr("href"));
-        });
+       $(".wholesale-mail").click(function(e) {
+    e.preventDefault();
+    $("#wholesale-mail")
+        .modal("show")
+        .addClass("modal-lg")
+        .find(".modal-content")
+       .load($(this).attr("href"), function() {
+    // Destroy CKEDITOR instance ก่อน (ถ้ามี)
+    if (CKEDITOR.instances['wholesale_mail_detail']) {
+        CKEDITOR.instances['wholesale_mail_detail'].destroy(true);
+        delete CKEDITOR.instances['wholesale_mail_detail'];
+    }
+    // Initialize CKEDITOR ใหม่
+    CKEDITOR.replace("wholesale_mail_detail", { height: 300 });
+});
+});
 
 
         // modal Payment Refund
