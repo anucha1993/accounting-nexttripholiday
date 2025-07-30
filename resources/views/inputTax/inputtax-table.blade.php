@@ -299,6 +299,7 @@
                             <td  class="text-danger text-end" colspan="1">
                                 DEBUG getTotalInputTaxVatType  : {{$quotationModel->getTotalInputTaxVatType()}} <br>
                                 DEBUG ภาษีซื้อ getTotalInputTaxVat  : {{$quotationModel->getTotalInputTaxVat()}} <br>
+                                DEBUG ภาษีซื้อภาษีหัก getTotalInputTaxVatWithholding  : {{$quotationModel->getTotalInputTaxVatWithholding()}} <br>
                                 DEBUG ภาษีขาย : {{$withholdingTaxAmount}} <br>
                                 DEBUG getTotalOtherCost : {{$quotationModel->getTotalOtherCost()}} <br>
                                 <br/>
