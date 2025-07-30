@@ -231,7 +231,7 @@
                             @endcanany
                             
                             @canany(['withholdingtax.edit'])
-                             @if ($document)
+                             @if ($item->input_tax_withholding_status === 'Y')
                                    <br>
                                 <a href="{{ route('withholding.modalEdit', $document->id) }}"
                                     class="input-tax-edit text-primary">
@@ -297,7 +297,7 @@
 
 
                             <td  class="text-danger text-end" colspan="1">
-                                DEBUG getTotalInputTaxVatType  : {{$quotationModel->getTotalInputTaxVatType()}} <br>
+                                {{-- DEBUG getTotalInputTaxVatType  : {{$quotationModel->getTotalInputTaxVatType()}} <br>
                                 DEBUG ภาษีซื้อ getTotalInputTaxVat  : {{$quotationModel->getTotalInputTaxVat()}} <br>
                                 DEBUG ภาษีซื้อภาษีหัก getTotalInputTaxVatWithholding  : {{$quotationModel->getTotalInputTaxVatWithholding()}} <br>
                                 DEBUG ภาษีขาย : {{$withholdingTaxAmount}} <br>
@@ -305,7 +305,7 @@
                                 <br/>
                                 ------------------------
                                 DEBUG ภาษีซื้อ ยังไม่มีไฟล์ : {{ $quotationModel->getTotalInputTaxVatNULL() }} <br>
-                                DEBUG ภาษีซื้อ มีไฟล์ : {{ $quotationModel->getTotalInputTaxVatNotNULL() }} <br>
+                                DEBUG ภาษีซื้อ มีไฟล์ : {{ $quotationModel->getTotalInputTaxVatNotNULL() }} <br> --}}
 
                                 <b>
                                     @if (isset($inputTax) && count($inputTax) > 0)

@@ -52,7 +52,8 @@ class QuoteFilesController extends Controller
         // อัปเดตข้อมูลใน request เพื่อเก็บในฐานข้อมูล
         $request->merge([
             'quote_file_name' => $uniqueName,
-            'quote_file_path' => $filePath
+            'quote_file_path' => $filePath,
+            'quote_id' => $quote->quote_id
         ]);
 
         // บันทึกข้อมูลไฟล์ในฐานข้อมูล
@@ -82,15 +83,39 @@ public function modalMail(quoteFileModel $quoteFileModel)
 }
 
 
+
 public function sendMail(quoteFileModel $quoteFileModel, Request $request)
 {
-    $quotationModel = quotationModel::where('quote_number', $quoteFileModel->quote_number)->first();
+    $quotationModel = quotationModel::where('quote_id', $quoteFileModel->quote_id)->first();
     $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
     $sale = saleModel::select('name', 'id', 'email')->where('id', $quotationModel->quote_sale)->first();
 
     try {
-        $filePath = $quoteFileModel->quote_file_path;
-        $fileName = $quoteFileModel->quote_file_path;
+        // แปลง path ให้เป็น absolute path
+        $publicPath = public_path($quoteFileModel->quote_file_path);
+        $storagePath = storage_path('app/public/' . $customer->customer_id . '/files/passport/' . $quotationModel->quote_number . '/' . $quoteFileModel->quote_file_name);
+
+        // ตรวจสอบไฟล์จริง
+        // \Log::info('Try send mail', [
+        //     'public_path' => $publicPath,
+        //     'storage_path' => $storagePath,
+        //     'exists_public' => file_exists($publicPath),
+        //     'exists_storage' => file_exists($storagePath),
+        //     'request_email' => $request->email,
+        //     'request_subject' => $request->subject,
+        // ]);
+
+        // เลือก path ที่มีไฟล์จริง
+        $filePath = file_exists($storagePath) ? $storagePath : (file_exists($publicPath) ? $publicPath : null);
+        if (!$filePath) {
+            // \Log::error('File for attach not found', [
+            //     'public_path' => $publicPath,
+            //     'storage_path' => $storagePath,
+            // ]);
+            return response()->json(['success' => false, 'message' => 'ไม่พบไฟล์แนบ']);
+        }
+
+        $fileName = $quoteFileModel->quote_file_name;
         $mimeType = mime_content_type($filePath);
 
         Mail::send([], [], function ($message) use ($sale, $request, $quotationModel, $customer, $filePath, $fileName, $mimeType) {
@@ -98,7 +123,6 @@ public function sendMail(quoteFileModel $quoteFileModel, Request $request)
                     ->subject($request->subject)
                     ->html("
                         <h2>เรียน คุณ {$customer->customer_name}</h2>
-                       
                         <br>
                         {$request->text_detail}
                     ")
@@ -108,8 +132,17 @@ public function sendMail(quoteFileModel $quoteFileModel, Request $request)
                     ]);
         });
 
+        // \Log::info('Mail sent success', [
+        //     'to' => $request->email,
+        //     'file' => $filePath,
+        // ]);
+
         return response()->json(['success' => true, 'message' => 'ส่งอีเมลพร้อมไฟล์สำเร็จ']);
     } catch (\Exception $e) {
+        // \Log::error('Mail send error', [
+        //     'error' => $e->getMessage(),
+        //     'trace' => $e->getTraceAsString(),
+        // ]);
         return response()->json(['success' => false, 'message' => 'เกิดข้อผิดพลาดในการส่งอีเมล: ' . $e->getMessage()]);
     }
 }

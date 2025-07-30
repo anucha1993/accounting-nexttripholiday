@@ -248,41 +248,51 @@ class paymentWholesaleController extends Controller
         return view('paymentWholesale.modal-mail-wholesale', compact('quotationModel', 'customer', 'paymentWholesaleModel'));
     }
 
-    public function sendMail(paymentWholesaleModel $paymentWholesaleModel, Request $request)
-    {
-        $quotationModel = quotationModel::where('quote_id', $paymentWholesaleModel->payment_wholesale_quote_id)->first();
-        $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
-        $sale = saleModel::select('name', 'id', 'email')->where('id', $quotationModel->quote_sale)->first();
 
-        try {
-            $filePath = $paymentWholesaleModel->payment_wholesale_file_path;
-            $fileName = $paymentWholesaleModel->payment_wholesale_file_name;
-            $mimeType = mime_content_type($filePath);
+public function sendMail(paymentWholesaleModel $paymentWholesaleModel, Request $request)
+{
+    $quotationModel = quotationModel::where('quote_id', $paymentWholesaleModel->payment_wholesale_quote_id)->first();
+    $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
+    $sale = saleModel::select('name', 'id', 'email')->where('id', $quotationModel->quote_sale)->first();
 
-            Mail::send([], [], function ($message) use ($sale, $request, $quotationModel, $customer, $filePath, $fileName, $mimeType) {
-                $message
-                    ->to($request->email)
-                    ->subject($request->subject)
-                    ->html(
-                        "
-                        <h2>เรียน คุณ {$customer->customer_name}</h2>
-                        <p>ใบเสนอราคาเลขที่ #{$quotationModel->quote_number}</p>
-                        <p>ไฟล์เอกสารแนบชำระเงินโฮลเซลล์</p>
-                        <br>
-                        {$request->text_detail}
-                    ",
-                    )
-                    ->attach($filePath, [
-                        'as' => $fileName,
-                        'mime' => $mimeType,
-                    ]);
-            });
-
-            return response()->json(['success' => true, 'message' => 'ส่งอีเมลพร้อมไฟล์สำเร็จ']);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'เกิดข้อผิดพลาดในการส่งอีเมล: ' . $e->getMessage()]);
+    try {
+        // ดึง path จริงของไฟล์แนบ
+        $relativePath = $paymentWholesaleModel->payment_wholesale_file_path; // เช่น 'storage/xxx/wholesalePayment/yyy/filename.pdf'
+        $filePath = null;
+        if ($relativePath) {
+            // ตัด 'storage/' ออก แล้วต่อกับ storage_path('app/public/')
+            $filePath = storage_path('app/public/' . ltrim(str_replace('storage/', '', $relativePath), '/'));
         }
+        $fileName = $paymentWholesaleModel->payment_wholesale_file_name;
+        $mimeType = $filePath && file_exists($filePath) ? mime_content_type($filePath) : null;
+
+        Mail::send([], [], function ($message) use ($sale, $request, $quotationModel, $customer, $filePath, $fileName, $mimeType) {
+            $message
+                ->to($request->email)
+                ->subject($request->subject)
+                ->html(
+                    "
+                    <h2>เรียน คุณ {$customer->customer_name}</h2>
+                    <p>ใบเสนอราคาเลขที่ #{$quotationModel->quote_number}</p>
+                    <p>ไฟล์เอกสารแนบชำระเงินโฮลเซลล์</p>
+                    <br>
+                    {$request->text_detail}
+                "
+                );
+            // แนบไฟล์ถ้ามี
+            if ($filePath && file_exists($filePath)) {
+                $message->attach($filePath, [
+                    'as' => $fileName,
+                    'mime' => $mimeType,
+                ]);
+            }
+        });
+
+        return response()->json(['success' => true, 'message' => 'ส่งอีเมลพร้อมไฟล์สำเร็จ']);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => 'เกิดข้อผิดพลาดในการส่งอีเมล: ' . $e->getMessage()]);
     }
+}
 
     /**
      * อัปเดตสถานะการคืนเงินโฮลเซลล์ในตาราง QuoteLogModel

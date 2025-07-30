@@ -14,5 +14,6 @@ class quoteFileModel extends Model
         'quote_number',
         'quote_file_name',
         'quote_file_path',
+        'quote_id',
     ];
 }
