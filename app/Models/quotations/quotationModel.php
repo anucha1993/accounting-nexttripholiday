@@ -412,14 +412,14 @@ public function getTotalInputTaxVatWithholding()
     // 1. รวม input_tax_vat ของภาษีซื้อ (type 0) ที่ยังไม่มีไฟล์
     $pendingVat = $this->InputTaxVat()
         // ->where('input_tax_type', 0)
-        ->whereNotIn('input_tax_type', [1, 3,4])
+        ->whereNotIn('input_tax_type', [2,5,6,4,7])
         ->whereNull('input_tax_file')
         ->sum('input_tax_grand_total');
 
     // 2. รวม input_tax_vat - input_tax_withholding ของ type อื่นๆ ที่มีไฟล์และ success
     $fileVat = $this->InputTaxVat()
         ->whereNotNull('input_tax_file')
-        ->whereNotIn('input_tax_type', [1, 3,4])
+        ->whereNotIn('input_tax_type', [2,5,6,4,7])
         ->where('input_tax_status', 'success')
         ->sum('input_tax_grand_total');
         // ->sum(\DB::raw('COALESCE(input_tax_vat, 0) - COALESCE(input_tax_withholding, 0)'));

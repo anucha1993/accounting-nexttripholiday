@@ -128,7 +128,7 @@
                             @endphp
                             <tr class="@if ($item->input_tax_status === 'cancel') text-danger @endif">
                                 <td>{{ ++$key }}</td>
-                                {{-- <td>input_tax_type : {{ $item->input_tax_type }}</td> --}}
+                                {{-- <td>type : {{ $item->input_tax_type }}</td> --}}
 
                                 <td>
                                     @if ($item->input_tax_type === 0)
@@ -231,7 +231,7 @@
                             @endcanany
                             
                             @canany(['withholdingtax.edit'])
-                             @if ($item->input_tax_withholding_status === 'Y')
+                             @if ($item->input_tax_withholding_status === 'Y' && $document)
                                    <br>
                                 <a href="{{ route('withholding.modalEdit', $document->id) }}"
                                     class="input-tax-edit text-primary">
