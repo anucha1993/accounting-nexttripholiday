@@ -443,7 +443,7 @@ public function getTotalInputTaxVatWithholding()
         return $withholdingTaxAmount - $getTotalInputTaxVatNotNULL + $getTotalInputTaxVatType+ $getTotalInputTaxVatWithholding;
     }else {
         // ถ้าไม่มีไฟล์ input_tax_file
-        return $withholdingTaxAmount + $getTotalInputTaxVatNotNULL + $getTotalInputTaxVatType;
+        return $withholdingTaxAmount + $getTotalInputTaxVatNotNULL + $getTotalInputTaxVatType + $getTotalInputTaxVatWithholding;
         // return 1000;
     }
 
