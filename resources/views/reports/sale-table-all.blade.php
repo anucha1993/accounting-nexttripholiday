@@ -83,7 +83,7 @@
                             <small><b>ไม่จ่ายค่าคอมมิชชั่น :</b> {{ $item->quote_note_commission ?? '' }}</small>
                             
                         @else
-                            <small>{{ $commission['amount'] ?? '' }}/</small>
+                            {{-- <small>{{ $commission['amount'] ?? '' }}/</small> --}}
                             <small>{{ $commission['group_name'] ?? 'ไม่ได้กำหนด' }}</small>
                             <br>
                             {{-- <span style="color: #888; font-size: 11px;">
