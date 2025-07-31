@@ -422,7 +422,7 @@
             </div> --}}
 
             <div style="margin-top: -37px">
-                <table style="margin-right: -35px; margin-left: -35px;">
+                <table style="margin-right: -260px; margin-left: 45px;">
                     <tr style="border-right: none;" > 
                        
                         <td style="border: none; width: 506px;"></td>

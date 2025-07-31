@@ -11,7 +11,7 @@
                            </div>
                            <div class="col-md-12 mb-3">
                                <label for="">Mail</label>
-                               <input type="email" name="email" value="{{ $customer->customer_email }}" class="form-control"
+                               <input type="email" name="email" value="{{ $quotationModel->quoteWholesale->email }}" class="form-control"
                                    placeholder="Email" required>
                            </div>
                        </div>
