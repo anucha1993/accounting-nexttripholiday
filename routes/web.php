@@ -164,7 +164,7 @@ Route::post('/product/store',[productController::class,'store'])->name('product.
 
 // quote
 Route::get('quotations/',[QuoteListController::class,'index'])->name('quote.index');
-Route::get('/',[QuoteListController::class,'index'])->name('quote.index');
+Route::get('/',[QuoteListController::class,'index'])->name('quote.index')->middleware(['auth', 'permission:quote.view']);
 Route::post('quote/store',[quoteController::class,'store'])->name('quote.store');
 Route::get('quote/edit/{quotationModel}',[quoteController::class,'edit'])->name('quote.edit');
 Route::put('quote/update/{quotationModel}',[quoteController::class,'update'])->name('quote.update');//
@@ -396,21 +396,21 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/product/update/{id}', [productController::class, 'update'])->name('product.update');
     Route::post('/product/store', [productController::class, 'store'])->name('product.store');
 
-    // Quotes
-    Route::get('quotations/', [QuoteListController::class, 'index'])->name('quote.index');
-    Route::get('/', [QuoteListController::class, 'index'])->name('quote.index');
-    Route::post('quote/store', [quoteController::class, 'store'])->name('quote.store');
-    Route::get('quote/edit/{quotationModel}', [quoteController::class, 'edit'])->name('quote.edit');
-    Route::put('quote/update/{quotationModel}', [quoteController::class, 'update'])->name('quote.update');
+    // SetPermission Success Quotes 
+    Route::get('quotations/', [QuoteListController::class, 'index'])->name('quote.index')->middleware(['auth', 'permission:quote.view']);
+    Route::get('/', [QuoteListController::class, 'index'])->name('quote.index')->middleware(['auth', 'permission:quote.view']);
+    Route::post('quote/store', [quoteController::class, 'store'])->name('quote.store')->middleware(['auth', 'permission:quote.create']);
+    Route::get('quote/edit/{quotationModel}', [quoteController::class, 'edit'])->name('quote.edit')->middleware(['auth', 'permission:quote.edit']);
+    Route::put('quote/update/{quotationModel}', [quoteController::class, 'update'])->name('quote.update')->middleware(['auth', 'permission:quote.edit']);
     Route::put('quote/update/ajax/{quotationModel}', [quoteController::class, 'AjaxUpdate'])->name('quote.AjaxUpdate');
-    Route::put('quote/cancel/{quotationModel}', [quoteController::class, 'cancel'])->name('quote.cancel');
-    Route::get('quote/create/new', [quoteController::class, 'createNew'])->name('quote.createNew');
-    Route::get('quote/edit/new/{quotationModel}', [quoteController::class, 'editNew'])->name('quote.editNew');
+    Route::put('quote/cancel/{quotationModel}', [quoteController::class, 'cancel'])->name('quote.cancel')->middleware(['auth', 'permission:quote.edit']);
+    Route::get('quote/create/new', [quoteController::class, 'createNew'])->name('quote.createNew')->middleware(['auth', 'permission:quote.create']);
+    Route::get('quote/edit/new/{quotationModel}', [quoteController::class, 'editNew'])->name('quote.editNew')->middleware(['auth', 'permission:quote.edit']);
     Route::get('quote/ajax/new/{quotationModel}', [quoteController::class, 'editQuote'])->name('quote.editAjax');
-    Route::get('quote/modal/edit/{quotationModel}', [quoteController::class, 'modalEdit'])->name('quote.modalEdit');
-    Route::get('quote/modal/copy/edit/{quotationModel}', [quoteController::class, 'modalEditCopy'])->name('quote.modalEditCopy');
-    Route::get('quote/modal/cancel/{quotationModel}', [quoteController::class, 'modalCancel'])->name('quote.modalCancel');
-    Route::get('quote/recancel/{quotationModel}', [quoteController::class, 'Recancel'])->name('quote.recancel');
+    Route::get('quote/modal/edit/{quotationModel}', [quoteController::class, 'modalEdit'])->name('quote.modalEdit')->middleware(['auth', 'permission:quote.edit']);
+    Route::get('quote/modal/copy/edit/{quotationModel}', [quoteController::class, 'modalEditCopy'])->name('quote.modalEditCopy')->middleware(['auth', 'permission:quote.create']);
+    Route::get('quote/modal/cancel/{quotationModel}', [quoteController::class, 'modalCancel'])->name('quote.modalCancel')->middleware(['auth', 'permission:quote.edit']);
+    Route::get('quote/recancel/{quotationModel}', [quoteController::class, 'Recancel'])->name('quote.recancel')->middleware(['auth', 'permission:quote.edit']);
 
     // Sales info
     Route::get('quote/sales/{quotationModel}', [salesInformationController::class, 'index'])->name('saleInfo.index');
