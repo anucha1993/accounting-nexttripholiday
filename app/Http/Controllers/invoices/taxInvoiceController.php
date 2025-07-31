@@ -32,11 +32,11 @@ class taxInvoiceController extends Controller
              $taxinvoiceNumber = $taxtinvoice->taxinvoice_number;
          } else {
              // กรณีที่ไม่มีเลขที่ใบกำกับภาษีในระบบ
-             $taxinvoiceNumber = 'RV' . date('Y') . date('m') . '-' . '0000';
+             $taxinvoiceNumber = 'RVN' . date('Y') . date('m') . '-' . '0000';
          }
      
          // สร้างเลขใหม่
-         $prefix = 'RV';
+         $prefix = 'RVN';
          $year = date('Y');
          $month = date('m');
      

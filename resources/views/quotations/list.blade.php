@@ -424,7 +424,7 @@
                                     $inputtaxTotalWholesale = 0;
                                 @endphp
                                 @forelse ($quotations as $key => $item)
-                                    <tr class="align-middle" data-quote-id="{{ $item->quote_id }} ">
+                                    <tr class="align-middle" data-quote-id="{{ $item->quote_id }} " {{ $item->quote_commission == 'N' ? 'style=background-color:#f8d7da' : '' }}>
                                         <td class="text-center fw-bold">
                                             {{ $quotations->total() - $quotations->firstItem() + 1 - $key }}
                                         </td>
@@ -436,6 +436,11 @@
                                             <div class="d-flex flex-column">
                                                 <span class="text-primary">{{ $item->quote_number }}</span>
                                                 <div>
+                                                    @if ($item->quote_commission == 'N')
+                                                        <span class="badge bg-danger badge-sm">N</span>
+                                                        
+                                                    @endif
+
                                                     @if ($item->debitNote)
                                                         <span class="badge bg-success badge-sm">DBN</span>
                                                     @endif

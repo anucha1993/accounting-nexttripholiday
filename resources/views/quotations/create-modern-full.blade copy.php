@@ -131,41 +131,6 @@
         .row.table-custom {
             margin-bottom: 18px;
         }
-        /* Responsive: ปรับตารางรายการสินค้าให้แสดงแนวตั้งบนจอเล็ก */
-        @media (max-width: 767.98px) {
-            #quotation-table .header-row,
-            #quotation-table .row.item-row {
-                display: flex;
-                flex-direction: column;
-                align-items: stretch;
-            }
-            #quotation-table .header-row > div,
-            #quotation-table .row.item-row > div {
-                width: 100% !important;
-                max-width: 100% !important;
-                margin-bottom: 8px;
-                text-align: left !important;
-            }
-            #quotation-table .header-row > div {
-                font-size: 1rem;
-                background: #e3f2fd;
-                border-radius: 6px;
-                margin-bottom: 2px;
-                padding: 6px 8px;
-            }
-            #quotation-table .row.item-row > div {
-                background: #fafdff;
-                border-radius: 6px;
-                padding: 6px 8px;
-            }
-            #quotation-table .row.item-row.table-discount > div {
-                background: #fffbe7;
-            }
-            #quotation-table .row.item-row .btn-danger {
-                width: 100%;
-                margin-top: 6px;
-            }
-        }
 
         .header-row,
         .summary-row {
@@ -559,18 +524,15 @@
                         <h5 class="section-inline"><i class="fa fa-coins"></i> ข้อมูลค่าบริการ <span id="pax"
                                 class="float-end"></span></h5>
                         <div id="quotation-table" class="table-custom text-center">
-                            <div class="row header-row d-none d-md-flex" style="padding: 5px">
+                            <div class="row header-row" style="padding: 5px">
                                 <div class="col-md-1">ลำดับ</div>
                                 <div class="col-md-3">รายการสินค้า</div>
+
                                 <div class="col-md-1">รวม 3%</div>
                                 <div class="col-md-1">NonVat</div>
                                 <div class="col-md-1">จำนวน</div>
                                 <div class="col-md-2">ราคา/หน่วย</div>
                                 <div class="col-md-2">ยอดรวม</div>
-                            </div>
-                            <!-- Mobile header -->
-                            <div class="row header-row d-flex d-md-none" style="padding: 5px">
-                                <div>ลำดับ | รายการ | 3% | NonVat | จำนวน | ราคา/หน่วย | ยอดรวม</div>
                             </div>
                             <hr>
                             {{-- <div class="row discount-row mb-1 align-items-center" data-row-id="${rowId}" style="background:#fffbe7;border-radius:8px;padding:8px 0;"> --}}
@@ -578,8 +540,8 @@
                         <div class="row align-items-center row item-row"> --}}
 
                             <div id="table-income" style="background:#55ffb848;border-radius:8px;padding:8px 0;">
-                                <!-- Desktop row -->
-                                <div class="row item-row table-income align-items-center d-none d-md-flex">
+                                
+                                <div class="row item-row table-income align-items-center">
                                     <div class="col-md-1 "><span class="row-number"></span></div>
                                     <div class="col-md-3">
                                         <select name="product_id[]" class="form-select product-select select2"
@@ -604,12 +566,14 @@
                                         <input type="hidden" name="withholding_tax[]" value="N">
                                         <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y">
                                     </div>
+
                                     <div class="col-md-1 text-center">
                                         <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
                                             <option selected value="nonvat">nonVat</option>
                                             <option value="vat">Vat</option>
                                         </select>
                                     </div>
+
                                     <div class="col-md-1"><input type="number" name="quantity[]"
                                             class="quantity form-control text-end" step="1" value="1"></div>
                                     <div class="col-md-2"><input type="number" name="price_per_unit[]"
@@ -621,49 +585,7 @@
                                         <button type="button" class="btn btn-danger btn-sm remove-row-btn "
                                             title="ลบแถว" style="font-size: 13px 10px"><i
                                                 class="fa fa-trash"></i></button>
-                                    </div>
-                                </div>
-                                <!-- Mobile row -->
-                                <div class="row item-row table-income align-items-center d-flex d-md-none" style="margin-bottom:12px;">
-                                    <div><b>ลำดับ:</b> <span class="row-number"></span></div>
-                                    <div><b>สินค้า:</b>
-                                        <select name="product_id[]" class="form-select product-select select2"
-                                            id="product-select-mobile" style="width: 100%;">
-                                            <option value="">--เลือกสินค้า--</option>
-                                            @forelse ($products as $product)
-                                                <option @if (189 === $product->id) selected @endif
-                                                    data-pax="{{ $product->product_pax }}" value="{{ $product->id }}">
-                                                    {{ $product->product_name }}{{ $product->product_pax === 'Y' ? '(Pax)' : '' }}
-                                                </option>
-                                            @empty
-                                            @endforelse
-                                        </select>
-                                    </div>
-                                    <div style="display:none">
-                                        <select name="expense_type[]" class="form-select">
-                                            <option selected value="income"> รายได้ </option>
-                                        </select>
-                                    </div>
-                                    <div><b>3%:</b> <input type="hidden" name="withholding_tax[]" value="N">
-                                        <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y">
-                                    </div>
-                                    <div><b>NonVat:</b>
-                                        <select name="vat_status[]" class="vat-status form-select" style="width: 100%;">
-                                            <option selected value="nonvat">nonVat</option>
-                                            <option value="vat">Vat</option>
-                                        </select>
-                                    </div>
-                                    <div><b>จำนวน:</b> <input type="number" name="quantity[]"
-                                            class="quantity form-control text-end" step="1" value="1"></div>
-                                    <div><b>ราคา/หน่วย:</b> <input type="number" name="price_per_unit[]"
-                                            class="price-per-unit form-control text-end period1" step="0.01"
-                                            value="0"></div>
-                                    <div><b>ยอดรวม:</b> <input type="number" name="total_amount[]"
-                                            class="total-amount form-control text-end" value="0" readonly></div>
-                                    <div>
-                                        <button type="button" class="btn btn-danger btn-sm remove-row-btn "
-                                            title="ลบแถว" style="font-size: 13px 10px;width:100%"><i
-                                                class="fa fa-trash"></i></button>
+                                        {{-- <a href="javascript:void(0)" class="remove-row-btn  text-danger" title="ลบแถว"><span class="fa fa-trash"></span></a> --}}
                                     </div>
                                 </div>
                             </div>
@@ -1497,77 +1419,43 @@
 
             // เพิ่มรายการบริการ (row)
             $('#add-row-service').on('click', function() {
+                // สร้าง row ใหม่โดยใช้โครงสร้างเดียวกับ Blade (มีคลาส item-row table-income)
                 var rowCount = $('#table-income > .row').length + 1;
                 var rowId = 'service-row-' + Date.now();
                 var rowHtml = `
-                <!-- Desktop row -->
-                <div class="row item-row table-income align-items-center d-none d-md-flex">
-                    <div class="col-md-1"><span class="row-number"></span></div>
-                    <div class="col-md-3">
-                        <select name="product_id[]" class="form-select product-select select2" style="width: 100%;">
-                            <option value="">--เลือกสินค้า--</option>
-                            @forelse ($products as $product)
-                                <option data-pax="{{ $product->product_pax }}" value="{{ $product->id }}">{{ $product->product_name }}{{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
-                            @empty
-                            @endforelse
-                        </select>
-                    </div>
-                    <div class="col-md-1" style="display: none">
-                        <select name="expense_type[]" class="form-select">
-                            <option selected value="income"> รายได้ </option>
-                        </select>
-                    </div>
-                    <div class="col-md-1">
-                        <input type="hidden" name="withholding_tax[]" value="N">
-                        <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y">
-                    </div>
-                    <div class="col-md-1 text-center">
-                        <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
-                            <option selected value="nonvat">nonVat</option>
-                            <option value="vat">Vat</option>
-                        </select>
-                    </div>
-                    <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="1"></div>
-                    <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end period1" step="0.01" value="0"></div>
-                    <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end" value="0" readonly></div>
-                    <div class="col-md-1 text-center">
-                        <button type="button" class="btn btn-danger btn-sm remove-row-btn " title="ลบแถว"><i class="fa fa-trash" ></i></button>
-                    </div>
+            <div class="row item-row table-income align-items-center">
+                <div class="col-md-1"><span class="row-number"></span></div>
+                <div class="col-md-3">
+                    <select name="product_id[]" class="form-select product-select select2" style="width: 100%;">
+                        <option value="">--เลือกสินค้า--</option>
+                        @forelse ($products as $product)
+                            <option data-pax="{{ $product->product_pax }}" value="{{ $product->id }}">{{ $product->product_name }}{{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
+                        @empty
+                        @endforelse
+                    </select>
                 </div>
-                <!-- Mobile row -->
-                <div class="row item-row table-income align-items-center d-flex d-md-none" style="margin-bottom:12px;">
-                    <div><b>ลำดับ:</b> <span class="row-number"></span></div>
-                    <div><b>สินค้า:</b>
-                        <select name="product_id[]" class="form-select product-select select2" style="width: 100%;">
-                            <option value="">--เลือกสินค้า--</option>
-                            @forelse ($products as $product)
-                                <option data-pax="{{ $product->product_pax }}" value="{{ $product->id }}">{{ $product->product_name }}{{ $product->product_pax === 'Y' ? '(Pax)' : '' }}</option>
-                            @empty
-                            @endforelse
-                        </select>
-                    </div>
-                    <div style="display:none">
-                        <select name="expense_type[]" class="form-select">
-                            <option selected value="income"> รายได้ </option>
-                        </select>
-                    </div>
-                    <div><b>3%:</b> <input type="hidden" name="withholding_tax[]" value="N">
-                        <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y">
-                    </div>
-                    <div><b>NonVat:</b>
-                        <select name="vat_status[]" class="vat-status form-select" style="width: 100%;">
-                            <option selected value="nonvat">nonVat</option>
-                            <option value="vat">Vat</option>
-                        </select>
-                    </div>
-                    <div><b>จำนวน:</b> <input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="1"></div>
-                    <div><b>ราคา/หน่วย:</b> <input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end period1" step="0.01" value="0"></div>
-                    <div><b>ยอดรวม:</b> <input type="number" name="total_amount[]" class="total-amount form-control text-end" value="0" readonly></div>
-                    <div>
-                        <button type="button" class="btn btn-danger btn-sm remove-row-btn " title="ลบแถว" style="font-size: 13px 10px;width:100%"><i class="fa fa-trash"></i></button>
-                    </div>
+                <div class="col-md-1" style="display: none">
+                    <select name="expense_type[]" class="form-select">
+                        <option selected value="income"> รายได้ </option>
+                    </select>
                 </div>
-                `;
+                <div class="col-md-1">
+                    <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y">
+                </div>
+                <div class="col-md-1 text-center">
+                    <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
+                        <option selected value="nonvat">nonVat</option>
+                        <option value="vat">Vat</option>
+                    </select>
+                </div>
+                <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="1"></div>
+                <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01" value="0"></div>
+                <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end" value="0" readonly></div>
+                <div class="col-md-1 text-center">
+                   <button type="button" class="btn btn-danger btn-sm remove-row-btn " title="ลบแถว"><i class="fa fa-trash" ></i></button>
+                </div>
+            </div>
+        `;
                 $('#table-income').append(rowHtml);
                 // init select2 เฉพาะแถวใหม่
                 var $select = $('#table-income .row:last .product-select.select2');
@@ -1618,67 +1506,37 @@
                 var isWithholding = rowData && rowData.withholding_tax === 'Y' ? 'checked' : '';
                 var total = qty * price;
                 var rowHtml = `
-                <!-- Desktop row -->
-                <div class="row item-row table-discount mb-1 align-items-center discount-row d-none d-md-flex" data-row-id="${rowId}" style="background:#fffbe7;border-radius:8px;padding:8px 0;">
-                    <div class="col-md-1 text-center discount-row-number">${rowCount}</div>
-                    <div class="col-md-3">
-                        <select name="product_id[]" class="form-select product-select select2 discount-product-select" style="width: 100%;">
-                            <option value="">--เลือกส่วนลด--</option>
-                            @foreach ($productDiscount as $product)
-                                <option value="{{ $product->id }}">{{ $product->product_name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-1" style="display: none">
-                        <select name="expense_type[]" class="form-select">
-                            <option value="discount" selected> ส่วนลด </option>
-                        </select>
-                    </div>
-                    <div class="col-md-1 text-center">
-                        <input type="hidden" name="withholding_tax[]" value="N">
-                    </div>
-                    <div class="col-md-1 text-center">
-                        <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
-                            <option value="nonvat" >nonVat</option>
-                        </select>
-                    </div>
-                    <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="${qty}"></div>
-                    <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01" value="${price}"></div>
-                    <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end" value="${total.toFixed(2)}" readonly></div>
-                    <div class="col-md-1 text-center">
-                        <button type="button" class="btn btn-danger btn-sm remove-row-btn" title="ลบแถว"><i class="fa fa-trash"></i></button>
-                    </div>
+            <div class="row item-row table-discount mb-1 align-items-center discount-row" data-row-id="${rowId}" style="background:#fffbe7;border-radius:8px;padding:8px 0;">
+                <div class="col-md-1 text-center discount-row-number">${rowCount}</div>
+                <div class="col-md-3">
+                    <select name="product_id[]" class="form-select product-select select2 discount-product-select" style="width: 100%;">
+                        <option value="">--เลือกส่วนลด--</option>
+                        @foreach ($productDiscount as $product)
+                            <option value="{{ $product->id }}">{{ $product->product_name }}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <!-- Mobile row -->
-                <div class="row item-row table-discount mb-1 align-items-center discount-row d-flex d-md-none" data-row-id="${rowId}" style="background:#fffbe7;border-radius:8px;padding:8px 0;">
-                    <div><b>ลำดับ:</b> <span class="discount-row-number">${rowCount}</span></div>
-                    <div><b>ส่วนลด:</b>
-                        <select name="product_id[]" class="form-select product-select select2 discount-product-select" style="width: 100%;">
-                            <option value="">--เลือกส่วนลด--</option>
-                            @foreach ($productDiscount as $product)
-                                <option value="{{ $product->id }}">{{ $product->product_name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div style="display:none">
-                        <select name="expense_type[]" class="form-select">
-                            <option value="discount" selected> ส่วนลด </option>
-                        </select>
-                    </div>
-                    <div><input type="hidden" name="withholding_tax[]" value="N"></div>
-                    <div><b>NonVat:</b>
-                        <select name="vat_status[]" class="vat-status form-select" style="width: 100%;">
-                            <option value="nonvat" >nonVat</option>
-                        </select>
-                    </div>
-                    <div><b>จำนวน:</b> <input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="${qty}"></div>
-                    <div><b>ราคา/หน่วย:</b> <input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01" value="${price}"></div>
-                    <div><b>ยอดรวม:</b> <input type="number" name="total_amount[]" class="total-amount form-control text-end" value="${total.toFixed(2)}" readonly></div>
-                    <div>
-                        <button type="button" class="btn btn-danger btn-sm remove-row-btn" title="ลบแถว" style="width:100%"><i class="fa fa-trash"></i></button>
-                    </div>
+                <div class="col-md-1" style="display: none">
+                    <select name="expense_type[]" class="form-select">
+                        <option value="discount" selected> ส่วนลด </option>
+                    </select>
                 </div>
-                `;
+                <div class="col-md-1 text-center">
+                    <input type="hidden" name="withholding_tax[]" value="N">
+                </div>
+                <div class="col-md-1 text-center">
+                    <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
+                        <option value="nonvat" >nonVat</option>
+                    </select>
+                </div>
+                <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="${qty}"></div>
+                <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01" value="${price}"></div>
+                <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end" value="${total.toFixed(2)}" readonly></div>
+                <div class="col-md-1 text-center">
+                    <button type="button" class="btn btn-danger btn-sm remove-row-btn" title="ลบแถว"><i class="fa fa-trash"></i></button>
+                </div>
+            </div>
+        `;
                 $('#discount-list').append(rowHtml);
                 // init select2 เฉพาะแถวใหม่ (ใช้ element ที่ render จริง)
                 var $select = $('#discount-list .discount-row:last .product-select.select2');

@@ -13,10 +13,7 @@ class airlineController extends Controller
     public function __construct()
     {
        $this->middleware('auth');
-       $this->middleware('permission:create-airline|edit-airline|delete-airline|view-airline', ['only' => ['index','show']]);
-       $this->middleware('permission:create-airline', ['only' => ['create','store']]);
-       $this->middleware('permission:edit-airline', ['only' => ['edit','update']]);
-       $this->middleware('permission:delete-airline', ['only' => ['destroy']]);
+
     }
 
     public function index(Request $request)

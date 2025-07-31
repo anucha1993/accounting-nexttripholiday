@@ -581,7 +581,7 @@
     </div>
     <footer class="footer py-3 bg-light text-center">
         <div class="container">
-            <span class="text-muted">All Rights Reserved by Ample admin.</span>
+            <span class="text-muted">Copyright © 2025 Next Trip Holiday, All Rights Reserved</span>
         </div>
     </footer>
     <!-- -------------------------------------------------------------- -->

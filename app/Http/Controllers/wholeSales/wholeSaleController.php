@@ -15,10 +15,6 @@ class wholeSaleController extends Controller
     public function __construct()
     {
        $this->middleware('auth');
-       $this->middleware('permission:create-wholesale|edit-wholesale|delete-wholesale|view-wholesale', ['only' => ['index','show']]);
-       $this->middleware('permission:create-wholesale', ['only' => ['create','store']]);
-       $this->middleware('permission:edit-wholesale', ['only' => ['edit','update']]);
-       $this->middleware('permission:delete-wholesale', ['only' => ['destroy']]);
     }
 
 

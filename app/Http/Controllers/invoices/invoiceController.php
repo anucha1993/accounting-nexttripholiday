@@ -40,9 +40,9 @@ class invoiceController extends Controller
         if (!empty($invoice)) {
             $invoiceNumber = $invoice->invoice_number;
         } else {
-            $invoiceNumber = 'IVS' . date('y') . date('m') . '-' . '0000';
+            $invoiceNumber = 'IVN' . date('y') . date('m') . '-' . '0000';
         }
-        $prefix = 'IVS';
+        $prefix = 'IVN';
         $year = date('y');
         $month = date('m');
         $lastFourDigits = substr($invoiceNumber, -4);
