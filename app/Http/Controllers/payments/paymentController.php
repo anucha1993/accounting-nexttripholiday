@@ -141,7 +141,7 @@ class paymentController extends Controller
             // ย้ายไฟล์ไปยังตำแหน่งที่ต้องการ
             $file->move($absolutePath, $uniqueName);
             // อัปเดตพาธไฟล์ในฐานข้อมูล
-            $paymentModel->update(['payment_file_path' => $filePath]);
+            $paymentModel->update(['payment_file_path' => $filePath,'payment_status' => 'success']);
         }
         // การจัดการการชำระเงิน
         $totalOld = $quote->payment !== null ? $quote->payment : 0;
@@ -161,9 +161,9 @@ class paymentController extends Controller
         if ($request->payment_total <= 0) {
             $paymentStatus = 'cancel';
         }
-        $request->merge([
-            'payment_status' => $paymentStatus,
-        ]);
+        // $request->merge([
+        //     'payment_status' => $paymentStatus,
+        // ]);
         $paymentModel->update($request->all());
         // quote
         $quotationModel = quotationModel::where('quote_id', $paymentModel->payment_quote_id)->first();
@@ -182,7 +182,7 @@ class paymentController extends Controller
 
         $quotationModel->update([
             'payment' => $deposit,
-            'quote_status' => $quoteStatus,
+            // 'quote_status' => $quoteStatus,
             'quote_payment_status' => $quotePayment,
         ]);
         // ===== แจ้งเตือน refund =====

@@ -354,6 +354,7 @@
             <div class="container border bg-white">
                 <h2 class="text-center my-4"><i class="fa fa-file-invoice-dollar"
                         style="color:#1976d2;margin-right:8px;"></i>สร้างใบเสนอราคา </h2>
+                        
                 <form action="{{ route('quote.store') }}" id="formQuoteModern" method="post">
                     @csrf
                     <div class="section-card">
