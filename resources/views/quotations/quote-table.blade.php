@@ -341,10 +341,10 @@
                                                     href="{{ route('quote.modalEdit', ['quotationModel' => $quotationModel->quote_id, 'mode' => 'edit']) }}">
                                                     <i class="fa fa-edit text-info"></i> แก้ไข
                                                 </a>
-                                                 {{-- <a class="dropdown-item modal-quote-edit-new"
+                                                 <a class="dropdown-item modal-quote-edit-new"
                                                     href="{{ route('quote.modalEditNew', ['quotationModel' => $quotationModel->quote_id, 'mode' => 'edit']) }}">
                                                     <i class="fa fa-edit text-info"></i> แก้ไข-ใหม่
-                                                </a> --}}
+                                                </a>
                                             @endcan
                                             @can('invoice.create')
                                                 @if (empty($invoiceModel))
@@ -695,7 +695,7 @@
     <style>
     #modal-quote-edit-new .modal-dialog {
         max-width: 98vw !important;
-        width: 98vw !important;
+        width: 75vw !important;
         margin: 1.5rem auto;
     }
     #modal-quote-edit-new .modal-content {

@@ -1803,6 +1803,7 @@ $('#date-start-display, #date-end-display, #numday').on('change.auto', function(
                     }
                 }
             });
+            
             // Autocomplete ค้นหาแพคเกจทัวร์ (logic เหมือนต้นฉบับ)
             $('#tourSearch').on('input', function(e) {
                 var searchTerm = $(this).val();

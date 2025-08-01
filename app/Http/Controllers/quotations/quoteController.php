@@ -151,28 +151,32 @@ class quoteController extends Controller
         $runningCode = $this->generateRunningCodeIV();
 
         if ($request->customer_type_new !== 'customerold') {
-            // ตรวจสอบลูกค้าซ้ำตามเงื่อนไขที่กำหนด
+            // ตรวจสอบลูกค้าซ้ำ: ถ้าชื่อ หรืออีเมล หรือเบอร์ ตรงกับลูกค้าเดิม ให้ update ถ้าไม่ตรงเลยให้ create ใหม่
             $customerName = trim($request->customer_name);
             $customerEmail = trim($request->customer_email);
+            $customerTel = trim($request->customer_tel);
             $customerByName = customerModel::where('customer_name', $customerName)->first();
-            $customerByEmail = customerModel::where('customer_email', $customerEmail)->first();
+            $customerByEmail = $customerEmail ? customerModel::where('customer_email', $customerEmail)->first() : null;
+            $customerByTel = $customerTel ? customerModel::where('customer_tel', $customerTel)->first() : null;
 
-            if ($customerByName && $customerByEmail && $customerByName->customer_id === $customerByEmail->customer_id) {
-                // กรณีชื่อและอีเมลตรงกัน ให้ update
-                $customerByName->update([
+            $customer = $customerByName ?: ($customerByEmail ?: $customerByTel);
+
+            if ($customer) {
+                // update ลูกค้าเดิม
+                $customer->update([
                     'customer_name' => $customerName,
                     'customer_email' => $customerEmail,
                     'customer_address' => $request->customer_address,
                     'customer_texid' => $request->customer_texid,
-                    'customer_tel' => $request->customer_tel,
+                    'customer_tel' => $customerTel,
                     'customer_fax' => $request->customer_fax,
                     'customer_date' => $request->customer_date,
                     'customer_campaign_source' => $request->customer_campaign_source,
                     'customer_social_id' => $request->customer_social_id,
                 ]);
-                $customerModel = $customerByName;
+                $customerModel = $customer;
             } else {
-                // insert ใหม่ (กรณีชื่อซ้ำแต่ email ไม่ตรง หรือ email ซ้ำแต่ชื่อไม่ตรง หรือไม่ซ้ำทั้งคู่)
+                // insert ใหม่
                 $runningCodeCus = $this->generateRunningCodeCUS();
                 $request->merge(['customer_number' => $runningCodeCus]);
                 $customerModel = customerModel::create($request->all());
