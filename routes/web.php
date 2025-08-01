@@ -411,6 +411,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('quote/modal/copy/edit/{quotationModel}', [quoteController::class, 'modalEditCopy'])->name('quote.modalEditCopy')->middleware(['auth', 'permission:quote.create']);
     Route::get('quote/modal/cancel/{quotationModel}', [quoteController::class, 'modalCancel'])->name('quote.modalCancel')->middleware(['auth', 'permission:quote.edit']);
     Route::get('quote/recancel/{quotationModel}', [quoteController::class, 'Recancel'])->name('quote.recancel')->middleware(['auth', 'permission:quote.edit']);
+    ///test
+        Route::get('quote/modal/edit/new/{quotationModel}', [quoteController::class, 'modalEditNew'])->name('quote.modalEditNew')->middleware(['auth', 'permission:quote.edit']);
 
     // Sales info
     Route::get('quote/sales/{quotationModel}', [salesInformationController::class, 'index'])->name('saleInfo.index');

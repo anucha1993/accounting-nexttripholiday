@@ -319,6 +319,33 @@ class quoteController extends Controller
         return view('quotations.modal-edit', compact('mode', 'campaignSource', 'customer', 'quoteProducts', 'quotationModel', 'sales', 'country', 'airline', 'numDays', 'wholesale', 'products', 'productDiscount', 'quoteProductsDiscount'));
     }
 
+    public function modalEditNew(quotationModel $quotationModel, Request $request)
+    {
+        $bookingModel = bookingModel::where('code', $quotationModel->quote_booking)->first();
+        $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
+        if (Auth::user()->getRoleNames()->contains('sale')) {
+            $sales = saleModel::select('name', 'id')
+                ->where('id', Auth::user()->sale_id)
+                ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->get();
+        } else {
+            $sales = saleModel::select('name', 'id')
+                ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->get();
+        }
+        $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
+        $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
+        $numDays = numDayModel::orderBy('num_day_total')->get();
+        $wholesale = wholesaleModel::where('status', 'on')->get();
+        $products = productModel::where('product_type', '!=', 'discount')->get();
+        $productDiscount = productModel::where('product_type', 'discount')->get();
+        $quoteProducts = quoteProductModel::where('quote_id', $quotationModel->quote_id)->where('expense_type', 'income')->get();
+        $quoteProductsDiscount = quoteProductModel::where('quote_id', $quotationModel->quote_id)->where('expense_type', 'discount')->get();
+        $campaignSource = DB::table('campaign_source')->get();
+
+        return view('quotations.modal-edit-new-test', compact('campaignSource', 'customer', 'quoteProducts', 'quotationModel', 'sales', 'country', 'airline', 'numDays', 'wholesale', 'products', 'productDiscount', 'quoteProductsDiscount'));
+    }
+
     public function modalView(quotationModel $quotationModel, Request $request)
     {
         $bookingModel = bookingModel::where('code', $quotationModel->quote_booking)->first();

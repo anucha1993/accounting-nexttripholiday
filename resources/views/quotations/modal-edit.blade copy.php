@@ -1,323 +1,163 @@
 <div class="modal-body">
 
     <style>
-        body,
-        .page-content,
-        .container,
-        .form-control,
-        .form-select,
-        .select2-selection {
-            font-family: 'Sarabun', 'Prompt', 'Segoe UI', sans-serif;
-        }
+        /* 🔁 คงฟอนต์เดิม แต่ลดขนาดทั้งหมดลง */
+body,
+.page-content,
+.container,
+.form-control,
+.form-select,
+.select2-selection {
+    font-family: 'Sarabun', 'Prompt', 'Segoe UI', sans-serif;
+    font-size: 0.65rem !important;
+}
 
-        /* .container.border.bg-white {
-        background: #f7fafd;
-        border-radius: 18px;
-        box-shadow: 0 2px 16px 0 rgba(0,0,0,0.07);
-        padding: 32px 28px 24px 28px;
-        margin-top: 24px;
-    } */
-        .section-card {
-            background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 1px 8px 0 rgba(25, 118, 210, 0.07);
-            margin-bottom: 28px;
-            padding: 24px 18px 18px 18px;
-            border-top: 5px solid #1976d2;
-            position: relative;
-        }
+/* 🔁 ลด padding/margin ของ section card */
+.section-card {
+    padding: 5px 5px 5px 5px !important;
+    margin-bottom: 5px !important;
+}
 
-        .section-card .section-title {
-            font-size: 1.18rem;
-            font-weight: 700;
-            margin-bottom: 18px;
-            color: #fff;
-            background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
-            border-radius: 8px 8px 8px 8px;
-            padding: 10px 18px 10px 44px;
-            position: relative;
-            box-shadow: 0 2px 8px 0 rgba(25, 118, 210, 0.08);
-            letter-spacing: 0.5px;
-        }
+/* 🔁 section title ลดขนาด padding และ font */
+.section-card .section-title {
+    font-size: 0.85rem !important;
+    padding: 6px 12px 6px 32px !important;
+    margin-bottom: 12px !important;
+}
 
-        .section-title .fa {
-            position: absolute;
-            left: 16px;
-            top: 13px;
-            font-size: 1.2em;
-            opacity: 0.85;
-        }
+.section-title .fa {
+    top: 9px !important;
+    left: 10px !important;
+    font-size: 0.95em !important;
+}
 
-        .divider {
-            border: none;
-            border-top: 2px dashed #90caf9;
-            margin: 24px 0 18px 0;
-        }
+/* 🔁 Divider margin เล็กลง */
+.divider {
+    margin: 2px 0 !important;
+}
 
-        h4,
-        h5 {
-            font-weight: 700;
-            color: #1a237e;
-            letter-spacing: 0.5px;
-        }
+/* 🔁 ลด margin/padding ของ label และ input */
+label {
+    font-size: 0.65rem !important;
+    margin-bottom: 2px !important;
+}
 
-        h5.section-inline {
-            background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
-            color: #fff !important;
-            border-radius: 8px;
-            padding: 7px 16px 7px 38px;
-            margin-bottom: 18px;
-            position: relative;
-            font-size: 1.08rem;
-        }
+.form-control,
+.form-select,
+.select2-selection {
+    font-size: 0.65rem !important;
+    padding: 1px 2px !important;
+    margin: 1px 0 !important;
+    height: auto !important;
+}
 
-        h5.section-inline .fa {
-            position: absolute;
-            left: 14px;
-            top: 10px;
-            font-size: 1.1em;
-            opacity: 0.85;
-        }
+/* 🔁 Select2 เฉพาะแบบ single */
+.select2-container--default .select2-selection--single {
+    height: 26px !important;
+    padding: 0 6px !important;
+}
 
-        label {
-            font-weight: 600;
-            color: #222;
-            margin-bottom: 4px;
-        }
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 24px !important;
+    font-size: 0.65rem !important;
+}
 
-       .form-control,
-        .form-select,
-        .select2-selection {
-            font-size: 0.75rem; /* ลดขนาดฟอนต์ลง */
-            padding: 5px 10px; /* ลด padding */
-            margin: 5px 0; /* ลด margin */
-        }
-        .form-control:focus,
-        .form-select:focus,
-        .select2-selection:focus {
-            border: 2px solid #42a5f5 !important;
-            background: #fff;
-            outline: none;
-            box-shadow: 0 2px 8px 0 rgba(25, 118, 210, 0.13);
-        }
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 24px !important;
+    top: 1px !important;
+}
 
-        .form-control:focus,
-        .form-select:focus,
-        .select2-selection:focus {
-            border: 1.5px solid #1976d2 !important;
-            background: #fff;
-            outline: none;
-            box-shadow: 0 2px 8px 0 rgba(25, 118, 210, 0.07);
-        }
+/* 🔁 Table rows */
+.row.table-custom {
+    margin-bottom: 10px !important;
+}
 
-        .select2-container--default .select2-selection--single {
-            height: 38px;
-            padding: 4px 8px;
-            border-radius: 8px;
-            border: 1px solid #d1d5db;
-            background: #fafbfc;
-        }
+.item-row {
+    padding-left: 1px !important;
+    padding-right: 1px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
 
-        .select2-container--default .select2-selection--single .select2-selection__rendered {
-            line-height: 30px;
-        }
+/* หรือถ้าใช้ container หรือ card-body หุ้มอยู่ */
+.card-body,
+.section-card,
+.container {
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+}
 
-        .row.table-custom {
-            margin-bottom: 18px;
-        }
+/* ปรับ .row และ .col ให้ลดช่องว่างแนวขวาง */
+.row.g-0 > [class*="col-"] {
+    padding-left: 1px !important;
+    padding-right: 1px !important;
+}
+.row.item-row > .row {
+    margin-bottom: 1px !important;
+}
 
-        .header-row,
-        .summary-row {
-            background: #e3f2fd;
-            border-radius: 8px;
-            margin-bottom: 6px;
-            padding: 8px 0;
-            border-left: 4px solid #1976d2;
-        }
+/* .discount-row {
+    padding-left: 1px !important;
+    padding-right: 1px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+} */
 
-        .header-row>div,
-        .summary-row>div {
-            font-weight: 600;
-            color: #374151;
-        }
+/* 🔁 สรุปยอด */
+.summary {
+    padding: 10px 8px 8px 8px !important;
+}
 
-        .item-row {
-            background: #fafdff;
-            border-radius: 10px;
-            margin-bottom: 18px;
-            box-shadow: 0 1px 4px 0 rgba(25, 118, 210, 0.04);
-            transition: box-shadow 0.2s, background 0.2s;
-            padding: 10px 0 10px 0;
-        }
+.summary-row {
+    padding: 4px 0 !important;
+    margin-bottom: 4px !important;
+}
 
-        .item-row.table-income {
-            background: #fafdff;
-        }
+#grand-total,
+#sum-include-vat {
+    font-size: 0.8rem !important;
+    padding: 1px 6px !important;
+}
 
-        .item-row.table-discount {
-            background: #fffbe7;
-        }
+/* 🔁 ปรับปุ่มให้เล็กลง */
+.btn,
+.btn-sm,
+.btn-primary,
+.btn-danger,
+.btn-link {
+    font-size: 0.65rem !important;
+    padding: 4px 10px !important;
+    border-radius: 6px !important;
+}
 
-        .item-row:hover {
-            box-shadow: 0 4px 16px 0 rgba(25, 118, 210, 0.13);
-            background: #e3f2fd;
-        }
+/* 🔁 Group input */
+.input-group-text {
+    padding: 2px 8px !important;
+    font-size: 0.65rem !important;
+}
 
-        .item-row.table-discount:hover {
-            background: #fff3c0;
-        }
+/* 🔁 Responsive */
+@media (max-width: 991px) {
+    .container.border.bg-white {
+        padding: 8px 4px !important;
+    }
+    .summary {
+        padding: 6px 4px !important;
+    }
+}
 
-        .row.item-row>.row {
-            margin-bottom: 10px;
-        }
 
-        .add-row {
-            margin: 10px 0 10px 0;
-            font-size: 1.08rem;
-            color: #1976d2;
-            cursor: pointer;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            background: #e3f2fd;
-            border-radius: 8px;
-            padding: 7px 12px;
-            width: fit-content;
-            transition: background 0.2s;
-        }
-
-        .add-row:hover {
-            background: #bbdefb;
-            color: #0d47a1;
-        }
-
-        .add-row i {
-            margin-right: 6px;
-        }
-
-        .btn-primary,
-        .btn-danger,
-        .btn-link {
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1.05rem;
-            padding: 7px 18px;
-            transition: background 0.2s, color 0.2s;
-        }
-
-        .btn-primary {
-            background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
-            border: none;
-            color: #fff;
-            box-shadow: 0 2px 8px 0 rgba(25, 118, 210, 0.08);
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(90deg, #0d47a1 60%, #1976d2 100%);
-            color: #fff;
-        }
-
-        .btn-danger {
-            background: linear-gradient(90deg, #e53935 60%, #ff7043 100%);
-            border: none;
-            color: #fff;
-        }
-
-        .btn-danger:hover {
-            background: linear-gradient(90deg, #b71c1c 60%, #e53935 100%);
-            color: #fff;
-        }
-
-        .btn-link {
-            color: #1976d2;
-            text-decoration: underline;
-            background: none;
-            border: none;
-        }
-
-        .list-group-item,
-        .period-select {
-            border-radius: 6px !important;
-            margin-bottom: 2px;
-            transition: background 0.15s;
-        }
-
-        .list-group-item:hover,
-        .period-select:hover {
-            background: #e3f2fd !important;
-            color: #1976d2;
-        }
-
-        .summary {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 18px 12px 10px 12px;
-            box-shadow: 0 1px 8px 0 rgba(25, 118, 210, 0.07);
-            border-left: 5px solid #1976d2;
-        }
-
-        #grand-total,
-        #sum-include-vat {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #d84315;
-            background: linear-gradient(90deg, #fff3e0 60%, #ffe0b2 100%);
-            border-radius: 6px;
-            padding: 2px 8px;
-            box-shadow: 0 1px 4px 0 rgba(255, 152, 0, 0.07);
-        }
-
-        #pax {
-            font-size: 1.08rem;
-            color: #1976d2;
-            font-weight: 600;
-        }
-
-        textarea.form-control {
-            min-height: 60px;
-            border-radius: 8px;
-        }
-
-        .input-group-text {
-            background: #e3eafc;
-            border-radius: 8px 0 0 8px;
-            font-weight: 600;
-            color: #1a237e;
-        }
-
-        .discount-row {
-            background: #f9f9fb;
-            border-radius: 8px;
-            margin-bottom: 6px;
-            box-shadow: 0 1px 4px 0 rgba(25, 118, 210, 0.04);
-            border-left: 4px solid #42a5f5;
-        }
-
-        .discount-row .btn-danger {
-            padding: 4px 10px;
-            font-size: 1rem;
-        }
-
-        @media (max-width: 991px) {
-            .container.border.bg-white {
-                padding: 12px 4px 8px 4px;
-            }
-
-            .summary {
-                padding: 10px 4px 6px 4px;
-            }
-        }
     </style>
     <div class="container-fluid page-content">
         <div class="todo-listing">
             <div class="container border bg-white">
-                <h2 class="text-center my-4"><i class="fa fa-file-invoice-dollar"
-                        style="color:#1976d2;margin-right:8px;"></i>แก้ไขใบเสนอราคา </h2>
+                <h4 class="text-center my-1"><i class="fa fa-file-invoice-dollar"
+                        style="color:#1976d2;margin-right:8px;"></i>แก้ไขใบเสนอราคา </h4>
                 <form action="{{ route('quote.update', $quotationModel->quote_id) }}" id="formQuoteModern" method="post">
                     @csrf
                     @method('PUT')
                     <div class="section-card">
-                        <div class="section-title"><i class="fa fa-user-tie"></i> ข้อมูลทั่วไป</div>
+                        <div class="section-title" style="background:linear-gradient(90deg,#4b98e5 60%,#8bbdfa 100%)"><i class="fa fa-user-tie"></i> ข้อมูลทั่วไป</div>
                         <div class="row table-custom ">
 
                             <div class="col-md-2 ms-auto">
@@ -438,7 +278,7 @@
                             <div class="col-md-3 position-relative">
                                 <label>วันออกเดินทาง: <a href="#" class="" id="list-period"
                                         style="color:#1976d2;font-weight:500;">เลือกวันที่</a></label>
-                                <input type="date" class="form-control" id="date-start-display"
+                                <input type="hidden" class="form-control" id="date-start-display"
                                     placeholder="วันออกเดินทาง..." required autocomplete="off">
                                 <div id="date-list" class="list-group position-absolute w-100"
                                     style="z-index: 1000;"></div>
@@ -544,25 +384,25 @@
                     </div>
                     <hr class="divider">
                     <div class="section-card">
-                        <h5 class="section-inline"><i class="fa fa-coins"></i> ข้อมูลค่าบริการ <span id="pax"
-                                class="float-end"></span></h5>
-                        <div id="quotation-table" class="table-custom text-center">
-                            <div class="row header-row" style="padding: 5px">
-                                <div class="col-md-1">ลำดับ</div>
-                                <div class="col-md-3">รายการสินค้า</div>
-                                <div class="col-md-1">รวม 3%</div>
-                                <div class="col-md-1">NonVat</div>
-                                <div class="col-md-1">จำนวน</div>
-                                <div class="col-md-2">ราคา/หน่วย</div>
-                                <div class="col-md-2">ยอดรวม</div>
+                        <h6 class="section-inline "><i class="fa fa-coins"></i> ข้อมูลค่าบริการ <span id="pax"
+                                class="float-end"></span></h6>
+
+                        <div id="quotation-table" class="table-custom text-center" style="background:#55ffb848;border-radius:8px;">
+                            <div class="row g-0 item-row bg-success-subtle px-1">
+                                <div class="col-md-1" style="font-size: 12px"><b>ลำดับ</b></div>
+                                <div class="col-md-3" style="font-size: 12px"><b>รายการสินค้า</b></div>
+                                <div class="col-md-1" style="font-size: 12px"><b>รวม 3%</b></div>
+                                <div class="col-md-1" style="font-size: 12px"><b>NonVat</b></div>
+                                <div class="col-md-1" style="font-size: 12px"><b>จำนวน</b></div>
+                                <div class="col-md-2" style="font-size: 12px"><b>ราคา/หน่วย</b></div>
+                                <div class="col-md-2" style="font-size: 12px"><b>ยอดรวม</b></div>
                             </div>
-                            <hr>
+                           
                             {{-- <div id="table-income"> --}}
-                            @php $rowNum = 1; @endphp
-                            {{-- <div class="row " style="background:#55ffb848;border-radius:8px;padding:8px 0;" id="table-income"> --}}
+                        @php $rowNum = 1; @endphp
+                        <div id="table-income" style="background:#55ffb848;border-radius:8px;">
                             @foreach ($quoteProducts as $row)
-                                <div class="row align-items-center item-row table-income"
-                                    style="background:#55ffb848;border-radius:8px;padding:8px 0;">
+                             <div class="row  item-row table-income align-items-center">
                                     <div class="col-md-1 "><span class="row-number">{{ $rowNum++ }}</span></div>
                                     <div class="col-md-3">
                                         <select name="product_id[]" class="form-select product-select select2"
@@ -587,16 +427,16 @@
                                             value="Y" {{ $row->withholding_tax == 'Y' ? 'checked' : '' }}>
                                         <input type="hidden" name="withholding_tax[]" value="N" disabled>
                                     </div>
-                                    <div class="col-md-1 text-center">
+                                    <div class="col-1 text-center">
                                         <select name="vat_status[]" class="vat-status form-select"
-                                            style="width: 110%;">
+                                            style="width: 180%;">
                                             <option value="nonvat"
                                                 {{ $row->vat_status == 'nonvat' ? 'selected' : '' }}>nonVat</option>
                                             <option value="vat" {{ $row->vat_status == 'vat' ? 'selected' : '' }}>
                                                 Vat</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-1"><input type="number" name="quantity[]"
+                                    <div class="col-md-1"><input type="number" name="quantity[]" style="width: 150%;"
                                             class="quantity form-control text-end" step="1"
                                             value="{{ $row->product_qty ?? 1 }}"></div>
                                     <div class="col-md-2"><input type="number" name="price_per_unit[]"
@@ -606,89 +446,105 @@
                                             class="total-amount form-control text-end"
                                             value="{{ $row->product_sum ?? 0 }}" readonly></div>
                                     <div class="col-md-1 text-center">
-                                        <button type="button" class="btn btn-danger btn-sm remove-row-btn "
+                                        <a href="#" class="remove-row-btn text-danger"><i
+                                            class="fa fa-trash"></i></a>
+                                        {{-- <button type="button" class="btn btn-danger btn-sm remove-row-btn "
                                             title="ลบแถว" style="font-size: 13px 10px"><i
-                                                class="fa fa-trash"></i></button>
+                                                class="fa fa-trash"></i></button> --}}
                                     </div>
                                 </div>
                             @endforeach
-                            <div id="table-income">
+                         
 
 
                             </div>
                             {{-- </div> --}}
                         </div>
                         <div class="add-row">
-                            <i class="fa fa-plus"></i><span id="add-row-service" style="cursor:pointer;">
-                                เพิ่มรายการ</span>
+                            <button type="button" class="btn btn-outline-success btn-sm mt-1" id="add-row-service">
+                                <i class="fa fa-plus"></i> เพิ่มรายการ
+                            </button>
+
+                            {{-- <i class="fa fa-plus"></i><span id="add-row-service" style="cursor:pointer;">
+                                เพิ่มรายการ</span> --}}
                         </div>
                         <hr>
-                        <div class="row item-row" style="border-radius:8px;padding:8px 0;">
-                            <div class="row item-row table-discount">
-                                <div class="col-md-12" style="text-align: left">
-                                    <label class="text-danger">ส่วนลด</label>
-                                    <div id="discount-list">
-                                        @php $rowNum = 1; @endphp
-                                        @foreach ($quoteProductsDiscount as $row)
-                                            <div class="row item-row table-discount mb-1 align-items-center discount-row"
-                                                data-row-id="discount-row-{{ $row->id }}"
-                                                style="background:#fffbe7;border-radius:8px;padding:8px 0;">
-                                                <div class="col-md-1 text-center discount-row-number">
-                                                    {{ $rowNum++ }}</div>
-                                                <div class="col-md-3">
-                                                    <select name="product_id[]"
-                                                        class="form-select product-select select2"
-                                                        style="width: 100%;">
-                                                        <option value="">--เลือกส่วนลด--</option>
-                                                        @foreach ($productDiscount as $product)
-                                                            <option value="{{ $product->id }}"
-                                                                {{ $row->product_id == $product->id ? 'selected' : '' }}>
-                                                                {{ $product->product_name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-1" style="display: none">
-                                                    <select name="expense_type[]" class="form-select">
-                                                        <option value="discount" selected> ส่วนลด </option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-1 text-center">
-                                                    <input type="hidden" name="withholding_tax[]" value="N">
-                                                    
-                                                </div>
-                                                <div class="col-md-1 text-center">
-                                                    <select name="vat_status[]" class="vat-status form-select"
-                                                        style="width: 110%;">
-                                                        <option value="nonvat"
-                                                           selected>nonVat
-                                                        </option>
-                                                       
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-1"><input type="number" name="quantity[]"
-                                                        class="quantity form-control text-end" step="1"
-                                                        value="{{ $row->product_qty ?? 1 }}"></div>
-                                                <div class="col-md-2"><input type="number" name="price_per_unit[]"
-                                                        class="price-per-unit form-control text-end" step="0.01"
-                                                        value="{{ $row->product_price ?? 0 }}"></div>
-                                                <div class="col-md-2"><input type="number" name="total_amount[]"
-                                                        class="total-amount form-control text-end"
-                                                        value="{{ $row->product_sum ?? 0 }}" readonly></div>
-                                                <div class="col-md-1 text-center">
-                                                    <button type="button"
-                                                        class="btn btn-danger btn-sm remove-row-btn" title="ลบแถว"><i
-                                                            class="fa fa-trash"></i></button>
-                                                </div>
-                                            </div>
-                                        @endforeach
+
+                        <div class="col-md-12">
+                            <label class="text-danger">ส่วนลด</label>
+                            <div id="discount-list">
+                                @php $rowNum = 1; @endphp
+                                @foreach ($quoteProductsDiscount as $row)
+                                <div class="row item-row table-discount mb-1 align-items-center discount-row"
+                                    data-row-id="discount-row-{{ $row->id }}"
+                                    style="background:#fffbe7;border-radius:8px;">
+                                    
+                                    <div class="col-md-1 text-center discount-row-number">{{ $rowNum++ }}</div>
+                        
+                                    <div class="col-md-3">
+                                        <select name="product_id[]" class="form-select product-select select2" style="width: 100%;">
+                                            <option value="">--เลือกส่วนลด--</option>
+                                            @foreach ($productDiscount as $product)
+                                                <option value="{{ $product->id }}" {{ $row->product_id == $product->id ? 'selected' : '' }}>
+                                                    {{ $product->product_name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                        
+                                    <div class="col-md-1" style="display: none;">
+                                        <select name="expense_type[]" class="form-select">
+                                            <option value="discount" selected>ส่วนลด</option>
+                                        </select>
+                                    </div>
+                        
+                                    <div class="col-md-1 text-center">
+                                        <input type="hidden" name="withholding_tax[]" value="N">
+                                    </div>
+                        
+                                    <div class="col-md-1 text-center">
+                                        <select name="vat_status[]" class="vat-status form-select" style="width: 180%;">
+                                            <option value="nonvat" {{ $row->vat_status == 'nonvat' ? 'selected' : '' }}>nonVat</option>
+                                            <option value="vat" {{ $row->vat_status == 'vat' ? 'selected' : '' }}>Vat</option>
+                                        </select>
+                                    </div>
+                        
+                                    <div class="col-md-1">
+                                        <input type="number" name="quantity[]" class="quantity form-control text-end" step="1" style="width: 150%;"
+                                            value="{{ $row->product_qty ?? 1 }}">
+                                    </div>
+                        
+                                    <div class="col-md-2">
+                                        <input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01"
+                                            value="{{ $row->product_price ?? 0 }}">
+                                    </div>
+                        
+                                    <div class="col-md-2">
+                                        <input type="number" name="total_amount[]" class="total-amount form-control text-end"
+                                            value="{{ $row->product_sum ?? 0 }}" readonly>
+                                    </div>
+                        
+                                    <div class="col-md-1 text-center">
+                                        <a href="#" class="remove-row-btn text-danger"><i
+                                            class="fa fa-trash"></i></a>
+
+                                        {{-- <button type="button" class="btn btn-danger btn-sm remove-row-btn" title="ลบแถว">
+                                            <i class="fa fa-trash"></i>
+                                        </button> --}}
                                     </div>
                                 </div>
+                                @endforeach
                             </div>
-                            <div class="add-row">
-                                <i class="fa fa-plus"></i><span id="add-row-discount" style="cursor:pointer;">
-                                    เพิ่มส่วนลด</span>
+                        
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-outline-danger btn-sm mt-1" id="add-row-discount">
+                                    <i class="fa fa-plus"></i> เพิ่มส่วนลด
+                                </button>
                             </div>
                         </div>
+                        
+
+
                     </div>
                     <hr class="divider">
                     <div class="section-card">
@@ -740,7 +596,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-5">
                                 <div class="row">
                                     <div class="summary text-info">
                                         <div class="row summary-row ">
@@ -790,7 +646,7 @@
                                 class="fa fa-hand-holding-usd"></i> เงื่อนไขการชำระเงิน</div>
                         <div class="row">
                             <div class="col-md-12">
-                                <h5 style="color:#1976d2;">เงื่อนไขการชำระเงิน</h5>
+                                <h6 style="color:#1976d2;">เงื่อนไขการชำระเงิน</h6>
                             </div>
                             {{-- {{$quotationModel->quote_payment_type}} --}}
                             <div class="col-md-12 ">
@@ -803,6 +659,8 @@
                                     </div>
                                 </div>
                             </div>
+
+
 
                             <div class="row">
                                 <div class="col-md-12">
@@ -820,7 +678,8 @@
                                                     style="display: none"> --}}
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+
+                                        <div class="col-md-4">
                                             <div class="input-group mb-4">
                                                 <span class="input-group-text" for="">เรทเงินมัดจำ</span>
                                                 <select name="quote_payment_price" class="form-select"
@@ -932,7 +791,7 @@
                                         <div class="col-md-4">
                                             <div class="input-group mb-3">
                                                 <span class="input-group-text"
-                                                    for="">จำนวนเงินที่ต้องชำระ</span>
+                                                    for="">จำนวนที่ต้องชำระ</span>
                                                 <input type="number" class="form-control pax-total"
                                                     name="quote_payment_total" step="0.01" placeholder="0.00"
                                                     value="{{ $quotationModel->quote_payment_total ?? '' }}">
@@ -974,6 +833,8 @@
                         </div>
                     </div>
                     <div class="text-end mt-3">
+                        @can('quote.comission')
+                            
                         <div class="row mb-3 ">
                             <div class="col-md-3">
                                 <label>สถานะการจ่ายค่าคอมมิชชั่น:</label>
@@ -986,11 +847,15 @@
                                     <label for="commission-no">ไม่จ่ายค่าคอม</label>
                                 </div>
                             </div>
+
                             <div class="col-md-9" id="note-commission-block" style="display: none;">
                                 <label>บันทึกเหตุผลกรณีไม่จ่ายค่าคอมมิชชั่น</label>
                                 <textarea name="quote_note_commission" class="form-control" id="quote_note_commission" rows="2">{{ $quotationModel->quote_note_commission ?? '' }}</textarea>
                             </div>
+
                         </div>
+                         @endcan
+
                         <input type="hidden" name="quote_vat_exempted_amount">
                         <input type="hidden" name="quote_pre_tax_amount">
                         <input type="hidden" name="quote_discount">
@@ -1003,6 +868,7 @@
                         <button type="submit" class="btn btn-primary btn-sm mx-3" form="formQuoteModern"><i
                                 class="fa fa-save"></i> บันทึกการเปลียนแปลง</button>
                     </div>
+                    
                     <br>
                 </form>
             </div>
@@ -1492,34 +1358,88 @@ $('.form-select.select2').each(function() {
             });
 
             // ฟังก์ชันแยกสำหรับคำนวณเงื่อนไขการชำระเงิน (Deposit/Full) และวันที่
+// function calculatePaymentDateCondition() {
+//     var bookingCreateDate = new Date($('#date-start').val());
+//     var travelDate = new Date($('#date-start').val());
+//     var dateNow = new Date();
+//     var bookingDate = new Date($('#booking-create-date').val());
+//     var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);
+
+//     if (diffDays >= 31) {
+//         bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
+//         $('#quote-payment-deposit').prop('checked', true);
+//         $('#quote-payment-price').val('5000');
+//     } else {
+//         bookingCreateDate = new Date();
+//         bookingCreateDate.setDate(dateNow.getDate() + 1);
+//         $('#quote-payment-full').prop('checked', true);
+//     }
+//     bookingCreateDate.setHours(13, 0, 0, 0);
+//     var year = bookingCreateDate.getFullYear();
+//     var month = ('0' + (bookingCreateDate.getMonth() + 1)).slice(-2);
+//     var day = ('0' + bookingCreateDate.getDate()).slice(-2);
+//     var hours = ('0' + bookingCreateDate.getHours()).slice(-2);
+//     var minutes = ('0' + bookingCreateDate.getMinutes()).slice(-2);
+//     var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+//     $('input[name="quote_payment_date"]').val(formattedDate);
+//     $('#quote-payment-date').val(formattedDate);
+//     $('#quote-payment-date-new').val(formattedDate);
+//     $('input[name="quote_payment_date_full"]').val(formattedDate);
+//     $('#quote-payment-date-full').val(formattedDate);
+// }
 function calculatePaymentDateCondition() {
-    var bookingCreateDate = new Date($('#date-start').val());
+    // วันเดินทาง
     var travelDate = new Date($('#date-start').val());
-    var dateNow = new Date();
+    // วันจอง (หรือวันที่สร้าง booking)
     var bookingDate = new Date($('#booking-create-date').val());
+    // วันปัจจุบัน
+    var dateNow = new Date();
+    // จำนวนวันห่างระหว่างวันเดินทางกับวันจอง
     var diffDays = (travelDate - bookingDate) / (1000 * 60 * 60 * 24);
 
+    // ฟังก์ชันช่วย format date
+    function formatDateTime(dateObj) {
+        var year = dateObj.getFullYear();
+        var month = ('0' + (dateObj.getMonth() + 1)).slice(-2);
+        var day = ('0' + dateObj.getDate()).slice(-2);
+        var hours = ('0' + dateObj.getHours()).slice(-2);
+        var minutes = ('0' + dateObj.getMinutes()).slice(-2);
+        return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+    }
+
     if (diffDays >= 31) {
-        bookingCreateDate.setDate(bookingCreateDate.getDate() - 30);
+        // มัดจำ: วันจอง + 1 วัน
+        var depositDate = new Date(bookingDate);
+        depositDate.setDate(depositDate.getDate() + 1);
+        depositDate.setHours(13, 0, 0, 0);
+
+        // เต็มจำนวน: วันเดินทาง - 30 วัน
+        var fullPayDate = new Date(travelDate);
+        fullPayDate.setDate(fullPayDate.getDate() - 30);
+        fullPayDate.setHours(13, 0, 0, 0);
+
         $('#quote-payment-deposit').prop('checked', true);
         $('#quote-payment-price').val('5000');
+        $('input[name="quote_payment_date"]').val(formatDateTime(depositDate));
+        $('#quote-payment-date').val(formatDateTime(depositDate));
+        $('#quote-payment-date-new').val(formatDateTime(depositDate));
+        $('input[name="quote_payment_date_full"]').val(formatDateTime(fullPayDate));
+        $('#quote-payment-date-full').val(formatDateTime(fullPayDate));
     } else {
-        bookingCreateDate = new Date();
-        bookingCreateDate.setDate(dateNow.getDate() + 1);
+        // เต็มจำนวน: วันจอง + 1 วัน
+        var fullPayDate = new Date(bookingDate);
+        fullPayDate.setDate(fullPayDate.getDate() + 1);
+        fullPayDate.setHours(13, 0, 0, 0);
+
         $('#quote-payment-full').prop('checked', true);
+        $('input[name="quote_payment_date_full"]').val(formatDateTime(fullPayDate));
+        $('#quote-payment-date-full').val(formatDateTime(fullPayDate));
+        // clear deposit
+        $('input[name="quote_payment_date"]').val('');
+        $('#quote-payment-date').val('');
+        $('#quote-payment-date-new').val('');
+        $('#quote-payment-price').val('0');
     }
-    bookingCreateDate.setHours(13, 0, 0, 0);
-    var year = bookingCreateDate.getFullYear();
-    var month = ('0' + (bookingCreateDate.getMonth() + 1)).slice(-2);
-    var day = ('0' + bookingCreateDate.getDate()).slice(-2);
-    var hours = ('0' + bookingCreateDate.getHours()).slice(-2);
-    var minutes = ('0' + bookingCreateDate.getMinutes()).slice(-2);
-    var formattedDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
-    $('input[name="quote_payment_date"]').val(formattedDate);
-    $('#quote-payment-date').val(formattedDate);
-    $('#quote-payment-date-new').val(formattedDate);
-    $('input[name="quote_payment_date_full"]').val(formattedDate);
-    $('#quote-payment-date-full').val(formattedDate);
 }
 $('#date-start-display, #date-end-display, #numday').on('change.auto', function() {
     calculatePaymentDateCondition();
@@ -1701,7 +1621,8 @@ $('#date-start-display, #date-end-display, #numday').on('change.auto', function(
                 var rowCount = $('#table-income > .row').length + 1;
                 var rowId = 'service-row-' + Date.now();
                 var rowHtml = `
-           <div class="row item-row table-income align-items-center">
+                
+           <div class="row table-income item-row align-items-center">
                 <div class="col-md-1"><span class="row-number"></span></div>
                 <div class="col-md-3">
                     <select name="product_id[]" class="form-select product-select select2" style="width: 100%;">
@@ -1722,16 +1643,17 @@ $('#date-start-display, #date-end-display, #numday').on('change.auto', function(
                     <input type="checkbox" name="withholding_tax[]" class="vat-3" value="Y">
                 </div>
                 <div class="col-md-1 text-center">
-                    <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
+                    <select name="vat_status[]" class="vat-status form-select" style="width: 180%;">
                         <option selected value="nonvat">nonVat</option>
                         <option value="vat">Vat</option>
                     </select>
                 </div>
-                <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="1"></div>
+                <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="1" style="width: 150%;"></div>
                 <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01" value="0"></div>
                 <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end" value="0" readonly></div>
                 <div class="col-md-1 text-center">
-                   <button type="button" class="btn btn-danger btn-sm remove-row-btn " title="ลบแถว"><i class="fa fa-trash" ></i></button>
+                  <a href="#" class="remove-row-btn text-danger"><i
+                                            class="fa fa-trash"></i></a>
                 </div>
             </div>
          `;
@@ -1757,7 +1679,7 @@ $('#date-start-display, #date-end-display, #numday').on('change.auto', function(
             $(document).on('click', '.remove-row-btn', function() {
                 // ลบเฉพาะแถวบริการ (table-income) หรือ discount-row ที่อยู่ใกล้ที่สุด
                 var $row = $(this).closest('.item-row.table-income, .discount-row');
-                if ($row.siblings('.item-row.table-income').length > 0 || $row.hasClass('discount-row')) {
+                if ($row.siblings('.table-income').length > 0 || $row.hasClass('discount-row')) {
                     $row.remove();
                     updateRowNumbers();
                     updateDiscountRowNumbers && updateDiscountRowNumbers();
@@ -1789,7 +1711,7 @@ $('#date-start-display, #date-end-display, #numday').on('change.auto', function(
                 var isWithholding = rowData && rowData.withholding_tax === 'Y' ? 'checked' : '';
                 var total = qty * price;
                 var rowHtml = `
-            <div class="row item-row table-discount mb-1 align-items-center discount-row" data-row-id="${rowId}" style="background:#fffbe7;border-radius:8px;padding:8px 0;">
+         <div class="row item-row table-discount mb-1 align-items-center discount-row" data-row-id="${rowId}" style="background:#fffbe7;border-radius:8px;">
                 <div class="col-md-1 text-center discount-row-number">${rowCount}</div>
                 <div class="col-md-3">
                     <select name="product_id[]" class="form-select product-select select2" style="width: 100%;">
@@ -1809,18 +1731,20 @@ $('#date-start-display, #date-end-display, #numday').on('change.auto', function(
                    
                 </div>
                 <div class="col-md-1 text-center">
-                    <select name="vat_status[]" class="vat-status form-select" style="width: 110%;">
+                    <select name="vat_status[]" class="vat-status form-select" style="width: 180%;">
                         <option value="nonvat" ${vat==='nonvat'?'selected':''}>nonVat</option>
                         <option value="vat" ${vat==='vat'?'selected':''}>Vat</option>
                     </select>
                 </div>
-                <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="${qty}"></div>
+                <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="${qty}" style="width: 150%;"></div>
                 <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01" value="${price}"></div>
                 <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end" value="${total.toFixed(2)}" readonly></div>
                 <div class="col-md-1 text-center">
-                    <button type="button" class="btn btn-danger btn-sm remove-row-btn" title="ลบแถว"><i class="fa fa-trash"></i></button>
+                   <a href="#" class="remove-row-btn text-danger"><i
+                                            class="fa fa-trash"></i></a>
                 </div>
-            </div>
+                </div>
+            
         `;
                 $('#discount-list').append(rowHtml);
                 // init select2 เฉพาะแถวใหม่ (ใช้ element ที่ render จริง)
@@ -2025,44 +1949,44 @@ $('#date-start-display, #date-end-display, #numday').on('change.auto', function(
             });
 
             // เมื่อคลิกเลือกวันที่จาก list
-            $(document).on('click', '.period-select', function(e) {
-                e.preventDefault();
-                var selectedDate = $(this).data('date');
-                var period1 = $(this).data('period1');
-                var period2 = $(this).data('period2');
-                var period3 = $(this).data('period3');
-                var period4 = $(this).data('period4');
-                $('#period1').val(period1);
-                $('#period2').val(period2);
-                $('#period3').val(period3);
-                $('#period4').val(period4);
-                // แปลงวันที่เป็นไทย
-                var dateObject = new Date(selectedDate);
-                var thaiFormattedDate = dateObject.toLocaleDateString('th-TH', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-                $('#date-start-display').val(selectedDate);
-                $('#date-start').val(selectedDate);
-                $('#date-list').empty();
-                // คำนวณวันเดินทางกลับ
-                var numDays = parseInt($('#numday option:selected').data('day')) || 0;
-                if (numDays > 0 && selectedDate) {
-                    var start = new Date(selectedDate);
-                    var endDate = new Date(start);
-                    endDate.setDate(start.getDate() + numDays - 1);
-                    var thaiFormattedEndDate = endDate.toLocaleDateString('th-TH', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
-                    $('#date-end-display').val(endDate.toISOString().slice(0, 10));
-                    $('#date-end').val(endDate.toISOString().slice(0, 10));
-                }
-                // เรียกฟังก์ชันคำนวณเงื่อนไขการชำระเงิน
-                calculatePaymentCondition();
-            });
+          $(document).on('click', '.period-select', function(e) {
+    e.preventDefault();
+    var selectedDate = $(this).data('date');
+    var period1 = $(this).data('period1');
+    var period2 = $(this).data('period2');
+    var period3 = $(this).data('period3');
+    var period4 = $(this).data('period4');
+    $('#period1').val(period1);
+    $('#period2').val(period2);
+    $('#period3').val(period3);
+    $('#period4').val(period4);
+    var dateObject = new Date(selectedDate);
+    var thaiFormattedDate = dateObject.toLocaleDateString('th-TH', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    $('#date-start-display').val(selectedDate);
+    $('#date-start').val(selectedDate);
+    $('#date-list').empty();
+    var numDays = parseInt($('#numday option:selected').data('day')) || 0;
+    if (numDays > 0 && selectedDate) {
+        var start = new Date(selectedDate);
+        var endDate = new Date(start);
+        endDate.setDate(start.getDate() + numDays - 1);
+        var thaiFormattedEndDate = endDate.toLocaleDateString('th-TH', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        $('#date-end-display').val(endDate.toISOString().slice(0, 10));
+        $('#date-end').val(endDate.toISOString().slice(0, 10));
+    }
+    // เรียกฟังก์ชันคำนวณวันครบกำหนดชำระเงิน
+    calculatePaymentDateCondition();
+    // เรียกฟังก์ชันคำนวณยอดอื่นๆ
+    calculatePaymentCondition();
+});
 
             // ลบ logic/handler สำหรับปุ่มหรือข้อความ "ระบุวันเดินทางเอง" (ไม่ต้องมีอีกต่อไป)
             // ปิดผลลัพธ์เมื่อคลิกนอก

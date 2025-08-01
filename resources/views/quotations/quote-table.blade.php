@@ -341,6 +341,10 @@
                                                     href="{{ route('quote.modalEdit', ['quotationModel' => $quotationModel->quote_id, 'mode' => 'edit']) }}">
                                                     <i class="fa fa-edit text-info"></i> แก้ไข
                                                 </a>
+                                                 {{-- <a class="dropdown-item modal-quote-edit-new"
+                                                    href="{{ route('quote.modalEditNew', ['quotationModel' => $quotationModel->quote_id, 'mode' => 'edit']) }}">
+                                                    <i class="fa fa-edit text-info"></i> แก้ไข-ใหม่
+                                                </a> --}}
                                             @endcan
                                             @can('invoice.create')
                                                 @if (empty($invoiceModel))
@@ -432,6 +436,8 @@
                                                 <a class="dropdown-item modal-invoice-edit"
                                                     href="{{ route('invoice.edit', ['invoiceModel' => $itemInvoice->invoice_id, 'mode' => 'edit']) }}">
                                                     <i class="fa fa-edit text-info"></i> แก้ไข</a>
+
+                                                    
 
                                                 @if ($itemInvoice->invoice_status === 'wait' && $quotationModel->quote_payment_status === 'success' && $paymentTotal == 0)
                                                    @canany(['taxinvoice.create'])
@@ -602,6 +608,8 @@
             </div>
         </div>
     </div>
+   
+
 
 
     {{-- invoice payment Modal --}}
@@ -684,6 +692,26 @@
             </div>
         </div>
     </div>
+    <style>
+    #modal-quote-edit-new .modal-dialog {
+        max-width: 98vw !important;
+        width: 98vw !important;
+        margin: 1.5rem auto;
+    }
+    #modal-quote-edit-new .modal-content {
+        min-height: 80vh;
+    }
+</style>
+
+        <div class="modal fade bd-example-modal-sm modal-xl" id="modal-quote-edit-new" tabindex="-1" role="dialog"
+        aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                ...
+            </div>
+        </div>
+    </div>
+
 
 
     {{-- create form debit --}}
@@ -757,6 +785,24 @@
                 $(this).find(".modal-content").html(''); // รีเซ็ตเนื้อหา
             });
         });
+
+         // เปิด modal แก้ไขใบเสนอราคา
+        $(".modal-quote-edit-new").off("click").on("click", function(e) {
+            e.preventDefault();
+            var modal = $("#modal-quote-edit-new");
+
+            // ล้างข้อมูลเก่าก่อนเปิด modal
+            modal.find(".modal-content").html('');
+
+            // โหลดเนื้อหาใหม่
+            modal.modal("show").addClass("modal-lg").find(".modal-content").load($(this).attr("href"));
+
+            // เมื่อปิด modal, ล้างข้อมูล
+            modal.on('hidden.bs.modal', function() {
+                $(this).find(".modal-content").html(''); // รีเซ็ตเนื้อหา
+            });
+        });
+
 
         // เปิด modal แก้ไขใบแจ้งหนี้
         $(".modal-invoice").off("click").on("click", function(e) {

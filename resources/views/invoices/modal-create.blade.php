@@ -757,7 +757,7 @@
 
 <div class="text-end mt-3">
 
-
+  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
     <button type="submit" class="btn btn-primary btn-sm  mx-3" form="formQuote"><i class="fa fa-save"></i>
         สร้างใบแจ้งหนี้</button>
 

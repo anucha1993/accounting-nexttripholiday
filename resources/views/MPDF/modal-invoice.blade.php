@@ -89,6 +89,14 @@
                         icon: "success",
                         title: "ส่งอีเมลสำเร็จ!",
                         text: "อีเมลได้ถูกส่งแล้ว"
+                    }).then(() => {
+                        // ปิด modal หลังจากกด OK
+                        const modalEl = document.querySelector('#modal-mail-quote');
+                        if (modalEl) {
+                            const modalInstance = bootstrap.Modal.getInstance(modalEl) ||
+                                new bootstrap.Modal(modalEl);
+                            modalInstance.hide();
+                        }
                     });
                 } else {
                     Swal.fire({

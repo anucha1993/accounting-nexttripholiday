@@ -278,7 +278,7 @@ label {
                             <div class="col-md-3 position-relative">
                                 <label>วันออกเดินทาง: <a href="#" class="" id="list-period"
                                         style="color:#1976d2;font-weight:500;">เลือกวันที่</a></label>
-                                <input type="hidden" class="form-control" id="date-start-display"
+                                <input type="date" class="form-control" id="date-start-display"
                                     placeholder="วันออกเดินทาง..." required autocomplete="off">
                                 <div id="date-list" class="list-group position-absolute w-100"
                                     style="z-index: 1000;"></div>
@@ -672,10 +672,7 @@ label {
                                                 <input type="datetime-local" class="form-control"
                                                     name="quote_payment_date" id="quote-payment-date"
                                                     value="{{ $quotationModel->quote_payment_date ?? '' }}">
-                                                {{-- <input type="datetime-local" class="form-control"
-                                                    name="quote_payment_date" id="quote-payment-date-new"
-                                                    value="{{ $quotationModel->quote_payment_date ?? '' }}"
-                                                    style="display: none"> --}}
+                                             
                                             </div>
                                         </div>
 
@@ -865,6 +862,8 @@ label {
                         <input type="hidden" name="quote_grand_total" id="quote-grand-total">
                         <input type="hidden" name="quote_withholding_tax">
                         <input type="hidden" name="quote_pax_total" id="quote-pax-total">
+                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+
                         <button type="submit" class="btn btn-primary btn-sm mx-3" form="formQuoteModern"><i
                                 class="fa fa-save"></i> บันทึกการเปลียนแปลง</button>
                     </div>

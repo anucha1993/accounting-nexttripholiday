@@ -753,7 +753,7 @@
         </div>
 
         <div class="text-end mt-3">
-          
+         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
             @if($mode === 'edit')
             <button type="submit" class="btn btn-success btn-sm  mx-3" form="formQuote"><i class="fa fa-save"></i>
                 อัพเดทใบแจ้งหนี้</button>

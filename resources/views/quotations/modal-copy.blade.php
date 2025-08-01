@@ -857,6 +857,8 @@ label {
                         <input type="hidden" name="quote_grand_total" id="quote-grand-total">
                         <input type="hidden" name="quote_withholding_tax">
                         <input type="hidden" name="quote_pax_total" id="quote-pax-total">
+                        
+                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
                         <button type="submit" class="btn btn-primary btn-sm mx-3" form="formQuoteModern"><i
                                 class="fa fa-save"></i> ยืนยันการคัดลอก</button>
                     </div>
