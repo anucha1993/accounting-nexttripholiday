@@ -272,7 +272,7 @@
                     <td class="data-cell">{{ $customer->customer_tel }}</td>
                     <td class="empty-cell"></td>
                     <td class="label-cell"><b>Tel:</b></td>
-                    <td class="data-cell">091-091-6364</td>
+                    <td class="data-cell">{{$sale->phone??'-'}}</td>
                 </tr>
                 <tr>
                     <td class="label-cell"><b>Tax ID:</b></td>
@@ -291,16 +291,17 @@
                 <tr>
                     <td class="label-cell"><b>Program:</b></td>
                     <td class="data-cell highlight-cell">
-                        @php
+                        {{-- @php
                             $original_string = $quotationModel->quote_tour_name1 ? $quotationModel->quote_tour_name1 : $quotationModel->quote_tour_name;
                             $pattern = "/[A-Za-z0-9-]/";
                             $new_string = preg_replace($pattern, '', $original_string);
                         @endphp
-                        {{ $new_string }}
+                        {{ $new_string }} --}}
+                         {{ $quotationModel->quote_tour_name }}
                     </td>
                     <td class="empty-cell"></td>
                     <td class="label-cell"><b>Period:</b></td>
-                    <td class="data-cell highlight-cell">{{ date('d', strtotime($quotationModel->quote_date_start)) }}-{{ thaidate('j F Y', $quotationModel->quote_date_end) }}</td>
+                    <td class="data-cell highlight-cell">{{ date('j', strtotime($quotationModel->quote_date_start)) }}-{{ thaidate('j F Y', $quotationModel->quote_date_end) }}</td>
                 </tr>
             </table>
 

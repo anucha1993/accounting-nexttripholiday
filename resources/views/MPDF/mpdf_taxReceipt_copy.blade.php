@@ -4,7 +4,7 @@
 <head>
     <title>{{ $texreceipt->taxinvoice_number }}</title>
     <meta http-equiv="Content-Language" content="th" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
         body {
             font-family: 'sarabun_new', sans-serif;
@@ -108,7 +108,7 @@
                 <h4><b>Copy/Tax Receipt</b></h4>
             </div>
             <div class="" style="padding-left: 65px; padding-top: -35px;">
-                <h5><b>(สำหรับลูกค้า) </b> </h5>
+                <h5><b>(สำหรับบริษัท) </b> </h5>
             </div>
         </div>
         <div style="margin-top: -45px">
@@ -478,14 +478,15 @@
                             <td style="border: none;"></td>
                             <td style="width: 276.6px; text-align: center;">
                                 <b style="color: #fff">ว่าง</b></br>
+		              	<b >{{$invoiceModel->created_by}}</b>
                                 <p>___________________________</p>
                                 <p><b>ผู้รับเงิน / Collector</b></p>
                                 <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p>
                             </td>
                             <td style="border: none;"></td>
                             <td style="width: 277px; text-align: right; text-align: center;">
-                                <img src="{{URL::asset('signature/next_signature_01.png')}}" alt="Image" class="image" style="width: 90px; ">
-                                <p><b>ผู้อนุมัติ</b></p>
+                                <img src="{{URL::asset('signature/next_signature_01.png')}}" alt="Image" class="image" style="width: 120px; ">
+                                <p><b>ผู้มีอำนาจลงนาม/Authorized signature</b></p>
                                 <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p>
                             </td>
                         </tr>

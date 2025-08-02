@@ -471,7 +471,7 @@
                                         </td>
                                         <td>
                                             <div data-bs-toggle="tooltip" title="">
-                                                {{ mb_substr($item->quotecustomer->customer_name, 0, 20) }}{{ mb_strlen($item->quotecustomer->customer_name) > 20 ? '...' : '' }}
+                                                {{ mb_substr($item->quotecustomer?->customer_name, 0, 20) }}{{ mb_strlen($item->quotecustomer?->customer_name) > 20 ? '...' : '' }}
                                             </div>
                                         </td>
                                         <td>

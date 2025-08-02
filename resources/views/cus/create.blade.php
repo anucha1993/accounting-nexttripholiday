@@ -16,22 +16,46 @@
         <div class="card-body">
             <form method="POST" action="{{ route('cus.store') }}">
                 @csrf
-                <div class="form-group">
-                    <label>ชื่อลูกค้า <span class="text-danger">*</span></label>
-                    <input type="text" name="customer_name" class="form-control" value="{{ old('customer_name') }}" required>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" name="customer_email" class="form-control" value="{{ old('customer_email') }}">
-                </div>
-                <div class="form-group">
-                    <label>เบอร์โทร</label>
-                    <input type="text" name="customer_tel" class="form-control" value="{{ old('customer_tel') }}">
-                </div>
-                <div class="form-group">
-                    <label>ที่อยู่</label>
-                    <textarea name="customer_address" class="form-control">{{ old('customer_address') }}</textarea>
-                </div>
+                <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label for="">ชื่อลูกค้า: </label>
+                                <input type="text" id="customer_name" class="form-control" placeholder="ชื่อลูกค้า" name="customer_name" required>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="">เลขประจำตัวผู้เสียภาษี: </label>
+                                <input type="text" id="customer_texid" class="form-control" placeholder="เลขประจำตัวผู้เสียภาษี" name="customer_texid">
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="">อีเมล์:</label>
+                                <input type="email" id="customer_email" class="form-control" placeholder="Email" name="customer_email">
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="">เบอร์โทรศัพท์: </label>
+                                <input type="text" id="customer_tel" class="form-control" placeholder="+66" name="customer_tel">
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="">เบอร์โทรสาร: </label>
+                                <input type="text" id="customer_fax" class="form-control" placeholder="+66" name="customer_fax">
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <label for="">ลูกค้าจาก : </label>
+                                <select id="customer_campaign_source" class="form-select" name="customer_campaign_source">
+                                    @forelse ($campaignSource as $item)
+                                        <option value="{{ $item->campaign_source_id }}">
+                                            {{ $item->campaign_source_name }}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <label for="">Social id : </label>
+                                <input type="text" id="customer_social_id" class="form-control" placeholder="+66" name="customer_social_id">
+                            </div>
+                            <div class="col-md-12 mb-2">
+                                <label for="">ที่อยู่ลูกค้า: </label>
+                                <textarea id="customer_address" class="form-control" cols="30" rows="2" placeholder="ที่อยู่ลูกค้า" name="customer_address"></textarea>
+                            </div>
+                        </div>
                 <button type="submit" class="btn btn-primary">บันทึก</button>
                 <a href="{{ route('cus.index') }}" class="btn btn-secondary">ยกเลิก</a>
             </form>

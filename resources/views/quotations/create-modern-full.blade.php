@@ -668,10 +668,12 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="add-row">
                                 <i class="fa fa-plus"></i><span id="add-row-service" style="cursor:pointer;">
                                     เพิ่มรายการ</span>
                             </div>
+                            
                             <hr>
                             <div class="row item-row" style="border-radius:8px;padding:8px 0;">
                                 <div class="row item-row table-discount">
@@ -1383,7 +1385,7 @@
                 var withholdingRows = [];
                 sumDiscount = 0;
 
-                $('.item-row.table-income, #discount-list .item-row.table-discount').each(function() {
+                $('#table-income > .row.item-row.table-income:visible').each(function() {
                     var $row = $(this);
                     var qty = parseFloat($row.find('input[name="quantity[]"]').val()) || 0;
                     var price = parseFloat($row.find('input[name="price_per_unit[]"]').val()) || 0;
@@ -1929,5 +1931,15 @@
                 }
             });
         });
+
+
+        $('form').on('submit', function() {
+  $('.row.item-row.table-income').each(function() {
+    if ($(this).css('display') === 'none') {
+      $(this).find('input, select, textarea').remove();
+    }
+  });
+});
+
     </script>
 @endsection

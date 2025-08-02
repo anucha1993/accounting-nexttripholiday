@@ -17,7 +17,7 @@ if (!function_exists('getQuoteStatusPayment')) {
         } elseif ($quotationModel->quote_status === 'cancel') {
             $status = '<span class="badge rounded-pill bg-danger">ยกเลิกการสั่งซื้อ</span>';
     
-        } elseif ($quotationModel->quote_status === 'success') {
+        } elseif ($quotationModel->quote_status === 'success' || $quotationModel->quote_status === 'invoice') {
             
             if ($paymentTotal == 0) {
                 $status = '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>';

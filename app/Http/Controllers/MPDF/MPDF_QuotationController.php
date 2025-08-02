@@ -71,9 +71,10 @@ class MPDF_QuotationController extends Controller
         // เขียน HTML ลงใน PDF
         
         $mpdf->WriteHTML($html);
+
     
         // ส่งออกไฟล์ PDF ไปยังเบราว์เซอร์เพื่อดาวน์โหลด
-        return $mpdf->Output('document.pdf', 'I'); // 'I' เพื่อแสดงในเบราว์เซอร์
+        return $mpdf->Output($quotationModel->quote_number.'.pdf', 'I'); // 'I' เพื่อแสดงในเบราว์เซอร์
     }
 
 

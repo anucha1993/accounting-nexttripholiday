@@ -4,7 +4,7 @@
 <head>
     <title>{{ $quotationModel->quote_number }}</title>
     <meta http-equiv="Content-Language" content="th" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
         body {
             font-family: 'sarabun_new', sans-serif;
@@ -203,7 +203,7 @@
 
                     <td
                         style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>091-091-6364</span></p>
+                        <p><span>{{$sale->phone??'-'}}</span></p>
                     </td>
                 </tr>
                 <tr>
@@ -260,7 +260,7 @@
                     </td>
 
                     <td style="width: 400px; padding-left: 5px; background-color: #f9c68f;">
-                        @php
+                        {{-- @php
                             $original_string = $quotationModel->quote_tour_name1 ? $quotationModel->quote_tour_name1 : $quotationModel->quote_tour_name;
 
                             // Regular expression เพื่อจับส่วนที่เป็นตัวอักษรภาษาอังกฤษและเครื่องหมายขีด
@@ -271,8 +271,8 @@
 
                             // echo $new_string; // ผลลัพธ์:  สิงคโปร์ เกาะเซ็นโตซ่า ยูนิเวอร์แซล สตูดิโอ (ฟรีเดย์ 1 วัน)
                         @endphp
-                        {{-- <p><span>{{ $quotationModel->quote_tour_name1 ? $quotationModel->quote_tour_name1 : $quotationModel->quote_tour_name }}</span> --}}
-                        <p><span>{{ $new_string }}</span>
+                        {{-- <p><span>{{ $quotationModel->quote_tour_name1 ? $quotationModel->quote_tour_name1 : $quotationModel->quote_tour_name }}</span> --}}  
+                        <p><span>{{ $quotationModel->quote_tour_name }}</span>
                         </p>
                     </td>
                     <td style="border: none;"></td>
@@ -281,7 +281,7 @@
                     </td>
                     <td style="width: 150px; padding: 0; text-align: center; background-color: #f9c68f;">
                         <p style="margin: 0; padding: 10px;">
-                            <span>{{ date('d', strtotime($quotationModel->quote_date_start)) }}-{{ thaidate('j F Y', $quotationModel->quote_date_end) }}</span>
+                            <span>{{ date('j', strtotime($quotationModel->quote_date_start)) }}-{{ thaidate('j F Y', $quotationModel->quote_date_end) }}<p>(<?php echo e($quotationModel->quote_numday); ?>)</p></span>
                         </p>
                     </td>
                 </tr>
@@ -504,7 +504,7 @@
                         <td style="border: none;"></td>
                         <td style="width: 277px; text-align: right; text-align: center;">
                            
-                            <img src="{{URL::asset('signature/next_signature_01.png')}}" alt="Image" class="image" style="width: 100px; ">
+                            <img src="{{URL::asset('signature/next_signature_01.png')}}" alt="Image" class="image" style="width: 120px; ">
                         
                             <p><b>ผู้อนุมัติ</b></p>
                             <p><b>{{ thaidate('j F Y', $quotationModel->quote_date) }}</b></p>

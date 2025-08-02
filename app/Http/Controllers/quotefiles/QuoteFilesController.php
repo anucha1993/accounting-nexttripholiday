@@ -28,7 +28,7 @@ class QuoteFilesController extends Controller
     $quote = quotationModel::where('quote_number', $request->quote_number)->first();
 
     // สร้างพาธที่ถูกต้อง
-    $folderPath = 'public/' . $quote->customer_id . '/files/passport/' . $quote->quote_number;
+    $folderPath = 'public/' . $quote->customer_id . '/files/' . $quote->quote_number.'/passport';
     $absolutePath = storage_path('app/' . $folderPath);
 
     // เช็คว่าไดเร็กทอรีมีอยู่แล้วหรือไม่ หากไม่มีให้สร้างขึ้นมา
@@ -93,7 +93,7 @@ public function sendMail(quoteFileModel $quoteFileModel, Request $request)
     try {
         // แปลง path ให้เป็น absolute path
         $publicPath = public_path($quoteFileModel->quote_file_path);
-        $storagePath = storage_path('app/public/' . $customer->customer_id . '/files/passport/' . $quotationModel->quote_number . '/' . $quoteFileModel->quote_file_name);
+        $storagePath = storage_path('app/public/' . $customer->customer_id . '/files/' . $quotationModel->quote_number . '/passport/' . $quoteFileModel->quote_file_name);
 
         // ตรวจสอบไฟล์จริง
         // \Log::info('Try send mail', [

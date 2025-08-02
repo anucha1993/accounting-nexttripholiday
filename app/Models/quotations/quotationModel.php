@@ -111,7 +111,7 @@ class quotationModel extends Model
 
     public function InputTaxVat()
     {
-       return $this->hasMany(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
+           return $this->hasMany(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
     }
      public function InputTaxVatNew()
     {
@@ -407,10 +407,11 @@ public function checkfileInputtaxVat()
   $input_tax = $this->InputTaxVat()
         // ->where('input_tax_type', 0)
            ->where('input_tax_type', 0)
-            ->whereNotNull('input_tax_file')
-            ->sum('input_tax_vat');
-return $input_tax ?? 0;
+            // ->whereNotNull('input_tax_file')
+            ->sum('input_tax_grand_total');  
+  return $input_tax ?? 0;
 }
+
     //ยอดรวมต้นทุนรวมอื่นๆ
     public function getTotalOtherCost()
 {
@@ -418,19 +419,14 @@ return $input_tax ?? 0;
     $withholdingTaxAmount = 0;
     if ($invoice) {
         if (is_null($invoice->invoice_image)) {
-            $withholdingTaxAmount = is_numeric($invoice->invoice_withholding_tax) ? $invoice->invoice_withholding_tax + $invoice->invoice_vat : 0;
-            $withholdingTaxAmount = $withholdingTaxAmount-$this->checkfileInputtaxVat();
+             $withholdingTaxAmount = $invoice->invoice_vat??0;
+            $withholdingTaxAmount = $this->checkfileInputtaxVat()+ $withholdingTaxAmount;
         } else {
             // ถ้ามีไฟล์ input_tax_file จะใช้ invoice_vat แทน`
-          
             $withholdingTaxAmount = $invoice->invoice_vat - $this->checkfileInputtaxVat();
         }
     }
-    // $getTotalInputTaxVat = $this->getTotalInputTaxVat();
-    // $getTotalInputTaxVatType = $this->getTotalInputTaxVatType();
-
-    //  $getTotalInputTaxVatNULL = $this->getTotalInputTaxVatNULL();
-    //  $getTotalInputTaxVatNotNULL = $this->getTotalInputTaxVatNotNULL();
+   
      $getTotalInputTaxVat = $this->getTotalInputTaxVat();
      $getTotalInputTaxVatType = $this->getTotalInputTaxVatType();
      $getTotalInputTaxVatWithholding = $this->getTotalInputTaxVatWithholding();
@@ -441,8 +437,8 @@ return $input_tax ?? 0;
     if ($hasInputTaxFile) {
         // ถ้ามีไฟล์ input_tax_file
      // return $getTotalInputTaxVatWithholding;
-       return $withholdingTaxAmount+$getTotalInputTaxVatWithholding+$getTotalInputTaxVatType;
-        // return $withholdingTaxAmount+$getTotalInputTaxVatWithholding+$getTotalInputTaxVatType;
+       //return $this->checkfileInputtaxVat();
+         return $withholdingTaxAmount+$getTotalInputTaxVatWithholding+$getTotalInputTaxVatType;
     }else {
         // ถ้าไม่มีไฟล์ input_tax_file
         return $getTotalInputTaxVat+$withholdingTaxAmount+$getTotalInputTaxVatWithholding;

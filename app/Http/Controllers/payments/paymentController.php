@@ -140,10 +140,20 @@ class paymentController extends Controller
 
             // ย้ายไฟล์ไปยังตำแหน่งที่ต้องการ
             $file->move($absolutePath, $uniqueName);
-            // อัปเดตพาธไฟล์ในฐานข้อมูล
-            $paymentModel->update(['payment_file_path' => $filePath,'payment_status' => 'success']);
+            // อัปเดตพาธไฟล์ในฐานข้อมูล และตั้งสถานะ success ทันที
+            $paymentModel->update(['payment_file_path' => $filePath, 'payment_status' => 'success']);
+        } else {
+            // การจัดการการชำระเงิน
+            $paymentStatus = 'wait';
+            if ($request->payment_total <= 0) {
+                $paymentStatus = 'cancel';
+            }
+            $request->merge([
+                'payment_status' => $paymentStatus,
+            ]);
+            $paymentModel->update($request->all());
         }
-        // การจัดการการชำระเงิน
+        // การจัดการการชำระเงิน (quotation)
         $totalOld = $quote->payment !== null ? $quote->payment : 0;
         $total = $totalOld + $request->payment_total;
         quotationModel::where('quote_number', $request->payment_doc_number)->update(['payment' => $total]);
@@ -153,18 +163,6 @@ class paymentController extends Controller
         } else {
             quotationModel::where('quote_number', $request->payment_doc_number)->update(['quote_payment_status' => 'payment']);
         }
-
-        // $payment = paymentModel::where('payment_stauss','')->where()->sum();
-        //check Status Payment Quotations
-        $paymentStatus = 'wait';
-
-        if ($request->payment_total <= 0) {
-            $paymentStatus = 'cancel';
-        }
-        // $request->merge([
-        //     'payment_status' => $paymentStatus,
-        // ]);
-        $paymentModel->update($request->all());
         // quote
         $quotationModel = quotationModel::where('quote_id', $paymentModel->payment_quote_id)->first();
         $deposit = $quotationModel->GetDeposit() - $quotationModel->Refund();

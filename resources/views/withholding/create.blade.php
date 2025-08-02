@@ -212,11 +212,11 @@
                         <tr>
                             <td class="text-center">1</td>
                             <td><input type="text" class="form-control" name="income_type[]" value="ค่าบริการ"></td>
-                            <td><input type="number" class="form-control tax-rate" name="tax_rate[]" value="2"></td>
-                            <td><input type="number" class="form-control amount" name="amount[]" value="50000"
+                            <td><input type="number" class="form-control tax-rate" name="tax_rate[]" value="3"></td>
+                            <td><input type="number" class="form-control amount" name="amount[]" value="0"
                                     step="0.01"></td>
                             <td><input type="number" class="form-control withholding-tax" name="withholding_tax[]"
-                                    step="0.01" value="1000" readonly></td>
+                                    step="0.01" value="0" readonly></td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-danger remove-row">ลบ</button>
                             </td>
@@ -331,7 +331,7 @@
                                 <input type="text" id="customer_social_id" class="form-control" placeholder="+66">
                             </div>
                             <div class="col-md-12 mb-2">
-                                <label for="">Social id : </label>
+                                <label for="">ที่อยู่ลูกค้า: </label>
                                 <textarea id="customer_address" class="form-control" cols="30" rows="2" placeholder="ที่อยู่ลูกค้า"></textarea>
                             </div>
                         </div>

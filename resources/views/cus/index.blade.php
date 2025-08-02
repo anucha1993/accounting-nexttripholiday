@@ -44,6 +44,7 @@
                 <table class="table table-hover table-bordered align-middle bg-white shadow-sm rounded">
                     <thead class="thead-light">
                         <tr>
+                            <th>ID</th>
                             <th>รหัสลูกค้า</th>
                             <th>ชื่อลูกค้า</th>
                             <th>Email</th>
@@ -56,6 +57,7 @@
                         @forelse($customers as $customer)
                         <tr>
                             <td>{{ $customer->customer_id }}</td>
+                            <td>{{ $customer->customer_number }}</td>
                             <td>
                                 {{ $customer->customer_name }}<br>
                                 <span class="text-muted small">{{ $customer->customer_address }}</span>

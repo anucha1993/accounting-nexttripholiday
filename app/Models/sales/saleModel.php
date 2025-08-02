@@ -12,6 +12,6 @@ class saleModel extends Model
     protected $table = 'users';
     protected $primaryKey = 'id';
     protected $fillable = [
-        'name','email'
+        'name','email','phone'
     ];
 }

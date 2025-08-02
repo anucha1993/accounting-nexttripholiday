@@ -4,7 +4,7 @@
 <head>
     <title>{{ $paymentModel->payment_number }}</title>
     <meta http-equiv="Content-Language" content="th" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
         body {
             font-family: 'sarabun_new', sans-serif;
@@ -243,7 +243,7 @@
                     </td>
                     <td style="width: 150px; padding: 0; text-align: center; background-color: #f9c68f;">
                         <p style="margin: 0; padding: 10px;">
-                            <span>{{ date('d', strtotime($quotationModel->quote_date_start)) }}-{{ thaidate('j F Y', $quotationModel->quote_date_end) }}</span>
+                            <span>{{ date('j', strtotime($quotationModel->quote_date_start)) }}-{{ thaidate('j F Y', $quotationModel->quote_date_end) }}</span>
                         </p>
                     </td>
                 </tr>
@@ -422,18 +422,17 @@
             </div> --}}
 
             <div style="margin-top: -37px">
-                <table style="margin-right: -260px; margin-left: -35px;">
+           <table style="margin-right: -260px; margin-left: -35px;">
                     <tr style="border-right: none;" > 
                        
                         <td style="border: none; width: 506px;"></td>
                         <td style="width: 241px; text-align: right; text-align: center;">
-                            <b style="color: #fff">ว่าง</b></br>
-                            <p style="color: #fff">ว่าง</p></br>
-                            <p style="color: #fff">ว่าง</p></br>
-                            <p style="color: #fff">ว่าง</p></br>
-                            <p style="color: #fff">ว่าง</p></br>
+                           
+<img src="{{URL::asset('signature/next_signature_01.png')}}" alt="Image" class="image" style="width: 125px; ">
                             <p >__________________________</p></br>
                             <p><b>Authorized by</b></p>
+
+
                             <p><b>วันที่ {{ thaidate('j F Y', $quotationModel->quote_date) }}</b></p>
                         </td>
                     </tr>

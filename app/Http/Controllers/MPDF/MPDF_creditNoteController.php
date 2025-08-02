@@ -46,7 +46,7 @@ class MPDF_creditNoteController extends Controller
           // $mpdf->AddPage();
       
           // ส่งออกไฟล์ PDF ไปยังเบราว์เซอร์เพื่อดาวน์โหลด
-          return $mpdf->Output('creditnote.pdf', 'I'); // 'I' เพื่อแสดงในเบราว์เซอร์
+          return $mpdf->Output($creditNoteModel->creditnote_number.'.pdf', 'I'); // 'I' เพื่อแสดงในเบราว์เซอร์
       }
   
   

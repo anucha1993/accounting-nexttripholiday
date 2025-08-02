@@ -174,30 +174,34 @@
                             </div>
                             <div class="card-body">
                                 <table class="info-table w-100">
+                                      <tr>
+                                        <td class="label">รหัสลูกค้า:</td>
+                                        <td class="value">{{ $customer?->customer_number }}</td>
+                                    </tr>
                                     <tr>
                                         <td class="label">ชื่อลูกค้า:</td>
-                                        <td class="value">{{ $customer->customer_name }}</td>
+                                        <td class="value">{{ $customer?->customer_name }}</td>
                                     </tr>
                                     <tr>
                                         <td class="label">เลขเสียภาษี:</td>
-                                        <td class="value">{{ $customer->customer_texid ?: '-' }}</td>
+                                        <td class="value">{{ $customer?->customer_texid ?: '-' }}</td>
                                     </tr>
                                     <tr>
                                         <td class="label">ที่อยู่:</td>
-                                        <td class="value">{{ $customer->customer_address ?: '-' }}</td>
+                                        <td class="value">{{ $customer?->customer_address ?: '-' }}</td>
                                     </tr>
                                     <tr>
                                         <td class="label">อีเมล:</td>
-                                        <td class="value">{{ $customer->customer_email ?: '-' }}</td>
+                                        <td class="value">{{ $customer?->customer_email ?: '-' }}</td>
                                     </tr>
                                     <tr>
                                         <td class="label">เบอร์โทร:</td>
-                                        <td class="value">{{ $customer->customer_tel ?: '-' }}</td>
+                                        <td class="value">{{ $customer?->customer_tel ?: '-' }}</td>
                                     </tr>
                                     <tr>
                                         <td class="label">ที่มา:</td>
                                         <td class="value">
-                                            @if (!empty($customer->campaign_source_name) && !empty($customer->customer_social_id))
+                                            @if (!empty($customer?->campaign_source_name) && !empty($customer?->customer_social_id))
                                                 {{ $customer->campaign_source_name }} : {{ $customer->customer_social_id }}
                                             @elseif(!empty($customer->campaign_source_name))
                                                 {{ $customer->campaign_source_name }}

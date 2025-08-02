@@ -25,6 +25,10 @@
                     <p>บริษัทได้ส่งรายละเอียดการจองทัวร์ ดังนี้</p>
 
                     <table class="info-table w-100">
+						  <tr>
+                                        <td class="label">เลขจองจากระบบโฮลเซลล์</td>
+                                        <td class="value">.....</td>
+                                    </tr>
                      <tr>
                                         <td class="label">ชื่อลูกค้า:</td>
                                         <td class="value">{{ $customer->customer_name }}</td>
@@ -71,6 +75,16 @@
                                         <td class="label">พนักงานขาย:</td>
                                         <td class="value">{{ $quotationModel->Salename->name }}</td>
                                     </tr>
+						
+						<tr>
+                                        <td class="label">แพ้อาหาร (ระบุชื่อท่านที่แพ้) : </td>
+                                        <td class="value">...</td>
+                                    </tr>
+						
+						<tr>
+                                        <td class="label">เตียงนอน (รีเควส) : </td>
+                                        <td class="value">...</td>
+                                    </tr>
                                    
                                 </table>
                                
@@ -79,6 +93,7 @@
                     <p>ขอแสดงความนับถือ</p>
                     
                     <p>บริษัท เน็กซ์ ทริป ฮอลิเดย์ จำกัด (สำนักงานใหญ่)</p>
+<p>222/2 โกลเด้นทาวน์ บางนา-สวนหลวง ถนนกาญจนาภิเษก แขวงดอกไม้ เขตประเวศ กทม 10250</p>
                     <p>โทรศัพท์:02-136-9144 อัตโนมัติ 16 คู่สาย โทรสาร(Fax): 02-136-9146</p>
                     <p>Hotline: 091-091-6364 ,091-091-6463</p>
                     <p>TAT License: 11/07440 ,TTAA License:1469</p>
@@ -87,6 +102,7 @@
             </div>
 
             <div class="col-md-12">
+                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
                 <button type="submit" class="btn btn-info float-end"><i class="fas fa-paper-plane"></i> Send</button>
             </div>
         </form>

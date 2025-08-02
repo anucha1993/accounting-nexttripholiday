@@ -76,9 +76,9 @@ class quoteController extends Controller
     }
 
     // function Runnumber ใบเสนอราคา
-    public function generateRunningCodeCUS()
+     public function generateRunningCodeCUS()
     {
-        $customer = customerModel::select('customer_number')->latest()->first();
+        $customer = customerModel::select('customer_number')->orderBy('customer_number', 'desc')->first();
         if (!empty($customer)) {
             $CusNumber = $customer->customer_number;
         } else {
@@ -432,17 +432,64 @@ class quoteController extends Controller
             'payment' => $checkPaymentTotal,
         ]);
 
-        customerModel::where('customer_id', $request->customer_id)->update([
-            'customer_name' => $request->customer_name,
-            'customer_email' => $request->customer_email,
-            'customer_address' => $request->customer_address,
-            'customer_texid' => $request->customer_texid,
-            'customer_tel' => $request->customer_tel,
-            'customer_fax' => $request->customer_fax,
-            'customer_date' => $request->customer_date,
-            'customer_campaign_source' => $request->customer_campaign_source,
-            'customer_social_id' => $request->customer_social_id,
-        ]);
+
+        // --- เงื่อนไขใหม่: ถ้า customer_id ว่าง/Null ให้ create ลูกค้าใหม่, ถ้ามีให้ update ---
+        if (empty($request->customer_id)) {
+            // create ลูกค้าใหม่
+            $runningCodeCus = $this->generateRunningCodeCUS();
+            $request->merge(['customer_number' => $runningCodeCus]);
+            $customerModel = customerModel::create([
+                'customer_name' => $request->customer_name,
+                'customer_email' => $request->customer_email,
+                'customer_address' => $request->customer_address,
+                'customer_texid' => $request->customer_texid,
+                'customer_tel' => $request->customer_tel,
+                'customer_fax' => $request->customer_fax,
+                'customer_date' => $request->customer_date,
+                'customer_campaign_source' => $request->customer_campaign_source,
+                'customer_social_id' => $request->customer_social_id,
+                'customer_number' => $runningCodeCus,
+            ]);
+            $request->merge(['customer_id' => $customerModel->customer_id]);
+        } else {
+            // update ลูกค้าเดิม
+            $customerOld = customerModel::where('customer_id', $request->customer_id)->first();
+            $isNameSame = $customerOld && $customerOld->customer_name == $request->customer_name;
+            $isEmailSame = $customerOld && $customerOld->customer_email == $request->customer_email;
+            $isTelSame = $customerOld && $customerOld->customer_tel == $request->customer_tel;
+
+            if (!$isNameSame && !$isEmailSame && !$isTelSame) {
+                // create ลูกค้าใหม่
+                $runningCodeCus = $this->generateRunningCodeCUS();
+                $request->merge(['customer_number' => $runningCodeCus]);
+                $customerModel = customerModel::create([
+                    'customer_name' => $request->customer_name,
+                    'customer_email' => $request->customer_email,
+                    'customer_address' => $request->customer_address,
+                    'customer_texid' => $request->customer_texid,
+                    'customer_tel' => $request->customer_tel,
+                    'customer_fax' => $request->customer_fax,
+                    'customer_date' => $request->customer_date,
+                    'customer_campaign_source' => $request->customer_campaign_source,
+                    'customer_social_id' => $request->customer_social_id,
+                    'customer_number' => $runningCodeCus,
+                ]);
+                $request->merge(['customer_id' => $customerModel->customer_id]);
+            } else {
+                // update ลูกค้าเดิม
+                customerModel::where('customer_id', $request->customer_id)->update([
+                    'customer_name' => $request->customer_name,
+                    'customer_email' => $request->customer_email,
+                    'customer_address' => $request->customer_address,
+                    'customer_texid' => $request->customer_texid,
+                    'customer_tel' => $request->customer_tel,
+                    'customer_fax' => $request->customer_fax,
+                    'customer_date' => $request->customer_date,
+                    'customer_campaign_source' => $request->customer_campaign_source,
+                    'customer_social_id' => $request->customer_social_id,
+                ]);
+            }
+        }
 
         $quotationModel->update($request->all());
 

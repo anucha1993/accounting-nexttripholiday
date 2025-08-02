@@ -80,7 +80,7 @@ class MPDF_taxReceiptController extends Controller
         $mpdf->WriteHTML($html2);
     
         // ส่งออกไฟล์ PDF ไปยังเบราว์เซอร์เพื่อดาวน์โหลด
-        return $mpdf->Output('TexReceipt.pdf', 'I'); // 'I' เพื่อแสดงในเบราว์เซอร์
+        return $mpdf->Output( $texreceipt->taxinvoice_number.'.pdf', 'I'); // 'I' เพื่อแสดงในเบราว์เซอร์
     }
 
 

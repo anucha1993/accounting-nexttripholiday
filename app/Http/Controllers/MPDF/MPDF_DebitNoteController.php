@@ -45,7 +45,7 @@ class MPDF_DebitNoteController extends Controller
         // $mpdf->AddPage();
     
         // ส่งออกไฟล์ PDF ไปยังเบราว์เซอร์เพื่อดาวน์โหลด
-        return $mpdf->Output('debitnote.pdf', 'I'); // 'I' เพื่อแสดงในเบราว์เซอร์
+        return $mpdf->Output($debitNoteModel->debtinote_number.'.pdf', 'I'); // 'I' เพื่อแสดงในเบราว์เซอร์
     }
 
 
