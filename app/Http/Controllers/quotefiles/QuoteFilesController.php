@@ -75,74 +75,60 @@ public function delete(quoteFileModel $quoteFileModel)
     return redirect()->back()->with('success', 'ไฟล์ถูกลบเรียบร้อยแล้ว');
 }
 
-public function modalMail(quoteFileModel $quoteFileModel)
+public function modalMail(quotationModel $quotationModel)
 {
-    $quotationModel = quotationModel::where('quote_number',$quoteFileModel->quote_number)->first();
+    // $quotationModel = quotationModel::where('quote_number',$quoteFileModel->quote_number)->first();
     $customer =  customerModel::where('customer_id',$quotationModel->customer_id)->first();
+    $quoteFileModel =  quoteFileModel::where('quote_id',$quotationModel->quote_id)->get();
     return view('quoteFiles.modal-mail-file',compact('quotationModel','customer','quoteFileModel'));
 }
 
 
 
-public function sendMail(quoteFileModel $quoteFileModel, Request $request)
+public function sendMail(quotationModel $quotationModel, Request $request)
 {
-    $quotationModel = quotationModel::where('quote_id', $quoteFileModel->quote_id)->first();
+
     $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
+    $quoteFiles = quoteFileModel::where('quote_id', $quotationModel->quote_id)->get();
     $sale = saleModel::select('name', 'id', 'email')->where('id', $quotationModel->quote_sale)->first();
 
     try {
-        // แปลง path ให้เป็น absolute path
-        $publicPath = public_path($quoteFileModel->quote_file_path);
-        $storagePath = storage_path('app/public/' . $customer->customer_id . '/files/' . $quotationModel->quote_number . '/passport/' . $quoteFileModel->quote_file_name);
+        $attachments = [];
+        foreach ($quoteFiles as $file) {
+            $publicPath = public_path($file->quote_file_path);
+            $storagePath = storage_path('app/public/' . $customer->customer_id . '/files/' . $quotationModel->quote_number . '/passport/' . $file->quote_file_name);
+            $filePath = file_exists($storagePath) ? $storagePath : (file_exists($publicPath) ? $publicPath : null);
+            if ($filePath) {
+                $attachments[] = [
+                    'path' => $filePath,
+                    'as' => $file->quote_file_name,
+                    'mime' => mime_content_type($filePath),
+                ];
+            }
+        }
 
-        // ตรวจสอบไฟล์จริง
-        // \Log::info('Try send mail', [
-        //     'public_path' => $publicPath,
-        //     'storage_path' => $storagePath,
-        //     'exists_public' => file_exists($publicPath),
-        //     'exists_storage' => file_exists($storagePath),
-        //     'request_email' => $request->email,
-        //     'request_subject' => $request->subject,
-        // ]);
-
-        // เลือก path ที่มีไฟล์จริง
-        $filePath = file_exists($storagePath) ? $storagePath : (file_exists($publicPath) ? $publicPath : null);
-        if (!$filePath) {
-            // \Log::error('File for attach not found', [
-            //     'public_path' => $publicPath,
-            //     'storage_path' => $storagePath,
-            // ]);
+        if (empty($attachments)) {
             return response()->json(['success' => false, 'message' => 'ไม่พบไฟล์แนบ']);
         }
 
-        $fileName = $quoteFileModel->quote_file_name;
-        $mimeType = mime_content_type($filePath);
-
-        Mail::send([], [], function ($message) use ($sale, $request, $quotationModel, $customer, $filePath, $fileName, $mimeType) {
+        Mail::send([], [], function ($message) use ($sale, $request, $quotationModel, $customer, $attachments) {
             $message->to($request->email)
                     ->subject($request->subject)
                     ->html("
                         <h2>เรียน คุณ {$customer->customer_name}</h2>
                         <br>
                         {$request->text_detail}
-                    ")
-                    ->attach($filePath, [
-                        'as' => $fileName,
-                        'mime' => $mimeType,
-                    ]);
+                    ");
+            foreach ($attachments as $att) {
+                $message->attach($att['path'], [
+                    'as' => $att['as'],
+                    'mime' => $att['mime'],
+                ]);
+            }
         });
 
-        // \Log::info('Mail sent success', [
-        //     'to' => $request->email,
-        //     'file' => $filePath,
-        // ]);
-
-        return response()->json(['success' => true, 'message' => 'ส่งอีเมลพร้อมไฟล์สำเร็จ']);
+        return response()->json(['success' => true, 'message' => 'ส่งอีเมลพร้อมไฟล์ทั้งหมดสำเร็จ']);
     } catch (\Exception $e) {
-        // \Log::error('Mail send error', [
-        //     'error' => $e->getMessage(),
-        //     'trace' => $e->getTraceAsString(),
-        // ]);
         return response()->json(['success' => false, 'message' => 'เกิดข้อผิดพลาดในการส่งอีเมล: ' . $e->getMessage()]);
     }
 }

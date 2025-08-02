@@ -20,6 +20,10 @@
                               <i class="fa fa-file me-1"></i>เพิ่มไฟล์เอกสาร
                             </button>
              @endcanany
+             @canany(['filepassport.mail'])
+                     <a class="btn btn-outline-info btn-sm me-1 modal-mail-file float-end" href="{{route('quotefile.modalMail',$quotationModel->quote_id)}}"><i class="fas fa-envelope me-1"></i>ส่งเมล</a>
+            @endcanany
+
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead class="table">
@@ -47,9 +51,7 @@
                                 </td>
                                 <td>
                                     {{-- <a href="" class="btn btn-outline-primary btn-sm me-1"><i class="fa fa-edit me-1"></i>แก้ไข</a> --}}
-                                    @canany(['filepassport.mail'])
-                                    <a class="btn btn-outline-info btn-sm me-1 modal-mail-file" href="{{route('quotefile.modalMail',$item->quote_file_id)}}"><i class="fas fa-envelope me-1"></i>ส่งเมล</a>
-                                    @endcanany
+                                    
                                     @canany(['filepassport.delete'])
                                     <a href="{{ route('quotefile.delete', $item->quote_file_id) }}" onclick="return confirm('ยืนยันการลบ');" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash me-1"></i>Delete</a>
                                     @endcanany

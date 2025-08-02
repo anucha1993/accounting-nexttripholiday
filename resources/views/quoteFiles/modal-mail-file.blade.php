@@ -3,7 +3,7 @@
                    <form id="sendEmailForm" method="post">
                        @csrf
                        <div class="row">
-                           <h4>ส่งเมล์ ไฟล์เอกสาร # {{ $quoteFileModel->quote_file_name}}</h4>
+                           <h4>ส่งเมล์ ไฟล์เอกสาร </h4>
                            <hr>
                            <div class="col-md-12 mb-3">
                                <label for="">Subject</label>
@@ -120,7 +120,7 @@
                    });
            
                    // เรียก Ajax เพื่อส่งอีเมล
-                   fetch("{{ route('quotefile.sendMail', $quoteFileModel->quote_file_id) }}", {
+                   fetch("{{ route('quotefile.sendMail', $quotationModel->quote_id) }}", {
                            method: "POST",
                            headers: {
                                "X-CSRF-TOKEN": "{{ csrf_token() }}"

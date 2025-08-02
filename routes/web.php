@@ -239,8 +239,8 @@ Route::post('payment/credit/store',[paymentCreditController::class,'payment'])->
 Route::get('quotefiles/{quotationModel}',[QuoteFilesController::class,'index'])->name('quotefile.index');
 Route::get('quotefile/delete/{quoteFileModel}',[QuoteFilesController::class,'delete'])->name('quotefile.delete');
 Route::post('quotefile/upload',[QuoteFilesController::class,'upload'])->name('quotefile.upload');
-Route::get('quotefile/modal/mail{quoteFileModel}',[QuoteFilesController::class,'modalMail'])->name('quotefile.modalMail');
-Route::post('quotefile/send/mail{quoteFileModel}',[QuoteFilesController::class,'sendMail'])->name('quotefile.sendMail');
+Route::get('quotefile/modal/mail{quotationModel}',[QuoteFilesController::class,'modalMail'])->name('quotefile.modalMail');
+Route::post('quotefile/send/mail{quotationModel}',[QuoteFilesController::class,'sendMail'])->name('quotefile.sendMail');
 
 // Payment Wholesale
 Route::get('payment/wholesales/{quotationModel}',[paymentWholesaleController::class,'index'])->name('paymentWholesale.index');
