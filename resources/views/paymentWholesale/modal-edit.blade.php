@@ -31,7 +31,7 @@
                 <label>หลักฐานการชำระเงิน</label>
                  {{-- File1 --}}
 
-                 <input type="file" name="file" required>
+                 <input type="file" name="file" {{ $paymentWholesaleModel->payment_wholesale_file_path ? '' : 'required' }}>
                  <a onclick="openPdfPopup(this.href); return false;" href="{{ asset($paymentWholesaleModel->payment_wholesale_file_path) }}">{{ $paymentWholesaleModel->payment_wholesale_file_name }}</a>
 
      

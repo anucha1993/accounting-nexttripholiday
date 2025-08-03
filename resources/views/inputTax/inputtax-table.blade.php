@@ -53,7 +53,7 @@
 
         <div class="card-body" id="table-inputtax" style="display: block">
             <div class="table-responsive">
-                <table class="table inputtax-table table-hover table-bordered mb-0">
+                <table class="table inputtax-table  table-bordered mb-0">
                     <thead>
                         <tr>
                             <th class="text-center" style="width: 60px;">#</th>
@@ -79,7 +79,7 @@
                                 $inputTaxTotal += $item->invoice_vat;
                             @endphp
 
-                            <tr>
+                            <tr style="background-color: #fabb5c1a">
                                 <td>{{ ++$key }}</td>
                                 <td>ภาษีขาย</td>
                                 <td>{{ $item->invoice_number }}</td>
@@ -102,13 +102,13 @@
                                         @endif
                                     </div>
                                 </td>
-                                <td>
+                                <td class="text-end">
                                     {{ number_format($item->invoice_pre_vat_amount, 2) }}
                                 </td>
-                                <td>N/A</td>
-                                <td>{{ number_format($item->invoice_withholding_tax, 2) }}</td>
-                                <td>{{ number_format($item->invoice_vat, 2) }}</td>
-                                <td>{{ number_format($invoice->getWithholdingTaxAmountAttribute(), 2) }}</td>
+                                <td class="text-center">N/A</td>
+                                <td class="text-end">{{ number_format($item->invoice_withholding_tax, 2) }}</td>
+                                <td class="text-end">{{ number_format($item->invoice_vat, 2) }}</td>
+                                <td class="text-end text-danger">{{ number_format($invoice->getWithholdingTaxAmountAttribute(), 2) }}</td>
                                 <td>N/A</td>
                             @empty
                         @endforelse
@@ -198,7 +198,7 @@
 
 
                         </td>
-                        <td class="text-end">
+                        <td class="text-end ">
                             {{ number_format($item->input_tax_service_total, 2) }}
 
                         </td>
@@ -218,7 +218,7 @@
                         <td class="text-end">{{ number_format($item->input_tax_withholding, 2) }} </td>
                         <td class="text-end">{{ number_format($item->input_tax_vat, 2) }}</td>
 
-                        <td class="text-end">
+                        <td class="text-end text-danger">
                           
                             {{ $item->input_tax_grand_total }}
                         </td>

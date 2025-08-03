@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use App\Models\quotations\quotationModel;
 use App\Http\Controllers\MPDF\MailController;
 use App\Http\Controllers\quotations\quoteLog;
 use App\Http\Controllers\selects\periodSelect;
@@ -367,6 +366,7 @@ Route::get('/report/taxinvoice/form',[taxinvoiceReportController::class,'index']
 Route::get('/report/receipt/form',[receiptReportController::class,'index'])->name('report.receipt');
 Route::get('/report/saletax/form',[saleTaxReportController::class,'index'])->name('report.saletax');
 Route::get('/report/sales/form',[saleReportController::class,'index'])->name('report.sales');
+Route::get('/report/sales/export',[saleReportController::class,'export'])->name('reports.sales.export');
 Route::get('/report/payment-wholesale/form',[paymentWholesaleReportController::class,'index'])->name('report.payment-wholesale');
 Route::get('/report/payment-wholesale/export', [paymentWholesaleReportController::class, 'exportExcel'])->name('report.payment-wholesale.export');
 
@@ -377,7 +377,6 @@ Route::post('export/excel/taxinvoice', [taxinvoiceExportController::class, 'expo
 Route::post('export/excel/receipt', [receiptExportControlle::class, 'export'])->name('export.receipt');
 Route::post('export/excel/saletax', [saleTaxExportController::class, 'export'])->name('export.saletax');
 Route::post('export/excel/inputtax', [inputTaxExportController::class, 'export'])->name('export.inputtax');
-Route::post('export/excel/sales', [salesExportController::class, 'export'])->name('export.sales');
 
 
 

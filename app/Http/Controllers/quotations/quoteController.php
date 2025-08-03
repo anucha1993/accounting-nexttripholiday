@@ -241,6 +241,7 @@ class quoteController extends Controller
         $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
         $sales = saleModel::select('name', 'id')
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+            ->where('status', 'active')
             ->get();
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
         $airline = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
@@ -260,6 +261,7 @@ class quoteController extends Controller
         $sale = saleModel::select('name', 'id')
                 ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
                 ->where('id', $quotationModel->quote_sale)
+                ->where('status', 'active')
                 ->first();
 
         
@@ -303,11 +305,13 @@ class quoteController extends Controller
         if (Auth::user()->getRoleNames()->contains('sale')) {
             $sales = saleModel::select('name', 'id')
                 ->where('id', Auth::user()->sale_id)
+                ->where('status', 'active')
                 ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
                 ->get();
         } else {
             $sales = saleModel::select('name', 'id')
                 ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->where('status', 'active')
                 ->get();
         }
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
@@ -331,10 +335,12 @@ class quoteController extends Controller
             $sales = saleModel::select('name', 'id')
                 ->where('id', Auth::user()->sale_id)
                 ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->where('status', 'active')
                 ->get();
         } else {
             $sales = saleModel::select('name', 'id')
                 ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->where('status', 'active')
                 ->get();
         }
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
@@ -356,6 +362,7 @@ class quoteController extends Controller
         $customer = customerModel::where('customer_id', $quotationModel->customer_id)->first();
         $sales = saleModel::select('name', 'id')
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+            ->where('status', 'active')
             ->get();
 
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
@@ -380,10 +387,12 @@ class quoteController extends Controller
             $sales = saleModel::select('name', 'id')
                 ->where('id', Auth::user()->sale_id)
                 ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->where('status', 'active')
                 ->get();
         } else {
             $sales = saleModel::select('name', 'id')
                 ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+                ->where('status', 'active')
                 ->get();
         }
         $country = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();

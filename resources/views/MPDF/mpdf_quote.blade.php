@@ -203,7 +203,7 @@
 
                     <td
                         style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{$sale->phone??'-'}}</span></p>
+                        <p><span>{{$quotationModel->Salename->phone??'-'}}</span></p>
                     </td>
                 </tr>
                 <tr>

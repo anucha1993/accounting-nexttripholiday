@@ -272,7 +272,7 @@
                     <td class="data-cell">{{ $customer->customer_tel }}</td>
                     <td class="empty-cell"></td>
                     <td class="label-cell"><b>Tel:</b></td>
-                    <td class="data-cell">{{$sale->phone??'-'}}</td>
+                    <td class="data-cell">{{$quotationModel->Salename->phone??'-'}}</td>
                 </tr>
                 <tr>
                     <td class="label-cell"><b>Tax ID:</b></td>

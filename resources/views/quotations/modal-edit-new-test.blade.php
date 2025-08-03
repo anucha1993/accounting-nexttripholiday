@@ -3,7 +3,18 @@
     <button type="button" data-bs-dismiss="modal" class="absolute top-2 right-3 text-gray-500 hover:text-red-500 text-2xl font-bold focus:outline-none" aria-label="Close">
         &times;
     </button>
-    <form id="formEditNewTest">
+    <form id="formEditNewTest" method="POST" action="{{ route('quote.update', $quotationModel->quote_id) }}">
+        @csrf
+        @method('PUT')
+        <!-- Hidden Fields -->
+        <input type="hidden" name="quote_id" value="{{ $quotationModel->quote_id }}">
+        <input type="hidden" name="quote_status" value="{{ $quotationModel->quote_status }}">
+        <input type="hidden" name="quote_payment_status" value="{{ $quotationModel->quote_payment_status }}">
+        <input type="hidden" name="quote_tour_code" value="{{ $quotationModel->quote_tour_code }}">
+        <input type="hidden" name="quote_booking" value="{{ $quotationModel->quote_booking }}">
+        <input type="hidden" name="customer_id" value="{{ $quotationModel->customer_id }}">
+        <input type="hidden" name="created_by" value="{{ Auth::user()->name }}">
+
         <!-- Header -->
         <div class="card-header bg-gray-200 shadow rounded mb-4">
            <div class="p-6 ">
@@ -62,48 +73,66 @@
                     <!-- ระยะเวลา -->
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">ระยะเวลาทัวร์ (วัน/คืน)</label>
-                        <select class="w-full border border-gray-300 rounded px-3 py-1 text-sm bg-white">
+                        <select name="numday" id="numday" class="w-full border border-gray-300 rounded px-3 py-1 text-sm bg-white">
                             <option value="">-- Select --</option>
-                            <option value="3">3 วัน 2 คืน</option>
-                            <option value="5">5 วัน 4 คืน</option>
+                            @foreach($numDays as $numDay)
+                                <option value="{{ $numDay->num_day_total }}" {{ $quotationModel->numday == $numDay->num_day_total ? 'selected' : '' }}>
+                                    {{ $numDay->num_day_total }} วัน {{ $numDay->num_night_total }} คืน
+                                </option>
+                            @endforeach
                         </select>
                     </div>
 
                     <!-- ประเทศ -->
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">ประเทศที่เดินทาง</label>
-                        <select class="w-full border border-gray-300 rounded px-3 py-1 text-sm bg-white">
+                        <select name="quote_country" class="w-full border border-gray-300 rounded px-3 py-1 text-sm bg-white">
                             <option value="">-- Select --</option>
-                            <option value="jp">ญี่ปุ่น</option>
-                            <option value="kr">เกาหลี</option>
+                            @foreach($country as $c)
+                                <option value="{{ $c->id }}" {{ $quotationModel->quote_country == $c->id ? 'selected' : '' }}>
+                                    {{ $c->country_name_th }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
 
                     <!-- โฮลเซลล์ -->
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">โฮลเซลล์</label>
-                        <select class="w-full border border-gray-300 rounded px-3 py-1 text-sm bg-white">
+                        <select name="quote_wholesale" class="w-full border border-gray-300 rounded px-3 py-1 text-sm bg-white">
                             <option value="">-- Select --</option>
-                            <option value="wh1">Wholesaler 1</option>
+                            @foreach($wholesale as $ws)
+                                <option value="{{ $ws->id }}" {{ $quotationModel->quote_wholesale == $ws->id ? 'selected' : '' }}>
+                                    {{ $ws->name }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
 
                     <!-- สายการบิน -->
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">สายการบิน</label>
-                        <select class="w-full border border-gray-300 rounded px-3 py-1 text-sm bg-white">
+                        <select name="quote_airline" class="w-full border border-gray-300 rounded px-3 py-1 text-sm bg-white">
                             <option value="">-- Select --</option>
-                            <option value="tg">Thai Airways</option>
+                            @foreach($airline as $air)
+                                <option value="{{ $air->id }}" {{ $quotationModel->quote_airline == $air->id ? 'selected' : '' }}>
+                                    {{ $air->travel_name }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
 
                     <div class="md:col-span-1">
-                        <label class="block text-sm font-medium text-gray-600 mb-1">วันออกเดินทาง: เลือกวันที่</label>
-                        <input type="date" class="w-full border border-gray-300 rounded px-3 py-1 text-sm">
+                        <label class="block text-sm font-medium text-gray-600 mb-1">วันออกเดินทาง</label>
+                        <input type="date" id="date-start-display" name="quote_date_start" 
+                            class="w-full border border-gray-300 rounded px-3 py-1 text-sm"
+                            value="{{ date('Y-m-d', strtotime($quotationModel->quote_date_start)) }}">
                     </div>
                     <div class="md:col-span-1">
                         <label class="block text-sm font-medium text-gray-600 mb-1">วันที่เดินทางกลับ</label>
-                        <input type="date" class="w-full border border-gray-300 rounded px-3 py-1 text-sm">
+                        <input type="date" id="date-end-display" name="quote_date_end" 
+                            class="w-full border border-gray-300 rounded px-3 py-1 text-sm"
+                            value="{{ date('Y-m-d', strtotime($quotationModel->quote_date_end)) }}">
                     </div>
 
 
@@ -116,49 +145,66 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3">
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-600 mb-1">ชื่อลูกค้า</label>
-                        <input type="text" class="w-full border border-gray-300 rounded px-3 py-1 text-sm"
-                            placeholder="ค้นหาชื่อลูกค้า">
+                        <div class="flex gap-2">
+                            <input type="text" id="customerSearch" class="w-full border border-gray-300 rounded px-3 py-1 text-sm"
+                                value="{{ $customer->customer_name ?? '' }}" placeholder="ค้นหาชื่อลูกค้า">
+                            <button type="button" id="btn-new-customer" class="px-2 py-1 bg-blue-500 text-white rounded text-xs">
+                                ลูกค้าใหม่
+                            </button>
+                        </div>
+                        <div id="customerResults" class="absolute z-10 w-full bg-white border border-gray-300 rounded shadow mt-1 hidden"></div>
                     </div>
+
                     <div class="md:col-span-1">
                         <label class="block text-sm font-medium text-gray-600 mb-1">เลขผู้เสียภาษี</label>
-                        <input type="text" class="w-full border border-gray-300 rounded px-3 py-1 text-sm"
-                            placeholder="เลขผู้เสียภาษี">
+                        <input type="text" name="texid" id="texid" class="w-full border border-gray-300 rounded px-3 py-1 text-sm"
+                            value="{{ $customer->texid ?? '' }}" placeholder="เลขผู้เสียภาษี">
                     </div>
 
                     <div class="md:col-span-1">
                         <label class="block text-sm font-medium text-gray-600 mb-1">อีเมลล์</label>
-                        <input type="email" class="w-full border border-gray-300 rounded px-3 py-1 text-sm"
-                            placeholder="อีเมลล์ลูกค้า">
-                    </div>
-                    <div class="md:col-span-1">
-                        <label class="block text-sm font-medium text-gray-600 mb-1">เบอร์โทรศัพท์</label>
-                        <input type="text" class="w-full border border-gray-300 rounded px-3 py-1 text-sm"
-                            placeholder="เบอร์โทรศัพท์">
+                        <input type="email" name="customer_email" id="customer_email" 
+                            class="w-full border border-gray-300 rounded px-3 py-1 text-sm"
+                            value="{{ $customer->customer_email ?? '' }}" placeholder="อีเมลล์ลูกค้า">
                     </div>
 
+                    <div class="md:col-span-1">
+                        <label class="block text-sm font-medium text-gray-600 mb-1">เบอร์โทรศัพท์</label>
+                        <input type="text" name="customer_tel" id="customer_tel" 
+                            class="w-full border border-gray-300 rounded px-3 py-1 text-sm"
+                            value="{{ $customer->customer_tel ?? '' }}" placeholder="เบอร์โทรศัพท์">
+                    </div>
 
                     <div class="md:col-span-1">
                         <label class="block text-sm font-medium text-gray-600 mb-1">เบอร์โทรสาร(Fax)</label>
-                        <input type="email" class="w-full border border-gray-300 rounded px-3 py-1 text-sm"
-                            placeholder="เบอร์โทรสาร(Fax)">
+                        <input type="text" name="fax" id="fax" class="w-full border border-gray-300 rounded px-3 py-1 text-sm"
+                            value="{{ $customer->fax ?? '' }}" placeholder="เบอร์โทรสาร(Fax)">
                     </div>
+
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">ลูกค้าจาก</label>
-                        <select class="w-full border border-gray-300 rounded px-3 py-1 text-sm bg-white">
+                        <select name="customer_campaign_source" class="w-full border border-gray-300 rounded px-3 py-1 text-sm bg-white">
                             <option value="">-- Select --</option>
+                            @foreach($campaignSource as $source)
+                                <option value="{{ $source->campaign_source_id }}" 
+                                    {{ ($customer->customer_campaign_source ?? '') == $source->campaign_source_id ? 'selected' : '' }}>
+                                    {{ $source->campaign_source_name }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
+
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">Social id</label>
-                        <select class="w-full border border-gray-300 rounded px-3 py-1 text-sm bg-white">
-                            <option value="">-- Select --</option>
-                        </select>
+                        <input type="text" name="customer_social_id" class="w-full border border-gray-300 rounded px-3 py-1 text-sm"
+                            value="{{ $customer->customer_social_id ?? '' }}" placeholder="Social ID">
                     </div>
 
                     <div class="md:col-span-4">
                         <label class="block text-sm font-medium text-gray-600 mb-1">ที่อยู่ลูกค้า</label>
-                        <textarea rows="2" class="w-full border border-gray-300 rounded px-3 py-2 text-sm resize-none"
-                            placeholder="ที่อยู่ลูกค้า"></textarea>
+                        <textarea name="customer_address" id="customer_address" rows="2" 
+                            class="w-full border border-gray-300 rounded px-3 py-2 text-sm resize-none"
+                            placeholder="ที่อยู่ลูกค้า">{{ $customer->customer_address ?? '' }}</textarea>
                     </div>
 
                 </div>
@@ -219,8 +265,47 @@
                             <th class="border px-3 py-2 text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="product-rows"></tbody>
                     <tbody>
+                        @if(isset($quoteProducts) && count($quoteProducts) > 0)
+                            @php $rowNum = 1; @endphp
+                            @foreach($quoteProducts as $row)
+                            <tr class="text-sm text-gray-700">
+                                <td class="border px-3 py-2 row-index">{{ $rowNum++ }}</td>
+                                <td class="border px-3 py-2">
+                                    <select name="product_id[]" class="product-select select2 w-full border border-gray-300 rounded px-2 py-1" style="width:100%">
+                                        <option value="">--เลือกสินค้า--</option>
+                                        @foreach($products as $product)
+                                            <option data-pax="{{ $product->product_pax }}" value="{{ $product->id }}" {{ $row->product_id == $product->id ? 'selected' : '' }}>
+                                                {{ $product->product_name }}{{ $product->product_pax === 'Y' ? '(Pax)' : '' }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td class="border px-3 py-2 text-center">
+                                    <input type="checkbox" name="withholding_tax[]" class="vat-3 w-20 border border-gray-300 rounded px-2 py-1 text-center" value="Y" {{ $row->withholding_tax == 'Y' ? 'checked' : '' }}>
+                                    <input type="hidden" name="withholding_tax[]" value="N" {{ $row->withholding_tax == 'Y' ? 'disabled' : '' }}>
+                                </td>
+                                <td class="border px-3 py-2 text-center">
+                                    <select name="vat_status[]" class="vat-status w-full border border-gray-300 rounded px-2 py-1">
+                                        <option value="nonvat" {{ $row->vat_status == 'nonvat' ? 'selected' : '' }}>nonVat</option>
+                                        <option value="vat" {{ $row->vat_status == 'vat' ? 'selected' : '' }}>Vat</option>
+                                    </select>
+                                </td>
+                                <td class="border px-3 py-2 text-right">
+                                    <input type="number" name="quantity[]" class="quantity w-24 border border-gray-300 rounded px-2 py-1 text-right" value="{{ $row->product_qty ?? 1 }}" min="0" step="any">
+                                </td>
+                                <td class="border px-3 py-2 text-right">
+                                    <input type="number" name="price_per_unit[]" class="price-per-unit w-24 border border-gray-300 rounded px-2 py-1 text-right" value="{{ $row->product_price ?? 0 }}" min="0" step="any">
+                                </td>
+                                <td class="border px-3 py-2 text-right text-gray-800 font-medium sum">
+                                    <input type="number" name="total_amount[]" class="total-amount w-full border-0 text-end bg-transparent" value="{{ $row->product_sum ?? 0 }}" readonly>
+                                </td>
+                                <td class="border px-3 py-2 text-center">
+                                    <button type="button" class="text-red-500" onclick="removeRow(this, 'product-rows')"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        @endif
                         <tr>
                             <td colspan="8">
                                 <button type="button" onclick="addProductRow()"
@@ -239,7 +324,44 @@
                         </tr>
                     </tbody>
 
-                    <tbody id="discount-rows"></tbody>
+                    <tbody>
+                        @if(isset($quoteProductsDiscount) && count($quoteProductsDiscount) > 0)
+                            @php $rowNum = 1; @endphp
+                            @foreach($quoteProductsDiscount as $row)
+                            <tr class="text-sm text-gray-700">
+                                <td class="border px-3 py-2 row-index">{{ $rowNum++ }}</td>
+                                <td class="border px-3 py-2">
+                                    <select name="product_id[]" class="product-select select2 w-full border border-gray-300 rounded px-2 py-1" style="width:100%">
+                                        <option value="">--เลือกส่วนลด--</option>
+                                        @foreach($productDiscount as $product)
+                                            <option value="{{ $product->id }}" {{ $row->product_id == $product->id ? 'selected' : '' }}>{{ $product->product_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td class="border px-3 py-2 text-center">
+                                    <input type="hidden" name="withholding_tax[]" value="N">
+                                </td>
+                                <td class="border px-3 py-2 text-center">
+                                    <select name="vat_status[]" class="vat-status w-full border border-gray-300 rounded px-2 py-1" style="width:180%">
+                                        <option value="nonvat" {{ $row->vat_status == 'nonvat' ? 'selected' : '' }}>nonVat</option>
+                                        <option value="vat" {{ $row->vat_status == 'vat' ? 'selected' : '' }}>Vat</option>
+                                    </select>
+                                </td>
+                                <td class="border px-3 py-2 text-right">
+                                    <input type="number" name="quantity[]" class="quantity w-24 border border-gray-300 rounded px-2 py-1 text-right" value="{{ $row->product_qty ?? 1 }}" min="0" step="any">
+                                </td>
+                                <td class="border px-3 py-2 text-right">
+                                    <input type="number" name="price_per_unit[]" class="price-per-unit w-24 border border-gray-300 rounded px-2 py-1 text-right" value="{{ $row->product_price ?? 0 }}" min="0" step="any">
+                                </td>
+                                <td class="border px-3 py-2 text-right text-gray-800 font-medium sum">
+                                    <input type="number" name="total_amount[]" class="total-amount w-full border-0 text-end bg-transparent" value="{{ $row->product_sum ?? 0 }}" readonly>
+                                </td>
+                                <td class="border px-3 py-2 text-center">
+                                    <button type="button" class="text-red-500" onclick="removeRow(this, 'discount-rows')"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        @endif
 
                     <tbody>
                         <tr>
@@ -341,23 +463,26 @@
                         <!-- แถวที่ 1 -->
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3">
                             <div class="col-span-full">
-                                <input type="radio" id="payment_condition_deposit" name="" value="include"
-                                    class="mt-1.5 focus:ring-blue-500" checked>
-                                <label for="payment_condition_deposit" class="text-gray-800">
+                                <input type="radio" id="quote-payment-deposit" name="quote_payment_type" value="deposit"
+                                    class="mt-1.5 focus:ring-blue-500" 
+                                    {{ $quotationModel->quote_payment_type == 'deposit' ? 'checked' : '' }}>
+                                <label for="quote-payment-deposit" class="text-gray-800">
                                     ชำระเงินมัดจำ
                                 </label>
                             </div>
 
                             <div class="md:col-span-2">
                                 <label class="text-gray-800">ภายในวันที่</label>
-                                <input type="date" class="w-full border border-gray-300 rounded px-3 py-1 text-sm">
+                                <input type="datetime-local" id="quote-payment-date" name="quote_payment_date"
+                                    class="w-full border border-gray-300 rounded px-3 py-1 text-sm"
+                                    value="{{ $quotationModel->quote_payment_date ? date('Y-m-d\TH:i', strtotime($quotationModel->quote_payment_date)) : '' }}">
                             </div>
 
                             <div class="md:col-span-2">
                                 <label class="text-gray-800">เรทเงินมัดจำ</label>
-                                <select class="w-full border border-gray-300 rounded px-3 py-1 text-sm bg-white">
-                                    <option value="">-- Select --</option>
-                                </select>
+                                <input type="number" id="quote-payment-price" name="quote_payment_price"
+                                    class="w-full border border-gray-300 rounded px-3 py-1 text-sm text-end"
+                                    value="{{ $quotationModel->quote_payment_price }}" step="0.01">
                             </div>
                         </div>
 
@@ -365,17 +490,18 @@
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3">
                             <div class="md:col-span-2">
                                 <label class="text-gray-800">ชำระเพิ่มเติม</label>
-                                <input type="number" value="0"
-                                    class="w-full border border-gray-300 rounded px-3 py-1 text-sm text-end">
+                                <input type="number" id="pay-extra" name="pay_extra"
+                                    class="w-full border border-gray-300 rounded px-3 py-1 text-sm text-end"
+                                    value="{{ $quotationModel->pay_extra }}" step="0.01">
                             </div>
 
                             <div class="md:col-span-2">
                                 <label class="text-gray-800">จำนวนเงินที่ต้องชำระ</label>
-                                <input type="number" value="0"
-                                    class="w-full border border-gray-300 rounded px-3 py-1 text-sm text-end">
+                                <input type="number" id="payment-amount" name="payment_amount" readonly
+                                    class="w-full border border-gray-300 rounded px-3 py-1 text-sm text-end bg-gray-100"
+                                    value="0">
                             </div>
                         </div>
-                       
 
                     </div>
 
@@ -385,41 +511,41 @@
                     <!-- กล่อง 2 -->
                     <div class="bg-green-100/50 rounded-lg p-4 shadow mt-1">
                         <span
-                            class="text-xs bg-yellow-300  px-2 py-1 rounded mb-3 inline-block">เงื่อนไขการชำระเต็มจำนวน</span>
+                            class="text-xs bg-yellow-300 px-2 py-1 rounded mb-3 inline-block">เงื่อนไขการชำระเต็มจำนวน</span>
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3">
                             <div class="flex items-start space-x-2">
-                                <input type="radio" id="payment_condition_full" name="" value="exclude"
-                                    class="mt-1.5 focus:ring-blue-500">
-                                <label for="payment_condition_full" class="text-gray-800">
+                                <input type="radio" id="quote-payment-full" name="quote_payment_type" value="full"
+                                    class="mt-1.5 focus:ring-blue-500"
+                                    {{ $quotationModel->quote_payment_type == 'full' ? 'checked' : '' }}>
+                                <label for="quote-payment-full" class="text-gray-800">
                                     ชำระเต็มจำนวน
                                 </label>
-
                             </div>
                         </div>
-
 
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 mt-1">
                             <div class="md:col-span-2">
                                 <label class="text-gray-800">ภายในวันที่</label>
-                                <input type="date" class="w-full border border-gray-300 rounded px-3 py-1 text-sm">
+                                <input type="datetime-local" id="quote-payment-date-full" name="quote_payment_date_full"
+                                    class="w-full border border-gray-300 rounded px-3 py-1 text-sm"
+                                    value="{{ $quotationModel->quote_payment_date_full ? date('Y-m-d\TH:i', strtotime($quotationModel->quote_payment_date_full)) : '' }}">
                             </div>
 
                             <div class="md:col-span-2">
                                 <label class="text-gray-800">จำนวนเงิน</label>
-                                <input type="number" value="0"
-                                    class="w-full border border-gray-300 rounded px-3 py-1 text-sm text-end">
+                                <input type="number" id="full-payment-amount" name="full_payment_amount" readonly
+                                    class="w-full border border-gray-300 rounded px-3 py-1 text-sm text-end bg-gray-100"
+                                    value="{{ $quotationModel->quote_grand_total }}">
                             </div>
                         </div>
-                         <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 mt-1">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 mt-1">
                             <div class="md:col-span-4">
                                 <label class="block text-sm font-medium text-gray-600 mb-1">บันทึกเพิ่มเติม</label>
-                                <textarea rows="2" class="w-full border border-gray-300 rounded px-3 py-2 text-sm resize-none"
-                                    placeholder="บันทึกเพิ่มเติม"></textarea>
+                                <textarea id="payment-note" name="payment_note" rows="2" 
+                                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm resize-none"
+                                    placeholder="บันทึกเพิ่มเติม">{{ $quotationModel->payment_note }}</textarea>
                             </div>
                         </div>
-
-
-
                     </div>
 
                 </div>
@@ -442,135 +568,274 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
 <script>
-// --- Autocomplete/Search logic for ชื่อแพคเกจทัวร์ (ใช้ endpoint และโครงสร้างเดียวกับ modal-edit.blade.php) ---
+// --- Autocomplete/Search logic for ชื่อลูกค้า ---
 $(function() {
-    $('#tourSearch').on('input', function() {
+    $('#customerSearch').on('input', function() {
         var searchTerm = $(this).val();
         if (searchTerm.length < 2) {
-            $('#tourResults').empty().hide();
+            $('#customerResults').empty().hide();
             return;
         }
-        // ใช้ endpoint API ที่ถูกต้อง
         $.ajax({
-            url: '{{ route('api.tours') }}', // ปรับ URL ตาม API ที่ใช้
+            url: '{{ route('api.customer') }}',
             method: 'GET',
-            data: { q: searchTerm },
+            data: { search: searchTerm },
             success: function(data) {
-                // data = [ { id, name, code, country, wholesaler, airline } ] หรือปรับตามที่ API ส่งกลับ
-                var results = Array.isArray(data) ? data : (data.data || []);
-                if (results.length === 0) {
-                    $('#tourResults').html('<div class="px-3 py-2 text-gray-500">ไม่พบข้อมูล</div>').show();
-                    return;
+                $('#customerResults').empty();
+                if (data.length > 0) {
+                    $.each(data, function(index, item) {
+                        $('#customerResults').append(`
+                            <a href="#" class="block px-3 py-2 hover:bg-blue-100 cursor-pointer" data-id="${item.customer_id}" data-name="${item.customer_name}" data-email="${item.customer_email}" data-taxid="${item.customer_texid}" data-tel="${item.customer_tel}" data-fax="${item.customer_fax}" data-address="${item.customer_address}">${item.customer_name} (${item.customer_email})</a>
+                        `);
+                    });
                 }
-                var html = results.map(function(tour) {
-                    return `<a href="#" class="block px-3 py-2 hover:bg-blue-100 cursor-pointer" data-id="${tour.id}" data-name="${tour.name}" data-code="${tour.code || ''}" data-country="${tour.country || ''}" data-wholesaler="${tour.wholesaler || ''}" data-airline="${tour.airline || ''}">${tour.name} <span class='text-xs text-gray-400'>(${tour.code || ''})</span></a>`;
-                }).join('');
-                $('#tourResults').html(html).show();
-            },
-            error: function() {
-                $('#tourResults').html('<div class="px-3 py-2 text-red-500">เกิดข้อผิดพลาด</div>').show();
+                $('#customerResults').show();
             }
         });
     });
-
-    // เลือก tour จากผลลัพธ์
-    $(document).on('click', '#tourResults a', function(e) {
+    $(document).on('click', '#customerResults a', function(e) {
         e.preventDefault();
         var $a = $(this);
-        $('#tourSearch').val($a.data('name'));
-        $('#tour-id').val($a.data('id'));
-        $('#tour-code').val($a.data('code'));
-        $('#tour-country').val($a.data('country'));
-        $('#tour-wholesaler').val($a.data('wholesaler'));
-        $('#tour-airline').val($a.data('airline'));
-        $('#tourResults').empty().hide();
+        $('#customerSearch').val($a.data('name'));
+        $('#customer_email').val($a.data('email'));
+        $('#texid').val($a.data('taxid'));
+        $('#customer_tel').val($a.data('tel'));
+        $('#fax').val($a.data('fax'));
+        $('#customer_address').val($a.data('address'));
+        $('#customerResults').empty().hide();
     });
-
-    // ปุ่มล้าง
-    $('#resetTourSearch').on('click', function() {
-        $('#tourSearch').val('');
-        $('#tour-id, #tour-code, #tour-country, #tour-wholesaler, #tour-airline').val('');
-        $('#tourResults').empty().hide();
-    });
-
-    // ปิดผลลัพธ์เมื่อคลิกนอก
     $(document).on('click', function(event) {
-        if (!$(event.target).closest('#tourResults, #tourSearch').length) {
-            $('#tourResults').empty().hide();
+        if (!$(event.target).closest('#customerResults, #customerSearch').length) {
+            $('#customerResults').empty().hide();
         }
     });
+    $('#btn-new-customer').on('click', function() {
+        $('#customerSearch, #customer_email, #texid, #customer_tel, #fax, #customer_address').val('');
+    });
+});
+
+// --- คำนวณยอดและ sync เงื่อนไขชำระเงิน ---
+function calculateQuotation() {
+    let vatType = document.querySelector('input[name="vat_option"]:checked')?.value || 'include';
+    let vatRate = 0.07;
+    let sumTotalNonVat = 0, sumTotalVat = 0, sumDiscount = 0, sumPreVat = 0, sumVat = 0, sumIncludeVat = 0, grandTotal = 0, withholdingAmount = 0, paxTotal = 0;
+    // Loop รายการบริการและส่วนลด
+    document.querySelectorAll('tr.text-sm').forEach(row => {
+        let selectProduct = row.querySelector('select[name="product_id[]"]');
+        if (!selectProduct) return;
+        let isDiscount = row.closest('tbody').previousElementSibling && row.closest('tbody').previousElementSibling.innerText.includes('รายการส่วนลด');
+        let qty = parseFloat(row.querySelector('input[name="quantity[]"]')?.value || 0);
+        let price = parseFloat(row.querySelector('input[name="price_per_unit[]"]')?.value || 0);
+        let vatStatus = row.querySelector('select[name="vat_status[]"]')?.value || 'nonvat';
+        let isWithholding = row.querySelector('input.vat-3')?.checked;
+        let rowTotal = qty * price;
+        if (isWithholding) rowTotal += rowTotal * 0.03;
+        let sumCell = row.querySelector('input[name="total_amount[]"]');
+        if (sumCell) sumCell.value = rowTotal.toFixed(2);
+        if (isDiscount) {
+            sumDiscount += rowTotal;
+        } else {
+            if (vatStatus === 'vat') {
+                sumTotalVat += rowTotal;
+            } else {
+                sumTotalNonVat += rowTotal;
+            }
+            let selectedOption = selectProduct.options[selectProduct.selectedIndex];
+            if (selectedOption && selectedOption.getAttribute('data-pax') === 'Y') {
+                paxTotal += qty;
+            }
+        }
+    });
+    // VAT Calculation
+    if (sumTotalVat === 0) {
+        sumPreVat = 0;
+        sumVat = 0;
+        sumIncludeVat = 0;
+        grandTotal = sumTotalNonVat - sumDiscount;
+    } else {
+        if (vatType === 'include') {
+            let vatBase = sumTotalVat - sumDiscount;
+            sumPreVat = vatBase * 100 / 107;
+            sumVat = sumPreVat * vatRate;
+            sumIncludeVat = sumPreVat + sumVat;
+            grandTotal = sumTotalNonVat + sumIncludeVat;
+        } else {
+            if (sumDiscount < sumTotalVat) {
+                sumPreVat = sumTotalVat - sumDiscount;
+                sumVat = sumPreVat * vatRate;
+                sumIncludeVat = sumPreVat + sumVat;
+                grandTotal = sumTotalNonVat + sumIncludeVat;
+            } else {
+                sumPreVat = 0;
+                sumVat = 0;
+                sumIncludeVat = 0;
+                grandTotal = sumTotalNonVat;
+            }
+        }
+    }
+    // withholding tax 3%
+    let withholdingCheckbox = document.getElementById('pre-vat');
+    if (withholdingCheckbox && withholdingCheckbox.checked) {
+        withholdingAmount = sumPreVat * 0.03;
+    }
+    document.querySelector('[data-summary="vatExempted"]').textContent = sumTotalNonVat.toFixed(2);
+    document.querySelector('[data-summary="preTax"]').textContent = sumTotalVat.toFixed(2);
+    document.querySelector('[data-summary="discount"]').textContent = sumDiscount.toFixed(2);
+    document.querySelector('[data-summary="preVatAmount"]').textContent = sumPreVat.toFixed(2);
+    document.querySelector('[data-summary="vatAmount"]').textContent = sumVat.toFixed(2);
+    document.querySelector('[data-summary="includeVat"]').textContent = sumIncludeVat.toFixed(2);
+    document.querySelector('[data-summary="grandTotal"]').textContent = grandTotal.toFixed(2);
+    document.getElementById('withholdingTax').textContent = withholdingAmount.toFixed(2);
+    if (document.getElementById('quote-pax-total')) document.getElementById('quote-pax-total').value = paxTotal;
+    syncDepositAndFullPayment();
+}
+
+function syncDepositAndFullPayment() {
+    let paxTotal = parseFloat($('#quote-pax-total').val()) || 0;
+    let depositPerPax = parseFloat($('#quote-payment-price').val()) || 0;
+    let payExtra = parseFloat($('#pay-extra').val()) || 0;
+    let depositTotal = (paxTotal * depositPerPax) + payExtra;
+    if ($('#quote-payment-deposit').is(':checked')) {
+        $('#payment-amount').val(depositTotal.toFixed(2));
+    }
+    let grandTotal = parseFloat($('[data-summary="grandTotal"]').text()) || 0;
+    $('#full-payment-amount').val(grandTotal.toFixed(2));
+}
+
+// --- คำนวณวันออกเดินทาง/วันกลับ/ระยะเวลาทัวร์ ---
+$('#date-start-display').on('change', function() {
+    let startVal = $(this).val();
+    let numDays = parseInt($('#numday').val()) || 0;
+    if (startVal && numDays > 0) {
+        let startDate = new Date(startVal);
+        let endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + numDays - 1);
+        $('#date-end-display').val(endDate.toISOString().slice(0, 10));
+    }
+});
+$('#date-end-display').on('change', function() {
+    let endVal = $(this).val();
+    let numDays = parseInt($('#numday').val()) || 0;
+    if (endVal && numDays > 0) {
+        let endDate = new Date(endVal);
+        let startDate = new Date(endDate);
+        startDate.setDate(endDate.getDate() - numDays + 1);
+        $('#date-start-display').val(startDate.toISOString().slice(0, 10));
+    }
+});
+$('#numday').on('change', function() {
+    let startVal = $('#date-start-display').val();
+    let numDays = parseInt($(this).val()) || 0;
+    if (startVal && numDays > 0) {
+        let startDate = new Date(startVal);
+        let endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + numDays - 1);
+        $('#date-end-display').val(endDate.toISOString().slice(0, 10));
+    }
+});
+
+// --- Event binding ทุก input/select ---
+$(document).on('input change', '.quantity, .price-per-unit, .vat-status, .vat-3', function() {
+    calculateQuotation();
+});
+$(document).on('change', 'input[name="vat_option"]', function() {
+    calculateQuotation();
+});
+$('#pre-vat').on('change', function() {
+    calculateQuotation();
+});
+$('#quote-payment-deposit, #quote-payment-full').on('change', function() {
+    let isDeposit = $('#quote-payment-deposit').is(':checked');
+    $('#quote-payment-price').prop('disabled', !isDeposit);
+    $('#pay-extra').prop('disabled', !isDeposit);
+    syncDepositAndFullPayment();
+});
+$('#quote-payment-price, #pay-extra, #quote-pax-total').on('input', function() {
+    syncDepositAndFullPayment();
+});
+
+// --- คำนวณยอดทันทีเมื่อโหลดหน้า ---
+$(document).ready(function() {
+    calculateQuotation();
 });
     function calculateQuotation() {
         let vatType = document.querySelector('input[name="vat_option"]:checked').value;
         let vatRate = 0.07;
-        let productRows = document.querySelectorAll('#product-rows tr');
-        let discountRows = document.querySelectorAll('#discount-rows tr');
-        let vatExempted = 0,
-            preTax = 0,
-            discount = 0;
+        let productRows = document.querySelectorAll('tbody tr');
+        let sumTotalNonVat = 0, sumTotalVat = 0, sumDiscount = 0, sumPreVat = 0, sumVat = 0, sumIncludeVat = 0, grandTotal = 0, withholdingAmount = 0, paxTotal = 0;
+        // Loop รายการบริการ
         productRows.forEach(row => {
-            let type = row.querySelector('select')?.value || 'N';
-            let qty = parseFloat(row.querySelector('.qty')?.value || 0);
-            let price = parseFloat(row.querySelector('.price')?.value || 0);
-            let is3 = row.querySelector('input[type="checkbox"]')?.checked;
-            let sum = qty * price;
-            if (is3) sum = sum * 1.03;
-            if (type === 'N') vatExempted += sum;
-            else preTax += sum;
-            let sumCell = row.querySelector('.sum');
-            if (sumCell) sumCell.textContent = sum.toFixed(2);
+            // เฉพาะ row ที่มี select[name="product_id[]"] (บริการ) หรือ select[name="product_id[]"] (ส่วนลด)
+            let selectProduct = row.querySelector('select[name="product_id[]"]');
+            if (!selectProduct) return;
+            let isDiscount = row.closest('tbody').previousElementSibling && row.closest('tbody').previousElementSibling.innerText.includes('รายการส่วนลด');
+            let qty = parseFloat(row.querySelector('input[name="quantity[]"]')?.value || 0);
+            let price = parseFloat(row.querySelector('input[name="price_per_unit[]"]')?.value || 0);
+            let vatStatus = row.querySelector('select[name="vat_status[]"]')?.value || 'nonvat';
+            let isWithholding = row.querySelector('input.vat-3')?.checked;
+            let rowTotal = qty * price;
+            if (isWithholding) rowTotal += rowTotal * 0.03;
+            // อัปเดตยอดรวมในช่อง sum
+            let sumCell = row.querySelector('input[name="total_amount[]"]');
+            if (sumCell) sumCell.value = rowTotal.toFixed(2);
+            if (isDiscount) {
+                sumDiscount += rowTotal;
+            } else {
+                if (vatStatus === 'vat') {
+                    sumTotalVat += rowTotal;
+                } else {
+                    sumTotalNonVat += rowTotal;
+                }
+                // ถ้าเป็นสินค้าแบบ pax
+                let selectedOption = selectProduct.options[selectProduct.selectedIndex];
+                if (selectedOption && selectedOption.getAttribute('data-pax') === 'Y') {
+                    paxTotal += qty;
+                }
+            }
         });
-        discountRows.forEach(row => {
-            let qty = parseFloat(row.querySelector('.qty')?.value || 0);
-            let price = parseFloat(row.querySelector('.price')?.value || 0);
-            let is3 = row.querySelector('input[type="checkbox"]')?.checked;
-            let sum = qty * price;
-            if (is3) sum = sum * 1.03;
-            discount += sum;
-            let sumCell = row.querySelector('.sum');
-            if (sumCell) sumCell.textContent = sum.toFixed(2);
-        });
-        // ปรับสูตรส่วนลด: หักกับ Vat ก่อน ถ้าเหลือค่อยไปหักกับ NonVat
-        let discountForVat = 0;
-        let discountForNonVat = 0;
-        if (preTax > 0) {
-            discountForVat = Math.min(discount, preTax);
-            discountForNonVat = discount - discountForVat;
+        // VAT Calculation
+        if (sumTotalVat === 0) {
+            sumPreVat = 0;
+            sumVat = 0;
+            sumIncludeVat = 0;
+            grandTotal = sumTotalNonVat - sumDiscount;
         } else {
-            discountForVat = 0;
-            discountForNonVat = discount;
+            if (vatType === 'include') {
+                let vatBase = sumTotalVat - sumDiscount;
+                sumPreVat = vatBase * 100 / 107;
+                sumVat = sumPreVat * vatRate;
+                sumIncludeVat = sumPreVat + sumVat;
+                grandTotal = sumTotalNonVat + sumIncludeVat;
+            } else {
+                if (sumDiscount < sumTotalVat) {
+                    sumPreVat = sumTotalVat - sumDiscount;
+                    sumVat = sumPreVat * vatRate;
+                    sumIncludeVat = sumPreVat + sumVat;
+                    grandTotal = sumTotalNonVat + sumIncludeVat;
+                } else {
+                    sumPreVat = 0;
+                    sumVat = 0;
+                    sumIncludeVat = 0;
+                    grandTotal = sumTotalNonVat;
+                }
+            }
         }
-        let preVatAmount = 0;
-        let vatExemptedAfterDiscount = Math.max(vatExempted - discountForNonVat, 0);
-        let vatAmount = 0,
-            includeVat = 0;
-        if (vatType === 'exclude') {
-            preVatAmount = Math.max(preTax - discountForVat, 0);
-            vatAmount = preVatAmount * vatRate;
-            includeVat = preVatAmount + vatAmount;
-        } else {
-            includeVat = Math.max(preTax - discountForVat, 0);
-            preVatAmount = includeVat / (1 + vatRate);
-            vatAmount = includeVat - preVatAmount;
+        // withholding tax 3%
+        let withholdingCheckbox = document.getElementById('pre-vat');
+        if (withholdingCheckbox && withholdingCheckbox.checked) {
+            withholdingAmount = sumPreVat * 0.03;
         }
-        let grandTotal = vatExemptedAfterDiscount + includeVat;
-        document.querySelector('[data-summary="vatExempted"]').textContent = vatExemptedAfterDiscount.toFixed(2);
-        document.querySelector('[data-summary="preTax"]').textContent = preTax.toFixed(2);
-        document.querySelector('[data-summary="discount"]').textContent = discount.toFixed(2);
-        document.querySelector('[data-summary="preVatAmount"]').textContent = preVatAmount.toFixed(2);
-        document.querySelector('[data-summary="vatAmount"]').textContent = vatAmount.toFixed(2);
-        document.querySelector('[data-summary="includeVat"]').textContent = includeVat.toFixed(2);
+        // set ค่า summary
+        document.querySelector('[data-summary="vatExempted"]').textContent = sumTotalNonVat.toFixed(2);
+        document.querySelector('[data-summary="preTax"]').textContent = sumTotalVat.toFixed(2);
+        document.querySelector('[data-summary="discount"]').textContent = sumDiscount.toFixed(2);
+        document.querySelector('[data-summary="preVatAmount"]').textContent = sumPreVat.toFixed(2);
+        document.querySelector('[data-summary="vatAmount"]').textContent = sumVat.toFixed(2);
+        document.querySelector('[data-summary="includeVat"]').textContent = sumIncludeVat.toFixed(2);
         document.querySelector('[data-summary="grandTotal"]').textContent = grandTotal.toFixed(2);
-
-        // คำนวณภาษีหัก ณ ที่จ่าย 3% (Withholding Tax) ถ้ามีการติ๊ก checkbox
-        let withholdingTax = 0;
-        let preVatCheckbox = document.getElementById('pre-vat');
-        if (preVatCheckbox && preVatCheckbox.checked) {
-            withholdingTax = preVatAmount * 0.03;
-        } else {
-            withholdingTax = 0;
-        }
-        document.getElementById('withholdingTax').textContent = withholdingTax.toFixed(2);
+        document.getElementById('withholdingTax').textContent = withholdingAmount.toFixed(2);
+        // set pax
+        if (document.getElementById('quote-pax-total')) document.getElementById('quote-pax-total').value = paxTotal;
     }
 
     function addProductRow() {
@@ -581,13 +846,20 @@ $(function() {
         tr.innerHTML = `
         <td class="border px-3 py-2 row-index">${idx}</td>
         <td class="border px-3 py-2">
-            <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" placeholder="ชื่อสินค้า..." onchange="calculateQuotation()">
+            <select name="product_id[]" class="product-select select2 w-full border border-gray-300 rounded px-2 py-1" onchange="calculateQuotation()">
+                <option value="">-- เลือกรายการ --</option>
+                @foreach($products as $product)
+                    <option value="{{ $product->id }}" data-price="{{ $product->price }}" data-vat="{{ $product->vat_type }}">
+                        {{ $product->product_name }}
+                    </option>
+                @endforeach
+            </select>
         </td>
         <td class="border px-3 py-2 text-center">
-            <input type="checkbox" class="w-20 border border-gray-300 rounded px-2 py-1 text-center" onchange="calculateQuotation()">
+            <input type="checkbox" name="wht_3[]" class="w-20 border border-gray-300 rounded px-2 py-1 text-center" onchange="calculateQuotation()">
         </td>
         <td class="border px-3 py-2 text-center">
-            <select class="w-full border border-gray-300 rounded px-2 py-1" onchange="calculateQuotation()">
+            <select name="vat_type[]" class="w-full border border-gray-300 rounded px-2 py-1" onchange="calculateQuotation()">
                 <option value="N">NonVat</option>
                 <option value="Y">Vat</option>
             </select>
@@ -661,9 +933,149 @@ $(function() {
     document.getElementById('discount-rows').addEventListener('input', calculateQuotation);
     document.getElementById('discount-rows').addEventListener('change', calculateQuotation);
 
-    window.addEventListener('DOMContentLoaded', () => {
-        addProductRow();
-        addDiscountRow();
+    // ฟังก์ชันคำนวณยอดเงินมัดจำและ sync ช่องชำระเต็มจำนวน
+    function syncDepositAndFullPayment() {
+        let paxTotal = parseFloat($('#quote-pax-total').val()) || 0;
+        let depositPerPax = parseFloat($('#quote-payment-price').val()) || 0;
+        let payExtra = parseFloat($('#pay-extra').val()) || 0;
+        let depositTotal = (paxTotal * depositPerPax) + payExtra;
+        
+        if ($('#quote-payment-deposit').is(':checked')) {
+            $('#payment-amount').val(depositTotal.toFixed(2));
+        }
+        
+        // อัปเดตยอดชำระเต็มจำนวน
+        let grandTotal = parseFloat($('[data-summary="grandTotal"]').text()) || 0;
+        $('#full-payment-amount').val(grandTotal.toFixed(2));
+    }
+
+    // Event handlers สำหรับการชำระเงิน
+    $('#quote-payment-deposit, #quote-payment-full').on('change', function() {
+        let isDeposit = $('#quote-payment-deposit').is(':checked');
+        $('#quote-payment-price').prop('disabled', !isDeposit);
+        $('#pay-extra').prop('disabled', !isDeposit);
+        syncDepositAndFullPayment();
     });
+
+    $('#quote-payment-price, #pay-extra, #quote-pax-total').on('input', function() {
+        syncDepositAndFullPayment();
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+        // Convert PHP data to JSON
+        const quoteProducts = @json($quoteProducts ?? []);
+        const quoteProductsDiscount = @json($quoteProductsDiscount ?? []);
+
+        // Load existing product rows
+        if (quoteProducts && quoteProducts.length > 0) {
+            quoteProducts.forEach(product => {
+                addProductRowWithData({
+                    name: product.product_name,
+                    wht3: Boolean(product.wht_3),
+                    vatType: product.vat_type,
+                    quantity: parseFloat(product.quantity),
+                    price: parseFloat(product.price_per_unit),
+                    productId: parseInt(product.product_id)
+                });
+            });
+        }
+
+        // Load existing discount rows
+        if (quoteProductsDiscount && quoteProductsDiscount.length > 0) {
+            quoteProductsDiscount.forEach(discount => {
+                addDiscountRowWithData({
+                    name: discount.product_name,
+                    wht3: Boolean(discount.wht_3),
+                    quantity: parseFloat(discount.quantity),
+                    price: parseFloat(discount.price_per_unit)
+                });
+            });
+        }
+
+        // If no rows exist, add empty ones
+        if (!document.querySelector('#product-rows tr')) {
+            addProductRow();
+        }
+        if (!document.querySelector('#discount-rows tr')) {
+            addDiscountRow();
+        }
+
+        // Set initial values
+        document.querySelector('input[name="vat_option"][value="{{ $quotationModel->vat_type }}"]').checked = true;
+        document.querySelector('input[name="quote_commission"][value="{{ $quotationModel->quote_commission }}"]').checked = true;
+        document.getElementById('note-commission').value = '{{ $quotationModel->quote_note_commission }}';
+        document.getElementById('withholding-tax').checked = {{ $quotationModel->withholding_tax ? 'true' : 'false' }};
+        
+        // Calculate initial totals
+        calculateQuotation();
+    });
+
+    function addProductRowWithData(data) {
+        let tbody = document.getElementById('product-rows');
+        let idx = tbody.children.length + 1;
+        let tr = document.createElement('tr');
+        tr.className = 'text-sm text-gray-700';
+        tr.innerHTML = `
+        <td class="border px-3 py-2 row-index">${idx}</td>
+        <td class="border px-3 py-2">
+            <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" value="${data.name}" onchange="calculateQuotation()">
+            <input type="hidden" name="product_id[]" value="${data.productId}">
+        </td>
+        <td class="border px-3 py-2 text-center">
+            <input type="checkbox" class="w-20 border border-gray-300 rounded px-2 py-1 text-center" ${data.wht3 ? 'checked' : ''} onchange="calculateQuotation()">
+        </td>
+        <td class="border px-3 py-2 text-center">
+            <select class="w-full border border-gray-300 rounded px-2 py-1" onchange="calculateQuotation()">
+                <option value="N" ${data.vatType === 'N' ? 'selected' : ''}>NonVat</option>
+                <option value="Y" ${data.vatType === 'Y' ? 'selected' : ''}>Vat</option>
+            </select>
+        </td>
+        <td class="border px-3 py-2 text-right">
+            <input type="number" class="w-24 border border-gray-300 rounded px-2 py-1 text-right qty" value="${data.quantity}" min="0" step="any" onchange="calculateQuotation()">
+        </td>
+        <td class="border px-3 py-2 text-right">
+            <input type="number" class="w-24 border border-gray-300 rounded px-2 py-1 text-right price" value="${data.price}" min="0" step="any" onchange="calculateQuotation()">
+        </td>
+        <td class="border px-3 py-2 text-right text-gray-800 font-medium sum">0.00</td>
+        <td class="border px-3 py-2 text-center">
+            <button type="button" class="text-red-500" onclick="removeRow(this, 'product-rows')"><i class="fas fa-trash"></i></button>
+        </td>
+    `;
+        tbody.appendChild(tr);
+        calculateQuotation();
+    }
+
+    function addDiscountRowWithData(data) {
+        let tbody = document.getElementById('discount-rows');
+        let idx = tbody.children.length + 1;
+        let tr = document.createElement('tr');
+        tr.className = 'text-sm text-gray-700';
+        tr.innerHTML = `
+        <td class="border px-3 py-2 row-index">${idx}</td>
+        <td class="border px-3 py-2">
+            <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" value="${data.name}" onchange="calculateQuotation()">
+        </td>
+        <td class="border px-3 py-2 text-center">
+            <input type="checkbox" class="w-20 border border-gray-300 rounded px-2 py-1 text-center" ${data.wht3 ? 'checked' : ''} onchange="calculateQuotation()">
+            <input type="hidden" value="N">
+        </td>
+        <td class="border px-3 py-2 text-center">
+            <select class="w-full border border-gray-300 rounded px-2 py-1" disabled><option value="N">NonVat</option></select>
+        </td>
+        <td class="border px-3 py-2 text-right">
+            <input type="number" class="w-24 border border-gray-300 rounded px-2 py-1 text-right qty" value="${data.quantity}" min="0" step="any" onchange="calculateQuotation()">
+        </td>
+        <td class="border px-3 py-2 text-right">
+            <input type="number" class="w-24 border border-gray-300 rounded px-2 py-1 text-right price" value="${data.price}" min="0" step="any" onchange="calculateQuotation()">
+        </td>
+        <td class="border px-3 py-2 text-right text-gray-800 font-medium sum">0.00</td>
+        <td class="border px-3 py-2 text-center">
+            <button type="button" class="text-red-500" onclick="removeRow(this, 'discount-rows')"><i class="fas fa-trash"></i></button>
+        </td>
+    `;
+        tbody.appendChild(tr);
+        calculateQuotation();
+    }
 </script>
+
 

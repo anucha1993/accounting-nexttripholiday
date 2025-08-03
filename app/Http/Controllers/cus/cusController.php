@@ -124,26 +124,27 @@ class cusController extends Controller
     }
     public function update(Request $request, $id)
     {
+        //dd($request->all());
         $customer = customerModel::findOrFail($id);
-        $validator = Validator::make($request->all(), [
-            'customer_name' => 'required|string|max:255',
-            'customer_email' => 'nullable|email|max:255',
-            'customer_tel' => 'nullable|string|max:50',
-            'customer_address' => 'nullable|string|max:500',
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-        $validated = $validator->validated();
+        // $validator = Validator::make($request->all(), [
+        //     'customer_name' => 'required|string|max:255',
+        //     'customer_email' => 'nullable|email|max:255',
+        //     'customer_tel' => 'nullable|string|max:50',
+        //     'customer_address' => 'nullable|string|max:500',
+        // ]);
+            // if ($validator->fails()) {
+            //     return redirect()->back()->withErrors($validator)->withInput();
+            // }
+            // $validated = $validator->validated();
 
         // ถ้าชื่อ อีเมล เบอร์โทร ไม่ตรงกับข้อมูลเก่า ทั้ง 3 อย่าง ให้สร้างลูกค้าใหม่
-        if ($validated['customer_name'] !== $customer->customer_name && $validated['customer_email'] !== $customer->customer_email && $validated['customer_tel'] !== $customer->customer_tel) {
-            $newCustomer = customerModel::create($validated);
+        if ($request->input('customer_name') !== $customer->customer_name && $request->input('customer_email') !== $customer->customer_email && $request->input('customer_tel') !== $customer->customer_tel) {
+            $newCustomer = customerModel::create($request->all());
             // อาจจะต้องนำ customer_id ใหม่ไปใช้ต่อใน business logic อื่น ๆ
             // ตัวอย่าง: return redirect()->route('cus.index')->with('success', 'สร้างลูกค้าใหม่สำเร็จ');
             return redirect()->route('cus.index')->with('success', 'สร้างลูกค้าใหม่สำเร็จ');
         } else {
-            $customer->update($validated);
+            $customer->update($request->all());
             return redirect()->route('cus.index')->with('success', 'แก้ไขข้อมูลลูกค้าสำเร็จ');
         }
     }

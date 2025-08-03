@@ -507,6 +507,7 @@
                                         <td>
                                             <div class="d-flex flex-wrap gap-1">
                                                 {!! getQuoteStatusPayment($item) !!}
+                                                ชำระแล้ว: </br>{{ number_format($item->GetDeposit()-$item->Refund(), 2) }}
                                             </div>
                                         </td>
                                         <td class="text-end">
@@ -620,6 +621,7 @@
                                 </tr>
                             </tfoot>
                         </table>
+                        
                     </div>
                 </div>
             </div>

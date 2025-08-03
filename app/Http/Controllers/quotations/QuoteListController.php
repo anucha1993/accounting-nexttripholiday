@@ -21,6 +21,8 @@ class QuoteListController extends Controller
     {
         $this->middleware('auth');
     }
+
+
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', 50);
@@ -234,24 +236,6 @@ class QuoteListController extends Controller
             $quotations->setCollection($filtered);
         }
 
-// if (!empty($searchNotLogStatus) && $searchNotLogStatus !== 'all') {
-//     $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchNotLogStatus) {
-//         $statusText = trim(strip_tags(getStatusBadge($quotation->quoteCheckStatus, $quotation)));
-//         // สมมติใช้ช่องว่าง 2 ตัวเป็นตัวคั่น
-//         $badgeList = preg_split('/\s{2,}/u', $statusText);
-//         $badgeList = array_map('trim', $badgeList);
-
-//         \Log::debug('Check badge filter', [
-//             'search' => $searchNotLogStatus,
-//             'statusText' => $statusText,
-//             'badgeList' => $badgeList,
-//             'quote_id' => $quotation->quote_id
-//         ]);
-
-//         return in_array(trim($searchNotLogStatus), $badgeList, true);
-//     })->values();
-//     $quotations->setCollection($filtered);
-// }
         // Filter สถานะลูกค้าชำระเงินเกิน
         if (!empty($searchPaymentOverpays) && $searchPaymentOverpays !== 'all') {
             $filtered = $quotations
@@ -280,8 +264,6 @@ class QuoteListController extends Controller
             $quotations->setCollection($filtered);
         }
 
-        // Filter ด้วย getQuoteStatusQuotePayment และ getStatusWithholdingTax หลัง paginate เฉพาะกรณีเลือกสถานะ (CheckList ให้ตรงกับ badge จริง)
-        // $quotations = $this->filterByCheckListStatus($quotations, $searchNotLogStatus);
 
         $SumPax = $quotations->sum('quote_pax_total');
         $SumTotal = $quotations->sum('quote_grand_total');
@@ -292,35 +274,7 @@ class QuoteListController extends Controller
         return view('quotations.list', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'customerPaymentStatuses', 'campaignSource', 'allQuoteStatusQuotePayment', 'queryString', 'queryBindings'));
     }
 
-    /**
-     * Filter quotations collection by all badge logic (CheckList)
-     *
-     * @param \Illuminate\Pagination\LengthAwarePaginator $quotations
-     * @param string $searchNotLogStatus
-     * @return \Illuminate\Pagination\LengthAwarePaginator
-     */
-    // protected function filterByCheckListStatus($quotations, $searchNotLogStatus)
-    // {
-    //     if (empty($searchNotLogStatus) || $searchNotLogStatus === 'all') {
-    //         return $quotations;
-    //     }
-    //     $filtered = $quotations->getCollection()->filter(function ($quotation) use ($searchNotLogStatus) {
-    //         $badges = [
-    //             trim(strip_tags(getQuoteStatusQuotePayment($quotation))),
-    //             trim(strip_tags(getStatusWithholdingTax($quotation->quoteInvoice))),
-    //             trim(strip_tags(getQuoteStatusWithholdingTax($quotation->quoteLogStatus))),
-    //             trim(strip_tags(getStatusWhosaleInputTax($quotation->checkfileInputtax))),
-    //             trim(strip_tags(getStatusCustomerRefund($quotation->quoteLogStatus))),
-    //             trim(strip_tags(getStatusWholesaleRefund($quotation->quoteLogStatus))),
-    //             // เพิ่ม helper อื่นๆ ได้ที่นี่
-    //         ];
-    //         $search = trim($searchNotLogStatus);
-    //         Log::debug('CheckList filter', ['badges' => $badges, 'search' => $search, 'quote_id' => $quotation->quote_id]);
-    //         return in_array($search, $badges);
-    //     })->values();
-    //     $quotations->setCollection($filtered);
-    //     return $quotations;
-    // }
+
 
     public function destroy($id)
     {

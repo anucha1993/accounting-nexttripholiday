@@ -104,7 +104,7 @@
                 <a href="{{route('MPDF.downloadPDFwithholding',$document->id)}}" class="btn btn-outline-success me-2">ดาวน์โหลดเอกสาร</a>
                 
                 
-                <a href="{{route('withholding.editRepear',$document->id)}}" class="btn btn-outline-danger" >คัดลอกเอกสาร</a>
+                {{-- <a href="{{route('withholding.editRepear',$document->id)}}" class="btn btn-outline-danger" >คัดลอกเอกสาร</a> --}}
             </div>
         </div>
         <script>

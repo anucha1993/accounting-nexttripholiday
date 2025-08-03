@@ -409,6 +409,13 @@
 
     <div class="main-container">
         <div class="container-fluid">
+            <div class="row mb-3">
+                {{-- <div class="col">
+                    <a href="{{ route('reports.sales.export', request()->query()) }}" class="btn btn-success">
+                        <i class="fas fa-file-excel"></i> Export to Excel
+                    </a>
+                </div> --}}
+            </div>
 
             <!-- ฟอร์มค้นหาและรายงาน -->
             <div class="card">
@@ -551,16 +558,17 @@
             </div>
             </form>
 
-          
-
-
             <!-- Convert to Excel button and table -->
             <div class="d-flex justify-content-end mb-2">
                 @canany(['report.salestax.export'])
-                <button class="btn btn-outline-success" onclick="exportTableToExcel(this)">
+                {{-- <button class="btn btn-outline-success" onclick="exportTableToExcel(this)">
                     <i class="fas fa-file-excel me-1"></i>Convert to Excel
-                </button>
+                </button> --}}
+                <a href="{{ route('reports.sales.export', request()->query()) }}" class="btn btn-success">
+                        <i class="fas fa-file-excel"></i> Export to Excel
+                    </a>
                 @endcanany
+
             </div>
             
               @if ($mode === 'qt')
