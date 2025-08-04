@@ -613,7 +613,7 @@
                                     </div>
                                     <div class="col-md-12" style="padding-bottom: 10px">
                                         <label>บันทึกเพิ่มเติม</label>
-                                        <textarea name="quote_note" class="form-control" cols="30" rows="2"></textarea>
+                                        <textarea name="quote_note" class="form-control" cols="30" rows="2">{{ $quotationModel->quote_note ?? '' }}</textarea>
                                     </div>
                                 </div>
                             </div>

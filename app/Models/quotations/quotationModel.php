@@ -435,14 +435,12 @@ public function checkfileInputtaxVat()
     $hasInputTaxFile = $this->quoteInvoice()->whereNotNull('invoice_image')->exists();
 
     if ($hasInputTaxFile) {
-        // ถ้ามีไฟล์ input_tax_file
-     // return $getTotalInputTaxVatWithholding;
-       //return $this->checkfileInputtaxVat();
+      
          return $withholdingTaxAmount+$getTotalInputTaxVatWithholding+$getTotalInputTaxVatType;
     }else {
-        // ถ้าไม่มีไฟล์ input_tax_file
+      
         return $getTotalInputTaxVat+$withholdingTaxAmount+$getTotalInputTaxVatWithholding;
-        //return $withholdingTaxAmount + $getTotalInputTaxVat;
+       
     }
 
 }

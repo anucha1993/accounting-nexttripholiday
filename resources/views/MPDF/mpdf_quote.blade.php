@@ -35,27 +35,34 @@
             /* จัดข้อความให้อยู่กลาง */
             font-size: 18px
         }
+
         .text-cancel {
-            transform: rotate(45); /* ปรับมุมองศาตามต้องการ */
+            transform: rotate(45);
+            /* ปรับมุมองศาตามต้องการ */
             position: absolute;
-            top: 470px; /* ปรับตำแหน่งแนวตั้ง */
-            right: auto; /* ปรับตำแหน่งแนวนอน */
-            font-size:50px;
+            top: 470px;
+            /* ปรับตำแหน่งแนวตั้ง */
+            right: auto;
+            /* ปรับตำแหน่งแนวนอน */
+            font-size: 50px;
             color: rgba(255, 0, 0, 0.007);
-            display: inline; /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
-            letter-spacing: 0; /* ระยะห่างระหว่างตัวอักษร */
-            line-height: 1; /* ปรับระยะห่างระหว่างบรรทัด */
-        } 
+            display: inline;
+            /* บังคับให้ข้อความแสดงในบรรทัดเดียว */
+            letter-spacing: 0;
+            /* ระยะห่างระหว่างตัวอักษร */
+            line-height: 1;
+            /* ปรับระยะห่างระหว่างบรรทัด */
+        }
     </style>
 </head>
 
 <body style="margin-top: 0px; padding-top: 0;">
     @if ($quotationModel->quote_status === 'cancel')
-    <div class="text-cancel">
-        <b>ยกเลิก {{$quotationModel->quote_cancel_note}}</b>
-     </div>
+        <div class="text-cancel">
+            <b>ยกเลิก {{ $quotationModel->quote_cancel_note }}</b>
+        </div>
     @endif
-  
+
 
     {{-- <div style="width: 120%; float: left; padding: 10px;  position: absolute;  top: 300px; right: -375px">
         <img src="{{ asset('logo/text-cancel.png') }}" alt="">
@@ -64,7 +71,7 @@
 
     <header class="content">
 
-      
+
 
 
         <div style="width: 15%; float: left; padding: 10px;">
@@ -115,7 +122,8 @@
             </div>
             <div style="margin-top: -45px; text-align: right;">
                 <h4 style="background-color: #f9c68f; display: inline-block; padding-left: 73px">
-                    <b>{{ $quotationModel->quote_number }}</b></h4>
+                    <b>{{ $quotationModel->quote_number }}</b>
+                </h4>
             </div>
 
 
@@ -203,13 +211,14 @@
 
                     <td
                         style="width: 150px; padding-left: 5px; border-left: none; border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><span>{{$quotationModel->Salename->phone??'-'}}</span></p>
+                        <p><span>{{ $quotationModel->Salename->phone ?? '-' }}</span></p>
                     </td>
                 </tr>
                 <tr>
                     <td
                         style="width: 100px; padding-left: 5px; border-right: none;  border-bottom: none; border-top: none; vertical-align: top;">
-                        <p><b>Tax ID:<p></p></p>
+                        <p><b>Tax ID:<p></p>
+                        </p>
                     </td>
 
                     <td
@@ -271,7 +280,7 @@
 
                             // echo $new_string; // ผลลัพธ์:  สิงคโปร์ เกาะเซ็นโตซ่า ยูนิเวอร์แซล สตูดิโอ (ฟรีเดย์ 1 วัน)
                         @endphp
-                        {{-- <p><span>{{ $quotationModel->quote_tour_name1 ? $quotationModel->quote_tour_name1 : $quotationModel->quote_tour_name }}</span> --}}  
+                        {{-- <p><span>{{ $quotationModel->quote_tour_name1 ? $quotationModel->quote_tour_name1 : $quotationModel->quote_tour_name }}</span> --}}
                         <p><span>{{ $quotationModel->quote_tour_name }}</span>
                         </p>
                     </td>
@@ -281,7 +290,8 @@
                     </td>
                     <td style="width: 150px; padding: 0; text-align: center; background-color: #f9c68f;">
                         <p style="margin: 0; padding: 10px;">
-                            <span>{{ date('j', strtotime($quotationModel->quote_date_start)) }}-{{ thaidate('j F Y', $quotationModel->quote_date_end) }}<p>(<?php echo e($quotationModel->quote_numday); ?>)</p></span>
+                            <span>{{ date('j', strtotime($quotationModel->quote_date_start)) }}-{{ thaidate('j F Y', $quotationModel->quote_date_end) }}
+                                <p>(<?php echo e($quotationModel->quote_numday); ?>)</p></span>
                         </p>
                     </td>
                 </tr>
@@ -315,7 +325,7 @@
 
                 <tr>
 
-                    <td style="width: 65px; height: 260px; text-align: center; vertical-align: top;">
+                    <td style="width: 65px; height: 250px; text-align: center; vertical-align: top;">
                         @forelse ($productLists as $key => $item)
                             <p style="margin: 0;">{{ $key + 1 }}</p>
                         @empty
@@ -414,7 +424,9 @@
 
         <footer>
 
-            <div style="line-height: 1; text-align: left; display: block; margin-top: -15px">
+
+            <div style="line-height: 1; text-align: left; display: block; margin-top: -20px">
+                 <b>Note : </b> <span style="">{{ $quotationModel->quote_note ?? '-' }}</span> <br>
                 <b>หมายเหตุ : </b> <span style="">-หากไม่ชำระเงินตามกำหนดด้านล่าง ทางบริษัทฯ
                     ขอสงวนสิทธิ์ในการตัดที่นั่งโดยไม่แจ้งให้ทราบล่วงหน้า,-หากชำระมัดจำมาแล้วท่านไม่ชำระส่วนที่เหลือ
                     ขออนุญาตยึดเงินมัดจำตามเงื่อนไขบริษัท
@@ -422,57 +434,68 @@
                     จะจัดส่งให้ก่อนการเดินทางระยะเวลา 1-3 วัน</span>
             </div>
 
-            <div style="margin-top: -20px">
+            <div style="margin-top: -21px">
                 <table style="margin-right: -35px; margin-left: -35px;">
                     @if ($quotationModel->quote_payment_type === 'deposit')
                         <tr style="border-right: none;">
                             <td style="width: 100px; padding: 5x; border-right: none; border-bottom: none;">
-                                <b>วันที่ชำระเงินมัดจำ</b></td>
+                                <b>วันที่ชำระเงินมัดจำ</b>
+                            </td>
                             <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">
                                 {{ thaidate('j F Y', $quotationModel->quote_payment_date) }}</td>
                             <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;">
-                                <b>ก่อนเวลา</b></td>
+                                <b>ก่อนเวลา</b>
+                            </td>
                             <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">
                                 {{ date('H:i', strtotime($quotationModel->quote_payment_date)) }} น.</td>
                             <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;">
-                                <b>จำนวนเงิน</b></td>
+                                <b>จำนวนเงิน</b>
+                            </td>
                             <td
                                 style="width: 110px; border-right: none; text-align: center; border-left: none; border-bottom: none;">
                                 {{ number_format($quotationModel->quote_payment_total, 2, '.', ',') }}</td>
                             <td style="width: 200px; text-align: right; border-left: none; border-bottom: none;">
-                                <b>บาท</b></td>
+                                <b>บาท</b>
+                            </td>
                         </tr>
                     @else
                         <tr style="border-right: none;">
                             <td style="width: 100px; padding: 5x; border-right: none; border-bottom: none;">
-                                <b>วันที่ชำระเงินมัดจำ</b></td>
+                                <b>วันที่ชำระเงินมัดจำ</b>
+                            </td>
                             <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">-
                             </td>
                             <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;">
-                                <b>ก่อนเวลา</b></td>
+                                <b>ก่อนเวลา</b>
+                            </td>
                             <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">-น.
                             </td>
                             <td style="width: 100px; border-right: none; border-left: none; border-bottom: none;">
-                                <b>จำนวนเงิน</b></td>
+                                <b>จำนวนเงิน</b>
+                            </td>
                             <td style="width: 110px; border-right: none; border-left: none; border-bottom: none;">-
                             </td>
                             <td style="width: 200px; text-align: right; border-left: none; border-bottom: none;">
-                                <b>บาท</b></td>
+                                <b>บาท</b>
+                            </td>
                         </tr>
                     @endif
 
                     <tr style="border-right: none;">
                         <td style="width: 100px; padding: 5x; border-right: none; border-top: none;">
-                            <b>วันที่ชำระยอดเต็ม</b></td>
+                            <b>วันที่ชำระยอดเต็ม</b>
+                        </td>
                         <td style="width: 110px; border-right: none; border-left: none; border-top: none; ">
                             {{ thaidate('j F Y', $quotationModel->quote_payment_date_full) }}</td>
                         <td style="width: 100px; border-right: none; border-left: none; border-top: none;">
-                            <b>ก่อนเวลา</b></td>
-                            {{ $quotationModel->quote_payment_date_full }};;
+                            <b>ก่อนเวลา</b>
+                        </td>
+                        {{ $quotationModel->quote_payment_date_full }};;
                         <td style="width: 110px; border-right: none; border-left: none; border-top: none;">
                             {{ date('H:i', strtotime($quotationModel->quote_payment_date_full)) }} น.</td>
                         <td style="width: 100px; border-right: none; border-left: none; border-top: none;">
-                            <b>จำนวนเงิน</b></td>
+                            <b>จำนวนเงิน</b>
+                        </td>
                         <td
                             style="width: 110px; border-right: none; text-align: center; border-left: none; border-top: none;">
                             {{ number_format($quotationModel->quote_payment_total_full, 2, '.', ',') }}</td>
@@ -483,11 +506,11 @@
                 </table>
             </div>
 
-            <div style="margin-top: -32px">
+            <div style="margin-top: -33px">
                 <table style="margin-right: -35px; margin-left: -35px;">
                     <tr style="border-right: none;">
                         <td style="width: 276.6px; padding: 5x; text-align: center;">
-                          <b style="color: #fff">ว่าง</b></br>
+                            <b style="color: #fff">ว่าง</b></br>
                             <p>___________________________</p>
                             <p><b>Customer</b></p>
                             <p><b></b></p>
@@ -496,16 +519,17 @@
                         <td style="border: none;"></td>
                         <td style="width: 276.6px; text-align: center;">
 
-                           <b>{{ $sale->name }}</b></br>
+                            <b>{{ $sale->name }}</b></br>
                             <p>___________________________</p>
                             <p><b>Sale / Operation</b></p>
                             <p><b>{{ thaidate('j F Y', $quotationModel->quote_date) }}</b></p>
                         </td>
                         <td style="border: none;"></td>
                         <td style="width: 277px; text-align: right; text-align: center;">
-                           
-                            <img src="{{URL::asset('signature/next_signature_01.png')}}" alt="Image" class="image" style="width: 120px; ">
-                        
+
+                            <img src="{{ URL::asset('signature/next_signature_01.png') }}" alt="Image"
+                                class="image" style="width: 120px; ">
+
                             <p><b>ผู้อนุมัติ</b></p>
                             <p><b>{{ thaidate('j F Y', $quotationModel->quote_date) }}</b></p>
                         </td>
@@ -513,11 +537,11 @@
                 </table>
             </div>
 
-            <div style="margin-top: -17px">
+            <div style="margin-top: -18px">
                 กรุณาชำระเงินค่าทัวร์ หรือตั๋วเครื่องบินโดยการโอน
                 <p style="margin-top: -5px"><b>ชื่อบัญชี บจก.เน็กซ์ ทริป ฮอลิเดย์</b></p>
             </div>
-            <div style="margin-top: -20px; margin-bottom: -300px;">
+            <div style="margin-top: -21px; margin-bottom: -300px;">
                 <div style="float: left; width: 25%; text-align: left;">
                     <b>ธนาคาร</b>
                 </div>
@@ -550,7 +574,7 @@
             </div>
 
             <b>แจ้งชำระเงิน</b>
-            <p style="margin-top: -5px">สามารถแจ้งได้ทุกช่องทาง Line :@nexttripholiday ,อีเมล:nexttripholiday@gmail.com
+            <p style="margin-top: -8px">สามารถแจ้งได้ทุกช่องทาง Line :@nexttripholiday ,อีเมล:nexttripholiday@gmail.com
                 หรือทางไลน์กับพนักงานขายที่ท่านทำการจอง</p>
 
 
