@@ -421,6 +421,7 @@
             <div class="card">
                 <div class="card-header">
                     <h4><i class="fas fa-chart-line me-2"></i>รายงานยอดขาย</h4>
+                      
                 </div>
                 <div class="card-body">
                     <form action="">
@@ -567,6 +568,7 @@
                 <a href="{{ route('reports.sales.export', request()->query()) }}" class="btn btn-success">
                         <i class="fas fa-file-excel"></i> Export to Excel
                     </a>
+                
                 @endcanany
 
             </div>

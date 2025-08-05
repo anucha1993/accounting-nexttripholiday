@@ -545,7 +545,7 @@
                                         </div>
 
                                         <div class="col-md-1 text-center">
-                                            <a href="#" class="remove-row-btn text-danger"><i
+                                            <a href="#" class="remove-row-btn text-danger remove-discount-row"><i
                                                     class="fa fa-trash"></i></a>
 
                                             {{-- <button type="button" class="btn btn-danger btn-sm remove-row-btn" title="ลบแถว">
@@ -1484,7 +1484,7 @@
 
             // ฟังก์ชันคำนวณเงื่อนไขการชำระเงิน (Deposit/Full) และข้อมูลค่าบริการ (pax, รวม, vat, discount, grand total)
             function calculatePaymentCondition(skipPaymentCondition = false) {
-                
+      
                 // --- เงื่อนไขการชำระเงิน ---
                 //    if (!skipPaymentCondition) {
                 // var bookingCreateDate = new Date($('#date-start').val());
@@ -1703,6 +1703,7 @@
                 });
                 updateRowNumbers();
                 calculatePaymentCondition(); // เรียกคำนวณยอดทันทีหลังเพิ่ม row
+                syncDepositAndFullPayment()
             });
 
             // ฟังก์ชันอัปเดตเลขลำดับ row
@@ -1721,6 +1722,7 @@
                     updateRowNumbers();
                     updateDiscountRowNumbers && updateDiscountRowNumbers();
                     calculatePaymentCondition();
+                    syncDepositAndFullPayment()
                 }
             });
 
@@ -1732,6 +1734,7 @@
                 addDiscountRow();
                 updateDiscountRowNumbers();
                 calculatePaymentCondition();
+                syncDepositAndFullPayment()
             });
 
             // เพิ่ม discount row แรกอัตโนมัติถ้ายังไม่มี (เหมือนต้นฉบับ)
@@ -1777,7 +1780,7 @@
                 <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01" value="${price}"></div>
                 <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end" value="${total.toFixed(2)}" readonly></div>
                 <div class="col-md-1 text-center">
-                   <a href="#" class="remove-row-btn text-danger"><i
+                   <a href="#" class="remove-row-btn text-danger remove-discount-row"><i
                                             class="fa fa-trash"></i></a>
                 </div>
                 </div>
@@ -1800,6 +1803,7 @@
                 $(this).closest('.discount-row').remove();
                 updateDiscountRowNumbers();
                 calculatePaymentCondition();
+                syncDepositAndFullPayment()
             });
 
             // อัปเดตเลขลำดับ discount row

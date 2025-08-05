@@ -1385,35 +1385,38 @@
                 var withholdingRows = [];
                 sumDiscount = 0;
 
+                // คำนวณรายการบริการ
                 $('#table-income > .row.item-row.table-income:visible').each(function() {
                     var $row = $(this);
                     var qty = parseFloat($row.find('input[name="quantity[]"]').val()) || 0;
                     var price = parseFloat($row.find('input[name="price_per_unit[]"]').val()) || 0;
-                    var isDiscount = $row.hasClass('table-discount');
-                    if (isDiscount) {
-                        var total = qty * price;
-                        $row.find('input[name="total_amount[]"]').val(total.toFixed(2));
-                        sumDiscount += total;
-                    } else {
-                        var isVat = $row.find('select[name="vat_status[]"]').val() === 'vat';
-                        var isPax = $row.find('select[name="product_id[]"] option:selected').data('pax') ===
-                            'Y';
-                        var isWithholding = $row.find('input.vat-3').is(':checked');
-                        var rowTotal = qty * price;
-                        // แก้ไข: ถ้าติ๊ก vat-3 ให้บวก 3% เฉพาะแถวนี้ (ไม่ต้องใช้ plus3 แยก)
-                        if (isWithholding) {
-                            rowTotal = rowTotal * 1.03;
-                        }
-                        $row.find('input[name="total_amount[]"]').val(rowTotal.toFixed(2));
-                        if (isVat) {
-                            sumTotalVat += rowTotal;
-                        } else {
-                            sumTotalNonVat += rowTotal;
-                        }
-                        if (isPax) {
-                            paxTotal += qty;
-                        }
+                    var isVat = $row.find('select[name="vat_status[]"]').val() === 'vat';
+                    var isPax = $row.find('select[name="product_id[]"] option:selected').data('pax') === 'Y';
+                    var isWithholding = $row.find('input.vat-3').is(':checked');
+                    var rowTotal = qty * price;
+                    // แก้ไข: ถ้าติ๊ก vat-3 ให้บวก 3% เฉพาะแถวนี้ (ไม่ต้องใช้ plus3 แยก)
+                    if (isWithholding) {
+                        rowTotal = rowTotal * 1.03;
                     }
+                    $row.find('input[name="total_amount[]"]').val(rowTotal.toFixed(2));
+                    if (isVat) {
+                        sumTotalVat += rowTotal;
+                    } else {
+                        sumTotalNonVat += rowTotal;
+                    }
+                    if (isPax) {
+                        paxTotal += qty;
+                    }
+                });
+
+                // คำนวณส่วนลดแยกต่างหาก
+                $('#discount-list .discount-row:visible').each(function() {
+                    var $row = $(this);
+                    var qty = parseFloat($row.find('input[name="quantity[]"]').val()) || 0;
+                    var price = parseFloat($row.find('input[name="price_per_unit[]"]').val()) || 0;
+                    var total = qty * price;
+                    $row.find('input[name="total_amount[]"]').val(total.toFixed(2));
+                    sumDiscount += total;
                 });
 
                 // --- VAT Calculation ---
@@ -1478,8 +1481,32 @@
             // trigger คำนวณค่าบริการทุกครั้งที่มีการเปลี่ยนแปลง
             $(document).on('input change', '.quantity, .price-per-unit, .vat-status, .vat-3, .expense-type',
                 function() {
+                    // คำนวณ total-amount สำหรับแถวนี้ทันที
+                    calculateRowTotal($(this).closest('.row'));
                     calculatePaymentCondition();
                 });
+
+            // เพิ่ม event listener สำหรับ discount rows
+            $(document).on('input change', '.discount-qty, .discount-price, .discount-vat, .discount-product-select',
+                function() {
+                    // คำนวณ total-amount สำหรับ discount row นี้ทันที
+                    calculateRowTotal($(this).closest('.discount-row'));
+                    calculatePaymentCondition();
+                });
+
+            // ฟังก์ชันคำนวณ total ของแถวเดียว
+            function calculateRowTotal($row) {
+                var qty = parseFloat($row.find('input[name="quantity[]"]').val()) || 0;
+                var price = parseFloat($row.find('input[name="price_per_unit[]"]').val()) || 0;
+                var total = qty * price;
+                
+                // ถ้าเป็นแถวบริการและมีการติ๊ก withholding tax
+                if (!$row.hasClass('discount-row') && $row.find('input.vat-3').is(':checked')) {
+                    total = total + (total * 0.03);
+                }
+                
+                $row.find('input[name="total_amount[]"]').val(total.toFixed(2));
+            }
 
             // --- เลือกวันออกเดินทางจาก list (รองรับวันที่ไทย) ---
             $(document).on('click', '#date-list .list-group-item', function(e) {
@@ -1597,6 +1624,13 @@
                 }
             });
 
+            // ลบรายการส่วนลด
+            $(document).on('click', '.remove-discount-row', function() {
+                $(this).closest('.discount-row').remove();
+                updateDiscountRowNumbers();
+                calculatePaymentCondition(); // trigger คำนวณยอดรวมใหม่หลังลบส่วนลด
+            });
+
             // อัปเดตเลขลำดับครั้งแรก (กรณีมี row เดียว)
             updateRowNumbers();
 
@@ -1645,11 +1679,11 @@
                             <option value="nonvat" >nonVat</option>
                         </select>
                     </div>
-                    <div class="col-md-1"><input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="${qty}"></div>
-                    <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01" value="${price}"></div>
+                    <div class="col-md-1"><input type="number" name="quantity[]" class="quantity discount-qty form-control text-end" step="1" value="${qty}"></div>
+                    <div class="col-md-2"><input type="number" name="price_per_unit[]" class="price-per-unit discount-price form-control text-end" step="0.01" value="${price}"></div>
                     <div class="col-md-2"><input type="number" name="total_amount[]" class="total-amount form-control text-end" value="${total.toFixed(2)}" readonly></div>
                     <div class="col-md-1 text-center">
-                        <button type="button" class="btn btn-danger btn-sm remove-row-btn" title="ลบแถว"><i class="fa fa-trash"></i></button>
+                        <button type="button" class="btn btn-danger btn-sm remove-discount-row" title="ลบแถว"><i class="fa fa-trash"></i></button>
                     </div>
                 </div>
                 <!-- Mobile row -->
@@ -1674,11 +1708,11 @@
                             <option value="nonvat" >nonVat</option>
                         </select>
                     </div>
-                    <div><b>จำนวน:</b> <input type="number" name="quantity[]" class="quantity form-control text-end" step="1" value="${qty}"></div>
-                    <div><b>ราคา/หน่วย:</b> <input type="number" name="price_per_unit[]" class="price-per-unit form-control text-end" step="0.01" value="${price}"></div>
+                    <div><b>จำนวน:</b> <input type="number" name="quantity[]" class="quantity discount-qty form-control text-end" step="1" value="${qty}"></div>
+                    <div><b>ราคา/หน่วย:</b> <input type="number" name="price_per_unit[]" class="price-per-unit discount-price form-control text-end" step="0.01" value="${price}"></div>
                     <div><b>ยอดรวม:</b> <input type="number" name="total_amount[]" class="total-amount form-control text-end" value="${total.toFixed(2)}" readonly></div>
                     <div>
-                        <button type="button" class="btn btn-danger btn-sm remove-row-btn" title="ลบแถว" style="width:100%"><i class="fa fa-trash"></i></button>
+                        <button type="button" class="btn btn-danger btn-sm remove-discount-row" title="ลบแถว" style="width:100%"><i class="fa fa-trash"></i></button>
                     </div>
                 </div>
                 `;

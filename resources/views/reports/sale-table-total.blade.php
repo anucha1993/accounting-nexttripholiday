@@ -11,6 +11,7 @@
                  <th>ที่มา</th>
                  <th>เซลล์ผู้ขาย</th>
                  <th>PAX</th>
+                   @if(!Auth::user()->getRoleNames()->contains('sale'))
                  <th>ค่าบริการ</th>
                  <th>ส่วนลด</th>
                  <th>ยอดรวมสุทธิ</th>
@@ -19,6 +20,7 @@
                  <th>ต้นทุนรวม</th>
                  <th>กำไร</th>
                  <th>กำไรเฉลี่ย:คน</th>
+                 @endif
                  <th>คอมมิชชั่นทั้งสิ้น</th>
                  <th>CommissionGroup</th>
 
@@ -75,6 +77,7 @@
                      <td>{{ $sources }}</td>
                      <td>{{ $saleName }}</td>
                      <td>{{ $paxSum }}</td>
+                        @if(!Auth::user()->getRoleNames()->contains('sale'))
                      <td>{{ number_format($group['items']->sum(function($item) { return $item->quote_grand_total + $item->quote_discount; }), 2) }}</td>
                      <td>{{ number_format($group['items']->sum('quote_discount'), 2) }}</td>
                      <td>{{ number_format($group['items']->sum('quote_grand_total'), 2) }}</td>
@@ -84,6 +87,7 @@
                      <td>{{ number_format($netProfitSum, 2) }}</td>
                      <td>{{ $paxSum > 0 ? number_format($netProfitSum / $paxSum, 2) : '0.00' }}</td>
                      <td>{{ number_format($commission['calculated'] ?? 0, 2) }}</td>
+                     @endif
                      <td>
                          @if ($hasNoCommission === 'Y')
                              <small><b>ไม่จ่ายค่าคอมมิชชั่น :</b>
@@ -101,6 +105,7 @@
             <tr>
                 <th colspan="8">รวม</th>
                 <th>{{ $saleGroups->sum('pax_sum') }}</th>
+                  @if(!Auth::user()->getRoleNames()->contains('sale'))
                 <th>{{ number_format($saleGroups->sum(function($group) { return $group['items']->sum(function($item) { return $item->quote_grand_total + $item->quote_discount; }); }), 2) }}</th>
                 <th>{{ number_format($saleGroups->sum(function($group) { return $group['items']->sum('quote_discount'); }), 2) }}</th>
                 <th>{{ number_format($saleGroups->sum(function($group) { return $group['items']->sum('quote_grand_total'); }), 2) }}</th>
@@ -109,6 +114,7 @@
                 <th>{{ number_format($saleGroups->sum(function($group) { return $group['items']->sum(function($item) { return $item->getTotalCostAll(); }); }), 2) }}</th>
                 <th>{{ number_format($saleGroups->sum('net_profit_sum'), 2) }}</th>
                 <th>{{ $saleGroups->sum('pax_sum') > 0 ? number_format($saleGroups->sum('net_profit_sum') / $saleGroups->sum('pax_sum'), 2) : '0.00' }}</th>
+                @endif
                 <th>{{ number_format($saleGroups->sum(function($group) {
                     $commission = calculateCommission($group['net_profit_sum'], $group['sale_id'], 'total', $group['pax_sum']);
                     return $commission['calculated'] ?? 0;

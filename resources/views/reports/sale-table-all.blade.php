@@ -11,6 +11,7 @@
                 <th>ที่มา</th>
                 <th>เซลล์ผู้ขาย</th>
                 <th>PAX</th>
+                 @if(!Auth::user()->getRoleNames()->contains('sale'))
                 <th>ค่าบริการ</th>
                 <th>ส่วนลด</th>
                 <th>ยอดรวมสุทธิ</th>
@@ -18,7 +19,9 @@
                 <th>ต้นทุนอื่นๆ</th>
                 <th>ต้นทุนรวม</th>
                 <th>กำไร</th>
+               
                 <th>กำไรเฉลี่ย:คน</th>
+                 @endif
                 <th>CommissionGroup</th>
 
             </tr>
@@ -58,6 +61,9 @@
                     </td>
                     <td>{{ $item->Salename->name }}</td>
                     <td>{{ $item->quote_pax_total }}</td>
+
+                     @if(!Auth::user()->getRoleNames()->contains('sale'))
+
                     <td>{{ number_format($item->quote_grand_total + $item->quote_discount, 2) }}</td>
                     <td>{{ number_format($item->quote_discount, 2) }}</td>
                     <td>{{ number_format($item->quote_grand_total, 2) }}</td>
@@ -66,6 +72,7 @@
                     <td>{{ number_format($item->getTotalCostAll(), 2) }}</td>
                     <td>{{ number_format($item->getNetProfit(), 2) }}</td>
                     <td>{{ number_format($item->getNetProfitPerPax(), 2) }}</td>
+                    @endif
 
                     @php
                         $commission = calculateCommission(
@@ -101,8 +108,11 @@
         </tbody>
         <tfoot>
             <tr>
+                 
                 <th colspan="8">รวม</th>
+               
                 <th>{{ $quotationSuccess->sum('quote_pax_total') }}</th>
+                 @if(!Auth::user()->getRoleNames()->contains('sale'))
                 <th>{{ number_format($quotationSuccess->sum(function ($item) {return $item->quote_grand_total + $item->quote_discount;}),2) }}
                 </th>
                 <th>{{ number_format($quotationSuccess->sum('quote_discount'), 2) }}</th>
@@ -117,6 +127,7 @@
                 </th>
                 <th>{{ number_format($quotationSuccess->sum(function ($item) {return $item->getNetProfitPerPax();}),2) }}
                 </th>
+                @endif
                 <th>CommissionGroup</th>
             </tr>
         </tfoot>
