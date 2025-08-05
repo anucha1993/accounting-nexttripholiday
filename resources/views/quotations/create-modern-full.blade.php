@@ -880,6 +880,8 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    
                                 </div>
                             </div>
                             <input type="hidden" id="booking-create-date" value="{{ date('Y-m-d') }}">
