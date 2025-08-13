@@ -29,8 +29,8 @@ class QuoteListController extends Controller
         $searchKeyword = $request->input('search_keyword');
         $searchPeriodDateStart = $request->input('search_period_start');
         $searchPeriodDateEnd = $request->input('search_period_end');
-        $searchQuoteDateStart = $request->input('search_booking_start');
-        $searchQuoteDateEnd = $request->input('search_booking_end');
+        $searchQuoteDateStart = $request->input('search_booking_start'); /// จากวันจอง เปลี่ยนเป็น วันเสนอราคา แทน
+        $searchQuoteDateEnd = $request->input('search_booking_end');  /// จากวันจอง เปลี่ยนเป็น วันเสนอราคา แทน
         $searchSale = $request->input('search_sale');
         $searchCountry = $request->input('search_country');
         $searchWholesale = $request->input('search_wholesale');
@@ -85,8 +85,9 @@ class QuoteListController extends Controller
                 });
             })
             ->when($searchQuoteDateStart && $searchQuoteDateEnd, function ($query) use ($searchQuoteDateStart, $searchQuoteDateEnd) {
-                return $query->whereBetween('quote_booking_create', [$searchQuoteDateStart, $searchQuoteDateEnd]);
+                return $query->whereBetween('quote_date', [$searchQuoteDateStart, $searchQuoteDateEnd]);
             })
+
             ->when($searchAirline && $searchAirline != 'all', function ($query) use ($searchAirline) {
                 return $query->where('quote_airline', $searchAirline);
             })

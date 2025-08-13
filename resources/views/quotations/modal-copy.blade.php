@@ -315,11 +315,14 @@ label {
                         <div class="row table-custom">
                             <div class="col-md-3 position-relative">
                                 <label class="">ชื่อลูกค้า:</label>
-                                <input type="text" class="form-control" name="customer_name" id="customerSearch"
-                                    placeholder="ชื่อลูกค้า...ENTER เพื่อค้นหา" required
-                                    aria-describedby="basic-addon1" autocomplete="off"
-                                    value="{{ $customer->customer_name ?? '' }}">
-                                <div id="customerResults" class="list-group position-absolute w-100"
+                               <div class="input-group">
+                                    <input type="text" class="form-control" name="customer_name" id="customerSearch"
+                                        placeholder="ชื่อลูกค้า...ENTER เพื่อค้นหา" required
+                                        aria-describedby="basic-addon1" autocomplete="off"
+                                        value="{{ $customer->customer_name ?? '' }}">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" id="btn-new-customer" title="เพิ่มข้อมูลใหม่"><i class="fa fa-plus"></i></button>
+                                </div>
+                                    <div id="customerResults" class="list-group position-absolute w-100"
                                     style="z-index: 1000;"></div>
                             </div>
                             <input type="hidden" id="customer-id" name="customer_id"
@@ -870,6 +873,21 @@ label {
     </div>
 
     <script>
+           // --- ปุ่มเพิ่มข้อมูลลูกค้าใหม่ ---
+        $(document).on('click', '#btn-new-customer', function() {
+            $('#customerSearch').val('');
+            $('#customer-id').val('');
+            $('#customer_email').val('');
+            $('#customer_tel').val('');
+            $('#customer_address').val('');
+            $('#texid').val('');
+            $('#fax').val('');
+            $('select[name="customer_campaign_source"]').val('');
+            $('input[name="customer_social_id"]').val('');
+            $('#customer-new').val('customerNew');
+        });
+
+        
 $('.form-select.select2').each(function() {
     if (!$(this).hasClass('select2-hidden-accessible')) {
         $(this).select2({

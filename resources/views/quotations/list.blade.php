@@ -116,7 +116,7 @@
                                     title="ชื่อแพคเกจทัวร์,เลขที่ใบเสนอราคา,เลขที่ใบแจ้งหนี้,ชื่อลูกค้า,เลขที่ใบจองทัวร์,ใบกำกับภาษีของโฮลเซลล์,เลขที่ใบหัก ณ ที่จ่ายของลูกค้า">
                             </div>
                             <div class="col-md-2">
-                                <label><i class="fas fa-calendar me-1"></i>ช่วงเวลา (Booking Date)</label>
+                                <label><i class="fas fa-calendar me-1"></i>วันเสนอราคา</label>
                                 <input type="text" name="daterange" id="rangDate" class="form-control rangDate"
                                     autocomplete="off" value="{{ request('daterange') }}" placeholder="เลือกช่วงวันที่" />
                                 <input type="hidden" name="search_booking_start"
@@ -399,7 +399,7 @@
                             <thead class="table-dark sticky-top" >
                                 <tr>
                                     <th style="width: 40px;" class="text-center">#</th>
-                                    <th style="width: 80px;">วันที่จอง</th>
+                                    <th style="width: 80px;">วันเสนอราคา</th>
                                     <th style="width: 80px;">ใบเสนอราคา</th>
                                     <th style="width: 100px;">เลขจองทัวร์</th>
                                     <th style="width: 200px;">โปรแกรมทัวร์</th>
@@ -430,7 +430,7 @@
                                         </td>
                                         <td class="text-center">
                                             <span
-                                                class="text-muted">{{ date('d/m/y', strtotime($item->quote_booking_create)) }}</span>
+                                                class="text-muted">{{ date('d/m/y', strtotime($item->quote_date)) }}</span>
                                         </td>
                                         <td>
                                             <div class="d-flex flex-column">
