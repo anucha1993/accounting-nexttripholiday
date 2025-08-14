@@ -26,9 +26,9 @@ class QuoteListController extends Controller
     {
         $perPage = $request->input('per_page', 50);
 
-        if ($request->has('search_keyword') || $request->has('search_period_start') || $request->has('search_not_check_list') || $request->has('search_period_end') || $request->has('search_booking_start') || $request->has('search_booking_end')) {
-            $perPage = 2000;
-        }
+      if (!empty($request->all())) {
+    $perPage = 2000;
+}
 
         $searchKeyword = $request->input('search_keyword');
         $searchPeriodDateStart = $request->input('search_period_start');
@@ -176,44 +176,35 @@ class QuoteListController extends Controller
         $queryString = $quotationsQuery->toSql();
         $queryBindings = $quotationsQuery->getBindings();
 
-        $quotations = $quotationsQuery->paginate($perPage)->withQueryString();
-        // Filter สถานะชำระโฮลเซลล์
-        if (!empty($searchPaymentWholesaleStatus) && $searchPaymentWholesaleStatus !== 'all') {
-            $filtered = $quotations
-                ->getCollection()
-                ->filter(function ($quotation) use ($searchPaymentWholesaleStatus) {
-                    // ดึงยอดชำระโฮลเซลล์
+        // ดึงข้อมูลทั้งหมดก่อนกรอง
+        $quotationsCollection = $quotationsQuery->get();
 
-                    $paymentQuery = paymentWholesaleModel::where('payment_wholesale_quote_id', $quotation->quote_id);
-                    $netPaid = $paymentQuery->selectRaw('COALESCE(SUM(payment_wholesale_total),0) - COALESCE(SUM(payment_wholesale_refund_total),0) as net_paid')->value('net_paid') ?? 0;
-                    // ตรวจสอบไฟล์แนบสลิป paid
-                    $hasPaidSlip = $paymentQuery->whereNotNull('payment_wholesale_file_path')->where('payment_wholesale_file_path', '!=', '')->exists();
-                    // ตรวจสอบไฟล์แนบ refund ถ้ามียอดคืนเงิน
-                    $hasRefundSlip = true;
+        // กรองข้อมูลด้วย Collection
+        $filteredQuotations = $quotationsCollection->filter(function ($quotation) use ($searchPaymentWholesaleStatus) {
+            $paymentQuery = paymentWholesaleModel::where('payment_wholesale_quote_id', $quotation->quote_id);
+            $netPaid = $paymentQuery->selectRaw('COALESCE(SUM(payment_wholesale_total),0) - COALESCE(SUM(payment_wholesale_refund_total),0) as net_paid')->value('net_paid') ?? 0;
 
-                    $refundQuery = paymentWholesaleModel::where('payment_wholesale_quote_id', $quotation->quote_id)->where('payment_wholesale_refund_total', '>', 0);
-                    if ($refundQuery->exists()) {
-                        $hasRefundSlip = $refundQuery->whereNotNull('payment_wholesale_refund_file_path')->where('payment_wholesale_refund_file_path', '!=', '')->exists();
-                    }
-                    // ดึงต้นทุนโฮลเซลล์
-                    $cost = inputTaxModel::where('input_tax_quote_id', $quotation->quote_id)
-                        ->whereIn('input_tax_type', [2, 4, 5, 6, 7])
-                        ->sum('input_tax_grand_total');
+            if ($searchPaymentWholesaleStatus == '5') {
+                return $netPaid == 0;
+            } elseif ($searchPaymentWholesaleStatus == '1') {
+                return $netPaid > 0;
+            }
 
-                    if ($searchPaymentWholesaleStatus == '5') {
-                        return $netPaid == 0;
-                    } elseif ($searchPaymentWholesaleStatus == '1') {
-                        return $netPaid > 0 && $netPaid < $cost && $hasPaidSlip && $hasRefundSlip;
-                    } elseif ($searchPaymentWholesaleStatus == '2') {
-                        return $netPaid >= $cost && $cost > 0 && $hasPaidSlip && $hasRefundSlip;
-                    }
+            return true;
+        });
 
-                    return true;
-                })
-                ->values();
+        // ใช้ slice เพื่อแบ่งข้อมูลตามหน้า
+        $page = $request->input('page', 1);
+        $paginatedQuotations = $filteredQuotations->slice(($page - 1) * $perPage, $perPage)->values();
 
-            $quotations->setCollection($filtered);
-        }
+        // สร้าง LengthAwarePaginator
+        $quotations = new \Illuminate\Pagination\LengthAwarePaginator(
+            $paginatedQuotations,
+            $filteredQuotations->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
 
         // Filter ด้วย getQuoteStatusPaymentKey (Helper) หลัง paginate เฉพาะกรณีเลือกสถานะ (เพื่อให้ตรงกับ Blade)
         if (!empty($searchCustomerPayment) && $searchCustomerPayment !== 'all') {

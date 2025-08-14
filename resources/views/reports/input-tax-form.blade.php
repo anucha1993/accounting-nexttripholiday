@@ -312,7 +312,7 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                                     <tr class="text-center">
                                         <td >{{++$key}}</td>
                                         <td>
-                                            <small>{{date('d/m/Y',strtotime($item->input_tax_date_tax))}}</small>
+                                            <small>{{date('d/m/Y',strtotime($item->created_at))}}</small>
                                         </td>
                                         <td>
                                             <small>{{$item->input_tax_number_tax}}</small>

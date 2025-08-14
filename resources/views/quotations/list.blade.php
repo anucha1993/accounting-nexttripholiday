@@ -374,17 +374,19 @@
                                 <select name="per_page" id="per_page"
                                     class="form-select form-select-sm d-inline-block w-auto"
                                     onchange="this.form.submit()">
+                                    <option value="2000" {{ request('per_page') == 2000 ? 'selected' : '' }}>All</option>
                                     <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50</option>
                                     <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                                     <option value="150" {{ request('per_page') == 150 ? 'selected' : '' }}>150</option>
                                     <option value="200" {{ request('per_page') == 200 ? 'selected' : '' }}>200</option>
+                         
                                 </select>
                                 @foreach (request()->except('per_page', 'page') as $k => $v)
                                     <input type="hidden" name="{{ $k }}" value="{{ $v }}">
                                 @endforeach
                             </form>
                             <div class="text-muted ms-0 ms-md-2 mt-1 mt-md-0">
-                                <small>พบข้อมูล {{ number_format($quotations->total()) }} รายการ | รวม
+                                <small>พบข้อมูล {{ number_format($quotations->count()) }} รายการ | รวม
                                     {{ number_format($SumPax) }} PAX | มูลค่า {{ number_format($SumTotal, 2) }}
                                     บาท</small>
                             </div>
@@ -426,7 +428,7 @@
                                 @forelse ($quotations as $key => $item)
                                     <tr class="align-middle" data-quote-id="{{ $item->quote_id }} " {{ $item->quote_commission == 'N' ? 'style=background-color:#f8d7da' : '' }}>
                                         <td class="text-center fw-bold">
-                                            {{ $quotations->total() - $quotations->firstItem() + 1 - $key }}
+                                            {{$quotations->firstItem() + 1 - $key }}
                                         </td>
                                         <td class="text-center">
                                             <span

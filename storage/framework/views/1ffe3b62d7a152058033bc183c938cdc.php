@@ -52,8 +52,6 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 
-
-
     <!-- Bootstrap Select CSS -->
     <link rel="stylesheet" href="<?php echo e(URL::asset('bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css')); ?>">
 
@@ -67,9 +65,6 @@
         href="<?php echo e(URL::asset('template/assets/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css')); ?>" />
     <link rel="stylesheet" type="text/css"
         href="<?php echo e(URL::asset('template/assets/libs/daterangepicker/daterangepicker.css')); ?>" />
-
-
-
 
 
 
