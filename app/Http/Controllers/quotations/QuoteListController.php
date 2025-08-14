@@ -60,102 +60,135 @@ class QuoteListController extends Controller
         $user = Auth::user();
         $userRoles = $user->getRoleNames();
 
-        $quotationsQuery = quotationModel::with('Salename', 'quoteCustomer', 'quoteWholesale', 'paymentWholesale', 'quoteInvoice', 'quoteLogStatus', 'airline', 'quoteCountry')
-            ->when($searchKeyword, function ($query, $searchKeyword) {
-                return $query->where(function ($q) use ($searchKeyword) {
-                    $q->whereHas('quoteCustomer', function ($q1) use ($searchKeyword) {
-                        $q1->where('customer_name', 'LIKE', '%' . $searchKeyword . '%');
-                    })
-                        ->orWhere('quote_number', 'LIKE', '%' . $searchKeyword . '%')
-                        ->orWhere('quote_tour_name', 'LIKE', '%' . $searchKeyword . '%')
-                        ->orWhere('quote_tour_name1', 'LIKE', '%' . $searchKeyword . '%')
-                        ->orWhere('quote_booking', 'LIKE', '%' . $searchKeyword . '%')
-                        ->orWhereHas('quoteInvoice', function ($q2) use ($searchKeyword) {
-                            $q2->where('invoice_number', 'LIKE', '%' . $searchKeyword . '%');
-                        });
-                });
-            })
-            // กำหนดสิทธิ์ Sale จะเห็นเฉพาะข้อมูลตนเอง
-            ->when($userRoles->contains('sale'), function ($query) use ($user) {
-                return $query->where('quote_sale', $user->sale_id);
-            })
-            ->when($searchPeriodDateStart && $searchPeriodDateEnd, function ($query) use ($searchPeriodDateStart, $searchPeriodDateEnd) {
-                return $query->where(function ($q) use ($searchPeriodDateStart, $searchPeriodDateEnd) {
-                    $q->whereBetween('quote_date_start', [$searchPeriodDateStart, $searchPeriodDateEnd])
-                        // ->orWhereBetween('quote_date_end', [$searchPeriodDateStart, $searchPeriodDateEnd])
-                        ->orWhere(function ($q) use ($searchPeriodDateStart, $searchPeriodDateEnd) {
-                            $q->where('quote_date_start', '<=', $searchPeriodDateStart)->where('quote_date_start', '>=', $searchPeriodDateEnd);
-                        });
-                });
-            })
-            ->when($searchQuoteDateStart && $searchQuoteDateEnd, function ($query) use ($searchQuoteDateStart, $searchQuoteDateEnd) {
-                return $query->whereBetween('quote_date', [$searchQuoteDateStart, $searchQuoteDateEnd]);
-            })
 
-            ->when($searchAirline && $searchAirline != 'all', function ($query) use ($searchAirline) {
-                return $query->where('quote_airline', $searchAirline);
-            })
-            ->when($searchPax && $searchPax != null, function ($query) use ($searchPax) {
-                return $query->where('quote_pax_total', $searchPax);
-            })
+        $quotationsQuery = quotationModel::with('Salename', 'quoteCustomer', 'quoteWholesale', 'paymentWholesale', 'quoteInvoice', 'quoteLogStatus', 'airline', 'quoteCountry');
 
-            ->when($searchLogStatus && $searchLogStatus === 'allCheck', function ($query, $searchLogStatus) {
-                return $query->whereHas('quoteLog', function ($q1) use ($searchLogStatus) {
-                    $q1->where('booking_email_status', 'ส่งแล้ว');
-                    $q1->where('invoice_status', 'ได้แล้ว');
-                    $q1->where('slip_status', 'ส่งแล้ว');
-                    $q1->where('passport_status', 'ส่งแล้ว');
-                    $q1->where('appointment_status', 'ส่งแล้ว');
-                    $q1->where('withholding_tax_status', 'ออกแล้ว');
-                    $q1->where('wholesale_tax_status', 'ได้รับแล้ว');
-                });
-            })
+        if ($searchKeyword) {
+            $quotationsQuery = $quotationsQuery->where(function ($q) use ($searchKeyword) {
+                $q->whereHas('quoteCustomer', function ($q1) use ($searchKeyword) {
+                    $q1->where('customer_name', 'LIKE', '%' . $searchKeyword . '%');
+                })
+                    ->orWhere('quote_number', 'LIKE', '%' . $searchKeyword . '%')
+                    ->orWhere('quote_tour_name', 'LIKE', '%' . $searchKeyword . '%')
+                    ->orWhere('quote_tour_name1', 'LIKE', '%' . $searchKeyword . '%')
+                    ->orWhere('quote_booking', 'LIKE', '%' . $searchKeyword . '%')
+                    ->orWhereHas('quoteInvoice', function ($q2) use ($searchKeyword) {
+                        $q2->where('invoice_number', 'LIKE', '%' . $searchKeyword . '%');
+                    });
+            });
+        }
+        if ($userRoles->contains('sale')) {
+            $quotationsQuery = $quotationsQuery->where('quote_sale', $user->sale_id);
+        }
+        if ($searchPeriodDateStart && $searchPeriodDateEnd) {
+            $quotationsQuery = $quotationsQuery->where(function ($q) use ($searchPeriodDateStart, $searchPeriodDateEnd) {
+                $q->whereBetween('quote_date_start', [$searchPeriodDateStart, $searchPeriodDateEnd])
+                    ->orWhere(function ($q) use ($searchPeriodDateStart, $searchPeriodDateEnd) {
+                        $q->where('quote_date_start', '<=', $searchPeriodDateStart)->where('quote_date_start', '>=', $searchPeriodDateEnd);
+                    });
+            });
+        }
+        if ($searchQuoteDateStart && $searchQuoteDateEnd) {
+            $quotationsQuery = $quotationsQuery->whereBetween('quote_date', [$searchQuoteDateStart, $searchQuoteDateEnd]);
+        }
+        if ($searchAirline && $searchAirline != 'all') {
+            $quotationsQuery = $quotationsQuery->where('quote_airline', $searchAirline);
+        }
+        if ($searchPax && $searchPax != null) {
+            $quotationsQuery = $quotationsQuery->where('quote_pax_total', $searchPax);
+        }
+        if ($searchLogStatus && $searchLogStatus === 'allCheck') {
+            $quotationsQuery = $quotationsQuery->whereHas('quoteLog', function ($q1) {
+                $q1->where('booking_email_status', 'ส่งแล้ว');
+                $q1->where('invoice_status', 'ได้แล้ว');
+                $q1->where('slip_status', 'ส่งแล้ว');
+                $q1->where('passport_status', 'ส่งแล้ว');
+                $q1->where('appointment_status', 'ส่งแล้ว');
+                $q1->where('withholding_tax_status', 'ออกแล้ว');
+                $q1->where('wholesale_tax_status', 'ได้รับแล้ว');
+            });
+        } elseif ($searchLogStatus) {
+            $quotationsQuery = $quotationsQuery->whereHas('quoteLog', function ($q1) use ($searchLogStatus) {
+                switch ($searchLogStatus) {
+                    case 'booking_email_status':
+                        $q1->where('booking_email_status', 'ส่งแล้ว');
+                        break;
+                    case 'invoice_status':
+                        $q1->where('invoice_status', 'ได้แล้ว');
+                        break;
+                    case 'slip_status':
+                        $q1->where('slip_status', 'ส่งแล้ว');
+                        break;
+                    case 'passport_status':
+                        $q1->where('passport_status', 'ส่งแล้ว');
+                        break;
+                    case 'appointment_status':
+                        $q1->where('appointment_status', 'ส่งแล้ว');
+                        break;
+                    case 'withholding_tax_status':
+                        $q1->where('withholding_tax_status', 'ออกแล้ว');
+                        break;
+                    case 'wholesale_tax_status':
+                        $q1->where('wholesale_tax_status', 'ได้รับแล้ว');
+                        break;
+                }
+            });
+        }
+        if ($searchSale && $searchSale != 'all') {
+            $quotationsQuery = $quotationsQuery->where('quote_sale', $searchSale);
+        }
+        if ($searchCountry && $searchCountry != 'all') {
+            $quotationsQuery = $quotationsQuery->where('quote_country', $searchCountry);
+        }
+        if ($searchWholesale && $searchWholesale != 'all') {
+            $quotationsQuery = $quotationsQuery->where('quote_wholesale', $searchWholesale);
+        }
+        if ($request->input('search_campaign_source') && $request->input('search_campaign_source') != 'all') {
+            $quotationsQuery = $quotationsQuery->whereHas('quoteCustomer', function ($q) use ($request) {
+                $q->where('customer_campaign_source', $request->input('search_campaign_source'));
+            });
+        }
 
-            ->when($searchLogStatus, function ($query, $searchLogStatus) {
-                return $query->whereHas('quoteLog', function ($q1) use ($searchLogStatus) {
-                    switch ($searchLogStatus) {
-                        case 'booking_email_status':
-                            $q1->where('booking_email_status', 'ส่งแล้ว');
-                            break;
-                        case 'invoice_status':
-                            $q1->where('invoice_status', 'ได้แล้ว');
-                            break;
-                        case 'slip_status':
-                            $q1->where('slip_status', 'ส่งแล้ว');
-                            break;
-                        case 'passport_status':
-                            $q1->where('passport_status', 'ส่งแล้ว');
-                            break;
-                        case 'appointment_status':
-                            $q1->where('appointment_status', 'ส่งแล้ว');
-                            break;
-                        case 'withholding_tax_status':
-                            $q1->where('withholding_tax_status', 'ออกแล้ว');
-                            break;
-                        case 'wholesale_tax_status':
-                            $q1->where('wholesale_tax_status', 'ได้รับแล้ว');
-                            break;
-                    }
-                });
-            })
+        // Filter เงื่อนไขสถานะชำระโฮลเซลล์ (searchPaymentWholesaleStatus) ด้วย where
+        if (!empty($searchPaymentWholesaleStatus) && $searchPaymentWholesaleStatus !== 'all') {
+            $quotationsQuery = $quotationsQuery->where(function ($query) use ($searchPaymentWholesaleStatus) {
+                if ($searchPaymentWholesaleStatus == '5') {
+                    $query->whereDoesntHave('paymentWholesale', function ($q) {
+                        $q->where('payment_wholesale_total', '>', 0);
+                    });
+                } elseif ($searchPaymentWholesaleStatus == '1') {
+                    $query->whereHas('paymentWholesale', function ($q) {
+                        $q->where('payment_wholesale_total', '>', 0);
+                    });
+                } elseif ($searchPaymentWholesaleStatus == '2') {
+                    $query->whereHas('paymentWholesale', function ($q) {
+                        $q->where('payment_wholesale_total', '>', 0);
+                    });
+                }
+            });
+        }
 
-            // ไม่ filter ที่ SQL สำหรับ Check List ให้ filter หลัง paginate เท่านั้น เพื่อความตรงกับ badge ที่แสดงจริง
-            ->when($searchSale && $searchSale != 'all', function ($query) use ($searchSale) {
-                return $query->where('quote_sale', $searchSale);
-            })
-            ->when($searchCountry && $searchCountry != 'all', function ($query) use ($searchCountry) {
-                return $query->where('quote_country', $searchCountry);
-            })
-            ->when($searchWholesale && $searchWholesale != 'all', function ($query) use ($searchWholesale) {
-                return $query->where('quote_wholesale', $searchWholesale);
-            })
-            ->when($request->input('search_campaign_source') && $request->input('search_campaign_source') != 'all', function ($query) use ($request) {
-                return $query->whereHas('quoteCustomer', function ($q) use ($request) {
-                    $q->where('customer_campaign_source', $request->input('search_campaign_source'));
-                });
-            })
+        // Filter เงื่อนไขสถานะลูกค้าชำระเงิน (searchCustomerPayment) ด้วย where
+        if (!empty($searchCustomerPayment) && $searchCustomerPayment !== 'all') {
+            // ไม่สามารถ filter ด้วย SQL ตรงๆ ได้ ต้อง filter ใน PHP เพราะใช้ helper
+        }
 
-            ->orderBy('created_at', 'desc');
+        // Filter เงื่อนไข badge checklist (searchNotLogStatus) ด้วย where ถ้าเป็นไปได้
+        if (!empty($searchNotLogStatus) && $searchNotLogStatus !== 'all') {
+            // ไม่สามารถ filter ด้วย SQL ตรงๆ ได้ ต้อง filter ใน PHP เพราะใช้ helper
+        }
+
+        // Filter เงื่อนไขสถานะลูกค้าชำระเงินเกิน (searchPaymentOverpays) ด้วย where ถ้าเป็นไปได้
+        if (!empty($searchPaymentOverpays) && $searchPaymentOverpays !== 'all') {
+            // ไม่สามารถ filter ด้วย SQL ตรงๆ ได้ ต้อง filter ใน PHP เพราะใช้ helper
+        }
+
+        // Filter เงื่อนไขสถานะชำระเงินโฮลเซลเกิน (searchPaymentWholesaleOverpays) ด้วย where ถ้าเป็นไปได้
+        if (!empty($searchPaymentWholesaleOverpays) && $searchPaymentWholesaleOverpays !== 'all') {
+            // ไม่สามารถ filter ด้วย SQL ตรงๆ ได้ ต้อง filter ใน PHP เพราะใช้ helper
+        }
+
+        $quotationsQuery = $quotationsQuery->orderBy('created_at', 'desc');
 
         // ดึง status ทั้งหมดของ getQuoteStatusQuotePayment และ getStatusWithholdingTax (ก่อน paginate/filter)
         $allQuoteStatusQuotePayment = $quotationsQuery
@@ -177,45 +210,8 @@ class QuoteListController extends Controller
         $queryBindings = $quotationsQuery->getBindings();
 
         $quotations = $quotationsQuery->paginate($perPage)->withQueryString();
-        // Filter สถานะชำระโฮลเซลล์
-        if (!empty($searchPaymentWholesaleStatus) && $searchPaymentWholesaleStatus !== 'all') {
-            $filtered = $quotations
-                ->getCollection()
-                ->filter(function ($quotation) use ($searchPaymentWholesaleStatus) {
-                    // ดึงยอดชำระโฮลเซลล์
 
-                    $paymentQuery = paymentWholesaleModel::where('payment_wholesale_quote_id', $quotation->quote_id);
-                    $netPaid = $paymentQuery->selectRaw('COALESCE(SUM(payment_wholesale_total),0) - COALESCE(SUM(payment_wholesale_refund_total),0) as net_paid')->value('net_paid') ?? 0;
-                    // ตรวจสอบไฟล์แนบสลิป paid
-                    $hasPaidSlip = $paymentQuery->whereNotNull('payment_wholesale_file_path')->where('payment_wholesale_file_path', '!=', '')->exists();
-                    // ตรวจสอบไฟล์แนบ refund ถ้ามียอดคืนเงิน
-                    $hasRefundSlip = true;
-
-                    $refundQuery = paymentWholesaleModel::where('payment_wholesale_quote_id', $quotation->quote_id)->where('payment_wholesale_refund_total', '>', 0);
-                    if ($refundQuery->exists()) {
-                        $hasRefundSlip = $refundQuery->whereNotNull('payment_wholesale_refund_file_path')->where('payment_wholesale_refund_file_path', '!=', '')->exists();
-                    }
-                    // ดึงต้นทุนโฮลเซลล์
-                    $cost = inputTaxModel::where('input_tax_quote_id', $quotation->quote_id)
-                        ->whereIn('input_tax_type', [2, 4, 5, 6, 7])
-                        ->sum('input_tax_grand_total');
-
-                    if ($searchPaymentWholesaleStatus == '5') {
-                        return $netPaid == 0;
-                    } elseif ($searchPaymentWholesaleStatus == '1') {
-                        return $netPaid > 0 && $netPaid < $cost && $hasPaidSlip && $hasRefundSlip;
-                    } elseif ($searchPaymentWholesaleStatus == '2') {
-                        return $netPaid >= $cost && $cost > 0 && $hasPaidSlip && $hasRefundSlip;
-                    }
-
-                    return true;
-                })
-                ->values();
-
-            $quotations->setCollection($filtered);
-        }
-
-        // Filter ด้วย getQuoteStatusPaymentKey (Helper) หลัง paginate เฉพาะกรณีเลือกสถานะ (เพื่อให้ตรงกับ Blade)
+        // เฉพาะ filter ที่ต้องใช้ helper หรือ logic ซับซ้อนมาก ให้ filter ใน PHP หลัง paginate
         if (!empty($searchCustomerPayment) && $searchCustomerPayment !== 'all') {
             $filtered = $quotations
                 ->getCollection()
@@ -226,23 +222,17 @@ class QuoteListController extends Controller
                 ->values();
             $quotations->setCollection($filtered);
         }
-
-        // Filter ด้วย getQuoteStatusPaymentKey (Helper) หลัง paginate เฉพาะกรณีเลือกสถานะ (เพื่อให้ตรงกับ Blade)
         if (!empty($searchNotLogStatus) && $searchNotLogStatus !== 'all') {
             $filtered = $quotations
                 ->getCollection()
                 ->filter(function ($quotation) use ($searchNotLogStatus) {
                     $statusText = trim(strip_tags(getStatusBadge($quotation->quoteCheckStatus, $quotation)));
-                    // แยก badge ด้วยช่องว่าง 1 ตัวขึ้นไป (รองรับ badge หลายอัน)
-
                     $badgeList = preg_split('/\s{2,}|(?<=\S) (?=\S)/u', $statusText);
                     return in_array($searchNotLogStatus, array_map('trim', $badgeList));
                 })
                 ->values();
             $quotations->setCollection($filtered);
         }
-
-        // Filter สถานะลูกค้าชำระเงินเกิน
         if (!empty($searchPaymentOverpays) && $searchPaymentOverpays !== 'all') {
             $filtered = $quotations
                 ->getCollection()
@@ -257,8 +247,6 @@ class QuoteListController extends Controller
                 ->values();
             $quotations->setCollection($filtered);
         }
-
-        // Filter สถานะชำระเงินโฮลเซลเกิน
         if (!empty($searchPaymentWholesaleOverpays) && $searchPaymentWholesaleOverpays !== 'all') {
             $filtered = $quotations
                 ->getCollection()
@@ -275,7 +263,6 @@ class QuoteListController extends Controller
 
         $customerPaymentStatuses = ['รอคืนเงิน', 'ยกเลิกการสั่งซื้อ', 'ชำระเงินครบแล้ว', 'ชำระเงินเกิน', 'เกินกำหนดชำระเงิน', 'รอชำระเงินเต็มจำนวน', 'รอชำระเงินมัดจำ', 'คืนเงินแล้ว'];
 
-        // ส่ง $allQuoteStatusQuotePayment ไปที่ view
         return view('quotations.list', compact('SumTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'customerPaymentStatuses', 'campaignSource', 'allQuoteStatusQuotePayment', 'queryString', 'queryBindings'));
     }
 

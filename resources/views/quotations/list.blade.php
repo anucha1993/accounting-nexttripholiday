@@ -427,10 +427,9 @@
                                 @endphp
                                 @forelse ($quotations as $key => $item)
                                     <tr class="align-middle" data-quote-id="{{ $item->quote_id }} " {{ $item->quote_commission == 'N' ? 'style=background-color:#f8d7da' : '' }}>
-                                        <td class="text-center fw-bold">
-                                            {{$quotations->firstItem() + 1 - $key }}
-                                        </td>
-                                        <td class="text-center">
+<td class="text-center fw-bold">
+    {{ $quotations->total() - ($quotations->firstItem() + $key - 1) }}
+</td>                              <td class="text-center">
                                             <span
                                                 class="text-muted">{{ date('d/m/y', strtotime($item->quote_date)) }}</span>
                                         </td>
