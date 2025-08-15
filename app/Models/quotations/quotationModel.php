@@ -423,7 +423,7 @@ public function checkfileInputtaxVat()
             $withholdingTaxAmount = $this->checkfileInputtaxVat()+ $withholdingTaxAmount;
         } else {
             // ถ้ามีไฟล์ input_tax_file จะใช้ invoice_vat แทน`
-            $withholdingTaxAmount = $invoice->invoice_vat - $this->checkfileInputtaxVat();
+            $withholdingTaxAmount = $invoice->invoice_vat + $this->checkfileInputtaxVat();
         }
     }
    
@@ -436,6 +436,7 @@ public function checkfileInputtaxVat()
 
     if ($hasInputTaxFile) {
       
+         //return $withholdingTaxAmount;
          return $withholdingTaxAmount+$getTotalInputTaxVatWithholding+$getTotalInputTaxVatType;
     }else {
       

@@ -284,7 +284,7 @@
                              <span class="text-danger">รายการต้นทุน ภาษีมูลค่าเพิ่ม VAT + หัก ณ. ที่จ่าย  : {{$withholdingTaxAmount}} บาท </br></span>
 
 
-                            <td class="text-danger text-end" colspan="7">
+                            <td class="text-danger text-end" colspan="8">
                                 <b>
                                     @if (isset($inputTax) && count($inputTax) > 0)
                                         <b>(@bathText($quotationModel->getTotalOtherCost()))</b>
