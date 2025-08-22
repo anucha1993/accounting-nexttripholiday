@@ -15,6 +15,9 @@ class inputTaxReportController extends Controller
     //
     public function index(Request $request)
     {
+      
+        $reference_number_doc = $request->input('reference_number_doc');
+
         $searchDateStart = $request->input('date_start');
         $searchDateEnd = $request->input('date_end');
         $status = $request->input('status');
@@ -43,9 +46,14 @@ class inputTaxReportController extends Controller
                     $q->where('quote_sale', $sellerId);
                 });
             })
-            ->when($documentNumber, function ($query) use ($documentNumber) {
+            ->when($reference_number_doc, function ($query) use ($reference_number_doc) {
+                return $query->where('input_tax_ref', 'like', '%' . $reference_number_doc . '%');
+            })
+
+               ->when($documentNumber, function ($query) use ($documentNumber) {
                 return $query->where('input_tax_number_tax', 'like', '%' . $documentNumber . '%');
             })
+
             ->when($referenceNumber, function ($query) use ($referenceNumber) {
                 return $query->whereHas('invoice.taxinvoice', function ($q) use ($referenceNumber) {
                     $q->where('taxinvoice_number', 'like', '%' . $referenceNumber . '%');
@@ -77,8 +85,9 @@ class inputTaxReportController extends Controller
         $sellers = saleModel::select('name', 'id')
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
             ->get();
+            
 
-        return view('reports.input-tax-form',compact('inputTaxs','grandTotalSum','vat','sellers','wholesale'));
+        return view('reports.input-tax-form',compact('inputTaxs','grandTotalSum','vat','sellers','wholesale','request'));
     }
 
 

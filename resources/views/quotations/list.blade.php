@@ -608,10 +608,12 @@
                             </tbody>
                             <tfoot class="table-light">
                                 <tr>
-                                    <td colspan="8" class="text-end fw-bold">สรุปรวม:</td>
+                                    <td colspan="7" class="text-end fw-bold">สรุปรวม:</td>
+                                    
                                     <td class="text-center fw-bold text-primary">{{ number_format($SumPax) }}</td>
  
-                                    <td colspan="5" class="text-end fw-bold text-success">{{ number_format($SumTotal, 2) }}</td>
+                                    <td colspan="5" class="text-end fw-bold text-success">{{ number_format($SumPaymentTotal, 2) }}</td>
+                                    <td colspan="1" class="text-end fw-bold text-success">{{ number_format($SumTotal, 2) }}</td>
                                     <td colspan="1" class="text-muted"><small>บาท</small></td>
                                      <td colspan="2" class="text-end fw-bold text-danger">
 

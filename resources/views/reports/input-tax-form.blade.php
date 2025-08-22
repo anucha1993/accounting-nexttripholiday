@@ -162,7 +162,6 @@
     
     ?>
 
-
     <div class="main-container">
         <div class="container-fluid">
 
@@ -172,7 +171,7 @@
                     <h5 class="mb-0"><i class="fas fa-search me-2"></i>ค้นหารายงานภาษีซื้อ</h5>
                 </div>
                 <div class="card-body">
-                    <form action="" method="GET">
+                    <form action="{{ route('report.input-tax') }}" method="GET">
                         <div class="row g-3">
                             <div class="col-lg-2 col-md-4 col-sm-6">
                                 <label class="form-label"><i class="fas fa-calendar me-1"></i>ช่วงเวลา</label>
@@ -207,15 +206,22 @@
                             </div>
 
                             <div class="col-lg-2 col-md-4 col-sm-6">
-                                <label class="form-label"><i class="fas fa-file-text me-1"></i>เลขที่เอกสาร</label>
+                                <label class="form-label"><i class="fas fa-file-text me-1"></i>เลขที่ใบกำกับภาษีซื้อ</label>
                                 <input type="text" name="document_number" class="form-control"
-                                    value="{{ request('document_number') }}" placeholder="เลขที่เอกสาร">
+                                    value="{{ request('document_number') }}" placeholder="เลขที่ใบกำกับภาษีซื้อ">
                             </div>
 
+                           
                             <div class="col-lg-2 col-md-4 col-sm-6">
-                                <label class="form-label"><i class="fas fa-link me-1"></i>เลขที่เอกสารอ้างอิง</label>
+                                <label class="form-label"><i class="fas fa-link me-1"></i>เลขที่ใบกำกับภาษีขาย</label>
                                 <input type="text" name="reference_number" class="form-control"
-                                    value="{{ request('reference_number') }}" placeholder="เลขที่เอกสารอ้างอิง">
+                                    value="{{ $request->input('reference_number') }}" placeholder="เลขที่ใบกำกับภาษีขาย">
+                            </div>
+
+                             <div class="col-lg-2 col-md-4 col-sm-6">
+                                <label class="form-label"><i class="fas fa-link me-1"></i>เลขที่เอกสาร</label>
+                                <input type="text" name="reference_number_doc" class="form-control"
+                                    value="{{ request('reference_number_doc') }}" placeholder="เลขที่เอกสาร">
                             </div>
 
                             {{-- <div class="col-lg-2 col-md-4 col-sm-6">
@@ -301,10 +307,10 @@
                             <thead>
                                 <tr class="text-left">
                                     <th style="width: 60px;">#</th>
-                                    <th style="width: 110px;">วันที่</th>
-                                    <th style="width: 140px;">เลขที่เอกสาร</th>
+                                    <th style="width: 110px;">วันที่ภาษีซื้อ</th>
+                                    <th style="width: 140px;">เลขที่ใบกำกับภาษีซื้อ</th>
                                     <th style="width: 80px;">ไฟล์</th>
-                                    <th style="width: 140px;">เอกสารอ้างอิง</th>
+                                    <th style="width: 140px;">เลขที่ใบกำกับภาษีขาย</th>
                                     <th style="width: 140px;">เลขเอกสาร</th>
                                     <th style="width: 200px;">ชื่อผู้จำหน่าย</th>
                                     <th style="width: 120px;">เลขผู้เสียภาษี</th>
