@@ -44,31 +44,37 @@ if (!function_exists('getStatusPaymentWhosale')) {
         // 📌 แสดงสถานะเฉพาะเมื่อมีการ "โอนเกิน" (refund)
         if ($depositTotal > 0 && $refundSuccessTotal + $refundPendingTotal > 0) {
             if ($refundPendingTotal <= 0 && $refundSuccessTotal > 0) {
-                return '<span class="badge rounded-pill bg-success">โฮลเซลล์คืนเงินแล้ว</span>';
+                // return '<span class="badge rounded-pill bg-success">โฮลเซลล์คืนเงินแล้ว</span>';
+                return 'โฮลเซลล์คืนเงินแล้ว';
             }
             if ($refundPendingTotal > 0) {
-                return '<span class="badge rounded-pill bg-warning text-dark">รอโฮลเซลล์คืนเงิน</span>';
+                // return '<span class="badge rounded-pill bg-warning text-dark">รอโฮลเซลล์คืนเงิน</span>';
+                return 'รอโฮลเซลล์คืนเงิน';
             }
         }
 
         // 6. ชำระเงินเกิน
         if ($depositTotal > $wholesaleCost) {
-            return '<span class="badge rounded-pill bg-danger">โอนเงินให้โฮลเซลล์เกิน</span>';
+            // return '<span class="badge rounded-pill bg-danger">โอนเงินให้โฮลเซลล์เกิน</span>';
+            return 'โอนเงินให้โฮลเซลล์เกิน';
         }
 
         // 1. รอชำระเงินมัดจำ (ยอดโอนโฮลเซลล์ = 0 และลูกค้าชำระมาแล้ว)
         if ($depositTotal == 0 && $customerPaid > 0) {
-            return '<span class="badge rounded-pill bg-warning text-dark">รอชำระเงินมัดจำ</span>';
+            //return '<span class="badge rounded-pill bg-warning text-dark">รอชำระเงินมัดจำ</span>';
+            return 'รอชำระเงินมัดจำ';
         }
 
         // 2. รอชำระเงินส่วนที่เหลือ (ยอดโอนโฮลเซลล์ > 0 แต่น้อยกว่าต้นทุน)
         if ($depositTotal > 0 && $depositTotal < $wholesaleCost) {
-            return '<span class="badge rounded-pill bg-info text-dark">รอชำระเงินส่วนที่เหลือ</span>';
+            // return '<span class="badge rounded-pill bg-info text-dark">รอชำระเงินส่วนที่เหลือ</span>';
+            return 'รอชำระเงินส่วนที่เหลือ';
         }
 
         // 3. ชำระเงินครบแล้ว (ยอดโอนโฮลเซลล์ = ต้นทุน)
         if ($depositTotal == $wholesaleCost && $wholesaleCost > 0) {
-            return '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>';
+            // return '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>';
+            return 'ชำระเงินครบแล้ว';
         }
 
         return ''; // ไม่แสดงอะไรหากไม่มีสถานะ

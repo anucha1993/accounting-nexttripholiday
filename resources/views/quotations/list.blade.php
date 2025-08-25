@@ -493,17 +493,16 @@
                                             {{ $sourceName ?: 'none' }}
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge bg-info">{{ $item->quote_pax_total }}</span>
+                                          {{ $item->quote_pax_total }}
                                         </td>
                                         <td>
                                             <span>{{ $item->quoteCountry->country_name_th }}</span>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge bg-secondary badge-sm">{{ $item->airline->code }}</span>
+                                          {{ $item->airline->code }}
                                         </td>
                                         <td class="text-center">
-                                            <span
-                                                class="badge bg-warning text-dark badge-sm">{{ $item->quoteWholesale->code }}</span>
+                                            {{ $item->quoteWholesale->code }}
                                         </td>
                                         <td>
                                             <div class="d-flex flex-wrap gap-1">
