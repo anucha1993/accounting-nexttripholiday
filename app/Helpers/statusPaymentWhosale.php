@@ -45,36 +45,36 @@ if (!function_exists('getStatusPaymentWhosale')) {
         if ($depositTotal > 0 && $refundSuccessTotal + $refundPendingTotal > 0) {
             if ($refundPendingTotal <= 0 && $refundSuccessTotal > 0) {
                 // return '<span class="badge rounded-pill bg-success">โฮลเซลล์คืนเงินแล้ว</span>';
-                return 'โฮลเซลล์คืนเงินแล้ว';
+                return '<span class="text-success">โฮลเซลล์คืนเงินแล้ว</span>';
             }
             if ($refundPendingTotal > 0) {
                 // return '<span class="badge rounded-pill bg-warning text-dark">รอโฮลเซลล์คืนเงิน</span>';
-                return 'รอโฮลเซลล์คืนเงิน';
+                return '<span class="text-warning">รอโฮลเซลล์คืนเงิน</span>';
             }
         }
 
         // 6. ชำระเงินเกิน
         if ($depositTotal > $wholesaleCost) {
             // return '<span class="badge rounded-pill bg-danger">โอนเงินให้โฮลเซลล์เกิน</span>';
-            return 'โอนเงินให้โฮลเซลล์เกิน';
+            return '<span class="text-danger">โอนเงินให้โฮลเซลล์เกิน</span>';
         }
 
         // 1. รอชำระเงินมัดจำ (ยอดโอนโฮลเซลล์ = 0 และลูกค้าชำระมาแล้ว)
         if ($depositTotal == 0 && $customerPaid > 0) {
             //return '<span class="badge rounded-pill bg-warning text-dark">รอชำระเงินมัดจำ</span>';
-            return 'รอชำระเงินมัดจำ';
+            return '<span class="text-warning">รอชำระเงินมัดจำ</span>';
         }
 
         // 2. รอชำระเงินส่วนที่เหลือ (ยอดโอนโฮลเซลล์ > 0 แต่น้อยกว่าต้นทุน)
         if ($depositTotal > 0 && $depositTotal < $wholesaleCost) {
             // return '<span class="badge rounded-pill bg-info text-dark">รอชำระเงินส่วนที่เหลือ</span>';
-            return 'รอชำระเงินส่วนที่เหลือ';
+            return '<span class="text-warning">รอชำระเงินส่วนที่เหลือ</span>';
         }
 
         // 3. ชำระเงินครบแล้ว (ยอดโอนโฮลเซลล์ = ต้นทุน)
         if ($depositTotal == $wholesaleCost && $wholesaleCost > 0) {
             // return '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>';
-            return 'ชำระเงินครบแล้ว';
+            return '<span class="text-success">ชำระเงินครบแล้ว</span>';
         }
 
         return ''; // ไม่แสดงอะไรหากไม่มีสถานะ

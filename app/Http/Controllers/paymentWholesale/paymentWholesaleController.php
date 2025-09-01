@@ -162,7 +162,7 @@ class paymentWholesaleController extends Controller
         $quote = quotationModel::where('quote_id', $paymentWholesaleModel->payment_wholesale_quote_id)->first();
         $folderPath = 'public/' . $quote->customer_id . '/wholesalePayment/' . $quote->quote_number;
         $absolutePath = storage_path('app/' . $folderPath);
-        $status = 'wait';
+        //$status = 'wait';
         
          // File 1
         $files = ['file', 'file1', 'file2']; // Array of file input names
@@ -190,7 +190,7 @@ class paymentWholesaleController extends Controller
                 $hasRefundSlip = true;
             }
         }
-        $request->merge(['payment_wholesale_refund_status' => $status]);
+        $request->merge(['payment_wholesale_refund_status' => 'success']);
         $paymentWholesaleModel->update($request->all());
         
         // แจ้งเตือนการคืนเงิน (เฉพาะถ้ามี refund type)

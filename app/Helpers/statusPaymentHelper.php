@@ -14,25 +14,25 @@ if (!function_exists('getQuoteStatusPayment')) {
             // คืนเงิน
             case $quotationModel->quotePayment && $quotationModel->quotePayment->payment_status === 'refund':
                 // $status = '<span class="badge rounded-pill bg-warning text-dark">รอคืนเงิน </span>';
-                 $status = 'รอคืนเงิน';
+                 $status = '<span class="text-warning">รอคืนเงิน </span>';
                 break;
 
             // ยกเลิก
             case $quotationModel->quote_status === 'cancel':
                 // $status = '<span class="badge rounded-pill bg-danger">ยกเลิกการสั่งซื้อ</span>';
-                $status = 'ยกเลิกการสั่งซื้อ';
+                $status = '<span class="text-danger">ยกเลิกการสั่งซื้อ</span>';
                 break;
 
             // ชำระเงินครบแล้ว
             case $paymentTotal == 0:
                 // $status = '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>';
-                $status = 'ชำระเงินครบแล้ว';
+                $status = '<span class="text-success">ชำระเงินครบแล้ว</span>';
                 break;
 
             // ชำระเงินเกิน
             case $payment > $quotationModel->quote_grand_total:
                 // $status = '<span class="badge rounded-pill bg-info">ชำระเงินเกิน</span>';
-                $status = 'ชำระเงินเกิน';
+                $status = '<span class="text-info">ชำระเงินเกิน</span>';
                 break;
 
             // ชำระเงินบางส่วน (จ่ายมัดจำแล้ว รอจ่ายเต็มจำนวน)
@@ -41,10 +41,10 @@ if (!function_exists('getQuoteStatusPayment')) {
                 $paymentDate = $quotationModel->quote_payment_date_full;
                 if ($paymentDate && $now->gt(Carbon::parse($paymentDate))) {
                     // $status = '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
-                    $status = 'เกินกำหนดชำระเงิน';
+                    $status = '<span class="text-danger">เกินกำหนดชำระเงิน</span>';
                 } else {
                     // $status = '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
-                    $status = 'รอชำระเงินเต็มจำนวน';
+                    $status = '<span class="text-info">รอชำระเงินเต็มจำนวน</span>';
                 }
                 break;
 
@@ -52,10 +52,10 @@ if (!function_exists('getQuoteStatusPayment')) {
             case $quotationModel->quote_payment_type === 'deposit' && $payment == 0:
                 if ($now->gt(Carbon::parse($quotationModel->quote_payment_date))) {
                     //$status = '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
-                    $status = 'เกินกำหนดชำระเงิน';
+                    $status = '<span class="text-danger">เกินกำหนดชำระเงิน</span>';
                 } else {
                     //$status = '<span class="badge rounded-pill bg-warning text-dark">รอชำระเงินมัดจำ</span>';
-                    $status = 'รอชำระเงินมัดจำ';
+                    $status = '<span class="text-warning">รอชำระเงินมัดจำ</span>';
                 }
                 break;
 
@@ -64,17 +64,17 @@ if (!function_exists('getQuoteStatusPayment')) {
                 if ($now->gt(Carbon::parse($quotationModel->quote_payment_date_full))) {
 
                     // $status = '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
-                    $status = 'เกินกำหนดชำระเงิน';
+                    $status = '<span class="text-danger">เกินกำหนดชำระเงิน</span>';
                 } else {
                     //$status = '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
-                    $status = 'รอชำระเงินเต็มจำนวน';
+                    $status = '<span class="text-info">รอชำระเงินเต็มจำนวน</span>';
                 }
                 break;
 
             // กรณีอื่น ๆ
             default:
                 // $status = '<span class="badge rounded-pill bg-secondary">รอชำระเงิน</span>';
-                $status = 'รอชำระเงิน';
+                $status = '<span class="text-secondary">รอชำระเงิน</span>';
                 break;
         }
         return $status;

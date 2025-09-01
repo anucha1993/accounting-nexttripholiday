@@ -12,6 +12,13 @@ class saleModel extends Model
     protected $table = 'users';
     protected $primaryKey = 'id';
     protected $fillable = [
-        'name','email','phone'
+        'name','email','phone','status'
     ];
+
+    protected static function booted()
+{
+    static::addGlobalScope('active', function ($query) {
+        $query->where('status', 'active');
+    });
+}
 }

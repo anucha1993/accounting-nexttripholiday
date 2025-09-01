@@ -247,6 +247,8 @@ class QuoteListController extends Controller
                 ->values();
             $quotations->setCollection($filtered);
         }
+
+        
         if (!empty($searchPaymentWholesaleOverpays) && $searchPaymentWholesaleOverpays !== 'all') {
             $filtered = $quotations
                 ->getCollection()

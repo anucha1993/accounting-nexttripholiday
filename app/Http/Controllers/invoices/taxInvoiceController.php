@@ -22,36 +22,30 @@ class taxInvoiceController extends Controller
 {
     //
      // function Runnumber invoice
-     public function generateRunningCodeRV()
-     {
-         // ดึงข้อมูลใบกำกับภาษีล่าสุด
-         $taxtinvoice = InvoicestaxinvoiceModel::select('taxinvoice_number')->latest()->first();
-     
-         if (!empty($taxtinvoice)) {
-             // ใช้เลขที่ใบกำกับภาษีล่าสุด
-             $taxinvoiceNumber = $taxtinvoice->taxinvoice_number;
-         } else {
-             // กรณีที่ไม่มีเลขที่ใบกำกับภาษีในระบบ
-             $taxinvoiceNumber = 'RVN' . date('Y') . date('m') . '-' . '0000';
-         }
-     
-         // สร้างเลขใหม่
-         $prefix = 'RVN';
-         $year = date('Y');
-         $month = date('m');
-     
-         // ดึงเลข 4 หลักสุดท้ายมาแปลงเป็นจำนวนเต็ม
-         $lastFourDigits = substr($taxinvoiceNumber, -4);
-         $incrementedNumber = intval($lastFourDigits) + 1;
-     
-         // เติม 0 ข้างหน้าให้ครบ 4 หลัก
-         $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
-     
-         // ประกอบรหัสเลขที่รันใหม่
-         $runningCode = $prefix . $year . $month . '-' . $newNumber;
-     
-         return $runningCode;
-     }
+    public function generateRunningCodeRV()
+{
+    $prefix = 'RVN';
+    $year   = date('Y');
+    $month  = date('m');
+
+    // หาใบกำกับภาษีล่าสุดของเดือน/ปีปัจจุบัน
+    $taxtinvoice = InvoicestaxinvoiceModel::whereYear('created_at', $year)
+        ->whereMonth('created_at', $month)
+        ->latest('taxinvoice_id')
+        ->first();
+
+    if ($taxtinvoice) {
+        $lastFourDigits    = substr($taxtinvoice->taxinvoice_number, -4);
+        $incrementedNumber = intval($lastFourDigits) + 1;
+    } else {
+        $incrementedNumber = 1;
+    }
+
+    $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
+
+    return $prefix . $year . $month . '-' . $newNumber;
+}
+
      
 
      public function store(invoiceModel $invoiceModel, Request $request)

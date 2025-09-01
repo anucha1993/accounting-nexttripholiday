@@ -102,7 +102,14 @@
                                         @elseif($item->payment_type === 'full')
                                             <span class="text-success">(ชำระเงินเต็มจำนวน)</span>
                                         @endif
-                                         {{ $item->payment_wholesale_refund_status === 'success' ? 'ได้เงินคืนแล้ว' : 'รอการคืนเงิน' }}
+                                         {{-- {{ $item->payment_wholesale_refund_status === 'success' ? 'ได้เงินคืนแล้ว' : '' }} --}}
+                                        {!! payment_refund_status_text(
+                                        $item->payment_wholesale_refund_total,
+                                        $item->payment_wholesale_refund_status,
+                                        $item->payment_wholesale_refund_type,
+                                        $item->payment_wholesale_total,
+                                    ) !!}
+                                   
                                         @else
                                         N/A
                                     @endif

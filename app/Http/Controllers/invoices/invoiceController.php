@@ -33,24 +33,29 @@ class invoiceController extends Controller
 
 
 
-    // function Runnumber invoice
-    public function generateRunningCodeIVS()
-    {
-        $invoice = invoiceModel::select('invoice_number')->latest()->first();
-        if (!empty($invoice)) {
-            $invoiceNumber = $invoice->invoice_number;
-        } else {
-            $invoiceNumber = 'IVN' . date('y') . date('m') . '-' . '0000';
-        }
-        $prefix = 'IVN';
-        $year = date('y');
-        $month = date('m');
-        $lastFourDigits = substr($invoiceNumber, -4);
+   public function generateRunningCodeIVS()
+{
+    $prefix = 'IVN';
+    $year   = date('y');
+    $month  = date('m');
+
+    // หา invoice ล่าสุดของเดือน/ปีปัจจุบัน
+    $invoice = invoiceModel::whereYear('created_at', date('Y'))
+        ->whereMonth('created_at', date('m'))
+        ->latest('invoice_id')
+        ->first();
+
+    if ($invoice) {
+        $lastFourDigits = substr($invoice->invoice_number, -4);
         $incrementedNumber = intval($lastFourDigits) + 1;
-        $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
-        $runningCode = $prefix . $year . $month . '-' . $newNumber;
-        return $runningCode;
+    } else {
+        $incrementedNumber = 1;
     }
+
+    $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
+    return $prefix . $year . $month . '-' . $newNumber;
+}
+
 
 
 

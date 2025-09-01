@@ -39,32 +39,48 @@ class WithholdingTaxDocument extends Model
          return $this->total_withholding_tax;
     }
 
-    public static function generateDocumentNumber()
-    {
-        $latestDocument = self::latest('id')->first();
+public static function generateDocumentNumber()
+{
+    $prefix = 'WT'.date('Y').date('m').'-';
 
-        if ($latestDocument) {
-            $lastNumber = (int) substr($latestDocument->document_number, -4);
-            $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
-        } else {
-            $newNumber = '0001';
-        }
+    // หา record ล่าสุดที่ "ขึ้นต้นด้วย prefix เดือนปัจจุบัน"
+    $latest = self::where('document_number','like',$prefix.'%')
+        ->orderBy('id','desc')
+        ->first();
 
-        return 'WT' . date('Y') . date('m') . '-' . $newNumber;
+    if ($latest) {
+        $lastNumber = (int) substr($latest->document_number, -4);
+        $next = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+    } else {
+        // ถ้าเดือนนี้ยังไม่มี record → เริ่มที่ 0001
+        $next = '0001';
     }
+
+    return $prefix.$next;
+}
+
+
+
+
+
     
-    //เล่มที่
-    public static function generateDocumentNumberNo()
-    {
-        $latestDocument = self::latest('id')->first();
-        if ($latestDocument) {
-            $lastNumber = (int) substr($latestDocument->document_no, -4);
-            $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
-        } else {
-            $newNumber = '0001';
-        }
-        return $newNumber;
+   public static function generateDocumentNumberNo()
+{
+    $latestDocument = self::whereYear('created_at', date('Y'))
+        ->whereMonth('created_at', date('m'))
+        ->latest('id')
+        ->first();
+
+    if ($latestDocument) {
+        $lastNumber = (int) substr($latestDocument->document_no, -4);
+        $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+    } else {
+        $newNumber = '0001'; // ถ้าเดือนนี้ยังไม่มีเอกสาร
     }
+
+    return $newNumber;
+}
+
 
 
     /**

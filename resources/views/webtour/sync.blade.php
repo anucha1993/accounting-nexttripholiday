@@ -9,7 +9,7 @@
         <div class="col-md-6">
             <div class="card shadow border-{{ (isset($sourceStatus) && $sourceStatus === 'success') ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ (isset($sourceStatus) && $sourceStatus === 'success') ? 'success' : 'danger' }} text-white">
-                    <i class="fa fa-database"></i> Source DB <span class="badge bg-light text-dark ms-2">WEB_TOUR</span>
+                    <i class="fa fa-database"></i> Source DB <span class="badge bg-light text-dark ms-2">nexttrip.work</span>
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled mb-0">
@@ -27,7 +27,7 @@
         <div class="col-md-6">
             <div class="card shadow border-{{ (isset($targetStatus) && $targetStatus === 'success') ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ (isset($targetStatus) && $targetStatus === 'success') ? 'success' : 'danger' }} text-white">
-                    <i class="fa fa-database"></i> Target DB <span class="badge bg-light text-dark ms-2">vdragon_next</span>
+                    <i class="fa fa-database"></i> Target DB <span class="badge bg-light text-dark ms-2">spgcenter.online</span>
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled mb-0">

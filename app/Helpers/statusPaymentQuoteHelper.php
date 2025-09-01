@@ -29,7 +29,7 @@ if (!function_exists('getQuoteStatusQuotePayment')) {
             }
 
             if ($refundSuccessTotal >= $totalPaid && !$hasPendingRefund) {
-                return '<span class="badge rounded-pill bg-success">คืนเงินลูกค้าแล้ว</span>';
+                return '<span class="badge rounded-pill bg-success">คืนเงินให้ลูกค้าแล้ว</span>';
             }
 
             if ($hasPendingRefund) {
@@ -46,7 +46,7 @@ if (!function_exists('getQuoteStatusQuotePayment')) {
 
             // ไม่มี pending แล้วแต่เคยคืนบางส่วน → "คืนเงินบางส่วนแล้ว"
             if ($refundSuccessTotal > 0) {
-                return '<span class="badge rounded-pill bg-success">คืนเงินลูกค้าแล้ว</span>';
+                return '<span class="badge rounded-pill bg-success">คืนเงินให้ลูกค้าแล้ว</span>';
             }
         }
 

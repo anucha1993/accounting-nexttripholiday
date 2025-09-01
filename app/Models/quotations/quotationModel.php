@@ -315,6 +315,7 @@ public function getTotalInputTaxVatWithholding()
                 return $paymentWholesale->payment_wholesale_refund_total;
             });
     }
+    
 
     public function getWholesalePaidNet()
     {

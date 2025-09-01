@@ -549,7 +549,7 @@
                                                     $badgeCount = getStatusBadgeCount($item->quoteCheckStatus, $item);
                                                 @endphp
                                                 @if ($badgeCount > 0)
-                                                <span class="badge rounded-pill bg-danger">ยังไม่ได้ทำ {{ $badgeCount }} รายการ</span>
+                                                <span class="text-danger">ยังไม่ได้ทำ {{ $badgeCount }} รายการ</span>
                                              
                                                 @endif
 
