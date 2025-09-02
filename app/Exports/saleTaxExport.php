@@ -1,14 +1,14 @@
 <?php
-
 namespace App\Exports;
-
 use App\Models\invoices\taxinvoiceModel;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
 
-class saleTaxExport implements FromCollection, WithHeadings, WithMapping, WithColumnWidths
+class saleTaxExport implements FromCollection, WithHeadings, WithMapping, WithColumnWidths, WithEvents
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -16,7 +16,9 @@ class saleTaxExport implements FromCollection, WithHeadings, WithMapping, WithCo
 
     private $taxinvoiceIdsArray;
     private $taxinvoices;
-    private $num;
+    private $num = 0;
+    private $totalPreVat = 0;
+    private $totalVat = 0;
 
     public function __construct($taxinvoiceIdsArray)
     {
@@ -53,6 +55,10 @@ class saleTaxExport implements FromCollection, WithHeadings, WithMapping, WithCo
 
     public function map($taxinvoices): array
     {
+        // คำนวณผลรวม
+        $this->totalPreVat += $taxinvoices->invoice->invoice_pre_vat_amount;
+        $this->totalVat += $taxinvoices->invoice->invoice_vat;
+
         return array_merge([
             ++$this->num,
             date('d/m/Y',strtotime($taxinvoices->taxinvoice_date)),
@@ -81,7 +87,33 @@ class saleTaxExport implements FromCollection, WithHeadings, WithMapping, WithCo
       ];
     }
 
-
-
-
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function(AfterSheet $event) {
+                $lastRow = $event->sheet->getHighestRow();
+                $footerRow = $lastRow + 1;
+                
+                // Add footer row with totals
+                $event->sheet->setCellValue('F'.$footerRow, 'รวมทั้งสิ้น');
+                $event->sheet->setCellValue('G'.$footerRow, number_format($this->totalPreVat, 2));
+                $event->sheet->setCellValue('H'.$footerRow, number_format($this->totalVat, 2));
+                
+                // Style the footer row
+                $event->sheet->getStyle('F'.$footerRow.':H'.$footerRow)->applyFromArray([
+                    'font' => [
+                        'bold' => true,
+                    ],
+                    'borders' => [
+                        'top' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        ],
+                    ],
+                    'alignment' => [
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
+                    ],
+                ]);
+            },
+        ];
+    }
 }

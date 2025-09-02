@@ -7,6 +7,7 @@ if (!function_exists('getQuoteStatusQuotePayment')) {
         $totalPaid = $quotationModel->total;
 
         $refundPayments = $quotationModel->quotePayments->where('payment_type', 'refund');
+        $Total_trade =  $quotationModel->GetDeposit() - $quotationModel->Refund();
 
         // รวมยอด refund success เป็นบวก
         $refundSuccessTotal = $refundPayments
@@ -28,7 +29,7 @@ if (!function_exists('getQuoteStatusQuotePayment')) {
                 return '';
             }
 
-            if ($refundSuccessTotal >= $totalPaid && !$hasPendingRefund) {
+            if ($Total_trade <= 0) {
                 return '<span class="badge rounded-pill bg-success">คืนเงินให้ลูกค้าแล้ว</span>';
             }
 
