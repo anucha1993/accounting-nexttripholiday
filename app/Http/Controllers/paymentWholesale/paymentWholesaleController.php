@@ -81,7 +81,7 @@ class paymentWholesaleController extends Controller
         // แจ้งเตือนผู้เกี่ยวข้อง (SuperAdmin เท่านั้น)
         if (function_exists('getUserGroup') && function_exists('routeNotificationModel')) {
             $user = Auth::user();
-            $message = 'มีการชำระเงินโฮลเซลล์ใหม่จำนวนเงิน:'.number_format($paymentWholesale->payment_wholesale_total,2).'บาท เลขที่ใบเสนอราคา #' . ($quote->quote_number ?? '-');
+            $message = 'มีการชำระเงินโฮลเซลล์ใหม่จำนวนเงิน:'.number_format($paymentWholesale->payment_wholesale_total,2).'บาท เลขที่ใบเสนอราคา #' . ($quote->quote_number ?? '-') .'| Sale :'. $quote->Salename->name;
             // สร้าง url แบบ manual ให้เป็น /quote/edit/new/{id}
             $url = url('/quote/edit/new/' . $quote->quote_id); // เพิ่ม / ข้างหน้าเสมอ
             $relatedId = $quote->quote_id ?? null;
@@ -197,7 +197,7 @@ class paymentWholesaleController extends Controller
         if (!is_null($request->payment_wholesale_refund_type)) {
             $refundType = $request->payment_wholesale_refund_type;
             $refundTypeText = $refundType === 'full' ? 'คืนเงินเต็มจำนวน' : 'คืนเงินบางส่วน';
-            $message = 'มีการ' . $refundTypeText . 'สำหรับโฮลเซลล์  เลขที่ใบเสนอราคา #' . ($quote->quote_number ?? '-') . ' จำนวนเงิน: ' . number_format($paymentWholesaleModel->payment_wholesale_refund_total,2) . ' บาท';
+            $message = 'มีการ' . $refundTypeText . 'สำหรับโฮลเซลล์  เลขที่ใบเสนอราคา #' . ($quote->quote_number ?? '-') . ' จำนวนเงิน: ' . number_format($paymentWholesaleModel->payment_wholesale_refund_total,2) . ' บาท '.' | Sale :'. $quote->Salename->nam;
             $url = url('/quote/edit/new/' . $quote->quote_id);
             $relatedId = $quote->quote_id ?? null;
             $relatedType = 'payment_wholesale_refund';
@@ -209,7 +209,7 @@ class paymentWholesaleController extends Controller
         }
         // แจ้งเตือนถ้ามีแนบสลิป refund (แจ้ง sale, super admin)
         if ($hasRefundSlip) {
-            $message = 'มีการแนบสลิปคืนเงินโฮลเซลล์ เลขที่ใบเสนอราคา #' . ($quote->quote_number ?? '-') . ' กรุณาตรวจสอบ'. ' จำนวนเงิน: ' . number_format($paymentWholesaleModel->payment_wholesale_refund_total,2) . ' บาท';
+            $message = 'มีการแนบสลิปคืนเงินโฮลเซลล์ เลขที่ใบเสนอราคา #' . ($quote->quote_number ?? '-') . ' กรุณาตรวจสอบ'. ' จำนวนเงิน: ' . number_format($paymentWholesaleModel->payment_wholesale_refund_total,2) . ' บาท' . ' | Sale :' . $quote->Salename->name;
             $url = url('/quote/edit/new/' . $quote->quote_id);
             $relatedId = $quote->quote_id ?? null;
             $relatedType = 'payment_wholesale_refund_slip';

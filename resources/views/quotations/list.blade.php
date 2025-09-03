@@ -245,12 +245,12 @@
                                 <select name="search_wholesale_payment" class="form-select">
                                     <option {{ request('search_wholesale_payment') == 'all' ? 'selected' : '' }}
                                         value="all">ทั้งหมด</option>
-                                    <option {{ request('search_wholesale_payment') == '5' ? 'selected' : '' }}
-                                        value="5">รอชำระมัดจำโฮลเซลล์</option>
-                                    <option {{ request('search_wholesale_payment') == '1' ? 'selected' : '' }}
-                                        value="1">รอชำระส่วนที่เหลือ</option>
-                                    <option {{ request('search_wholesale_payment') == '2' ? 'selected' : '' }}
-                                        value="2">ชำระครบแล้ว</option>
+                                    <option {{ request('search_wholesale_payment') == 'รอชำระมัดจำโฮลเซลล์' ? 'selected' : '' }}
+                                        value="รอชำระมัดจำโฮลเซลล์">รอชำระมัดจำโฮลเซลล์</option>
+                                    <option {{ request('search_wholesale_payment') == 'รอชำระเงินส่วนที่เหลือ' ? 'selected' : '' }}
+                                        value="รอชำระเงินส่วนที่เหลือ">รอชำระเงินส่วนที่เหลือ</option>
+                                    <option {{ request('search_wholesale_payment') == 'ชำระเงินครบแล้ว' ? 'selected' : '' }}
+                                        value="ชำระเงินครบแล้ว">ชำระเงินครบแล้ว</option>
                                 </select>
                             </div>
                             <div class="col-md-2">
@@ -521,6 +521,7 @@
                                             </div>
                                         </td>
                                         <td class="text-end">
+                                            
                                             @php
                                                 $totalWholesale = $item->inputtaxTotalWholesale() ?? 0;
                                                 $wholesalePaid =
@@ -552,11 +553,9 @@
                                                 <span class="text-danger">ยังไม่ได้ทำ {{ $badgeCount }} รายการ</span>
                                              
                                                 @endif
-
                                                 {!! getQuoteStatusQuotePayment($item) !!}
                                                 {!! getStatusWithholdingTax($item->quoteInvoice) !!}
                                                 {!! getQuoteStatusWithholdingTax($item->quoteLogStatus) !!}
-
 
                                                 {!! getStatusWhosaleInputTax($item->checkfileInputtax) !!}
                                                 {!! getStatusCustomerRefund($item->quoteLogStatus) !!}

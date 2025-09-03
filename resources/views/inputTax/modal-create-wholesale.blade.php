@@ -1,6 +1,6 @@
 <div class="modal-body">
     <div class="header">
-        <h5>บันทึกต้นทุน</h5>
+        <h5>บันทึกต้นทุน/Wholesale</h5>
     </div>
     <form action="{{route('inputtax.store')}}" method="POST" enctype="multipart/form-data">
         @csrf

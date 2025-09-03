@@ -52,7 +52,12 @@ class saleTaxReportController extends Controller
                 });
             });
 
-        $taxinvoiceSearch = $taxinvoices->paginate(10);
+        // Sort by ID in descending order
+        $taxinvoices = $taxinvoices->orderBy('taxinvoice_id', 'desc');
+
+        // If any filter is applied, show all records, otherwise paginate
+        $hasFilters = $searchDateStart || $searchDateEnd || $status || $seller_id || $document_number || $reference_number || $customer_name;
+        $taxinvoiceSearch = $hasFilters ? $taxinvoices->get() : $taxinvoices->paginate(10);
         $taxinvoiceSum = $taxinvoices->get();
 
         $grandTotalSum = $taxinvoiceSum->sum(function ($taxinvoice) {

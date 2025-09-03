@@ -149,24 +149,26 @@ class QuoteListController extends Controller
             });
         }
 
-        // Filter เงื่อนไขสถานะชำระโฮลเซลล์ (searchPaymentWholesaleStatus) ด้วย where
-        if (!empty($searchPaymentWholesaleStatus) && $searchPaymentWholesaleStatus !== 'all') {
-            $quotationsQuery = $quotationsQuery->where(function ($query) use ($searchPaymentWholesaleStatus) {
-                if ($searchPaymentWholesaleStatus == '5') {
-                    $query->whereDoesntHave('paymentWholesale', function ($q) {
-                        $q->where('payment_wholesale_total', '>', 0);
-                    });
-                } elseif ($searchPaymentWholesaleStatus == '1') {
-                    $query->whereHas('paymentWholesale', function ($q) {
-                        $q->where('payment_wholesale_total', '>', 0);
-                    });
-                } elseif ($searchPaymentWholesaleStatus == '2') {
-                    $query->whereHas('paymentWholesale', function ($q) {
-                        $q->where('payment_wholesale_total', '>', 0);
-                    });
-                }
-            });
-        }
+        // // Filter เงื่อนไขสถานะชำระโฮลเซลล์ (searchPaymentWholesaleStatus) ด้วย where
+        // if (!empty($searchPaymentWholesaleStatus) && $searchPaymentWholesaleStatus !== 'all') {
+        //     $quotationsQuery = $quotationsQuery->where(function ($query) use ($searchPaymentWholesaleStatus) {
+        //         if ($searchPaymentWholesaleStatus == '5') {
+        //             $query->whereDoesntHave('paymentWholesale', function ($q) {
+        //                 $q->where('payment_wholesale_total', '>', 0);
+        //             });
+        //         } elseif ($searchPaymentWholesaleStatus == '1') {
+        //             $query->whereHas('paymentWholesale', function ($q) {
+        //                 $q->where('payment_wholesale_total', '>', 0);
+        //             });
+        //         } elseif ($searchPaymentWholesaleStatus == '2') {
+        //             $query->whereHas('paymentWholesale', function ($q) {
+        //                 $q->where('payment_wholesale_total', '>', 0);
+        //             });
+        //         }
+        //     });
+        // }
+
+        
 
         // Filter เงื่อนไขสถานะลูกค้าชำระเงิน (searchCustomerPayment) ด้วย where
         if (!empty($searchCustomerPayment) && $searchCustomerPayment !== 'all') {
@@ -211,6 +213,19 @@ class QuoteListController extends Controller
 
         $quotations = $quotationsQuery->paginate($perPage)->withQueryString();
 
+          // Filter เงื่อนไขสถานะชำระโฮลเซลล์ (searchPaymentWholesaleStatus) ด้วย where
+       if (!empty($searchPaymentWholesaleStatus) && $searchPaymentWholesaleStatus !== 'all') {
+            $filtered = $quotations
+                ->getCollection()
+                ->filter(function ($quotation) use ($searchPaymentWholesaleStatus) {
+                    $statusKey = trim(strip_tags(getStatusPaymentWhosale($quotation)));
+                    return $statusKey == $searchPaymentWholesaleStatus;
+                })
+                ->values();
+            $quotations->setCollection($filtered);
+        }
+
+
         // เฉพาะ filter ที่ต้องใช้ helper หรือ logic ซับซ้อนมาก ให้ filter ใน PHP หลัง paginate
         if (!empty($searchCustomerPayment) && $searchCustomerPayment !== 'all') {
             $filtered = $quotations
@@ -222,6 +237,7 @@ class QuoteListController extends Controller
                 ->values();
             $quotations->setCollection($filtered);
         }
+        
         if (!empty($searchNotLogStatus) && $searchNotLogStatus !== 'all') {
             $filtered = $quotations
                 ->getCollection()

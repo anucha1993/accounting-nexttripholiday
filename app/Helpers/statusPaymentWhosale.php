@@ -32,14 +32,6 @@ if (!function_exists('getStatusPaymentWhosale')) {
         // 5. ยอดที่ลูกค้าชำระมาแล้ว (ควรใช้ GetDeposit() แทน customer_paid)
         $customerPaid = $quotationModel->GetDeposit() ?? 0;
 
-        // Debug: Log or dump key values for investigation
-        // \Log::debug('[DEBUG] getStatusPaymentWhosale', [
-        //     'depositTotal' => $depositTotal,
-        //     'refundSuccessTotal' => $refundSuccessTotal,
-        //     'refundPendingTotal' => $refundPendingTotal,
-        //     'wholesaleCost' => $wholesaleCost,
-        //     'customerPaid' => $customerPaid,
-        // ]);
 
         // 📌 แสดงสถานะเฉพาะเมื่อมีการ "โอนเกิน" (refund)
         if ($depositTotal > 0 && $refundSuccessTotal + $refundPendingTotal > 0) {

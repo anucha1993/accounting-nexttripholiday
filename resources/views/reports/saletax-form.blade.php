@@ -122,7 +122,13 @@
                         @forelse ($taxinvoiceSearch as $key => $item)
                         <tr>
                          
-                            <td>{{++$key}}</td>
+                            <td>
+                                @if (!request('date_start') && !request('date_end') && !request('status') && !request('seller_id') && !request('document_number') && !request('reference_number') && !request('customer_name'))
+                                    {{ $taxinvoiceSearch->total() - ($taxinvoiceSearch->firstItem() + $key - 1) }}
+                                @else
+                                    {{ $taxinvoiceSearch->count() - $key }}
+                                @endif
+                            </td>
                             <td>{{date('d/m/Y',strtotime($item->taxinvoice_date))}}</td>
                             <td> 
                                 @canany(['invoice.view','invoice.edit'])
@@ -162,7 +168,9 @@
                         </tr>
                     </tfoot>
                 </table>
-                  {!! $taxinvoiceSearch->withQueryString()->links('pagination::bootstrap-5') !!}
+                @if (!request('date_start') && !request('date_end') && !request('status') && !request('seller_id') && !request('document_number') && !request('reference_number') && !request('customer_name'))
+                    {!! $taxinvoiceSearch->withQueryString()->links('pagination::bootstrap-5') !!}
+                @endif
           
             </div>
         </div>

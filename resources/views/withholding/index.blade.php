@@ -172,9 +172,9 @@
                                 <a href="{{ route('withholding.index') }}" class="btn btn-secondary">
                                     <i class="fas fa-refresh"></i> รีเซ็ต
                                 </a>
-                                @if(request()->hasAny(['document_number', 'ref_number', 'withholding_form', 'document_date_start', 'document_date_end', 'customer']))
+                                @if(request()->hasAny(['document_number', 'ref_number', 'withholding_form', 'document_date_start', 'document_date_end', 'customer', 'wholesale']))
                                     <span class="badge bg-info align-self-center ms-2">
-                                        <i class="fas fa-info-circle"></i> พบ {{ number_format($documents->total()) }} รายการ
+                                        <i class="fas fa-info-circle"></i> พบ {{ number_format($documents instanceof \Illuminate\Pagination\LengthAwarePaginator ? $documents->total() : $documents->count()) }} รายการ
                                     </span>
                                 @endif
                             </div>
@@ -194,9 +194,9 @@
                     <i class="fas fa-file-invoice"></i> รายการใบหัก ณ ที่จ่าย
                 </h3>
                 <div class="d-flex align-items-center gap-2">
-                    @if($documents->total() > 0)
+                    @if(($documents instanceof \Illuminate\Pagination\LengthAwarePaginator ? $documents->total() : $documents->count()) > 0)
                         <span class="badge bg-info">
-                            <i class="fas fa-list"></i> ทั้งหมด {{ number_format($documents->total()) }} รายการ
+                            <i class="fas fa-list"></i> ทั้งหมด {{ number_format($documents instanceof \Illuminate\Pagination\LengthAwarePaginator ? $documents->total() : $documents->count()) }} รายการ
                         </span>
                     @endif
                     <div class="btn-group" role="group">
@@ -250,7 +250,13 @@
                                 <td class="text-center">
                                     <input type="checkbox" class="form-check-input document-checkbox" value="{{ $document->id }}" title="เลือกรายการนี้">
                                 </td>
-                                <td class="text-center">{{ $documents->firstItem() + $key }}</td>
+                                <td class="text-center">
+                                    @if($documents instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                                        {{ $documents->firstItem() + $key }}
+                                    @else
+                                        {{ count($documents) - $key }}
+                                    @endif
+                                </td>
                                 <td>
                                     <strong class="text-primary">{{ $document->document_number }}</strong>
                                 </td>
@@ -396,7 +402,7 @@
                     </table>
                 </div>
                 
-                @if($documents->hasPages())
+                @if(!request()->hasAny(['document_number', 'ref_number', 'withholding_form', 'date_start', 'date_end', 'customer', 'wholesale']) && $documents instanceof \Illuminate\Pagination\LengthAwarePaginator)
                     <div class="d-flex justify-content-center mt-3">
                         {{ $documents->appends(request()->query())->links() }}
                     </div>

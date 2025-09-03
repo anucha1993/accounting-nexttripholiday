@@ -38,7 +38,7 @@ class NotifyAppointmentChecklist extends Command
                 $customerName = $quotation->quoteCustomer ? $quotation->quoteCustomer->customer_name : '';
                 $dateStart = $quotation->quote_date_start;
                 $url = url('/quote/edit/new/' . $quotation->quote_id);
-                $msg = "ใบเสนอราคา #{$quoteNumber} ลูกค้า {$customerName} วันเดินทาง {$dateStart} เหลือน้อยกว่า 3 วัน กรุณาส่งใบนัดหมายการเดินทางให้ลูกค้า";
+                $msg = "ใบเสนอราคา #{$quoteNumber} ลูกค้า {$customerName} วันเดินทาง {$dateStart} เหลือน้อยกว่า 3 วัน กรุณาส่งใบนัดหมายการเดินทางให้ลูกค้า | Sale : {$quotation->Salename->name}";
                 // ป้องกันการแจ้งซ้ำ: ตรวจสอบว่ามี notification เดิมหรือยัง (สำหรับ sale)
                 $saleNotified = \App\Models\NotificationSale::where('reference_id', $quotation->quote_id)
                     ->where('type', 'appointment-checklist')

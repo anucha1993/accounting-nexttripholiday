@@ -60,7 +60,19 @@ class withholdingTaxController extends Controller
         }
         
         // Order by latest document date, then by document number
-        $documents = $query->orderBy('document_doc_date', 'desc')->orderBy('document_number', 'desc')->paginate(20);
+        $query = $query->orderBy('document_doc_date', 'desc')->orderBy('document_number', 'desc');
+
+        // Check if any filter is applied
+        $hasFilters = $request->filled('document_number') || 
+                     $request->filled('ref_number') || 
+                     $request->filled('withholding_form') || 
+                     $request->filled('date_start') || 
+                     $request->filled('date_end') || 
+                     $request->filled('customer') ||
+                     $request->filled('wholesale');
+
+        // If filters are applied, get all records, otherwise paginate
+        $documents = $hasFilters ? $query->get() : $query->paginate(20);
 
         // Get unique customers and wholesales for filter dropdown - optimized query
         $customerWithholding = WithholdingTaxDocument::with(['customer', 'wholesale'])

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
 use App\Models\invoices\invoiceModel;
+use App\Services\NotificationService;
 use App\Models\inputTax\inputTaxModel;
 use Illuminate\Support\Facades\Storage;
 use App\Models\invoices\taxinvoiceModel;
@@ -35,6 +36,7 @@ class inputTaxController extends Controller
         $document = WithholdingTaxDocument::where('quote_id',$quotationModel->quote_id)->first();
         return view('inputTax.modal-create', compact('quotationModel', 'wholesale','taxinvoice','document'));
     }
+
 
     public function inputtaxCreateWholesale(quotationModel $quotationModel)
     {
@@ -91,6 +93,7 @@ class inputTaxController extends Controller
     public function update(Request $request, inputTaxModel $inputTaxModel)
     {
         $requestData = $request->all();
+         $quotationModel = quotationModel::where('quote_id', $inputTaxModel->input_tax_quote_id)->first();
        // dd($requestData);
 
         // ตรวจสอบว่าเลือก "ลบไฟล์แนบ" หรือไม่
@@ -116,6 +119,57 @@ class inputTaxController extends Controller
                 $requestData['input_tax_file'] = $filePath;
             }
         }
+
+
+        // ถ้ามีการแนบไฟล์ต้นทุนโฮลเซล
+    if ($request->hasFile('input_tax_file')) {
+       
+        $notificationService = new NotificationService();
+        
+        // สร้าง URL สำหรับลิงก์ในการแจ้งเตือน
+        $quoteUrl = route('quote.editNew', $quotationModel->quote_id);
+        
+        // ข้อความแจ้งเตือน
+        $wholesaleName = $quotationModel->quoteWholesale ? $quotationModel->quoteWholesale->wholesale_name_th : 'ไม่ระบุ';
+        $amount = number_format($request->input_tax_service_total, 2);
+        $quoteNumber = $quotationModel->quote_number;
+        $saleName = $quotationModel->Salename->name;
+
+        // 1. แจ้งบัญชีว่ามีการแนบไฟล์ต้นทุนโฮลเซล
+        $msgAcc = "มีการแนบเอกสารต้นทุนโฮลเซล {$wholesaleName} จำนวนเงิน: {$amount} บาท ".
+                 "เลขที่ใบเสนอราคา #{$quoteNumber} | Sale: {$saleName}";
+        $notificationService->sendToAccounting(
+            $msgAcc, 
+            $quoteUrl, 
+            $quotationModel->quote_id, 
+            'wholesale-cost'
+        );
+    }
+
+    // ถ้ามีการแก้ไขไฟล์ต้นทุนโฮลเซล
+    if ($requestData) {
+        $notificationService = new NotificationService();
+        
+        $quoteUrl = route('quote.editNew', $quotationModel->quote_id);
+        
+        // ข้อความแจ้งเตือนการแก้ไข
+        $wholesaleName = $quotationModel->quoteWholesale ? $quotationModel->quoteWholesale->wholesale_name_th : 'ไม่ระบุ';
+        $amount = number_format($inputTaxModel->input_tax_service_total, 2);
+        $quoteNumber = $quotationModel->quote_number;
+        $saleName = $quotationModel->Salename->name;
+        
+        $msgAcc = "มีการแก้ไขเอกสารต้นทุนโฮลเซล {$wholesaleName} จำนวนเงิน: {$amount} บาท ".
+                 "เลขที่ใบเสนอราคา #{$quoteNumber} | Sale: {$saleName}";
+        
+        $notificationService->sendToAccounting(
+            $msgAcc, 
+            $quoteUrl, 
+            $quotationModel->quote_id, 
+            'wholesale-cost-update'
+        );
+    }
+
+
         // อัปเดตข้อมูลเพิ่มเติม
         $requestData['updated_by'] = Auth::user()->name;
         // บันทึกการเปลี่ยนแปลงในฐานข้อมูล
