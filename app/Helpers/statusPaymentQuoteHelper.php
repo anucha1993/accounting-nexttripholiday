@@ -4,10 +4,18 @@ use Carbon\Carbon;
 if (!function_exists('getQuoteStatusQuotePayment')) {
     function getQuoteStatusQuotePayment($quotationModel)
     {
-        $totalPaid = $quotationModel->total;
+        // ใช้ relationship แทน accessor เพื่อหลีกเลี่ยงปัญหา object conversion
+        $payments = $quotationModel->quotePayments;
+        
+        // คำนวณ total paid (ไม่รวม refund และ cancel)
+        $totalPaid = $payments->where('payment_status', '!=', 'cancel')
+                              ->where('payment_type', '!=', 'refund')
+                              ->sum('payment_total');
 
-        $refundPayments = $quotationModel->quotePayments->where('payment_type', 'refund');
-        $Total_trade =  $quotationModel->GetDeposit() - $quotationModel->Refund();
+        $refundPayments = $payments->where('payment_type', 'refund')
+                                  ->where('payment_status', '!=', 'cancel');
+                                  
+        $Total_trade = $totalPaid - $refundPayments->whereNotNull('payment_file_path')->sum('payment_total');
 
         // รวมยอด refund success เป็นบวก
         $refundSuccessTotal = $refundPayments
