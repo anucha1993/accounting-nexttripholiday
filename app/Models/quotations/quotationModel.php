@@ -119,10 +119,6 @@ class quotationModel extends Model
          return $this->hasMany(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
     }
 
-
-
-
-
 // ภาษีซื้อยังไม่มีไฟล์
 public function getTotalInputTaxVatNULL()
 {
@@ -164,9 +160,6 @@ public function getTotalInputTaxVatWithholding()
 }
 
 
-
-
-
     public function getTotalInputTaxVatType()
     {
         // ตรวจสอบว่า input_tax_type = 3 หรือไม่
@@ -178,18 +171,16 @@ public function getTotalInputTaxVatWithholding()
 
     public function calculateNetProfit()
     {
+
         $paymentCustomer = $this->GetDeposit(); // ลูกค้าชำระเงิน
         $paymentWhosale = $this->GetDepositWholesale(); // โอนเงินโฮลเซลล์
         $inputTaxTotal = $this->getTotalInputTaxVat(); // ภาษีซื้อ
         $withholdingTax = $this->InputTaxVat()->sum('input_tax_withholding'); // หักโฮลเซลล์
         $vatClaim = $inputTaxTotal - $this->InputTaxVat()->sum('input_tax_vat'); // VAT ที่เคลมได้
-
         // เงื่อนไขที่ 1: กำไรสุทธิ
         $profitCondition1 = $paymentCustomer - $paymentWhosale - $inputTaxTotal - $withholdingTax;
-
         // เงื่อนไขที่ 2: กำไรสุทธิจริงหลังเคลม VAT
         $profitCondition2 = $paymentCustomer - $paymentWhosale - ($vatClaim + $withholdingTax);
-
         return [
             'profitCondition1' => number_format($profitCondition1, 2),
             'profitCondition2' => number_format($profitCondition2, 2),
@@ -216,7 +207,6 @@ public function getTotalInputTaxVatWithholding()
         // เปลี่ยนเป็น hasMany เพื่อรองรับหลายแถวใน quote_logs
         return $this->hasMany(\App\Models\QuoteLogModel::class, 'quote_id', 'quote_id');
     }
-
     // ความสัมพันธ์กับ BookingModel
     public function quoteBooking()
     {
@@ -227,25 +217,21 @@ public function getTotalInputTaxVatWithholding()
     {
         return $this->belongsTo(saleModel::class, 'quote_sale', 'id');
     }
-
     // ความสัมพันธ์กับ CustomerModel
     public function quoteCustomer()
     {
         return $this->belongsTo(customerModel::class, 'customer_id', 'customer_id');
     }
-
     // ความสัมพันธ์กับ invoiceModel
     public function quoteInvoice()
     {
         return $this->belongsTo(invoiceModel::class, 'quote_id', 'invoice_quote_id');
     }
-
     // ความสัมพันธ์กับ Payments
     public function quotePayment()
     {
         return $this->belongsTo(paymentModel::class, 'quote_id', 'payment_quote_id');
     }
-
     public function quotePayments()
     {
         return $this->hasMany(paymentModel::class, 'payment_quote_id', 'quote_id');
@@ -254,9 +240,9 @@ public function getTotalInputTaxVatWithholding()
     {
         return $this->quotePayments()->where('payment_type', 'refund')->whereNot('payment_status', 'cancel')->sum('payment_total');
     }
+
     public function getTotalAttribute()
     {
-        //return $this->quotePayments()->whereNot('payment_type','refund')->whereNotNull('payment_file_path')->sum('payment_total');
         return $this->quotePayments()->whereNot('payment_status', 'cancel')->sum('payment_total');
     }
 
@@ -336,16 +322,11 @@ public function getTotalInputTaxVatWithholding()
     {
         return $this->hasOne(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
     }
- // ความสัมพันธ์ inputTax แยกของมันเอง
-    public function inputTax()
-    {
-        return $this->hasMany(inputTaxModel::class, 'input_tax_quote_id', 'id');
-    }
 
-    // public function inputtax()
-    // {
-    //     return $this->hasOne(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
-    // }
+    public function inputtax()
+    {
+        return $this->hasOne(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
+    }
 
     public function checkfileInputtax()
     {
@@ -502,9 +483,6 @@ public function getTotalOtherCost()
     }
 }
 
-
-
-   
 
     public function inputtaxTotalWholesale()
     {

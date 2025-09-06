@@ -25,7 +25,7 @@ class QuoteListController extends Controller
 
     public function index(Request $request)
     {
-       // DB::enableQueryLog();
+       //DB::enableQueryLog();
         // // perPage guard - คุมจำนวนรายการต่อหน้าเมื่อมีการค้นหา
         $perPage = $request->integer('per_page', 50);
         
@@ -300,7 +300,7 @@ class QuoteListController extends Controller
             $refundTotal = $payment ? (float)$payment->refund_total : 0;
             return $paidTotal - $refundTotal;
         });
-       // logger(DB::getQueryLog());
+       //logger(DB::getQueryLog());
         $customerPaymentStatuses = ['รอคืนเงิน', 'ยกเลิกการสั่งซื้อ', 'ชำระเงินครบแล้ว', 'ชำระเงินเกิน', 'เกินกำหนดชำระเงิน', 'รอชำระเงินเต็มจำนวน', 'รอชำระเงินมัดจำ', 'คืนเงินแล้ว'];
 
         return view('quotations.list', compact('SumTotal', 'SumPaymentTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'customerPaymentStatuses', 'campaignSource', 'allQuoteStatusQuotePayment'));

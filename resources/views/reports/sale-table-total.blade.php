@@ -1,7 +1,8 @@
 <div class="table-responsive">
-     <table class="table mb-0">
+     <table class="table mb-0" id="saleTableTotal">
          <thead>
              <tr>
+                 <th>No.</th>
                  <th>Quotes</th>
                  <th>ช่วงเวลาเดินทาง</th>
                  <th>โฮลเซลล์</th>
@@ -68,6 +69,9 @@
                      })->unique()->implode(', ');
                  @endphp
                  <tr>
+                     <td>
+                        {{ $quotationSuccess->count() - $loop->index }}
+                    </td>
                      <td>{{ $quotes }}</td>
                      <td>{{ $dateRanges }}</td>
                      <td>{{ $wholesales }}</td>
@@ -103,7 +107,7 @@
          </tbody>
          <tfoot>
             <tr>
-                <th colspan="8">รวม</th>
+                <th colspan="9">รวม</th>
                 <th>{{ $saleGroups->sum('pax_sum') }}</th>
                   @if(!Auth::user()->getRoleNames()->contains('sale'))
                 <th>{{ number_format($saleGroups->sum(function($group) { return $group['items']->sum(function($item) { return $item->quote_grand_total + $item->quote_discount; }); }), 2) }}</th>
@@ -124,3 +128,15 @@
         </tfoot>
      </table>
  </div>
+
+ <script>
+    $('#saleTableTotal').DataTable({
+        "paging":   false,
+        "ordering": true,
+        "info":     false,
+        "searching": false,
+        "columnDefs": [
+            { "orderable": false, "targets": -1 } // ปิดการเรียงลำดับคอลัมน์สุดท้าย (CommissionGroup)
+        ]
+    });
+ </script>

@@ -1,7 +1,8 @@
 <div class="table-responsive">
-    <table class="table mb-0">
+    <table class="table mb-0" id="saleTableAll">
         <thead>
             <tr>
+                <th>No</th>
                 <th>Quotes</th>
                 <th>ช่วงเวลาเดินทาง</th>
                 <th>โฮลเซลล์</th>
@@ -29,6 +30,9 @@
         <tbody>
             @foreach ($quotationSuccess as $item)
                 <tr>
+                    <td>
+                        {{ $quotationSuccess->count() - $loop->index }}
+                    </td>
                     <td>
                         @canany(['quote.view', 'quote.edit'])
                             <a href="{{ route('quote.editNew', $item->quote_id) }}">{{ $item->quote_number }}</a>
@@ -109,7 +113,7 @@
         <tfoot>
             <tr>
                  
-                <th colspan="8">รวม</th>
+                <th colspan="9">รวม</th>
                
                 <th>{{ $quotationSuccess->sum('quote_pax_total') }}</th>
                  @if(!Auth::user()->getRoleNames()->contains('sale'))
@@ -133,3 +137,17 @@
         </tfoot>
     </table>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('#saleTableAll').DataTable({
+            // "paging":   false,
+            "ordering": true,
+            "info":     false,
+            "searching": false,
+            "columnDefs": [
+                { "orderable": false, "targets": -1 } // ปิดการเรียงลำดับคอลัมน์สุดท้าย (CommissionGroup)
+            ]
+        });
+    });
+</script>
