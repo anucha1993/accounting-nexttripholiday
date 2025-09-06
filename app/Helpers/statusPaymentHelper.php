@@ -7,8 +7,21 @@ if (!function_exists('getQuoteStatusPayment')) {
     {
         $now = Carbon::now();
         $status = '';
-        $paymentTotal = $quotationModel->quote_grand_total - $quotationModel->GetDeposit() + $quotationModel->Refund();
-        $payment = $quotationModel->GetDeposit() - $quotationModel->Refund();
+        
+        // ใช้ relationship แทน accessor methods เพื่อหลีกเลี่ยงปัญหา object conversion
+        $payments = $quotationModel->quotePayments;
+        
+        $depositTotal = $payments->where('payment_status', '!=', 'cancel')
+                                ->where('payment_type', '!=', 'refund')
+                                ->sum('payment_total');
+                                
+        $refundTotal = $payments->where('payment_status', '!=', 'cancel')
+                               ->where('payment_type', '=', 'refund')
+                               ->whereNotNull('payment_file_path')
+                               ->sum('payment_total');
+        
+        $paymentTotal = $quotationModel->quote_grand_total - $depositTotal + $refundTotal;
+        $payment = $depositTotal - $refundTotal;
 
         switch (true) {
             // คืนเงิน

@@ -5,8 +5,15 @@ use Illuminate\Support\Facades\Log;
 if (!function_exists('getStatusPaymentWhosale')) {
     function getStatusPaymentWhosale($quotationModel)
     {
+        // ใช้ relationship แทน accessor methods เพื่อหลีกเลี่ยงปัญหา object conversion
+        
         // 1. ยอดที่เราโอนไปยังโฮลเซลล์
-        $depositTotal = $quotationModel->GetDepositWholesale();
+        $depositTotal = $quotationModel->paymentWholesale()
+            ->where('payment_wholesale_file_name', '!=', '')
+            ->get()
+            ->sum(function ($paymentWholesale) {
+                return $paymentWholesale->payment_wholesale_total - $paymentWholesale->payment_wholesale_refund_total;
+            });
 
         // 2. ยอดที่โฮลเซลล์คืนกลับมาแล้ว (refund สำเร็จ)
         $refundSuccessTotal = $quotationModel
@@ -29,8 +36,11 @@ if (!function_exists('getStatusPaymentWhosale')) {
         // 4. ต้นทุนโฮลเซลล์ (ใช้ inputtaxTotalWholesale)
         $wholesaleCost = $quotationModel->inputtaxTotalWholesale() ?? 0;
 
-        // 5. ยอดที่ลูกค้าชำระมาแล้ว (ควรใช้ GetDeposit() แทน customer_paid)
-        $customerPaid = $quotationModel->GetDeposit() ?? 0;
+        // 5. ยอดที่ลูกค้าชำระมาแล้ว
+        $payments = $quotationModel->quotePayments;
+        $customerPaid = $payments->where('payment_status', '!=', 'cancel')
+                                ->where('payment_type', '!=', 'refund')
+                                ->sum('payment_total');
 
 
         // 📌 แสดงสถานะเฉพาะเมื่อมีการ "โอนเกิน" (refund)

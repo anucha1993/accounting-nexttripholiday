@@ -507,7 +507,18 @@
                                         <td>
                                             <div class="d-flex flex-wrap gap-1">
                                                 {!! getQuoteStatusPayment($item) !!}
-                                                ชำระแล้ว: </br>{{ number_format($item->GetDeposit()-$item->Refund(), 2) }}
+                                                @php
+                                                    $depositTotal = $item->quotePayments()
+                                                        ->where('payment_status', '!=', 'cancel')
+                                                        ->where('payment_type', '!=', 'refund')
+                                                        ->sum('payment_total');
+                                                    $refundTotal = $item->quotePayments()
+                                                        ->where('payment_status', '!=', 'cancel')
+                                                        ->where('payment_type', '=', 'refund')
+                                                        ->whereNotNull('payment_file_path')
+                                                        ->sum('payment_total');
+                                                @endphp
+                                                ชำระแล้ว: </br>{{ number_format($depositTotal - $refundTotal, 2) }}
                                             </div>
                                         </td>
                                         <td class="text-end">

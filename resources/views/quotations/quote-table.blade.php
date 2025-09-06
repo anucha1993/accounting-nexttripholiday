@@ -294,11 +294,22 @@
                                         @endphp
                                         {{ number_format($quotationModel->quote_grand_total, 2, '.', ',') }}</td>
                                     <td align="center">
-                                        {{ number_format($quotationModel->GetDeposit() - $quotationModel->Refund(), 2, '.', ',') }}
+                                        @php
+                                            $depositTotal = $quotationModel->quotePayments()
+                                                ->where('payment_status', '!=', 'cancel')
+                                                ->where('payment_type', '!=', 'refund')
+                                                ->sum('payment_total');
+                                            $refundTotal = $quotationModel->quotePayments()
+                                                ->where('payment_status', '!=', 'cancel')
+                                                ->where('payment_type', '=', 'refund')
+                                                ->whereNotNull('payment_file_path')
+                                                ->sum('payment_total');
+                                        @endphp
+                                        {{ number_format($depositTotal - $refundTotal, 2, '.', ',') }}
                                     </td>
                                     <td align="center">
                                         @php
-                                            $paymentTotal = $quotationModel->quote_grand_total - $quotationModel->GetDeposit() + $quotationModel->Refund();
+                                            $paymentTotal = $quotationModel->quote_grand_total - $depositTotal + $refundTotal;
                                           
                                         @endphp
                                         {{ number_format($paymentTotal, 2, '.', ',') }}

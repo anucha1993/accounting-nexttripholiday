@@ -336,11 +336,16 @@ public function getTotalInputTaxVatWithholding()
     {
         return $this->hasOne(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
     }
-
-    public function inputtax()
+ // ความสัมพันธ์ inputTax แยกของมันเอง
+    public function inputTax()
     {
-        return $this->hasOne(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
+        return $this->hasMany(inputTaxModel::class, 'input_tax_quote_id', 'id');
     }
+
+    // public function inputtax()
+    // {
+    //     return $this->hasOne(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
+    // }
 
     public function checkfileInputtax()
     {
