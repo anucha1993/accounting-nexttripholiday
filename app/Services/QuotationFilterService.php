@@ -15,38 +15,38 @@ class QuotationFilterService
         $query = quotationModel::where('quote_status', 'success');
 
         if ($userRoles->contains('sale')) {
-            $query->where('quote_sale', $user->sale_id);
+            $query = $query->where('quote_sale', $user->sale_id);
         }
 
         if ($request->filled('date_start')) {
-            $query->where('quote_date_start', '>=', $request->input('date_start'));
+            $query = $query->where('quote_date_start', '>=', $request->input('date_start'));
         }
 
         if ($request->filled('date_end')) {
-            $query->where('quote_date_start', '<=', $request->input('date_end'));
+            $query = $query->where('quote_date_start', '<=', $request->input('date_end'));
         }
 
         if ($request->filled('sale_id')) {
-            $query->where('quote_sale', $request->input('sale_id'));
+            $query = $query->where('quote_sale', $request->input('sale_id'));
         }
 
         if ($request->filled('campaign_source_id')) {
-            $query->whereHas('customer', function ($q) use ($request) {
+            $query = $query->whereHas('customer', function ($q) use ($request) {
                 $q->where('customer_campaign_source', $request->campaign_source_id);
             });
         }
 
         if ($request->filled('wholsale_id')) {
-            $query->where('quote_wholesale', $request->input('wholsale_id'));
+            $query = $query->where('quote_wholesale', $request->input('wholsale_id'));
         }
 
         if ($request->filled('country_id')) {
-            $query->where('quote_country', $request->input('country_id'));
+            $query = $query->where('quote_country', $request->input('country_id'));
         }
 
         if ($request->filled('keyword')) {
             $keyword = $request->keyword;
-            $query->where(function ($q) use ($keyword) {
+            $query = $query->where(function ($q) use ($keyword) {
                 $q->where('quote_number', 'LIKE', "%$keyword%")
                   ->orWhere('quote_tour_name', 'LIKE', "%$keyword%")
                   ->orWhereHas('customer', function ($q2) use ($keyword) {
@@ -55,7 +55,11 @@ class QuotationFilterService
             });
         }
 
-        return $query->get()->filter(function ($item) {
+        // Get all results first
+        $results = $query->get();
+        
+        // Apply additional filtering
+        $filteredItems = collect($results)->filter(function ($item) {
             $customerPaid = $item->GetDeposit() ?? 0;
             $grandTotal = $item->quote_grand_total ?? 0;
 
@@ -86,6 +90,22 @@ class QuotationFilterService
             }
 
             return ($customerPaid >= $grandTotal) && ($wholesaleOutstanding == 0);
-        })->values();
+        });
+
+        // Create a new paginator with filtered results
+        $perPage = $request->input('length', 10);
+        $page = $request->input('page', 1);
+        $items = $filteredItems->forPage($page, $perPage);
+        
+        return new \Illuminate\Pagination\LengthAwarePaginator(
+            $items,
+            $filteredItems->count(),
+            $perPage,
+            $page,
+            [
+                'path' => $request->url(),
+                'query' => $request->query()
+            ]
+        );
     }
 }

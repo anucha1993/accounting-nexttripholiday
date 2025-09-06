@@ -18,11 +18,8 @@ class taxinvoiceReportController extends Controller
             $query = taxinvoiceModel::with(['invoice.customer', 'invoice.quote'])
                 ->select([
                     'taxinvoices.*',
-                    'invoices.invoice_grand_total',
-                    'invoices.invoice_withholding_tax',
-                    DB::raw('SUM(invoices.invoice_grand_total) OVER() as total_all_grand_total'),
-                    DB::raw('SUM(invoices.invoice_withholding_tax) OVER() as total_all_withholding_tax'),
-                    DB::raw('SUM(invoices.invoice_grand_total * 0.07) OVER() as total_all_vat')
+                    DB::raw('SUM(invoices.invoice_grand_total) OVER() as total_grand_total'),
+                    DB::raw('SUM(invoices.invoice_withholding_tax) OVER() as total_withholding_tax')
                 ])
                 ->join('invoices', 'taxinvoices.invoice_id', '=', 'invoices.invoice_id');
 
@@ -35,27 +32,11 @@ class taxinvoiceReportController extends Controller
             $grandTotalSum = $taxinvoices->sum('invoice.invoice_grand_total');
             $withholdingTaxSum = $taxinvoices->sum('invoice.invoice_withholding_tax');
 
-            // คำนวณยอดรวมในหน้าปัจจุบัน
-            $currentPageTotals = [
-                'grand_total' => $taxinvoices->sum('invoice.invoice_grand_total'),
-                'withholding_tax' => $taxinvoices->sum('invoice.invoice_withholding_tax'),
-                'vat' => $taxinvoices->sum(function ($taxinvoice) {
-                    return $taxinvoice->invoice ? ($taxinvoice->invoice->invoice_grand_total * 0.07) : 0;
-                })
-            ];
-
-            // ดึงยอดรวมทั้งหมด
-            $allTotals = [
-                'grand_total' => $taxinvoices->first()->total_all_grand_total ?? 0,
-                'withholding_tax' => $taxinvoices->first()->total_all_withholding_tax ?? 0,
-                'vat' => $taxinvoices->first()->total_all_vat ?? 0
-            ];
-
             return view('reports.taxinvoice-form', compact(
                 'taxinvoices',
                 'request',
-                'currentPageTotals',
-                'allTotals'
+                'grandTotalSum',
+                'withholdingTaxSum'
             ));
 
         } catch (\Exception $e) {

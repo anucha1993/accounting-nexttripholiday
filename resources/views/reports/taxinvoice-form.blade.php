@@ -79,8 +79,8 @@
 
 
         <div class="card">
-            <div class="card-header">
-                <h3 class="text-info">Report Tax Invoice</h3><br>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="text-info mb-0">รายงานใบกำกับภาษี</h3>
                 @canany(['report.taxinvoice.export'])
                 <form action="{{route('export.taxinvoice')}}" method="post">
                     @csrf
@@ -91,7 +91,8 @@
                 @endcanany
             </div>
             <div class="card-body">
-
+                <div class="table-responsive">
+                    {{ $taxinvoices->links('pagination::bootstrap-5') }}
                 <table class="table table quote-table " style="font-size: 12px; width: 100%">
                     <thead>
                         <tr>
@@ -144,17 +145,30 @@
                        
                     </tbody>
                     <tfoot>
-                        <tr>
-                            <th colspan="6" style="text-align:left"></th>
-                            <th style="text-align:left" class="text-danger">
-                                มูลค่ารวม : {{ number_format($grandTotalSum, 2) }}
-                            </th>
-                            <th style="text-align:left" class="text-danger">
-                                มูลค่าภาษีรวม: {{ number_format($vat, 2) }}
-                            </th>
+                        <!-- ยอดรวมในหน้าปัจจุบัน -->
+                        {{-- <tr class="text-primary">
+                            <th colspan="5" style="text-align:left">รวมในหน้านี้:</th>
+                            <th style="text-align:right">{{ number_format($currentPageTotals['grand_total'], 2) }}</th>
+                            <th style="text-align:right">{{ number_format($currentPageTotals['withholding_tax'], 2) }}</th>
+                            <th></th>
+                        </tr> --}}
+                        <!-- ยอดรวมทั้งหมด -->
+                        <tr class="text-danger">
+                            <th colspan="5" style="text-align:left">รวมทั้งหมด:</th>
+                            <th style="text-align:right">{{ number_format($allTotals['grand_total'], 2) }}</th>
+                            <th style="text-align:right">{{ number_format($allTotals['withholding_tax'], 2) }}</th>
+                            <th></th>
+                        </tr>
+                        <!-- ภาษีมูลค่าเพิ่ม -->
+                        <tr class="text-success">
+                            <th colspan="5" style="text-align:left">ภาษีมูลค่าเพิ่ม (7%):</th>
+                            <th style="text-align:right">หน้านี้: {{ number_format($currentPageTotals['vat'], 2) }}</th>
+                            <th style="text-align:right">ทั้งหมด: {{ number_format($allTotals['vat'], 2) }}</th>
+                            <th></th>
                         </tr>
                     </tfoot>
                 </table>
+                   {{ $taxinvoices->links('pagination::bootstrap-5') }}
           
             </div>
         </div>

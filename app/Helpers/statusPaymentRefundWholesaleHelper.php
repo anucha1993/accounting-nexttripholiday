@@ -25,8 +25,11 @@ if (! function_exists('payment_refund_status_text')) {
                     return '<span class="text-danger">(รอคืนยอดบางส่วน)</span>';
                 } elseif ($refundType === 'full') {
                     return sprintf(
-                        '<span class="text-danger">(รอคืนยอดเต็มจำนวน) [refund=%s, status=%s, type=%s, paid=%s]</span>',
-                      
+                        '<span class="text-danger">(รอคืนยอดเต็มจำนวน)</span>',
+                        // $refundTotal,
+                        // $refundStatus,
+                        // $refundType,
+                        // $paidTotal
                     );
                 }
             }

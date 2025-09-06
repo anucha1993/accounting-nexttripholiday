@@ -4,7 +4,18 @@
     <!-- buttons -->
     <style>
         span[titlespan]:hover::after {
-            content: attr(titlespan);
+                <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="text-info mb-0">รายงานใบแจ้งหนี้</h3>
+                    @canany(['report.invoice.export'])
+                    <button id="export-table-excel" class="btn btn-success">
+                        <i class="fa fa-file-excel me-2"></i>ส่งออกไฟล์ Excel
+                    </button>
+                    @endcanany
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover quote-table" style="font-size: 12px; width: 100%">ttr(titlespan);
             background-color: #f0f0f0;
             padding: 5px;
             border: 1px solid #ccc;
@@ -140,7 +151,7 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
 
             </div>
             <div class="card-body">
-
+ {{ $invoices->links('pagination::bootstrap-5') }}
                 <table class="table table quote-table " style="font-size: 12px; width: 100%">
                     <thead>
                         <tr>
@@ -165,7 +176,9 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                         @forelse ($invoices as $key => $item)
                         <tr>
                           
-                            <td>{{++$key}}</td>
+                            <td>
+                                   {{ $invoices->total() - ($invoices->firstItem() + $key - 1) }}
+                            </td>
                             <td> 
                                 @canany(['invoice.view'])
                                 <a href="{{route('mpdf.invoice',$item->invoice_id)}}" target="_blank">{{$item->invoice_number}}</a>
@@ -197,29 +210,108 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                        
                     </tbody>
                     <tfoot>
-                        <tr class="text-danger">
-                            <th colspan="6" style="text-align:left"></th>
-                            <th style="text-align:left">มูลค่ารวม : {{number_format($invoices->sum('invoice_grand_total',2))}}</th>
-                            <th style="text-align:left">มูลค่า.หัก.ณ.ที่จ่าย รวม: {{number_format($invoices->sum('invoice_withholding_tax',2))}}</th>
-                        </tr>
-                    </tfoot>
+    {{-- <tr class="text-danger">
+        <th colspan="6" style="text-align:left">รวมในหน้านี้</th>
+        <th style="text-align:left">มูลค่ารวม: {{number_format($pageTotals['grand_total'], 2)}}</th>
+        <th style="text-align:left">มูลค่า.หัก.ณ.ที่จ่าย รวม: {{number_format($pageTotals['withholding_tax'], 2)}}</th>
+    </tr> --}}
+    @if($invoices->count() > 0)
+    <tr class="text-primary">
+        <th colspan="6" style="text-align:left">รวมทั้งหมด</th>
+        <th style="text-align:left">มูลค่ารวม: {{number_format($invoices->first()->total_grand_total, 2)}}</th>
+        <th style="text-align:left">มูลค่า.หัก.ณ.ที่จ่าย รวม: {{number_format($invoices->first()->total_withholding_tax, 2)}}</th>
+    </tr>
+    @endif
+</tfoot>
                 </table>
-          
+                    </div>
+                    {{ $invoices->links('pagination::bootstrap-5') }}
+                </div>
             </div>
         </div>
     </div>
-    
 
     <!-- ปุ่ม Export Excel ฝั่ง client -->
 
 <!-- SheetJS CDN -->
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 <script>
-    document.getElementById('export-table-excel').addEventListener('click', function () {
-        // เลือก table ที่ต้องการ export
-        var table = document.querySelector('.quote-table');
-        var wb = XLSX.utils.table_to_book(table, {sheet:"Sheet1"});
-        XLSX.writeFile(wb, 'invoice-report.xlsx');
+    document.getElementById('export-table-excel').addEventListener('click', async function () {
+        try {
+            // แสดง Loading
+            this.disabled = true;
+            this.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>กำลังดาวน์โหลด...';
+
+            // ดึงข้อมูลทั้งหมดจาก API
+            const currentUrl = new URL(window.location.href);
+            const response = await fetch(`${currentUrl.pathname}/export${currentUrl.search}`);
+            
+            if (!response.ok) {
+                throw new Error('Failed to fetch data');
+            }
+
+            const data = await response.json();
+            
+            // สร้าง Workbook
+            const wb = XLSX.utils.book_new();
+            
+            // แปลงข้อมูลเป็นรูปแบบที่ต้องการ
+            const exportData = data.map((item, index) => ({
+                'ลำดับ': index + 1,
+                'เลขที่ใบแจ้งหนี้': item.invoice_number,
+                'เลขที่ใบเสนอราคา': item.quote?.quote_number || 'ไม่มีข้อมูล',
+                'วันที่ออกใบแจ้งหนี้': new Date(item.invoice_date).toLocaleDateString('th-TH'),
+                'ชื่อลูกค้า': item.invoiceCustomer?.customer_name || 'ไม่มีข้อมูล',
+                'Booking Code': item.invoice_booking,
+                'จำนวนเงิน (บาท)': parseFloat(item.invoice_grand_total).toFixed(2),
+                'ภาษีหัก ณ ที่จ่าย (บาท)': parseFloat(item.invoice_withholding_tax).toFixed(2),
+                'สถานะ': item.invoice_status === 'wait' ? 'รอดำเนินการ' : 
+                         item.invoice_status === 'cancel' ? 'ยกเลิก' : 
+                         item.invoice_status === 'success' ? 'สำเร็จ' : ''
+            }));
+
+            // สร้าง worksheet
+            const ws = XLSX.utils.json_to_sheet(exportData, { 
+                header: [
+                    'ลำดับ', 'เลขที่ใบแจ้งหนี้', 'เลขที่ใบเสนอราคา', 
+                    'วันที่ออกใบแจ้งหนี้', 'ชื่อลูกค้า', 'Booking Code',
+                    'จำนวนเงิน (บาท)', 'ภาษีหัก ณ ที่จ่าย (บาท)', 'สถานะ'
+                ]
+            });
+
+            // จัดความกว้างคอลัมน์
+            const wscols = [
+                {wch: 8}, // ลำดับ
+                {wch: 15}, // เลขที่ใบแจ้งหนี้
+                {wch: 15}, // เลขที่ใบเสนอราคา
+                {wch: 15}, // วันที่
+                {wch: 30}, // ชื่อลูกค้า
+                {wch: 15}, // Booking
+                {wch: 15}, // จำนวนเงิน
+                {wch: 15}, // ภาษี
+                {wch: 15}, // สถานะ
+            ];
+            ws['!cols'] = wscols;
+
+            // เพิ่ม worksheet ลงใน workbook
+            XLSX.utils.book_append_sheet(wb, ws, "รายงานใบแจ้งหนี้");
+
+            // สร้างชื่อไฟล์
+            const today = new Date();
+            const date = today.toISOString().split('T')[0];
+            const filename = `invoice-report-${date}.xlsx`;
+
+            // Export ไฟล์
+            XLSX.writeFile(wb, filename);
+        } catch (error) {
+            console.error('Export error:', error);
+            alert('เกิดข้อผิดพลาดในการส่งออกข้อมูล กรุณาลองใหม่อีกครั้ง');
+        } finally {
+            // คืนค่าปุ่มกลับเป็นปกติ
+            const btn = document.getElementById('export-table-excel');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa fa-file-excel me-2"></i>ส่งออกไฟล์ Excel';
+        }
     });
 </script>
 
