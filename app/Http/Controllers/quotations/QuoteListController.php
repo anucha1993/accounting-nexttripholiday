@@ -25,14 +25,14 @@ class QuoteListController extends Controller
 
     public function index(Request $request)
     {
-        DB::enableQueryLog();
-        // perPage guard - คุมจำนวนรายการต่อหน้าเมื่อมีการค้นหา
+       // DB::enableQueryLog();
+        // // perPage guard - คุมจำนวนรายการต่อหน้าเมื่อมีการค้นหา
         $perPage = $request->integer('per_page', 50);
         
         if ($request->has('search_keyword') || $request->has('search_period_start') || $request->has('search_not_check_list') || $request->has('search_period_end') || $request->has('search_booking_start') || $request->has('search_booking_end')) {
             $perPage = min($perPage, 100); // จำกัดไม่เกิน 100 เมื่อมีการค้นหา
         }
-
+        
         $searchKeyword = $request->input('search_keyword');
         $searchPeriodDateStart = $request->input('search_period_start');
         $searchPeriodDateEnd = $request->input('search_period_end');
@@ -300,7 +300,7 @@ class QuoteListController extends Controller
             $refundTotal = $payment ? (float)$payment->refund_total : 0;
             return $paidTotal - $refundTotal;
         });
-        logger(DB::getQueryLog());
+       // logger(DB::getQueryLog());
         $customerPaymentStatuses = ['รอคืนเงิน', 'ยกเลิกการสั่งซื้อ', 'ชำระเงินครบแล้ว', 'ชำระเงินเกิน', 'เกินกำหนดชำระเงิน', 'รอชำระเงินเต็มจำนวน', 'รอชำระเงินมัดจำ', 'คืนเงินแล้ว'];
 
         return view('quotations.list', compact('SumTotal', 'SumPaymentTotal', 'SumPax', 'airlines', 'sales', 'wholesales', 'quotations', 'country', 'request', 'customerPaymentStatuses', 'campaignSource', 'allQuoteStatusQuotePayment'));

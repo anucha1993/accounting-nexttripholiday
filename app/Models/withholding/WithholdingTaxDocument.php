@@ -2,11 +2,12 @@
 
 namespace App\Models\withholding;
 
+use Illuminate\Support\Facades\DB;
 use App\Models\customers\customerModel;
-use App\Models\quotations\quotationModel;
-use App\Models\wholesale\wholesaleModel;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\wholesale\wholesaleModel;
+use App\Models\quotations\quotationModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class WithholdingTaxDocument extends Model
 {
@@ -39,24 +40,29 @@ class WithholdingTaxDocument extends Model
          return $this->total_withholding_tax;
     }
 
-public static function generateDocumentNumber()
+public static function generateDocumentNumber(): string
 {
-    $prefix = 'WT'.date('Y').date('m').'-';
+    $prefix = 'WT' . date('Ym') . '-';
+    $lock   = 'lock:withholding:' . $prefix; // ล็อกต่อเดือน
 
-    // หา record ล่าสุดที่ "ขึ้นต้นด้วย prefix เดือนปัจจุบัน"
-    $latest = self::where('document_number','like',$prefix.'%')
-        ->orderBy('id','desc')
-        ->first();
-
-    if ($latest) {
-        $lastNumber = (int) substr($latest->document_number, -4);
-        $next = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
-    } else {
-        // ถ้าเดือนนี้ยังไม่มี record → เริ่มที่ 0001
-        $next = '0001';
+    // ขอชื่อ lock (รอสูงสุด 5 วินาที)
+    $ok = optional(DB::selectOne('SELECT GET_LOCK(?, 5) AS l', [$lock]))->l;
+    if (!$ok) {
+        throw new \RuntimeException('ไม่สามารถขอล็อกเลขรันได้');
     }
 
-    return $prefix.$next;
+    try {
+        // ขณะล็อก คำนวณเลขล่าสุด
+        $latest = self::where('document_number', 'like', $prefix.'%')
+            ->orderBy('document_number', 'desc') // เรียงตามเลขเอกสารจริง
+            ->first();
+
+        $nextNum = $latest ? ((int) substr($latest->document_number, -4)) + 1 : 1;
+        return $prefix . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
+
+    } finally {
+        DB::select('SELECT RELEASE_LOCK(?)', [$lock]);
+    }
 }
 
 
