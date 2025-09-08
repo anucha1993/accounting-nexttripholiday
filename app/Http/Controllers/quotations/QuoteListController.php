@@ -91,21 +91,9 @@ class QuoteListController extends Controller
         ];
         
         $q = quotationModel::query()->select($baseSelect);
-
-        // Aggregates ให้ comment ออกก่อนเพื่อทดสอบ
-        /*
-        $q->withSum(['quotePayments as paid_total' => function($p){
-            $p->where('payment_status','!=','cancel');
-        }], 'payment_total');
-
-        $q->withSum(['quotePayments as refund_total' => function($p){
-            $p->where('payment_status','!=','cancel')->where('payment_type','=','refund');
-        }], 'payment_total');
-
-        $q->withCount(['quotePayments as payments_count_non_refund' => function($p){
-            $p->where('payment_status','!=','cancel')->where('payment_type','!=','refund');
-        }]);
-        */
+      if ($userRoles->contains('sale')) {
+            $q = $q->where('quote_sale', $user->sale_id);
+        }
 
         $q->withExists(['quotePayments as has_refund_file' => function($p){
             $p->where('payment_status','!=','cancel')->where('payment_type','=','refund')->whereNotNull('payment_file_path');
@@ -217,6 +205,8 @@ class QuoteListController extends Controller
             ->unique()
             ->filter()
             ->values();
+
+            
 
         // Post-filter เฉพาะเงื่อนไขที่ซับซ้อน
         if (!empty($searchPaymentWholesaleStatus) && $searchPaymentWholesaleStatus !== 'all') {

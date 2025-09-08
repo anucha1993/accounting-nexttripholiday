@@ -42,6 +42,7 @@ class WithholdingTaxDocument extends Model
 
 public static function generateDocumentNumber(): string
 {
+    
     $prefix = 'WT' . date('Ym') . '-';
     $lock   = 'lock:withholding:' . $prefix; // ล็อกต่อเดือน
 
@@ -54,15 +55,16 @@ public static function generateDocumentNumber(): string
     try {
         // ขณะล็อก คำนวณเลขล่าสุด
         $latest = self::where('document_number', 'like', $prefix.'%')
-            ->orderBy('document_number', 'desc') // เรียงตามเลขเอกสารจริง
+            ->orderBy('document_number', 'desc') 
+            // เรียงตามเลขเอกสารจริง
             ->first();
-
         $nextNum = $latest ? ((int) substr($latest->document_number, -4)) + 1 : 1;
         return $prefix . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
 
     } finally {
         DB::select('SELECT RELEASE_LOCK(?)', [$lock]);
     }
+
 }
 
 
