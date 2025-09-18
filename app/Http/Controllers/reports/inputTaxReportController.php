@@ -34,8 +34,8 @@ class inputTaxReportController extends Controller
         ->when($status ,function ($query) use ($status) {
                 if ($status === 'not_null') {
                     return $query->whereNotNull('input_tax_file');
-                } else {
-                    return $query->whereNull('input_tax_file')->orWhere('input_tax_file', '');
+                } elseif ($status === 'is_null') {
+                    return $query->whereNull('input_tax_file');
                 }
             })
             

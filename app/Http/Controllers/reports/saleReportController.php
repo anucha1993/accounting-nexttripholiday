@@ -79,6 +79,9 @@ class saleReportController extends Controller
 
         // ได้เป็น Collection
         $quotationSuccess = QuotationFilterService::filter($request);
+        
+        // ตรวจสอบว่ามีการค้นหาหรือไม่
+        $hasSearch = $this->hasSearchCriteria($request);
 
         if ($mode === 'total') {
             $quotationSuccess = $quotationSuccess->filter(function ($item) {
@@ -95,11 +98,12 @@ class saleReportController extends Controller
                 ];
             })->values();
 
-            return view('reports.sales-form', compact('saleGroups', 'request', 'wholesales', 'country', 'sales', 'campaignSource', 'mode'));
+            return view('reports.sales-form', compact('saleGroups', 'request', 'wholesales', 'country', 'sales', 'campaignSource', 'mode', 'hasSearch'));
         }
 
         // --------- QT หรือ ALL → ทำ Pagination จาก Collection ----------
-        $perPage = (int) $request->input('per_page', 50);
+        // ถ้ามีการค้นหา ให้แสดงทั้งหมดไม่แบ่งหน้า ถ้าไม่มี ให้แสดงทั้งหมดแต่มี pagination
+        $perPage = $hasSearch ? $quotationSuccess->count() : (int) $request->input('per_page', $quotationSuccess->count());
         $page    = max(1, (int) $request->input('page', 1));
 
         if ($mode === 'qt') {
@@ -121,6 +125,18 @@ class saleReportController extends Controller
         // ส่งตัวแปรชื่อเดิมให้ Blade ใช้ต่อได้
         $quotationSuccess = $paginated;
 
-        return view('reports.sales-form', compact('quotationSuccess', 'request', 'wholesales', 'country', 'sales', 'campaignSource', 'mode'));
+        return view('reports.sales-form', compact('quotationSuccess', 'request', 'wholesales', 'country', 'sales', 'campaignSource', 'mode', 'hasSearch'));
+    }
+
+    /**
+     * ตรวจสอบว่ามีการค้นหาหรือไม่
+     */
+    private function hasSearchCriteria(Request $request)
+    {
+        return $request->filled([
+            'date_start', 'date_end', 'quote_country', 'quote_wholesale', 
+            'quote_sale', 'customer_campaign_source', 'quote_number', 
+            'customer_name', 'quote_tour_name'
+        ]);
     }
 }

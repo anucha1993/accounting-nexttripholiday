@@ -140,14 +140,28 @@
 
 <script>
     $(document).ready(function() {
+        var hasSearch = @json($hasSearch ?? false);
+        
         $('#saleTableAll').DataTable({
-            // "paging":   false,
+            "paging": !hasSearch, // ถ้ามีการค้นหาให้ปิด paging, ถ้าไม่มีให้เปิด paging
+            "pageLength": -1, // แสดงทั้งหมดเสมอ
+            "lengthMenu": hasSearch ? [] : [[-1], ["ทั้งหมด"]], // แสดง length menu เฉพาะเมื่อไม่มีการค้นหา
             "ordering": true,
-            "info":     false,
+            "info": true,
             "searching": false,
             "columnDefs": [
                 { "orderable": false, "targets": -1 } // ปิดการเรียงลำดับคอลัมน์สุดท้าย (CommissionGroup)
-            ]
+            ],
+            "language": {
+                "paginate": {
+                    "previous": "ก่อนหน้า",
+                    "next": "ถัดไป"
+                },
+                "lengthMenu": "แสดง _MENU_ รายการต่อหน้า",
+                "info": "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                "infoEmpty": "แสดง 0 ถึง 0 จาก 0 รายการ",
+                "infoFiltered": "(กรองจาก _MAX_ รายการทั้งหมด)"
+            }
         });
     });
 </script>
