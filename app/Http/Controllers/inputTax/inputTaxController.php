@@ -92,9 +92,12 @@ class inputTaxController extends Controller
 
     public function update(Request $request, inputTaxModel $inputTaxModel)
     {
+		//dd($request->all());
+		
         $requestData = $request->all();
          $quotationModel = quotationModel::where('quote_id', $inputTaxModel->input_tax_quote_id)->first();
        // dd($requestData);
+		
 
         // ตรวจสอบว่าเลือก "ลบไฟล์แนบ" หรือไม่
         if ($request->has('delete_file') && $request->delete_file === 'Y') {
@@ -105,6 +108,7 @@ class inputTaxController extends Controller
 
             // ตั้งค่า input_tax_file เป็น NULL
             $requestData['input_tax_file'] = null;
+			
         } else {
             // อัปโหลดไฟล์ใหม่ (ถ้ามีการอัปโหลด)
             $fileUploadController = new uploadfileQuoteController();
@@ -131,7 +135,8 @@ class inputTaxController extends Controller
         
         // ข้อความแจ้งเตือน
         $wholesaleName = $quotationModel->quoteWholesale ? $quotationModel->quoteWholesale->wholesale_name_th : 'ไม่ระบุ';
-        $amount = number_format($request->input_tax_service_total, 2);
+        //$amount = number_format($request->input_tax_service_total, 2);
+        $amount = number_format($quotationModel->inputtaxTotalWholesale(), 2);
         $quoteNumber = $quotationModel->quote_number;
         $saleName = $quotationModel->Salename->name;
 
@@ -154,7 +159,7 @@ class inputTaxController extends Controller
         
         // ข้อความแจ้งเตือนการแก้ไข
         $wholesaleName = $quotationModel->quoteWholesale ? $quotationModel->quoteWholesale->wholesale_name_th : 'ไม่ระบุ';
-        $amount = number_format($inputTaxModel->input_tax_service_total, 2);
+        $amount = number_format($quotationModel->inputtaxTotalWholesale(), 2);
         $quoteNumber = $quotationModel->quote_number;
         $saleName = $quotationModel->Salename->name;
         

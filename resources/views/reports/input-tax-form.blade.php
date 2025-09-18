@@ -139,13 +139,7 @@
                 $status = 'ยกเลิกการสั่งซื้อ';
             } elseif ($quotationModel->quote_status === 'success') {
                 $status = 'ชำระเงินครบแล้ว';
-      
-                $quotationPaymentTotal = $quotationModel->quotePayments()
-                    ->where('payment_status', '!=', 'cancel')
-                    ->where('payment_type', '!=', 'refund')
-                    ->sum('payment_total');
-          
-            } elseif ($quotationPaymentTotal > 0) {
+            } elseif ($quotationModel->payment > 0) {
                 $status = 'รอชำระเงินเต็มจำนวน';
             } elseif ($quotationModel->quote_payment_type === 'deposit') {
                 if ($now->gt(Carbon::parse($quotationModel->quote_payment_date))) {

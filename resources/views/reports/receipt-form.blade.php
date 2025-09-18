@@ -15,7 +15,6 @@
 
     <?php
     
-<<<<<<< HEAD
     use Carbon\Carbon;
     
     if (!function_exists('getQuoteStatusPaymentReport')) {
@@ -31,28 +30,6 @@
             } elseif ($quotationModel->quote_status === 'success') {
                 $status = 'ชำระเงินครบแล้ว';
             } elseif ($quotationModel->payment > 0) {
-=======
-        } elseif ($quotationModel->quote_status === 'success') {
-            $status = 'ชำระเงินครบแล้ว';
-        @php
-            $quotationPaymentTotal = $quotationModel->quotePayments()
-                ->where('payment_status', '!=', 'cancel')
-                ->where('payment_type', '!=', 'refund')
-                ->sum('payment_total');
-        @endphp
-        } elseif ($quotationPaymentTotal > 0) {
-            $status = 'รอชำระเงินเต็มจำนวน';
-        } elseif ($quotationModel->quote_payment_type === 'deposit') {
-            if ($now->gt(Carbon::parse($quotationModel->quote_payment_date))) {
-                $status = 'เกินกำหนดชำระเงิน';
-            } else {
-                $status = 'รอชำระเงินมัดจำ';
-            }
-        } elseif ($quotationModel->quote_payment_type === 'full') {
-            if ($now->gt(Carbon::parse($quotationModel->quote_payment_date_full))) {
-                $status = 'เกินกำหนดชำระเงิน';
-            } else {
->>>>>>> 1ecbab4643b3ad4d5193e2509c91299bef78e8cd
                 $status = 'รอชำระเงินเต็มจำนวน';
             } elseif ($quotationModel->quote_payment_type === 'deposit') {
                 if ($now->gt(Carbon::parse($quotationModel->quote_payment_date))) {

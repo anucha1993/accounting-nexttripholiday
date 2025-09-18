@@ -10,7 +10,11 @@ use App\Models\invoices\taxinvoiceModel;
 class saleTaxReportController extends Controller
 {
     //
+  public function __construct()
+    {
+        $this->middleware('auth');
 
+    }
     public function index(Request $request)
     {
         $searchDateStart = $request->input('date_start');
@@ -57,7 +61,8 @@ class saleTaxReportController extends Controller
 
         // If any filter is applied, show all records, otherwise paginate
         $hasFilters = $searchDateStart || $searchDateEnd || $status || $seller_id || $document_number || $reference_number || $customer_name;
-        $taxinvoiceSearch = $hasFilters ? $taxinvoices->get() : $taxinvoices->paginate(10);
+        $taxinvoiceSearch = $hasFilters ? $taxinvoices->paginate(5000)->appends($request->query()) : $taxinvoices->paginate(10)->appends($request->query());
+
         $taxinvoiceSum = $taxinvoices->get();
 
         $grandTotalSum = $taxinvoiceSum->sum(function ($taxinvoice) {

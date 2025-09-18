@@ -31,16 +31,19 @@ class inputTaxReportController extends Controller
 
         // สร้าง query builder ก่อน paginate
         $inputTaxQuery = inputTaxModel::where('input_tax_type',0)
-            ->when($searchDateStart && $searchDateEnd, function ($query) use ($searchDateStart, $searchDateEnd) {
-                return $query->whereBetween('input_tax_date_tax', [$searchDateStart, $searchDateEnd]);
-            })
-            ->when($status ,function ($query) use ($status) {
+        ->when($status ,function ($query) use ($status) {
                 if ($status === 'not_null') {
                     return $query->whereNotNull('input_tax_file');
                 } else {
-                    return $query->whereNull('input_tax_file');
+                    return $query->whereNull('input_tax_file')->orWhere('input_tax_file', '');
                 }
             })
+            
+            ->when($searchDateStart && $searchDateEnd, function ($query) use ($searchDateStart, $searchDateEnd) {
+                return $query->whereBetween('input_tax_date_tax', [$searchDateStart, $searchDateEnd]);
+            })
+            
+
             ->when($sellerId, function ($query) use ($sellerId) {
                 return $query->whereHas('quote', function ($q) use ($sellerId) {
                     $q->where('quote_sale', $sellerId);

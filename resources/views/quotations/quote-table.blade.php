@@ -294,22 +294,11 @@
                                         @endphp
                                         {{ number_format($quotationModel->quote_grand_total, 2, '.', ',') }}</td>
                                     <td align="center">
-                                        @php
-                                            $depositTotal = $quotationModel->quotePayments()
-                                                ->where('payment_status', '!=', 'cancel')
-                                                ->where('payment_type', '!=', 'refund')
-                                                ->sum('payment_total');
-                                            $refundTotal = $quotationModel->quotePayments()
-                                                ->where('payment_status', '!=', 'cancel')
-                                                ->where('payment_type', '=', 'refund')
-                                                ->whereNotNull('payment_file_path')
-                                                ->sum('payment_total');
-                                        @endphp
-                                        {{ number_format($depositTotal - $refundTotal, 2, '.', ',') }}
+                                        {{ number_format($quotationModel->GetDeposit() - $quotationModel->Refund(), 2, '.', ',') }}
                                     </td>
                                     <td align="center">
                                         @php
-                                            $paymentTotal = $quotationModel->quote_grand_total - $depositTotal + $refundTotal;
+                                            $paymentTotal = $quotationModel->quote_grand_total - $quotationModel->GetDeposit() + $quotationModel->Refund();
                                           
                                         @endphp
                                         {{ number_format($paymentTotal, 2, '.', ',') }}
@@ -352,10 +341,10 @@
                                                     href="{{ route('quote.modalEdit', ['quotationModel' => $quotationModel->quote_id, 'mode' => 'edit']) }}">
                                                     <i class="fa fa-edit text-info"></i> แก้ไข
                                                 </a>
-                                                 <a class="dropdown-item modal-quote-edit-new"
+                                                 {{-- <a class="dropdown-item modal-quote-edit-new"
                                                     href="{{ route('quote.modalEditNew', ['quotationModel' => $quotationModel->quote_id, 'mode' => 'edit']) }}">
                                                     <i class="fa fa-edit text-info"></i> แก้ไข-ใหม่
-                                                </a>
+                                                </a> --}}
                                             @endcan
                                             @can('invoice.create')
                                                 @if (empty($invoiceModel))
@@ -706,7 +695,7 @@
     <style>
     #modal-quote-edit-new .modal-dialog {
         max-width: 98vw !important;
-        width: 75vw !important;
+        width: 98vw !important;
         margin: 1.5rem auto;
     }
     #modal-quote-edit-new .modal-content {

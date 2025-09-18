@@ -5,15 +5,8 @@ use Illuminate\Support\Facades\Log;
 if (!function_exists('getStatusPaymentWhosale')) {
     function getStatusPaymentWhosale($quotationModel)
     {
-        // ใช้ relationship แทน accessor methods เพื่อหลีกเลี่ยงปัญหา object conversion
-        
         // 1. ยอดที่เราโอนไปยังโฮลเซลล์
-        $depositTotal = $quotationModel->paymentWholesale()
-            ->where('payment_wholesale_file_name', '!=', '')
-            ->get()
-            ->sum(function ($paymentWholesale) {
-                return $paymentWholesale->payment_wholesale_total - $paymentWholesale->payment_wholesale_refund_total;
-            });
+        $depositTotal = $quotationModel->GetDepositWholesale();
 
         // 2. ยอดที่โฮลเซลล์คืนกลับมาแล้ว (refund สำเร็จ)
         $refundSuccessTotal = $quotationModel
@@ -36,12 +29,17 @@ if (!function_exists('getStatusPaymentWhosale')) {
         // 4. ต้นทุนโฮลเซลล์ (ใช้ inputtaxTotalWholesale)
         $wholesaleCost = $quotationModel->inputtaxTotalWholesale() ?? 0;
 
-        // 5. ยอดที่ลูกค้าชำระมาแล้ว
-        $payments = $quotationModel->quotePayments;
-        $customerPaid = $payments->where('payment_status', '!=', 'cancel')
-                                ->where('payment_type', '!=', 'refund')
-                                ->sum('payment_total');
+        // 5. ยอดที่ลูกค้าชำระมาแล้ว (ควรใช้ GetDeposit() แทน customer_paid)
+        $customerPaid = $quotationModel->GetDeposit() ?? 0;
 
+        // Debug: Log or dump key values for investigation
+        // \Log::debug('[DEBUG] getStatusPaymentWhosale', [
+        //     'depositTotal' => $depositTotal,
+        //     'refundSuccessTotal' => $refundSuccessTotal,
+        //     'refundPendingTotal' => $refundPendingTotal,
+        //     'wholesaleCost' => $wholesaleCost,
+        //     'customerPaid' => $customerPaid,
+        // ]);
 
         // 📌 แสดงสถานะเฉพาะเมื่อมีการ "โอนเกิน" (refund)
         if ($depositTotal > 0 && $refundSuccessTotal + $refundPendingTotal > 0) {
@@ -63,8 +61,8 @@ if (!function_exists('getStatusPaymentWhosale')) {
 
         // 1. รอชำระเงินมัดจำ (ยอดโอนโฮลเซลล์ = 0 และลูกค้าชำระมาแล้ว)
         if ($depositTotal == 0 && $customerPaid > 0) {
-            //return '<span class="badge rounded-pill bg-warning text-dark">รอชำระเงินมัดจำ</span>';
-            return '<span class="text-warning">รอชำระเงินมัดจำ</span>';
+            //return '<span class="badge rounded-pill bg-warning text-dark">รอชำระมัดเงินจำโฮลเซลล์</span>';
+            return '<span class="text-warning">รอชำระมัดเงินจำโฮลเซลล์</span>';
         }
 
         // 2. รอชำระเงินส่วนที่เหลือ (ยอดโอนโฮลเซลล์ > 0 แต่น้อยกว่าต้นทุน)

@@ -781,9 +781,11 @@
 <div class="text-book">
     <span><b>{{$WithholdingTaxDocument->book_no}}</b>&nbsp;</span>
 </div>
+		
 <div class="text-doc-no">
-    <span><b>{{$WithholdingTaxDocument->document_no}}</b>&nbsp;</span>
+  <span><b>{{ substr($WithholdingTaxDocument->document_number, -5) }}</b>&nbsp;</span>
 </div>
+		
 
 <div class="text-company-taxid">0 &nbsp;&nbsp; 1&nbsp; &nbsp;1 &nbsp;5 &nbsp;5 &nbsp; &nbsp; 5 &nbsp;6 &nbsp;0 &nbsp; 1 &nbsp;3 &nbsp; &nbsp;6 &nbsp; 5 &nbsp; &nbsp; 8</div>
 <div class="text-company-name">บจก. เน็กซ์ ทริป ฮอลิเดย์</div>

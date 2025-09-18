@@ -147,6 +147,265 @@
                 padding: 6px 4px !important;
             }
         }
+
+        /* 📱 Mobile Only Styles - Force mobile layout */
+        @media (max-width: 767px) {
+            /* Force hide table headers in mobile */
+            #quotation-table .item-row.bg-success-subtle {
+                display: none !important;
+            }
+
+            /* Override table container for mobile */
+            #quotation-table {
+                background: transparent !important;
+                padding: 0 !important;
+                border-radius: 0 !important;
+            }
+
+            #table-income {
+                background: transparent !important;
+                border-radius: 0 !important;
+            }
+
+            /* Force mobile card layout with higher specificity */
+            #quotation-table .item-row.table-income,
+            #discount-list .item-row.table-discount {
+                background: #ffffff !important;
+                border: 2px solid #28a745 !important;
+                border-radius: 10px !important;
+                margin: 0 0 12px 0 !important;
+                padding: 12px !important;
+                display: block !important;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.1) !important;
+                width: 100% !important;
+            }
+
+            #discount-list .item-row.table-discount {
+                border-color: #ffc107 !important;
+                background: #fffef5 !important;
+            }
+
+            /* Force all columns to be full width */
+            #quotation-table .item-row > div,
+            #discount-list .item-row > div {
+                width: 100% !important;
+                max-width: 100% !important;
+                flex: 0 0 100% !important;
+                margin: 0 0 8px 0 !important;
+                padding: 0 !important;
+                display: block !important;
+                position: relative !important;
+            }
+
+            /* Force input and select styling */
+            #quotation-table .item-row input,
+            #quotation-table .item-row select,
+            #discount-list .item-row input,
+            #discount-list .item-row select {
+                width: 100% !important;
+                font-size: 14px !important;
+                padding: 6px 8px !important;
+                border-radius: 6px !important;
+                border: 1px solid #ddd !important;
+                box-sizing: border-box !important;
+            }
+
+            /* Row number styling for mobile */
+            #quotation-table .row-number,
+            #discount-list .discount-row-number {
+                display: inline-block !important;
+                background: #28a745 !important;
+                color: white !important;
+                padding: 4px 12px !important;
+                border-radius: 15px !important;
+                font-size: 12px !important;
+                font-weight: bold !important;
+                margin-bottom: 8px !important;
+                text-align: center !important;
+            }
+
+            #discount-list .discount-row-number {
+                background: #ffc107 !important;
+                color: #333 !important;
+            }
+
+            /* Add mobile labels with higher specificity */
+            #quotation-table .item-row.table-income .col-md-3:nth-child(2)::before {
+                content: "📦 รายการสินค้า" !important;
+                font-weight: bold !important;
+                color: #28a745 !important;
+                font-size: 12px !important;
+                display: block !important;
+                margin-bottom: 4px !important;
+            }
+
+            #quotation-table .item-row.table-income .col-md-1:nth-child(4)::before {
+                content: "✅ รวม 3%" !important;
+                font-weight: bold !important;
+                color: #28a745 !important;
+                font-size: 12px !important;
+                display: block !important;
+                margin-bottom: 4px !important;
+            }
+
+            #quotation-table .item-row.table-income .col-1:nth-child(5)::before {
+                content: "💰 NonVat" !important;
+                font-weight: bold !important;
+                color: #28a745 !important;
+                font-size: 12px !important;
+                display: block !important;
+                margin-bottom: 4px !important;
+            }
+
+            #quotation-table .item-row.table-income .col-md-1:nth-child(6)::before {
+                content: "🔢 จำนวน" !important;
+                font-weight: bold !important;
+                color: #28a745 !important;
+                font-size: 12px !important;
+                display: block !important;
+                margin-bottom: 4px !important;
+            }
+
+            #quotation-table .item-row.table-income .col-md-2:nth-child(7)::before {
+                content: "💵 ราคา/หน่วย" !important;
+                font-weight: bold !important;
+                color: #28a745 !important;
+                font-size: 12px !important;
+                display: block !important;
+                margin-bottom: 4px !important;
+            }
+
+            #quotation-table .item-row.table-income .col-md-2:nth-child(8)::before {
+                content: "💸 ยอดรวม" !important;
+                font-weight: bold !important;
+                color: #28a745 !important;
+                font-size: 12px !important;
+                display: block !important;
+                margin-bottom: 4px !important;
+            }
+
+            /* Discount mobile labels */
+            #discount-list .item-row.table-discount .col-md-3:nth-child(2)::before {
+                content: "🏷️ ส่วนลด" !important;
+                font-weight: bold !important;
+                color: #e67e22 !important;
+                font-size: 12px !important;
+                display: block !important;
+                margin-bottom: 4px !important;
+            }
+
+            #discount-list .item-row.table-discount .col-md-1:nth-child(5)::before {
+                content: "💰 NonVat" !important;
+                font-weight: bold !important;
+                color: #e67e22 !important;
+                font-size: 12px !important;
+                display: block !important;
+                margin-bottom: 4px !important;
+            }
+
+            #discount-list .item-row.table-discount .col-md-1:nth-child(6)::before {
+                content: "🔢 จำนวน" !important;
+                font-weight: bold !important;
+                color: #e67e22 !important;
+                font-size: 12px !important;
+                display: block !important;
+                margin-bottom: 4px !important;
+            }
+
+            #discount-list .item-row.table-discount .col-md-2:nth-child(7)::before {
+                content: "💵 ราคา/หน่วย" !important;
+                font-weight: bold !important;
+                color: #e67e22 !important;
+                font-size: 12px !important;
+                display: block !important;
+                margin-bottom: 4px !important;
+            }
+
+            #discount-list .item-row.table-discount .col-md-2:nth-child(8)::before {
+                content: "💸 ยอดรวม" !important;
+                font-weight: bold !important;
+                color: #e67e22 !important;
+                font-size: 12px !important;
+                display: block !important;
+                margin-bottom: 4px !important;
+            }
+
+            /* Delete button styling for mobile */
+            #quotation-table .item-row .col-md-1:last-child,
+            #discount-list .item-row .col-md-1:last-child {
+                text-align: center !important;
+                margin-top: 20px !important;
+                padding-top: 20px !important;
+                border-top: 2px solid #eee !important;
+            }
+
+            #quotation-table .remove-row-btn,
+            #discount-list .remove-row-btn {
+                background: #dc3545 !important;
+                color: white !important;
+                padding: 10px 15px !important;
+                border-radius: 25px !important;
+                text-decoration: none !important;
+                font-size: 14px !important;
+                display: inline-block !important;
+            }
+
+            /* Mobile section styling */
+            .section-card {
+                margin-bottom: 25px !important;
+                padding: 20px !important;
+            }
+
+            /* Mobile button styling */
+            .btn {
+                font-size: 16px !important;
+                padding: 12px 25px !important;
+                border-radius: 8px !important;
+                margin: 10px 5px !important;
+            }
+
+            /* Mobile checkbox styling */
+            input[type="checkbox"] {
+                width: 20px !important;
+                height: 20px !important;
+                margin-right: 15px !important;
+            }
+
+            /* Hide elements that are not needed in mobile */
+            .item-row [style*="display: none"] {
+                display: none !important;
+            }
+
+            /* Mobile summary section */
+            .summary .row {
+                margin-bottom: 12px !important;
+                background: #f8f9fa !important;
+                padding: 8px !important;
+                border-radius: 6px !important;
+            }
+
+            .summary .col-md-10,
+            .summary .col-md-2 {
+                width: 100% !important;
+                max-width: 100% !important;
+                text-align: left !important;
+                padding: 5px 0 !important;
+            }
+
+            .summary .col-md-10 {
+                font-weight: bold !important;
+                color: #495057 !important;
+                font-size: 14px !important;
+            }
+
+            .summary .col-md-2 {
+                font-size: 18px !important;
+                font-weight: bold !important;
+                color: #007bff !important;
+                text-align: right !important;
+                margin-top: 5px !important;
+            }
+        }
     </style>
     <div class="container-fluid page-content">
         <div class="todo-listing">
@@ -410,7 +669,7 @@
                             <div id="table-income" style="background:#55ffb848;border-radius:8px;">
                                 @foreach ($quoteProducts as $row)
                                     <div class="row  item-row table-income align-items-center">
-                                        <div class="col-md-1 "><span class="row-number">{{ $rowNum++ }}</span>
+                                        <div class="col-md-1"><span class="row-number">{{ $rowNum++ }}</span>
                                         </div>
                                         <div class="col-md-3">
                                             <select name="product_id[]" class="form-select product-select select2"
@@ -606,7 +865,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md012">
+                                    <div class="col-md-12">
                                         <label>จำนวนเงินภาษีหัก ณ ที่จ่าย 3% : &nbsp;</label><span class="text-danger"
                                             id="withholding-amount"> 0.00</span> บาท
                                         <hr>

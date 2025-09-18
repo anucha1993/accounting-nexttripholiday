@@ -49,13 +49,7 @@ function getStatusBadge($quoteCheckStatus, $quotations)
     $badges[] = '<span class="badge rounded-pill bg-danger">ยังไม่ได้ออกใบหัก.ณ.ที่จ่ายโฮลเซลล์</span>';
 }
 
-     // คำนวณยอดชำระจาก relationship แทนใช้ accessor method
-     $paymentTotal = $quotations->quotePayments()
-         ->where('payment_status', '!=', 'cancel')
-         ->where('payment_type', '!=', 'refund')
-         ->sum('payment_total');
-         
-     if ($paymentTotal > 0 && $quotations->quote_status !== 'cancel') {
+     if ($quotations->payment > 0 && $quotations->quote_status !== 'cancel') {
             return implode(' ', $badges);
         }
 
@@ -113,13 +107,7 @@ function getStatusBadgeCount($quoteCheckStatus, $quotations)
   
 
  
-     // คำนวณยอดชำระจาก relationship แทนใช้ accessor method
-     $paymentTotal = $quotations->quotePayments()
-         ->where('payment_status', '!=', 'cancel')
-         ->where('payment_type', '!=', 'refund')
-         ->sum('payment_total');
-         
-     if ($paymentTotal > 0 && $quotations->quote_status !== 'cancel') {
+     if ($quotations->payment > 0 && $quotations->quote_status !== 'cancel') {
          return count($badges);
     }
 

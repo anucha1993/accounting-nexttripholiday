@@ -92,7 +92,7 @@
         </div>
         <div class="todo-listing ">
             @canany(['creditnote.create'])
-         <a href="{{route('credit-note.create')}}" class="btn btn-info mt-4">สร้างใบลดหนี้</a>
+          <a href="{{route('credit-note.create')}}" class="btn btn-info mt-4">สร้างใบลดหนี้</a>
          @endcanany
         </div>
         <br>

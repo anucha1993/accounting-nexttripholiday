@@ -172,11 +172,12 @@
                                 <a href="{{ route('withholding.index') }}" class="btn btn-secondary">
                                     <i class="fas fa-refresh"></i> รีเซ็ต
                                 </a>
-                                @if(request()->hasAny(['document_number', 'ref_number', 'withholding_form', 'document_date_start', 'document_date_end', 'customer', 'wholesale']))
-                                    <span class="badge bg-info align-self-center ms-2">
-                                        <i class="fas fa-info-circle"></i> พบ {{ number_format($documents instanceof \Illuminate\Pagination\LengthAwarePaginator ? $documents->total() : $documents->count()) }} รายการ
-                                    </span>
-                                @endif
+                               @if(request()->hasAny(['document_number', 'ref_number', 'withholding_form', 'date_start', 'date_end', 'customer', 'wholesale']))
+    <span class="badge bg-info align-self-center ms-2">
+        <i class="fas fa-info-circle"></i>
+        พบ {{ number_format($documents instanceof \Illuminate\Pagination\LengthAwarePaginator ? $documents->total() : $documents->count()) }} รายการ
+    </span>
+@endif
                             </div>
                         </div>
                     </div>

@@ -4,7 +4,7 @@
 <head>
     <title>{{ $invoiceModel->invoice_number }}</title>
     <meta http-equiv="Content-Language" content="th" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
         body {
             font-family: 'sarabun_new', sans-serif;
@@ -401,29 +401,19 @@
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">หักเงินมัดจำ / Deposit</td>
-                    @php
-                        $quotationPaymentTotal = $quotationModel->quotePayments()
-                            ->where('payment_status', '!=', 'cancel')
-                            ->where('payment_type', '!=', 'refund')
-                            ->sum('payment_total');
-                        $invoicePaymentTotal = $invoiceModel->quotePayments()
-                            ->where('payment_status', '!=', 'cancel') 
-                            ->where('payment_type', '!=', 'refund')
-                            ->sum('payment_total');
-                    @endphp
-                    <td style="text-align: right; padding: 3px;">{{ number_format($quotationPaymentTotal, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($quotationModel->payment, 2, '.', ',') }}</td>
                 </tr>
 
                 <tr>
                     <td colspan="2" style="text-align: right; padding: 3px;">ยอดชำระทั้งสิ้น / Grand Total</td>
-                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_grand_total - $invoicePaymentTotal, 2, '.', ',') }}</td>
+                    <td style="text-align: right; padding: 3px;">{{ number_format($invoiceModel->invoice_grand_total-$invoiceModel->payment, 2, '.', ',') }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: right; background-color: #fff;">
                         <h3>จำนวนเงินตัวอักษร:</h3>
                     </td>
                     <td colspan="3" style="text-align: right; background-color: #f9c68f;">
-                        <h3> @bathText($invoiceModel->invoice_grand_total - $invoicePaymentTotal)</h3>
+                        <h3> @bathText($invoiceModel->invoice_grand_total-$invoiceModel->payment)</h3>
                     </td>
 
                 </tr>

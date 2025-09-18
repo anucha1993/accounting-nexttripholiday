@@ -7,7 +7,7 @@
                 <hr>
                 <div class="col-md-12 mb-3">
                     <label for="">Subject</label>
-                    <input type="text" name="subject" class="form-control" value="ส่งจองทัวร์  รหัสทัวร์ :{{ $quotationModel->quote_tour ?: $quotationModel->quote_tour_code }}  ชื่อลูกค้า : {{$customer->customer_name}}">
+                    <input type="text" name="subject" class="form-control" value="{{ $quotationModel->Salename->name }} :ส่งจองทัวร์ : {{ $quotationModel->quote_tour_name }} ชื่อลูกค้า : {{$customer->customer_name}}{{ $quotationModel->quote_pax_total ?: '-' }} ท่าน ">
                 </div>
                 <div class="col-md-12 mb-3">
                     <label for="">Mail</label>

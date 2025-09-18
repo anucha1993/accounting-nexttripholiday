@@ -240,13 +240,13 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-2">
+                        <div class="col-md-2">
                                 <label>สถานะชำระโฮลเซลล์</label>
                                 <select name="search_wholesale_payment" class="form-select">
                                     <option {{ request('search_wholesale_payment') == 'all' ? 'selected' : '' }}
                                         value="all">ทั้งหมด</option>
-                                    <option {{ request('search_wholesale_payment') == 'รอชำระมัดจำโฮลเซลล์' ? 'selected' : '' }}
-                                        value="รอชำระมัดจำโฮลเซลล์">รอชำระมัดจำโฮลเซลล์</option>
+                                    <option {{ request('search_wholesale_payment') == 'รอชำระมัดเงินจำโฮลเซลล์' ? 'selected' : '' }}
+                                        value="รอชำระมัดเงินจำโฮลเซลล์">รอชำระเงินมัดจำโฮลเซลล์</option>
                                     <option {{ request('search_wholesale_payment') == 'รอชำระเงินส่วนที่เหลือ' ? 'selected' : '' }}
                                         value="รอชำระเงินส่วนที่เหลือ">รอชำระเงินส่วนที่เหลือ</option>
                                     <option {{ request('search_wholesale_payment') == 'ชำระเงินครบแล้ว' ? 'selected' : '' }}
@@ -507,18 +507,7 @@
                                         <td>
                                             <div class="d-flex flex-wrap gap-1">
                                                 {!! getQuoteStatusPayment($item) !!}
-                                                @php
-                                                    $depositTotal = $item->quotePayments()
-                                                        ->where('payment_status', '!=', 'cancel')
-                                                        ->where('payment_type', '!=', 'refund')
-                                                        ->sum('payment_total');
-                                                    $refundTotal = $item->quotePayments()
-                                                        ->where('payment_status', '!=', 'cancel')
-                                                        ->where('payment_type', '=', 'refund')
-                                                        ->whereNotNull('payment_file_path')
-                                                        ->sum('payment_total');
-                                                @endphp
-                                                ชำระแล้ว: </br>{{ number_format($depositTotal - $refundTotal, 2) }}
+                                                ชำระแล้ว: </br>{{ number_format($item->GetDeposit()-$item->Refund(), 2) }}
                                             </div>
                                         </td>
                                         <td class="text-end">
@@ -532,7 +521,6 @@
                                             </div>
                                         </td>
                                         <td class="text-end">
-                                            
                                             @php
                                                 $totalWholesale = $item->inputtaxTotalWholesale() ?? 0;
                                                 $wholesalePaid =
@@ -564,9 +552,11 @@
                                                 <span class="text-danger">ยังไม่ได้ทำ {{ $badgeCount }} รายการ</span>
                                              
                                                 @endif
+
                                                 {!! getQuoteStatusQuotePayment($item) !!}
                                                 {!! getStatusWithholdingTax($item->quoteInvoice) !!}
                                                 {!! getQuoteStatusWithholdingTax($item->quoteLogStatus) !!}
+
 
                                                 {!! getStatusWhosaleInputTax($item->checkfileInputtax) !!}
                                                 {!! getStatusCustomerRefund($item->quoteLogStatus) !!}

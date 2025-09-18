@@ -111,7 +111,6 @@ class paymentWholesaleController extends Controller
         $paymentWholesaleModel->delete();
         return redirect()->back()->with('success', 'ไฟล์ถูกลบเรียบร้อยแล้ว');
     }
-    
 
     public function edit(paymentWholesaleModel $paymentWholesaleModel)
     {

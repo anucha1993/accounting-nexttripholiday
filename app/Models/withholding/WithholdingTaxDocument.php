@@ -2,12 +2,12 @@
 
 namespace App\Models\withholding;
 
-use Illuminate\Support\Facades\DB;
 use App\Models\customers\customerModel;
-use Illuminate\Database\Eloquent\Model;
-use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
+use App\Models\wholesale\wholesaleModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class WithholdingTaxDocument extends Model
 {
@@ -41,54 +41,47 @@ class WithholdingTaxDocument extends Model
     }
 
 public static function generateDocumentNumber(): string
-{
-    
-    $prefix = 'WT' . date('Ym') . '-';
-    $lock   = 'lock:withholding:' . $prefix; // ล็อกต่อเดือน
+    {
+        $prefix = 'WT' . now()->format('Ym') . '-';
+        $lock   = 'lock:withholding:' . $prefix; // ล็อกต่อเดือน
 
-    // ขอชื่อ lock (รอสูงสุด 5 วินาที)
-    $ok = optional(DB::selectOne('SELECT GET_LOCK(?, 5) AS l', [$lock]))->l;
-    if (!$ok) {
-        throw new \RuntimeException('ไม่สามารถขอล็อกเลขรันได้');
+        // ขอชื่อ lock (รอสูงสุด 5 วินาที)
+        $ok = optional(DB::selectOne('SELECT GET_LOCK(?, 5) AS l', [$lock]))->l;
+        if (!$ok) {
+            throw new \RuntimeException('ไม่สามารถขอล็อกเลขรันได้');
+        }
+
+        try {
+            // ขณะล็อก คำนวณเลขล่าสุด
+            $latest = self::where('document_number', 'like', $prefix.'%')
+                ->orderBy('document_number', 'desc') // เรียงตามเลขเอกสารจริง
+                ->first();
+
+            $nextNum = $latest ? ((int) substr($latest->document_number, -4)) + 1 : 1;
+
+            return $prefix . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
+        } finally {
+            // ปล่อยล็อกไม่ว่าผลลัพธ์จะเป็นอย่างไร
+            DB::select('SELECT RELEASE_LOCK(?)', [$lock]);
+        }
     }
-
-    try {
-        // ขณะล็อก คำนวณเลขล่าสุด
-        $latest = self::where('document_number', 'like', $prefix.'%')
-            ->orderBy('document_number', 'desc') 
-            // เรียงตามเลขเอกสารจริง
-            ->first();
-        $nextNum = $latest ? ((int) substr($latest->document_number, -4)) + 1 : 1;
-        return $prefix . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
-
-    } finally {
-        DB::select('SELECT RELEASE_LOCK(?)', [$lock]);
-    }
-
-}
-
 
 
 
 
     
-   public static function generateDocumentNumberNo()
-{
-    $latestDocument = self::whereYear('created_at', date('Y'))
-        ->whereMonth('created_at', date('m'))
-        ->latest('id')
-        ->first();
-
-    if ($latestDocument) {
-        $lastNumber = (int) substr($latestDocument->document_no, -4);
-        $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
-    } else {
-        $newNumber = '0001'; // ถ้าเดือนนี้ยังไม่มีเอกสาร
+    //เล่มที่
+    public static function generateDocumentNumberNo()
+    {
+        $latestDocument = self::latest('id')->first();
+        if ($latestDocument) {
+            $lastNumber = (int) substr($latestDocument->document_no, -4);
+            $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+        } else {
+            $newNumber = '0001';
+        }
+        return $newNumber;
     }
-
-    return $newNumber;
-}
-
 
 
     /**

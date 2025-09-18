@@ -34,9 +34,9 @@ class customerController extends Controller
     }
 
 
-     public function generateRunningCodeCUS()
+    public function generateRunningCodeCUS()
     {
-        $customer = customerModel::select('customer_number')->orderBy('customer_number', 'desc')->first();
+        $customer = customerModel::select('customer_number')->latest()->first();
         if (!empty($customer)) {
             $CusNumber = $customer->customer_number;
         } else {

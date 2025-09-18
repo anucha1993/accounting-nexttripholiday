@@ -315,7 +315,7 @@
         <span><b>{{$WithholdingTaxDocument->book_no}}</b>&nbsp;</span>
     </div>
     <div class="text-doc-no">
-        <span><b>{{$WithholdingTaxDocument->document_no}}</b>&nbsp;</span>
+     <span><b>{{ substr($WithholdingTaxDocument->document_number, -4) }}</b>&nbsp;</span>
     </div>
 
     <div class="text-company-tax">

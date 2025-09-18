@@ -1786,5 +1786,13 @@
                 }
             });
         });
+		
+		$('form').on('submit', function() {
+  $('.row.item-row.table-income').each(function() {
+    if ($(this).css('display') === 'none') {
+      $(this).find('input, select, textarea').remove();
+    }
+  });
+});
     </script>
 @endsection

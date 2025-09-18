@@ -433,7 +433,7 @@
                             <p><b>Authorized by</b></p>
 
 
-                            <p><b>วันที่ {{ thaidate('j F Y', $paymentModel->payment_in_date) }}</b></p>
+                           <p><b>วันที่ {{ thaidate('j F Y', $paymentModel->payment_in_date) }}</b></p>
                         </td>
                     </tr>
                 </table>

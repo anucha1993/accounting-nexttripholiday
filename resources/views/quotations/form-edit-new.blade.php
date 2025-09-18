@@ -212,7 +212,7 @@
                                             @endif
                                         </td>
                                     </tr>
-                                    <tr>
+									<tr>
                                         <td class="label">Note:</td>
                                         <td class="value">{{$quotationModel->quote_note ?? '-'}}</td>
                                     </tr>
@@ -255,11 +255,6 @@
                                         <td class="label">แก้ไขล่าสุดโดย:</td>
                                         <td class="value">{{ $quotationModel->updated_by }}</td>
                                     </tr>
-                                    <tr>
-                                        <td class="label"></td>
-                                        <td class="value"></td>
-                                    </tr>
-                                    
                                 </table>
                             </div>
                         </div>

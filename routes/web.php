@@ -1,15 +1,14 @@
 <?php
 
+;
 use App\Exports\invoiceExport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MPDF\MailController;
 use App\Http\Controllers\quotations\quoteLog;
-use App\Http\Controllers\reports\ReceiptReportController;
 use App\Http\Controllers\selects\periodSelect;
 use App\Http\Controllers\api\apiTourController;
 use App\Http\Controllers\WebTourSyncController;
@@ -51,6 +50,7 @@ use App\Http\Controllers\MPDF\MPDF_WithholdingController;
 use App\Http\Controllers\payments\paymentDebitController;
 use App\Http\Controllers\quotefiles\QuoteFilesController;
 use App\Http\Controllers\reports\invoiceReportController;
+use App\Http\Controllers\reports\receiptReportController;
 use App\Http\Controllers\reports\saleTaxReportController;
 use App\Http\Controllers\commissions\CommissionController;
 use App\Http\Controllers\exports\inputTaxExportController;
