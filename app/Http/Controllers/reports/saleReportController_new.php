@@ -136,11 +136,10 @@ class saleReportController extends Controller
 
     /**
      * ตรวจสอบว่ามีการค้นหาหรือไม่
-     * ไม่นับฟิลด์ที่เป็นการเลือกประเภทการแสดงผล เช่น commission_mode, per_page, page
      */
     private function hasSearchCriteria(Request $request)
     {
-        // ฟิลด์ที่ถือเป็นการค้นหาจริงๆ (ไม่รวมการเลือกประเภทการแสดงผล)
+        // ตรวจสอบว่ามีการกรอกข้อมูลในฟิลด์ใดฟิลด์หนึ่งหรือไม่
         $searchFields = [
             'date_start', 'date_end', 'quote_country', 'quote_wholesale', 
             'quote_sale', 'customer_campaign_source', 'quote_number', 

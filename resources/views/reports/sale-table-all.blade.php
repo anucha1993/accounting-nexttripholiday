@@ -1,4 +1,29 @@
 <div class="table-responsive">
+    @if(!$hasSearch && isset($quotationSuccess) && method_exists($quotationSuccess, 'links'))
+    <!-- Laravel Pagination Links -->
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+            <form method="GET" class="d-flex align-items-center">
+                <!-- รักษาพารามิเตอร์เดิมทั้งหมด -->
+                @foreach(request()->except(['per_page', 'page']) as $key => $value)
+                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                @endforeach
+                
+                <label for="per_page" class="me-2">แสดงต่อหน้า:</label>
+                <select name="per_page" id="per_page" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+                    <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50</option>
+                    <option value="100" {{ request('per_page', 50) == 100 ? 'selected' : '' }}>100</option>
+                    <option value="200" {{ request('per_page', 50) == 200 ? 'selected' : '' }}>200</option>
+                    <option value="1000" {{ request('per_page', 50) == 1000 ? 'selected' : '' }}>1000</option>
+                </select>
+            </form>
+        </div>
+        <div>
+            {{ $quotationSuccess->links() }}
+        </div>
+    </div>
+@endif
+
     <table class="table mb-0" id="saleTableAll">
         <thead>
             <tr>
@@ -31,7 +56,11 @@
             @foreach ($quotationSuccess as $item)
                 <tr>
                     <td>
-                        {{ $quotationSuccess->count() - $loop->index }}
+                        @if(isset($quotationSuccess) && method_exists($quotationSuccess, 'firstItem'))
+                            {{ $quotationSuccess->firstItem() + $loop->index }}
+                        @else
+                            {{ $loop->iteration }}
+                        @endif
                     </td>
                     <td>
                         @canany(['quote.view', 'quote.edit'])
@@ -138,30 +167,27 @@
     </table>
 </div>
 
-<script>
-    $(document).ready(function() {
-        var hasSearch = @json($hasSearch ?? false);
-        
-        $('#saleTableAll').DataTable({
-            "paging": !hasSearch, // ถ้ามีการค้นหาให้ปิด paging, ถ้าไม่มีให้เปิด paging
-            "pageLength": -1, // แสดงทั้งหมดเสมอ
-            "lengthMenu": hasSearch ? [] : [[-1], ["ทั้งหมด"]], // แสดง length menu เฉพาะเมื่อไม่มีการค้นหา
-            "ordering": true,
-            "info": true,
-            "searching": false,
-            "columnDefs": [
-                { "orderable": false, "targets": -1 } // ปิดการเรียงลำดับคอลัมน์สุดท้าย (CommissionGroup)
-            ],
-            "language": {
-                "paginate": {
-                    "previous": "ก่อนหน้า",
-                    "next": "ถัดไป"
-                },
-                "lengthMenu": "แสดง _MENU_ รายการต่อหน้า",
-                "info": "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
-                "infoEmpty": "แสดง 0 ถึง 0 จาก 0 รายการ",
-                "infoFiltered": "(กรองจาก _MAX_ รายการทั้งหมด)"
-            }
-        });
-    });
-</script>
+@if(!$hasSearch && isset($quotationSuccess) && method_exists($quotationSuccess, 'links'))
+    <!-- Laravel Pagination Links -->
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+            <form method="GET" class="d-flex align-items-center">
+                <!-- รักษาพารามิเตอร์เดิมทั้งหมด -->
+                @foreach(request()->except(['per_page', 'page']) as $key => $value)
+                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                @endforeach
+                
+                <label for="per_page" class="me-2">แสดงต่อหน้า:</label>
+                <select name="per_page" id="per_page" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+                    <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50</option>
+                    <option value="100" {{ request('per_page', 50) == 100 ? 'selected' : '' }}>100</option>
+                    <option value="200" {{ request('per_page', 50) == 200 ? 'selected' : '' }}>200</option>
+                    <option value="1000" {{ request('per_page', 50) == 1000 ? 'selected' : '' }}>1000</option>
+                </select>
+            </form>
+        </div>
+        <div>
+            {{ $quotationSuccess->links() }}
+        </div>
+    </div>
+@endif
