@@ -474,18 +474,18 @@
                                 {{-- {{$quotationModel->CountPaymentWholesale()}} --}}
 
                                 @if ($quotationModel->CountPaymentWholesale() > 0 && $quotationModel->inputtaxTotalWholesale() > 0)
-
-
-                                @if (
-                                    ($wholesalePayment > 0 || $paymentInputtaxTotal > 0) &&
-                                    (number_format($quotationModel->getWholesalePaidNet(), 2) === number_format($quotationModel->inputtaxTotalWholesale(), 2))
-                                )
+                                    @if (
+                                        ($wholesalePayment > 0 || $paymentInputtaxTotal > 0) &&
+                                        (number_format($quotationModel->getWholesalePaidNet(), 2) === number_format($quotationModel->inputtaxTotalWholesale(), 2))
+                                    )
+                                        {{ number_format($quotationModel->getNetProfit(), 2) }}
+                                    @else
+                                        {{ number_format(0, 2) }}
+                                    @endif
+                                @elseif ($quotationModel->inputtaxTotalWholesale() == 0 && $quotationModel->GetDeposit() > 0)
+                                    {{-- เงื่อนไขใหม่: หากต้นทุนโฮลเซลล์ = 0 และลูกค้าชำระเงินแล้ว ให้แสดงกำไรได้ --}}
                                     {{ number_format($quotationModel->getNetProfit(), 2) }}
-                                @else
-                                    {{ number_format(0, 2) }}
                                 @endif
-
-                                 @endif
                         </div>
                         @endcanany
                     </div>
