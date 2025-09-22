@@ -191,7 +191,7 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                                 @endcanany
                             </td>
                             <td>{{date('d/m/Y',strtotime($item->invoice_date))}}</td>
-                            <td>{{$item->customer->customer_name}}</td>
+                            <td>{{$item->invoiceCustomer->customer_name}}</td>
                             <td>{{$item->invoice_booking}}</td>
                             <td>{{number_format($item->invoice_grand_total,2)}}</td>
                             <td>{{number_format($item->invoice_withholding_tax,2)}}</td>

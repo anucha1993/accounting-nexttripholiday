@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\invoices\invoiceModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class invoiceReportController extends Controller
 {
@@ -44,7 +45,7 @@ class invoiceReportController extends Controller
 
         } catch (\Exception $e) {
             // Log error for debugging
-            \Log::error('Invoice Report Error: ' . $e->getMessage());
+            Log::error('Invoice Report Error: ' . $e->getMessage());
             
             return back()
                 ->with('error', 'เกิดข้อผิดพลาดในการดึงข้อมูล กรุณาลองใหม่อีกครั้ง')
@@ -129,11 +130,7 @@ class invoiceReportController extends Controller
         try {
             $query = invoiceModel::query()
                 ->with(['invoiceCustomer', 'quote'])
-                ->select([
-                    'invoices.*',
-                    DB::raw('SUM(invoice_grand_total) OVER() as total_grand_total'),
-                    DB::raw('SUM(invoice_withholding_tax) OVER() as total_withholding_tax')
-                ]);
+                ->select('invoices.*'); // ไม่ต้องใช้ OVER() สำหรับ export
 
             // Apply the same filters as the index page
             $query = $this->applyDateFilter($query, $request);
@@ -141,11 +138,13 @@ class invoiceReportController extends Controller
             $query = $this->applySearchFilter($query, $request);
 
             // Order by invoice date descending
-            return $query->orderBy('invoice_date', 'desc')->get();
+            $invoices = $query->orderBy('invoice_date', 'desc')->get();
+
+            return response()->json($invoices);
 
         } catch (\Exception $e) {
-            \Log::error('Invoice Export Error: ' . $e->getMessage());
-            return null;
+            Log::error('Invoice Export Error: ' . $e->getMessage());
+            return response()->json(['error' => 'เกิดข้อผิดพลาดในการดึงข้อมูล'], 500);
         }
     }
 
@@ -157,4 +156,3 @@ class invoiceReportController extends Controller
         ];
     }
 }
-

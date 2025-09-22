@@ -424,11 +424,30 @@
                             <tbody>
                                 @php
                                     $inputtaxTotalWholesale = 0;
+                                    // ตรวจสอบว่ามีการ filter หรือไม่
+                                    $hasFilter = request()->has('search_keyword') || 
+                                                request()->has('search_customer_payment') && request('search_customer_payment') != 'all' ||
+                                                request()->has('search_not_check_list') && request('search_not_check_list') != 'all' ||
+                                                request()->has('search_payment_overpays') && request('search_payment_overpays') != 'all' ||
+                                                request()->has('search_payment_wholesale_overpays') && request('search_payment_wholesale_overpays') != 'all' ||
+                                                request()->has('search_wholesale_payment') && request('search_wholesale_payment') != 'all';
+                                    
+                                    if ($hasFilter) {
+                                        // ถ้ามี filter ใช้จำนวนข้อมูลที่แสดงจริง
+                                        $totalForNumbering = $quotations->count();
+                                        $startingNumber = $totalForNumbering;
+                                    } else {
+                                        // ถ้าไม่มี filter ใช้การนับแบบ pagination
+                                        $totalRecords = $quotations->total();
+                                        $currentPage = $quotations->currentPage();
+                                        $perPage = $quotations->perPage();
+                                        $startingNumber = $totalRecords - (($currentPage - 1) * $perPage);
+                                    }
                                 @endphp
                                 @forelse ($quotations as $key => $item)
                                     <tr class="align-middle" data-quote-id="{{ $item->quote_id }} " {{ $item->quote_commission == 'N' ? 'style=background-color:#f8d7da' : '' }}>
 <td class="text-center fw-bold">
-    {{ $quotations->total() - ($quotations->firstItem() + $key - 1) }}
+    {{ $startingNumber - $key }}
 </td>                              <td class="text-center">
                                             <span
                                                 class="text-muted">{{ date('d/m/y', strtotime($item->quote_date)) }}</span>

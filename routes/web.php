@@ -362,6 +362,7 @@ Route::get('/credit-note/modal/mail/creditnote/{creditNoteModel}',[MailControlle
 //Report
 Route::get('/report/inputtax/form',[inputTaxReportController::class,'index'])->name('report.input-tax');
 Route::get('/report/invoice/form',[invoiceReportController::class,'index'])->name('report.invoice');
+Route::get('/report/invoice/form/export',[invoiceReportController::class,'getExportData'])->name('report.invoice.export');
 Route::get('/report/taxinvoice/form',[taxinvoiceReportController::class,'index'])->name('report.taxinvoice');
 Route::get('/report/receipt/form',[receiptReportController::class,'index'])->name('report.receipt');
 Route::get('/report/saletax/form',[saleTaxReportController::class,'index'])->name('report.saletax');

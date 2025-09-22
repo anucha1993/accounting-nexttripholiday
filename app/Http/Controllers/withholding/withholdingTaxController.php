@@ -143,8 +143,8 @@ class withholdingTaxController extends Controller
 
         $totalPayable = $totalAmount - $totalWithholdingTax;
 
-        // สร้างรหัสเอกสารใหม่
-        $documentNumber = WithholdingTaxDocument::generateDocumentNumber();
+        // สร้างรหัสเอกสารใหม่ โดยส่ง document_date ไป
+        $documentNumber = WithholdingTaxDocument::generateDocumentNumber($request->document_date);
         $documentNumberNo = WithholdingTaxDocument::generateDocumentNumberNo();
 
         // บันทึกเอกสาร

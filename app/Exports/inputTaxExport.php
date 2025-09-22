@@ -57,7 +57,7 @@ class inputTaxExport implements FromCollection, WithHeadings, WithMapping, WithC
         return array_merge([
             ++$this->num,
             date('d/m/Y',strtotime($inputtaxs->input_tax_date_tax)),
-            $inputtaxs->input_tax_number_tax,
+            $inputtaxs->input_tax_ref,
             $inputtaxs->invoice->taxinvoice->taxinvoice_number ?? 'ไม่มีข้อมูล',
             $inputtaxs->quote->quoteWholesale->wholesale_name_th,
             $inputtaxs->quote->quoteWholesale->textid,

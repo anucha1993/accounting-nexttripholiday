@@ -40,9 +40,11 @@ class WithholdingTaxDocument extends Model
          return $this->total_withholding_tax;
     }
 
-public static function generateDocumentNumber(): string
+public static function generateDocumentNumber($documentDate = null): string
     {
-        $prefix = 'WT' . now()->format('Ym') . '-';
+        // ใช้ document_date ถ้ามี หรือใช้ now() เป็น fallback
+        $dateForPrefix = $documentDate ? \Carbon\Carbon::parse($documentDate) : now();
+        $prefix = 'WT' . $dateForPrefix->format('Ym') . '-';
         $lock   = 'lock:withholding:' . $prefix; // ล็อกต่อเดือน
 
         // ขอชื่อ lock (รอสูงสุด 5 วินาที)
