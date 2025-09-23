@@ -48,6 +48,7 @@
                             <th>รหัสลูกค้า</th>
                             <th>ชื่อลูกค้า</th>
                             <th>Email</th>
+                            <th>ลูกค้ามาจาก</th>
                             <th>เบอร์โทร</th>
                             <th>วันที่สร้าง</th>
                             <th class="text-center">จัดการ</th>
@@ -63,9 +64,10 @@
                                 <span class="text-muted small">{{ $customer->customer_address }}</span>
                             </td>
                             <td>{{ $customer->customer_email }}</td>
+                            <td>{{ $customer->campaign_source->campaign_source_name }}</td>
                             <td>{{ $customer->customer_tel }}</td>
                             <td class="d-none">{{ $customer->customer_address }}</td>
-                            <td>{{ $customer->created_at }}</td>
+                            <td>{{ date('d-m-Y', strtotime($customer->created_at)) }}</td>
                             <td class="text-center">
                                 @canany(['customer.edit'])
                                 <a href="{{ route('cus.edit', $customer->customer_id) }}" class="btn btn-warning btn-sm rounded-pill mr-1"><i class="fas fa-edit"></i> แก้ไข</a>

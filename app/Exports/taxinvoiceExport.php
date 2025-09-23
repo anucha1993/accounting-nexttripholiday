@@ -56,11 +56,11 @@ class taxinvoiceExport implements FromCollection, WithHeadings, WithMapping, Wit
         
        
 
-        if($taxinvoices->invoice_status === 'wait')
+        if($taxinvoices->taxinvoice_status === 'wait')
         {
             $invoice_status = 'รอดำเนินการ';
 
-        }elseif($taxinvoices->invoice_status === 'success')
+        }elseif($taxinvoices->taxinvoice_status === 'success')
         {
             $invoice_status = 'สำเร็จ';
         }else{

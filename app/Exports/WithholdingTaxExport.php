@@ -94,8 +94,19 @@ class WithholdingTaxExport implements FromCollection, WithHeadings, WithMapping,
         ];
     }
 
+   
+
     public function map($document): array
     {
+
+          if ($document->quote_id) 
+          {
+            $Documentname = $document->wholesale->wholesale_name_th ?? $document->customer->customer_name ?? '-';
+          }else{
+            $Documentname = $document->customer->customer_name ?? '-';
+          }
+
+
         return [
             ++$this->num,
             $document->document_number ?? '-',
@@ -103,6 +114,7 @@ class WithholdingTaxExport implements FromCollection, WithHeadings, WithMapping,
             $document->withholding_form ?? '-',
             optional($document->quote)->quote_number ?? '-',
             optional($document->customer)->customer_name ?? '-',
+            $Documentname,
             optional($document->customer)->customer_name ?? optional($document->wholesale)->wholesale_name_th ?? '-',
             $document->document_doc_date ? date('d/m/Y', strtotime($document->document_doc_date)) : '-',
             $document->total_payable ? number_format($document->total_payable, 2) : '0.00',

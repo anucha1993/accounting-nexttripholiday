@@ -151,12 +151,11 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
 
             </div>
             <div class="card-body">
- {{ $invoices->links('pagination::bootstrap-5') }}
+                  {{ $invoices->links('pagination::bootstrap-5') }}
                 <table class="table table quote-table " style="font-size: 12px; width: 100%">
                     <thead>
                         <tr>
                             <th>ลำดับ</th>
-                           
                             <th>เลขที่ใบแจ้งหนี้</th>
                             <th>เลขที่ใบเสนอราคา</th>
                             <th>วันที่ออกใบแจ้งหนี้</th>
@@ -166,7 +165,6 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
                             <th>ภาษีหัก ณ ที่จ่าย:บาท</th>
                             <th>สถานะ</th>
 
-       
                         </tr>
                     </thead>
 
@@ -231,117 +229,136 @@ if (!function_exists('getQuoteStatusPaymentReport')) {
         </div>
     </div>
 
-    <!-- ปุ่ม Export Excel ฝั่ง client -->
-
 <!-- SheetJS CDN -->
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 <script>
-    document.getElementById('export-table-excel').addEventListener('click', async function () {
-        try {
-            // แสดง Loading
-            this.disabled = true;
-            this.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>กำลังดาวน์โหลด...';
+    function handleExport() {
+        // Get button reference
+        const btn = document.getElementById('export-table-excel');
+        
+        // Disable button and show loading state
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>กำลังดาวน์โหลด...';
 
-            // ดึงข้อมูลทั้งหมดจาก API
-            const currentUrl = new URL(window.location.href);
-            const response = await fetch(`${currentUrl.pathname}/export${currentUrl.search}`);
-            
-            if (!response.ok) {
-                throw new Error('Failed to fetch data');
-            }
+        // Get current URL and build export URL with per_page=1000 to get all records
+        const currentUrl = new URL(window.location.href);
+        // Add or replace per_page parameter to get more records
+        const searchParams = new URLSearchParams(currentUrl.search);
+        searchParams.set('per_page', '1000'); // Request 1000 records (or more if needed)
+        const exportUrl = `${currentUrl.pathname}/export?${searchParams.toString()}`;
+        console.log('Fetching from URL:', exportUrl);
 
-            const data = await response.json();
-            
-            // สร้าง Workbook
-            const wb = XLSX.utils.book_new();
-            
-            // แปลงข้อมูลเป็นรูปแบบที่ต้องการ
-            const exportData = data.map((item, index) => ({
-                'ลำดับ': index + 1,
-                'เลขที่ใบแจ้งหนี้': item.invoice_number,
-                'เลขที่ใบเสนอราคา': item.quote?.quote_number || 'ไม่มีข้อมูล',
-                'วันที่ออกใบแจ้งหนี้': new Date(item.invoice_date).toLocaleDateString('th-TH'),
-                'ชื่อลูกค้า': item.invoiceCustomer?.customer_name || 'ไม่มีข้อมูล',
-                'Booking Code': item.invoice_booking,
-                'จำนวนเงิน (บาท)': parseFloat(item.invoice_grand_total).toFixed(2),
-                'ภาษีหัก ณ ที่จ่าย (บาท)': parseFloat(item.invoice_withholding_tax).toFixed(2),
-                'สถานะ': item.invoice_status === 'wait' ? 'รอดำเนินการ' : 
-                         item.invoice_status === 'cancel' ? 'ยกเลิก' : 
-                         item.invoice_status === 'success' ? 'สำเร็จ' : ''
-            }));
+        // Fetch data from API
+        fetch(exportUrl)
+            .then(response => {
+                console.log('Response received:', response);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data received:', data);
+                if (!data || data.length === 0) {
+                    throw new Error('No data received');
+                }
 
-            // สร้าง worksheet
-            const ws = XLSX.utils.json_to_sheet(exportData, { 
-                header: [
-                    'ลำดับ', 'เลขที่ใบแจ้งหนี้', 'เลขที่ใบเสนอราคา', 
-                    'วันที่ออกใบแจ้งหนี้', 'ชื่อลูกค้า', 'Booking Code',
-                    'จำนวนเงิน (บาท)', 'ภาษีหัก ณ ที่จ่าย (บาท)', 'สถานะ'
-                ]
+                // Log first record for debugging
+                if (data[0]) {
+                    console.log('Sample record:', {
+                        invoice_number: data[0].invoice_number,
+                        customer_name: data[0].invoice_customer?.customer_name,
+                        invoiceCustomer: data[0].invoiceCustomer?.customer_name
+                    });
+                }
+
+                // Create workbook
+                const wb = XLSX.utils.book_new();
+                
+                // Transform data
+                const exportData = data.map((item, index) => ({
+                    'ลำดับ': index + 1,
+                    'เลขที่ใบแจ้งหนี้': item.invoice_number,
+                    'เลขที่ใบเสนอราคา': item.quote?.quote_number || 'ไม่มีข้อมูล',
+                    'วันที่ออกใบแจ้งหนี้': new Date(item.invoice_date).toLocaleDateString('th-TH'),
+                    'ชื่อลูกค้า': item.invoice_customer?.customer_name || item.invoiceCustomer?.customer_name || 'ไม่มีข้อมูล',
+                    'Booking Code': item.invoice_booking,
+                    'จำนวนเงิน (บาท)': parseFloat(item.invoice_grand_total).toFixed(2),
+                    'ภาษีหัก ณ ที่จ่าย (บาท)': parseFloat(item.invoice_withholding_tax).toFixed(2),
+                    'สถานะ': item.invoice_status === 'wait' ? 'รอดำเนินการ' : 
+                             item.invoice_status === 'cancel' ? 'ยกเลิก' : 
+                             item.invoice_status === 'success' ? 'สำเร็จ' : ''
+                }));
+
+                // Create worksheet
+                const ws = XLSX.utils.json_to_sheet(exportData);
+
+                // Set column widths
+                ws['!cols'] = [
+                    {wch: 8},  // ลำดับ
+                    {wch: 15}, // เลขที่ใบแจ้งหนี้
+                    {wch: 15}, // เลขที่ใบเสนอราคา
+                    {wch: 15}, // วันที่
+                    {wch: 30}, // ชื่อลูกค้า
+                    {wch: 15}, // Booking
+                    {wch: 15}, // จำนวนเงิน
+                    {wch: 15}, // ภาษี
+                    {wch: 15}, // สถานะ
+                ];
+
+                // Add worksheet to workbook
+                XLSX.utils.book_append_sheet(wb, ws, "รายงานใบแจ้งหนี้");
+
+                // Generate filename
+                const today = new Date();
+                const date = today.toISOString().split('T')[0];
+                const filename = `invoice-report-${date}.xlsx`;
+
+                // Export file
+                XLSX.writeFile(wb, filename);
+            })
+            .catch(error => {
+                console.error('Export error:', error);
+                alert('เกิดข้อผิดพลาดในการส่งออกข้อมูล กรุณาลองใหม่อีกครั้ง');
+            })
+            .finally(() => {
+                // Reset button state
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa fa-file-excel me-2"></i>ส่งออกไฟล์ Excel';
             });
+    }
 
-            // จัดความกว้างคอลัมน์
-            const wscols = [
-                {wch: 8}, // ลำดับ
-                {wch: 15}, // เลขที่ใบแจ้งหนี้
-                {wch: 15}, // เลขที่ใบเสนอราคา
-                {wch: 15}, // วันที่
-                {wch: 30}, // ชื่อลูกค้า
-                {wch: 15}, // Booking
-                {wch: 15}, // จำนวนเงิน
-                {wch: 15}, // ภาษี
-                {wch: 15}, // สถานะ
-            ];
-            ws['!cols'] = wscols;
-
-            // เพิ่ม worksheet ลงใน workbook
-            XLSX.utils.book_append_sheet(wb, ws, "รายงานใบแจ้งหนี้");
-
-            // สร้างชื่อไฟล์
-            const today = new Date();
-            const date = today.toISOString().split('T')[0];
-            const filename = `invoice-report-${date}.xlsx`;
-
-            // Export ไฟล์
-            XLSX.writeFile(wb, filename);
-        } catch (error) {
-            console.error('Export error:', error);
-            alert('เกิดข้อผิดพลาดในการส่งออกข้อมูล กรุณาลองใหม่อีกครั้ง');
-        } finally {
-            // คืนค่าปุ่มกลับเป็นปกติ
-            const btn = document.getElementById('export-table-excel');
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa fa-file-excel me-2"></i>ส่งออกไฟล์ Excel';
-        }
-    });
+    // Add click event listener
+    document.getElementById('export-table-excel').addEventListener('click', handleExport);
 </script>
 
-    <script>
-        $(function() {
-            $(".rangDate").daterangepicker({
-                autoUpdateInput: false,
-                locale: {
-                    format: "DD/MM/YYYY",
-                },
-            });
-    
-            $(".rangDate").on("apply.daterangepicker", function(ev, picker) {
-                $(this).val(
-                    picker.startDate.format("DD/MM/YYYY") +
-                    " - " +
-                    picker.endDate.format("DD/MM/YYYY")
-                );
-    
-                // แปลงวันที่และใส่ลงใน input date_start และ date_end
-                $("input[name='date_start']").val(picker.startDate.format("YYYY-MM-DD"));
-                $("input[name='date_end']").val(picker.endDate.format("YYYY-MM-DD"));
-            });
-    
-            $(".rangDate").on("cancel.daterangepicker", function(ev, picker) {
-                $(this).val("");
-                $("input[name='date_start']").val("");
-                $("input[name='date_end']").val("");
-            });
+<script>
+    $(function() {
+        $(".rangDate").daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                format: "DD/MM/YYYY",
+            },
         });
-    </script>
+
+        $(".rangDate").on("apply.daterangepicker", function(ev, picker) {
+            $(this).val(
+                picker.startDate.format("DD/MM/YYYY") +
+                " - " +
+                picker.endDate.format("DD/MM/YYYY")
+            );
+
+            // แปลงวันที่และใส่ลงใน input date_start และ date_end
+            $("input[name='date_start']").val(picker.startDate.format("YYYY-MM-DD"));
+            $("input[name='date_end']").val(picker.endDate.format("YYYY-MM-DD"));
+        });
+
+        $(".rangDate").on("cancel.daterangepicker", function(ev, picker) {
+            $(this).val("");
+            $("input[name='date_start']").val("");
+            $("input[name='date_end']").val("");
+        });
+    });
+</script>
 
 @endsection

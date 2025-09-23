@@ -132,6 +132,19 @@
                     @csrf
                     @method('post')
                     <input type="hidden" name="payment_ids" value="{{ $receipts->pluck('payment_id') }}">
+                    <input type="hidden" name="export_all" value="1">
+                    <!-- ส่งค่า filters เพื่อใช้ในการ filter ข้อมูล -->
+                    @if(request()->filled(['date_start', 'date_end']))
+                    <input type="hidden" name="date_start" value="{{ request()->date_start }}">
+                    <input type="hidden" name="date_end" value="{{ request()->date_end }}">
+                    @endif
+                    @if(request()->filled('status'))
+                    <input type="hidden" name="status" value="{{ request()->status }}">
+                    @endif
+                    @if(request()->filled(['column_name', 'keyword']))
+                    <input type="hidden" name="column_name" value="{{ request()->column_name }}">
+                    <input type="hidden" name="keyword" value="{{ request()->keyword }}">
+                    @endif
                     <button type="submit" class="btn btn-success"> <i class="fa fa-file-excel"></i> Export To
                         Excel</button>
                 </form>
@@ -231,6 +244,7 @@
                                 @endif
                             </td>
                             <td>
+                                
 
                                 @if ($item->payment_status === 'cancel')
                                     -
@@ -246,13 +260,23 @@
                             </td>
 
                             <td>
-                                @if ($item->payment_status === 'success')
-                                    <span class="badge rounded-pill bg-success">สำเร็จ</span>
-                                @elseif ($item->payment_status === 'wait')
-                                    <span class="badge rounded-pill bg-warning">รอแนบสลิป</span>
-                                @elseif ($item->payment_status === null)
-                                    <span class="badge rounded-pill bg-secondary">ไม่มีข้อมูล</span>
-                                @endif
+                                 {{-- {!! getQuoteStatusPayment($item->quote) !!} --}}
+
+                                  @if ($item->payment_status === 'cancel')
+                                        <span class="badge rounded-pill bg-danger">ยกเลิก</span>
+                                    @elseif ($item->payment_type === 'refund')
+                                        @if ($item->payment_file_path !== null)
+                                            <span class="badge rounded-pill bg-success">คืนเงินแล้ว</span>
+                                        @else
+                                            <span class="badge rounded-pill bg-warning">รอคืนเงิน</span>
+                                        @endif
+                                    @elseif ($item->payment_status === 'success')
+                                        <span class="badge rounded-pill bg-success">สำเร็จ</span>
+                                    @elseif ($item->payment_status === 'wait')
+                                        <span class="badge rounded-pill bg-warning">รอแนบสลิป</span>
+                                    @elseif ($item->payment_status === null)
+                                        <span class="badge rounded-pill bg-secondary">ไม่มีข้อมูล</span>
+                                    @endif
                             </td>
 
                         </tr>

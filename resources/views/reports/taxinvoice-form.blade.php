@@ -86,6 +86,18 @@
                     @csrf
                     @method('post')
                     <input type="hidden" name="taxinvoice_ids" value="{{$taxinvoices->pluck('taxinvoice_id')}}">
+                    <input type="hidden" name="export_all" value="1">
+                    @if(request()->filled(['date_start', 'date_end']))
+                    <input type="hidden" name="date_start" value="{{ request()->date_start }}">
+                    <input type="hidden" name="date_end" value="{{ request()->date_end }}">
+                    @endif
+                    @if(request()->filled('status'))
+                    <input type="hidden" name="status" value="{{ request()->status }}">
+                    @endif
+                    @if(request()->filled(['column_name', 'keyword']))
+                    <input type="hidden" name="column_name" value="{{ request()->column_name }}">
+                    <input type="hidden" name="keyword" value="{{ request()->keyword }}">
+                    @endif
                     <button type="submit" class="btn btn-success"> <i class="fa fa-file-excel"></i> Export To Excel</button>
                 </form>
                 @endcanany

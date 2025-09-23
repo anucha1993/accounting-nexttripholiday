@@ -128,13 +128,14 @@ class taxinvoiceReportController extends Controller
                         $q->where('customer_texid', 'LIKE', "%{$keyword}%");
                     });
                     break;
+                    
 
                 default:
                     $query->where(function ($q) use ($keyword) {
                         $q->where('taxinvoice_number', 'LIKE', "%{$keyword}%")
                           ->orWhereHas('invoice', function ($q1) use ($keyword) {
                               $q1->where('invoice_number', 'LIKE', "%{$keyword}%")
-                                 ->orWhere('invoice_booking', 'LIKE', "%{$keyword}%");
+                                 ->orWhere('invoice_quote_number', 'LIKE', "%{$keyword}%");
                           })
                           ->orWhereHas('invoice.customer', function ($q2) use ($keyword) {
                               $q2->where('customer_name', 'LIKE', "%{$keyword}%")

@@ -269,9 +269,6 @@
                                         value="โฮลเซลล์คืนเงินแล้ว">โฮลเซลล์คืนเงินแล้ว</option>
                                 </select>
                             </div>
-
-
-
                             <div class="col-md-2">
                                 <label for="">ยังไม่ได้ทำ Check List</label>
                                 <select name="search_not_check_list" class="form-select" style="width: 100%">
@@ -299,24 +296,8 @@
                                          <option
                                         {{ request('search_not_check_list') == 'ยังไม่ได้ออกใบหัก.ณ.ที่จ่ายโฮลเซลล์' ? 'selected' : '' }}
                                         value="ยังไม่ได้ออกใบหัก.ณ.ที่จ่ายโฮลเซลล์">ยังไม่ได้ออกใบหัก.ณ.ที่จ่ายโฮลเซลล์</option>
-
                                 </select>
                             </div>
-                            {{-- 
-                            <div class="col-md-2">
-                                <label for="">ส่วนที่ต้องตาม</label>
-                                <select name="search_followed" class="form-select" style="width: 100%">
-                                    <option  {{ request('search_followed') == 'รอใบกำกับภาษีโฮลเซลล์' ? 'selected' : '' }} value="รอใบกำกับภาษีโฮลเซลล์  ">รอใบกำกับภาษีโฮลเซลล์  </option>
-                                </select>
-                            </div> --}}
-
-
-
-
-
-
-
-
                         </div>
 
                         <br>
