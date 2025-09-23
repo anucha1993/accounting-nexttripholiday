@@ -372,8 +372,8 @@
                       
                           @canany('wholesale.payment.create')
                             <a href="{{ route('paymentWholesale.quote', $quotationModel->quote_id) }}"
-                                class="d-flex align-items-center action-btn payment-wholesale{{ ($quotationModel->inputtaxTotalWholesale() <= 0) ? ' disabled' : '' }}"
-                                @if($quotationModel->inputtaxTotalWholesale() <= 0) tabindex="-1" aria-disabled="true" style="pointer-events: none; opacity: 0.6;" @endif>
+                                class="d-flex align-items-center action-btn payment-wholesale{{ ($quotationModel->inputtaxTotalWholesale() != 0) ? ' disabled' : '' }}"
+                                @if($quotationModel->inputtaxTotalWholesale() === NULL) tabindex="-1" aria-disabled="true" style="pointer-events: none; opacity: 0.6;" @endif>
                                 <i data-feather="dollar-sign"></i> ชำระเงินโฮลเซลล์
                             </a>
                             @endcanany

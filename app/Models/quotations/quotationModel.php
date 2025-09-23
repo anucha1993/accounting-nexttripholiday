@@ -503,12 +503,13 @@ public function getTotalOtherCost()
 
     public function inputtaxTotalWholesale()
     {
-        return $this->inputtax()
+        $total = $this->inputtax()
             ->whereIn('input_tax_type', [2, 4, 5, 6, 7])
             ->get()
             ->sum(function ($inputtax) {
                 return $inputtax->input_tax_grand_total;
             });
+        return $total ?? null;
     }
 
     public function invoiceVat()
