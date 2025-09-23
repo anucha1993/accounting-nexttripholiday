@@ -471,21 +471,52 @@
                         <div class="profit-item">
                             <span class="label">กำไรสุทธิ</span>
                             <span class="value">
-                                {{-- {{$quotationModel->CountPaymentWholesale()}} --}}
-
-                                @if ($quotationModel->CountPaymentWholesale() > 0 && $quotationModel->inputtaxTotalWholesale() > 0)
-                                    @if (
-                                        ($wholesalePayment > 0 || $paymentInputtaxTotal > 0) &&
-                                        (number_format($quotationModel->getWholesalePaidNet(), 2) === number_format($quotationModel->inputtaxTotalWholesale(), 2))
-                                    )
-                                        {{ number_format($quotationModel->getNetProfit(), 2) }}
-                                    @else
-                                        {{ number_format(0, 2) }}
-                                    @endif
-                                @elseif ($quotationModel->inputtaxTotalWholesale() == 0 && $quotationModel->GetDeposit() > 0)
-                                    {{-- เงื่อนไขใหม่: หากต้นทุนโฮลเซลล์ = 0 และลูกค้าชำระเงินแล้ว ให้แสดงกำไรได้ --}}
-                                    {{ number_format($quotationModel->getNetProfit(), 2) }}
+                                @php
+                                    $showProfit = false;
+                                    $profitAmount = 0;
+                                    
+                                    // Debug variables
+                                    $countWholesalePayment = $quotationModel->CountPaymentWholesale();
+                                    $inputtaxTotal = $quotationModel->inputtaxTotalWholesale();
+                                    $customerDeposit = $quotationModel->GetDeposit();
+                                    
+                                    // กรณีที่ 1: มีต้นทุนโฮลเซลล์
+                                    if ($countWholesalePayment > 0 && $inputtaxTotal > 0) {
+                                        $wholesalePaidNet = $quotationModel->getWholesalePaidNet();
+                                        
+                                        if (($wholesalePayment > 0 || $paymentInputtaxTotal > 0) && 
+                                            abs($wholesalePaidNet - $inputtaxTotal) < 0.01) {
+                                            $showProfit = true;
+                                            $profitAmount = $quotationModel->getNetProfit();
+                                        } else {
+                                            $profitAmount = 0;
+                                        }
+                                    }
+                                    // กรณีที่ 2: ไม่มีต้นทุนโฮลเซลล์
+                                    elseif ($inputtaxTotal == 0 && $customerDeposit > 0) {
+                                        $showProfit = true;
+                                        $profitAmount = $quotationModel->getNetProfit();
+                                    }
+                                    // กรณีอื่นๆ
+                                    else {
+                                        $profitAmount = 0;
+                                    }
+                                @endphp
+                                
+                                {{ number_format($profitAmount, 2) }}
+                                
+                                {{-- Debug information (แสดงเฉพาะในโหมด development) --}}
+                                @if(config('app.debug'))
+                                    <br><small class="text-muted">
+                                        Count: {{ $countWholesalePayment }}, 
+                                        InputTax: {{ number_format($inputtaxTotal, 2) }}, 
+                                        Deposit: {{ number_format($customerDeposit, 2) }}
+                                        @if($inputtaxTotal > 0)
+                                            <br>WholesalePaid: {{ number_format($quotationModel->getWholesalePaidNet(), 2) }}
+                                        @endif
+                                    </small>
                                 @endif
+                            </span>
                         </div>
                         @endcanany
                     </div>

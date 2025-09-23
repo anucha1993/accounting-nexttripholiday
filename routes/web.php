@@ -468,3 +468,9 @@ Route::prefix('cus')->group(function () {
 
 Route::get('/web-tour/sync', [WebTourSyncController::class, 'syncNow']);
 
+
+// Debug route for quotation filter
+Route::get('/debug-quotation/{quoteId}', function($quoteId) {
+    return App\Services\QuotationFilterDebugService::debugQuotation($quoteId);
+})->middleware('auth')->name('debug.quotation');
+

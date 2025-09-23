@@ -99,12 +99,6 @@ function getStatusBadgeCount($quoteCheckStatus, $quotations)
         $badges[] = 1;
     }
 
-    //     //ไฟล์ใบแจ้งหนี้ 7
-    // if (is_null($quoteCheckStatus->inv_status) || trim($quoteCheckStatus->inv_status) === 'ยังไม่ได้') {
-    //     $badges[] = 1;
-    // }
-       //ใบกำกับภาษีโฮลเซลล์ 8
-  
 
  
      if ($quotations->payment > 0 && $quotations->quote_status !== 'cancel') {
@@ -116,5 +110,35 @@ function getStatusBadgeCount($quoteCheckStatus, $quotations)
 
 
 
+if (!function_exists('isWaitingForTaxDocuments')) {
+/**
+ * ตรวจสอบว่ายังรอเอกสารภาษีอยู่หรือไม่
+ * @param mixed $quoteLogStatus
+ * @param mixed $quotations
+ * @return bool
+ */
+function isWaitingForTaxDocuments($quoteLogStatus, $quotations)
+{
+    if (!$quoteLogStatus) {
+        return false;
+    }
+
+    // เช็ครอใบกำกับภาษีโฮลเซลล์
+    $waitingWholesaleTax = false;
+    if (!empty($quotations->checkfileInputtax)) {
+        $waitingWholesaleTax = (is_null($quoteLogStatus->wholesale_tax_status) || 
+                               trim($quoteLogStatus->wholesale_tax_status) !== 'ได้รับแล้ว');
+    }
+
+    // เช็ครอใบหัก ณ ที่จ่ายลูกค้า
+    $waitingCustomerWithholding = false;
+    if ($quotations->quote_withholding_tax_status === 'Y') {
+        $waitingCustomerWithholding = (is_null($quoteLogStatus->withholding_tax_status) || 
+                                     trim($quoteLogStatus->withholding_tax_status) !== 'ออกแล้ว');
+    }
+
+    return $waitingWholesaleTax || $waitingCustomerWithholding;
+}
+}
 
 }

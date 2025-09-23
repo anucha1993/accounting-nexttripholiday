@@ -7,11 +7,13 @@ use App\Models\sales\saleModel;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SaleReportExport;
 use App\Models\wholesale\wholesaleModel;
 use App\Services\QuotationFilterService;
 use App\Services\QuotationFilterServiceOptimized;
+use App\Services\QuotationFilterServiceNew;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class saleReportController extends Controller
@@ -24,10 +26,17 @@ class saleReportController extends Controller
         
         $mode = $request->commission_mode ?? 'all';
         
+        // ใช้ Service ใหม่ที่มีเงื่อนไขการแสดงกำไรที่ถูกต้อง
         try {
-            $quotationSuccess = QuotationFilterServiceOptimized::filter($request);
+            $quotationSuccess = QuotationFilterServiceNew::filter($request);
         } catch (\Exception $e) {
-            $quotationSuccess = QuotationFilterService::filter($request);
+            // Fallback ไปใช้ Service เดิมถ้ามีปัญหา
+            Log::warning("QuotationFilterServiceNew failed in export, fallback to old service: " . $e->getMessage());
+            try {
+                $quotationSuccess = QuotationFilterServiceOptimized::filter($request);
+            } catch (\Exception $e2) {
+                $quotationSuccess = QuotationFilterService::filter($request);
+            }
         }
 
         if ($mode === 'total') {
@@ -87,12 +96,17 @@ class saleReportController extends Controller
                 ->get();
         }
 
-        // ได้เป็น Collection - ใช้ Service ที่เพิ่มประสิทธิภาพ
+        // ใช้ Service ใหม่ที่มีเงื่อนไขการแสดงกำไรที่ถูกต้อง
         try {
-            $quotationSuccess = QuotationFilterServiceOptimized::filter($request);
+            $quotationSuccess = QuotationFilterServiceNew::filter($request);
         } catch (\Exception $e) {
             // Fallback ไปใช้ Service เดิมถ้ามีปัญหา
-            $quotationSuccess = QuotationFilterService::filter($request);
+            Log::warning("QuotationFilterServiceNew failed, fallback to old service: " . $e->getMessage());
+            try {
+                $quotationSuccess = QuotationFilterServiceOptimized::filter($request);
+            } catch (\Exception $e2) {
+                $quotationSuccess = QuotationFilterService::filter($request);
+            }
         }
         
         // ตรวจสอบว่ามีการค้นหาหรือไม่
