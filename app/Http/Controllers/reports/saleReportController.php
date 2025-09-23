@@ -11,14 +11,24 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SaleReportExport;
 use App\Models\wholesale\wholesaleModel;
 use App\Services\QuotationFilterService;
+use App\Services\QuotationFilterServiceOptimized;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class saleReportController extends Controller
 {
     public function export(Request $request)
     {
+        // เพิ่ม time limit สำหรับ export
+        set_time_limit(600); // 10 นาที
+        ini_set('memory_limit', '1024M');
+        
         $mode = $request->commission_mode ?? 'all';
-        $quotationSuccess = QuotationFilterService::filter($request); // <- ได้เป็น Collection
+        
+        try {
+            $quotationSuccess = QuotationFilterServiceOptimized::filter($request);
+        } catch (\Exception $e) {
+            $quotationSuccess = QuotationFilterService::filter($request);
+        }
 
         if ($mode === 'total') {
             $quotationSuccess = $quotationSuccess->filter(function ($item) {
@@ -65,7 +75,7 @@ class saleReportController extends Controller
         $country        = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
 
         $user = Auth::user();
-        $userRoles = $user->getRoleNames();
+        $userRoles = $user->roles->pluck('name'); // แทน getRoleNames()
         if ($userRoles->contains('sale')) {
             $sales = saleModel::select('name', 'id')
                 ->where('id', $user->sale_id)
@@ -77,8 +87,13 @@ class saleReportController extends Controller
                 ->get();
         }
 
-        // ได้เป็น Collection
-        $quotationSuccess = QuotationFilterService::filter($request);
+        // ได้เป็น Collection - ใช้ Service ที่เพิ่มประสิทธิภาพ
+        try {
+            $quotationSuccess = QuotationFilterServiceOptimized::filter($request);
+        } catch (\Exception $e) {
+            // Fallback ไปใช้ Service เดิมถ้ามีปัญหา
+            $quotationSuccess = QuotationFilterService::filter($request);
+        }
         
         // ตรวจสอบว่ามีการค้นหาหรือไม่
         $hasSearch = $this->hasSearchCriteria($request);
