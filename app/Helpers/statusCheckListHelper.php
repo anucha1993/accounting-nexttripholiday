@@ -126,15 +126,15 @@ function isWaitingForTaxDocuments($quoteLogStatus, $quotations)
     // เช็ครอใบกำกับภาษีโฮลเซลล์
     $waitingWholesaleTax = false;
     if (!empty($quotations->checkfileInputtax)) {
-        $waitingWholesaleTax = (is_null($quoteLogStatus->wholesale_tax_status) || 
-                               trim($quoteLogStatus->wholesale_tax_status) !== 'ได้รับแล้ว');
+        $waitingWholesaleTax = (is_null($quoteLogStatus->input_tax_status) || 
+                               trim($quoteLogStatus->input_tax_status) !== 'success');
     }
 
     // เช็ครอใบหัก ณ ที่จ่ายลูกค้า
     $waitingCustomerWithholding = false;
     if ($quotations->quote_withholding_tax_status === 'Y') {
-        $waitingCustomerWithholding = (is_null($quoteLogStatus->withholding_tax_status) || 
-                                     trim($quoteLogStatus->withholding_tax_status) !== 'ออกแล้ว');
+        $waitingCustomerWithholding = (is_null($quoteLogStatus->input_tax_withholding_status) || 
+                                     trim($quoteLogStatus->input_tax_withholding_status) !== 'success');
     }
 
     return $waitingWholesaleTax || $waitingCustomerWithholding;

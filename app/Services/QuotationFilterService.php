@@ -75,7 +75,18 @@ class QuotationFilterService
             'quoteInvoice:invoice_quote_id,invoice_withholding_tax',
             
             // Customer relation
-            'customer:customer_id,customer_campaign_source,customer_name'
+            'customer:customer_id,customer_campaign_source,customer_name',
+            
+            // เพิ่ม relationship ที่จำเป็นสำหรับ getStatusBadgeCount
+            'quoteCheckStatus' => function($q) {
+                $q->select('quote_id', 'booking_email_status', 'quote_status', 'inv_status', 
+                          'depositslip_status', 'fullslip_status', 'passport_status', 'appointment_status', 
+                          'wholesale_skip_status', 'withholding_tax_status', 'wholesale_tax_status');
+            },
+            'quoteLogStatus' => function($q) {
+                $q->select('input_tax_quote_id', 'input_tax_status', 'input_tax_withholding_status');
+            },
+            'checkfileInputtax'
         ])->get();
 
         // Pre-calculate values เพื่อหลีกเลี่ยง N+1 Query
@@ -93,6 +104,21 @@ class QuotationFilterService
 
         return $processedQuotations->filter(function ($item) {
             try {
+                // เช็คสถานะงานว่าเสร็จหรือยัง - ถ้ายังไม่เสร็จ ไม่ให้แสดงกำไร
+                if (function_exists('getStatusBadgeCount')) {
+                    $statusCount = getStatusBadgeCount($item->quoteCheckStatus, $item);
+                    if ($statusCount > 0) {
+                        return false; // มีงานที่ยังไม่เสร็จ ไม่แสดงกำไร
+                    }
+                }
+
+                // เช็คว่ายังรอเอกสารภาษีหรือไม่
+                if (function_exists('isWaitingForTaxDocuments')) {
+                    if (isWaitingForTaxDocuments($item->quoteLogStatus, $item)) {
+                        return false; // ยังรอเอกสารภาษี ไม่แสดงกำไร
+                    }
+                }
+                
                 // ใช้ค่าที่ cache ไว้แล้ว
                 $customerPaid = $item->_cached_deposit - $item->_cached_refund;
                 $grandTotal = $item->quote_grand_total ?? 0;

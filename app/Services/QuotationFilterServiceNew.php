@@ -80,12 +80,12 @@ class QuotationFilterServiceNew
                 $q->select('invoice_quote_id', 'invoice_withholding_tax');
             },
             'quoteCheckStatus' => function($q) {
-                $q->select('quote_check_quote_id', 'booking_email_status', 'quote_status', 'inv_status', 
+                $q->select('quote_id', 'booking_email_status', 'quote_status', 'inv_status', 
                           'depositslip_status', 'fullslip_status', 'passport_status', 'appointment_status', 
                           'wholesale_skip_status', 'withholding_tax_status', 'wholesale_tax_status');
             },
             'quoteLogStatus' => function($q) {
-                $q->select('log_quote_id', 'wholesale_tax_status', 'withholding_tax_status');
+                $q->select('input_tax_quote_id', 'input_tax_status', 'input_tax_withholding_status');
             },
             'checkfileInputtax'
         ])->get();

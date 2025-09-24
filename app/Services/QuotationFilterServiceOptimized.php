@@ -85,7 +85,16 @@ class QuotationFilterServiceOptimized
                 $q->select('payment_wholesale_quote_id', 'payment_wholesale_total', 
                           'payment_wholesale_refund_total', 'payment_wholesale_refund_status',
                           'payment_wholesale_file_name');
-            }
+            },
+            'quoteCheckStatus' => function($q) {
+                $q->select('quote_id', 'booking_email_status', 'quote_status', 'inv_status', 
+                          'depositslip_status', 'fullslip_status', 'passport_status', 'appointment_status', 
+                          'wholesale_skip_status', 'withholding_tax_status', 'wholesale_tax_status');
+            },
+            'quoteLogStatus' => function($q) {
+                $q->select('input_tax_quote_id', 'input_tax_status', 'input_tax_withholding_status');
+            },
+            'checkfileInputtax' // เพิ่มเพื่อใช้ใน getStatusBadgeCount
         ])->orderBy('quote_date_start', 'desc')
           ->limit(5000) // จำกัดจำนวน
           ->get();
@@ -93,8 +102,23 @@ class QuotationFilterServiceOptimized
         // กรองด้วย Application Logic (ย่อให้เหลือเฉพาะที่จำเป็น)
         return $quotations->filter(function ($item) {
             try {
+                // เช็คสถานะงานว่าเสร็จหรือยัง - ถ้ายังไม่เสร็จ ไม่ให้แสดงกำไร
+                if (function_exists('getStatusBadgeCount')) {
+                    $statusCount = getStatusBadgeCount($item->quoteCheckStatus, $item);
+                    if ($statusCount > 0) {
+                        return false; // มีงานที่ยังไม่เสร็จ ไม่แสดงกำไร
+                    }
+                }
+
+                // เช็คว่ายังรอเอกสารภาษีหรือไม่
+                if (function_exists('isWaitingForTaxDocuments')) {
+                    if (isWaitingForTaxDocuments($item->quoteLogStatus, $item)) {
+                        return false; // ยังรอเอกสารภาษี ไม่แสดงกำไร
+                    }
+                }
+
                 // ใช้การคำนวณแบบง่าย
-                $inputtaxTotal = $this->getInputtaxTotal($item->quote_id);
+                $inputtaxTotal = self::getInputtaxTotal($item->quote_id);
                 
                 // กรณีไม่มีต้นทุนโฮลเซลล์ - ผ่านเลย
                 if ($inputtaxTotal == 0) {
@@ -102,7 +126,7 @@ class QuotationFilterServiceOptimized
                 }
                 
                 // กรณีมีต้นทุนโฮลเซลล์ - ตรวจสอบว่าชำระครบหรือยัง
-                $wholesalePaid = $this->getWholesalePaid($item->quote_id);
+                $wholesalePaid = self::getWholesalePaid($item->quote_id);
                 return abs($wholesalePaid - $inputtaxTotal) < 0.01;
                 
             } catch (\Exception $e) {
