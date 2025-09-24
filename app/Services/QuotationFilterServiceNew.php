@@ -17,7 +17,7 @@ class QuotationFilterServiceNew
         $user = Auth::user();
         $userRoles = $user->roles->pluck('name');
 
-        $query = quotationModel::where('quote_status', 'success');
+        $query = quotationModel::whereNotIn('quote_status', ['cancel', 'wait']);
 
         // User Role Filter
         if ($userRoles->contains('sale')) {
