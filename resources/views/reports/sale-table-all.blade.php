@@ -70,7 +70,7 @@
                     <td>{{ date('d/m/Y', strtotime($item->quote_date_start)) . '-' . date('d/m/Y', strtotime($item->quote_date_end)) }}
                     </td>
                     <td>{{ $item->quoteWholesale->code }}</td>
-                    <td>{{ $item->customer->customer_name }}{!! getStatusWhosaleInputTax($item->checkfileInputtax) !!}</td>
+                    <td>{{ $item->customer->customer_name }}</td>
                     <td>{{ $item->quoteCountry->iso2 }}</td>
                     <td><span data-bs-toggle="tooltip" data-bs-placement="top"
                             title="{{ $item->quote_tour_name ?? $item->quote_tour_name1 }}">{{ Str::limit($item->quote_tour_name ?? $item->quote_tour_name1, 20) }}</span>
