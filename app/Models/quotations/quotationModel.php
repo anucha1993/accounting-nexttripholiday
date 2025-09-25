@@ -112,7 +112,7 @@ class quotationModel extends Model
 
     public function InputTaxVat()
     {
-           return $this->hasMany(inputTaxModel::class, 'input_tax_quote_id', 'quote_id');
+           return $this->hasMany(inputTaxModel::class, 'input_tax_quote_number', 'quote_number');
     }
      public function InputTaxVatNew()
     {
@@ -344,7 +344,7 @@ public function getTotalInputTaxVatWithholding()
 
     public function checkfileInputtax()
     {
-        return $this->hasOne(inputTaxModel::class, 'input_tax_quote_id', 'quote_id')->where('input_tax_type', 0)->where('input_tax_status', 'success');
+        return $this->hasOne(inputTaxModel::class, 'input_tax_quote_number', 'quote_number')->where('input_tax_type', 0)->where('input_tax_status', 'success');
     }
     
 

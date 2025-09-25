@@ -124,12 +124,20 @@ class QuotationFilterService
                             // ตรวจสอบเพิ่มเติมจาก input_tax_file โดยตรงจาก InputTaxVat
                             $hasInputTaxFile = false;
                             
-                            // วนลูปเช็คทุก InputTaxVat ว่ามีไฟล์หรือไม่
+                            // วนลูปเช็คทุก InputTaxVat ว่ามีไฟล์หรือไม่ และต้องเป็น type 4 ด้วย
                             if ($item->InputTaxVat) {
                                 foreach ($item->InputTaxVat as $taxRecord) {
-                                    if (!empty($taxRecord->input_tax_file) && $taxRecord->input_tax_status === 'success') {
-                                        $hasInputTaxFile = true;
-                                        break; // พบไฟล์อย่างน้อยหนึ่งไฟล์ ไม่ต้องตรวจสอบต่อ
+                                    // ต้องมีไฟล์ และต้องเป็น type 4 (โฮลเซล) และสถานะต้องเป็น success
+                                    if (!empty($taxRecord->input_tax_file) 
+                                        && $taxRecord->input_tax_status === 'success'
+                                        && $taxRecord->input_tax_type == 4) {
+                                        
+                                        // เช็คเพิ่มเติมว่าไฟล์มีอยู่จริงหรือไม่
+                                        $filePath = public_path($taxRecord->input_tax_file);
+                                        if (file_exists($filePath)) {
+                                            $hasInputTaxFile = true;
+                                            break; // พบไฟล์อย่างน้อยหนึ่งไฟล์ ไม่ต้องตรวจสอบต่อ
+                                        }
                                     }
                                 }
                             }
@@ -137,21 +145,22 @@ class QuotationFilterService
                             // Log ข้อมูลโควต
                             Log::debug("Quote ID: {$item->quote_id}, Number: {$item->quote_number}, Tax Status: {$wholesaleTaxStatus}, Has File: " . ($hasInputTaxFile ? 'Yes' : 'No'));
                             
-                            // ตรวจสอบเงื่อนไขโดยตรง: ถ้าไม่ใช่ 'ได้รับแล้ว' หรือไม่มีไฟล์ แสดงว่ายังรอ
-                            $isWaiting = (is_null($wholesaleTaxStatus) || 
-                                         trim($wholesaleTaxStatus) !== 'ได้รับแล้ว') && 
-                                         !$hasInputTaxFile; // เพิ่มเงื่อนไขตรวจสอบไฟล์
-                                         
-                            if ($isWaiting) {
+                            // ใช้ฟังก์ชัน isWaitingForTaxDocuments เป็นเงื่อนไขหลักในการตัดสินใจ
+                            // ฟังก์ชันนี้จะตรวจสอบสถานะรอใบกำกับภาษีโฮลเซลล์เป็นหลัก
+                            $waitingForTax = isWaitingForTaxDocuments($item->quoteLogStatus, $item);
+                            
+                            if ($waitingForTax) {
                                 Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered out: รอใบกำกับภาษีโฮลเซลล์");
                                 return false; // ยังรอใบกำกับภาษีโฮลเซลล์ ไม่แสดงยอดขาย
                             }
                             
-                            // ใช้ฟังก์ชันตรวจสอบเพิ่มเติม (ใช้เฉพาะกรณีที่การตรวจสอบแบบตรงไม่พบปัญหา)
-                            $waitingForTax = isWaitingForTaxDocuments($item->quoteLogStatus, $item);
-                            if ($waitingForTax) {
-                                Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered out by isWaitingForTaxDocuments");
-                                return false; // ยังรอเอกสารภาษี ไม่แสดงกำไร
+                            // ตรวจสอบเพิ่มเติมจากฟังก์ชัน getStatusWhosaleInputTax
+                            if (function_exists('getStatusWhosaleInputTax')) {
+                                $status = getStatusWhosaleInputTax($item->quote_number);
+                                if (strpos($status, 'รอใบกำกับภาษีโฮลเซลล์') !== false) {
+                                    Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered by status: รอใบกำกับภาษีโฮลเซลล์");
+                                    return false; // ยังรอใบกำกับภาษีโฮลเซลล์ ไม่แสดงยอดขาย
+                                }
                             }
                         }
                     } catch (\Exception $e) {
