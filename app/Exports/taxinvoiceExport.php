@@ -42,7 +42,7 @@ class taxinvoiceExport implements FromCollection, WithHeadings, WithMapping, Wit
             'ลำดับ',
             'เลขที่ใบกำกับภาษี',
             'เลขที่ใบแจ้งหนี้',
-            'วันที่ออกใบแจ้งหนี้',
+            'วันที่ออกใบกำกับภาษี',
             'ชื่อลูกค้า',
             'Quotations',
             'จำนวนเงิน:บาท',

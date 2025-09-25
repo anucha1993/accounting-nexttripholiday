@@ -68,8 +68,8 @@ class QuotationFilterService
             // Wholesale payment relations
             'paymentWholesale:payment_wholesale_quote_id,payment_wholesale_total,payment_wholesale_refund_total,payment_wholesale_refund_status,payment_wholesale_file_name',
             
-            // Input tax relations
-            'InputTaxVat:input_tax_quote_id,input_tax_grand_total,input_tax_type,input_tax_file,input_tax_status,input_tax_withholding,input_tax_vat',
+            // Input tax relations - ตรวจสอบโดยไม่กรองสถานะ
+            'InputTaxVat:input_tax_id,input_tax_quote_id,input_tax_grand_total,input_tax_type,input_tax_file,input_tax_status,input_tax_withholding,input_tax_vat',
             
             // Invoice relations
             'quoteInvoice:invoice_quote_id,invoice_withholding_tax',
@@ -84,7 +84,7 @@ class QuotationFilterService
                           'wholesale_skip_status', 'withholding_tax_status', 'wholesale_tax_status');
             },
             'quoteLogStatus' => function($q) {
-                $q->select('input_tax_quote_id', 'input_tax_status', 'input_tax_withholding_status');
+                $q->select('input_tax_id', 'input_tax_quote_id', 'input_tax_status', 'input_tax_withholding_status');
             },
             'checkfileInputtax'
         ])->get();
@@ -112,10 +112,40 @@ class QuotationFilterService
                     }
                 }
 
-                // เช็คว่ายังรอเอกสารภาษีหรือไม่
+                // เช็คว่ายังรอเอกสารภาษีหรือไม่ - ตรวจสอบโดยตรงจากสถานะ
                 if (function_exists('isWaitingForTaxDocuments')) {
-                    if (isWaitingForTaxDocuments($item->quoteLogStatus, $item)) {
-                        return false; // ยังรอเอกสารภาษี ไม่แสดงกำไร
+                    try {
+                        // เช็คว่าต้องตรวจสอบสถานะภาษีหรือไม่ (มีต้นทุนโฮลเซลล์หรือไม่)
+                        if ($item->InputTaxVat && $item->InputTaxVat->count() > 0) {
+                            // ตรวจสอบสถานะของใบกำกับภาษีโฮลเซลล์
+                            $wholesaleTaxStatus = isset($item->quoteCheckStatus) ? 
+                                $item->quoteCheckStatus->wholesale_tax_status : null;
+                                
+                            // ตรวจสอบเพิ่มเติมจาก input_tax_file ซึ่งเป็นฟิลด์ที่ใช้แสดงสถานะในหน้า UI
+                            $hasInputTaxFile = !empty($item->checkfileInputtax) && !empty($item->checkfileInputtax->input_tax_file);
+                                
+                            // Log ข้อมูลโควต
+                            Log::debug("Quote ID: {$item->quote_id}, Number: {$item->quote_number}, Tax Status: {$wholesaleTaxStatus}, Has File: " . ($hasInputTaxFile ? 'Yes' : 'No'));
+                            
+                            // ตรวจสอบเงื่อนไขโดยตรง: ถ้าไม่ใช่ 'ได้รับแล้ว' หรือไม่มีไฟล์ แสดงว่ายังรอ
+                            $isWaiting = is_null($wholesaleTaxStatus) || 
+                                         trim($wholesaleTaxStatus) !== 'ได้รับแล้ว' || 
+                                         !$hasInputTaxFile; // เพิ่มเงื่อนไขตรวจสอบไฟล์
+                                         
+                            if ($isWaiting) {
+                                Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered out: รอใบกำกับภาษีโฮลเซลล์");
+                                return false; // ยังรอใบกำกับภาษีโฮลเซลล์ ไม่แสดงยอดขาย
+                            }
+                            
+                            // ใช้ฟังก์ชันตรวจสอบเพิ่มเติม (ใช้เฉพาะกรณีที่การตรวจสอบแบบตรงไม่พบปัญหา)
+                            $waitingForTax = isWaitingForTaxDocuments($item->quoteLogStatus, $item);
+                            if ($waitingForTax) {
+                                Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered out by isWaitingForTaxDocuments");
+                                return false; // ยังรอเอกสารภาษี ไม่แสดงกำไร
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        Log::error("Error checking tax document status for quote {$item->quote_id}: " . $e->getMessage());
                     }
                 }
                 
