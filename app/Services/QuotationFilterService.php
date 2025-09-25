@@ -121,15 +121,25 @@ class QuotationFilterService
                             $wholesaleTaxStatus = isset($item->quoteCheckStatus) ? 
                                 $item->quoteCheckStatus->wholesale_tax_status : null;
                                 
-                            // ตรวจสอบเพิ่มเติมจาก input_tax_file ซึ่งเป็นฟิลด์ที่ใช้แสดงสถานะในหน้า UI
-                            $hasInputTaxFile = !empty($item->checkfileInputtax) && !empty($item->checkfileInputtax->input_tax_file);
+                            // ตรวจสอบเพิ่มเติมจาก input_tax_file โดยตรงจาก InputTaxVat
+                            $hasInputTaxFile = false;
+                            
+                            // วนลูปเช็คทุก InputTaxVat ว่ามีไฟล์หรือไม่
+                            if ($item->InputTaxVat) {
+                                foreach ($item->InputTaxVat as $taxRecord) {
+                                    if (!empty($taxRecord->input_tax_file) && $taxRecord->input_tax_status === 'success') {
+                                        $hasInputTaxFile = true;
+                                        break; // พบไฟล์อย่างน้อยหนึ่งไฟล์ ไม่ต้องตรวจสอบต่อ
+                                    }
+                                }
+                            }
                                 
                             // Log ข้อมูลโควต
                             Log::debug("Quote ID: {$item->quote_id}, Number: {$item->quote_number}, Tax Status: {$wholesaleTaxStatus}, Has File: " . ($hasInputTaxFile ? 'Yes' : 'No'));
                             
                             // ตรวจสอบเงื่อนไขโดยตรง: ถ้าไม่ใช่ 'ได้รับแล้ว' หรือไม่มีไฟล์ แสดงว่ายังรอ
-                            $isWaiting = is_null($wholesaleTaxStatus) || 
-                                         trim($wholesaleTaxStatus) !== 'ได้รับแล้ว' || 
+                            $isWaiting = (is_null($wholesaleTaxStatus) || 
+                                         trim($wholesaleTaxStatus) !== 'ได้รับแล้ว') && 
                                          !$hasInputTaxFile; // เพิ่มเงื่อนไขตรวจสอบไฟล์
                                          
                             if ($isWaiting) {

@@ -128,8 +128,18 @@ function isWaitingForTaxDocuments($quoteLogStatus, $quotations)
 {
     // ตรวจสอบจากไฟล์ input_tax_file ก่อน (เพราะเป็นสิ่งที่ UI ใช้แสดงสถานะ)
     if (!empty($quotations->InputTaxVat) && $quotations->InputTaxVat->count() > 0) {
-        // ถ้าไม่มี checkfileInputtax หรือไม่มีไฟล์ input_tax_file แสดงว่ายังรอ
-        $hasInputTaxFile = !empty($quotations->checkfileInputtax) && !empty($quotations->checkfileInputtax->input_tax_file);
+        // ตรวจสอบโดยตรงจาก InputTaxVat แทนที่จะใช้ checkfileInputtax
+        $hasInputTaxFile = false;
+        
+        // วนลูปเช็คทุก InputTaxVat ว่ามีไฟล์หรือไม่
+        foreach ($quotations->InputTaxVat as $taxRecord) {
+            if (!empty($taxRecord->input_tax_file) && $taxRecord->input_tax_status === 'success') {
+                $hasInputTaxFile = true;
+                break; // พบไฟล์อย่างน้อยหนึ่งไฟล์ ไม่ต้องตรวจสอบต่อ
+            }
+        }
+        
+        // ถ้าไม่พบไฟล์ที่สมบูรณ์ใดๆ แสดงว่ายังรออยู่
         if (!$hasInputTaxFile) {
             return true; // ยังรอใบกำกับภาษีโฮลเซลล์ (ไม่มีไฟล์)
         }
