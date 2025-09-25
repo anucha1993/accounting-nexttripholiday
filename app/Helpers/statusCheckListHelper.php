@@ -132,61 +132,27 @@ function isWaitingForTaxDocuments($quoteLogStatus, $quotations)
         return true; // บังคับให้ไม่แสดงใน sales report
     }
     
-    // ทดสอบก่อนว่ามีการใช้ฟังก์ชัน getStatusWhosaleInputTax ได้หรือไม่
+    // เช็ค "รอใบกำกับภาษีโฮลเซลล์" โดยดูจากฐานข้อมูลเท่านั้น (ไม่เช็คไฟล์จริง)
     $hasWholesaleStatus = function_exists('getStatusWhosaleInputTax');
     if ($hasWholesaleStatus) {
-        $status = getStatusWhosaleInputTax($quotations->quote_number);
-        // ถ้ามีสถานะ "รอใบกำกับภาษีโฮลเซลล์" ไม่ว่าจะมีไฟล์หรือไม่ก็ตาม
-        if (strpos($status, 'รอใบกำกับภาษีโฮลเซลล์') !== false) {
-            \Illuminate\Support\Facades\Log::info("Quote {$quotations->quote_id} ({$quotations->quote_number}) filtered: has 'รอใบกำกับภาษีโฮลเซลล์' status");
-            return true; // ยังรอใบกำกับภาษีโฮลเซลล์ ไม่ควรแสดงในรายงาน
-        }
-    }
-    
-    // ตรวจสอบจากไฟล์ input_tax_file และต้องเป็น type 4
-    if (!empty($quotations->InputTaxVat) && $quotations->InputTaxVat->count() > 0) {
-        // เช็คว่ามี type 4 ที่ success หรือไม่
-        $hasValidTaxRecord = false;
-        foreach ($quotations->InputTaxVat as $taxRecord) {
-            if ($taxRecord->input_tax_status === 'success' && $taxRecord->input_tax_type == 4) {
-                $hasValidTaxRecord = true;
-                break;
+        // เช็คจาก checkfileInputtax object (เหมือนที่ UI ใช้)
+        if (isset($quotations->checkfileInputtax)) {
+            $status = getStatusWhosaleInputTax($quotations->checkfileInputtax);
+            if (strpos($status, 'รอใบกำกับภาษีโฮลเซลล์') !== false) {
+                \Illuminate\Support\Facades\Log::info("Quote {$quotations->quote_id} ({$quotations->quote_number}) filtered: waiting for wholesale tax documents");
+                return true; // ยังรอใบกำกับภาษีโฮลเซลล์ ไม่แสดงในรายงาน
             }
-        }
-        
-        // ถ้าไม่มี record type 4 ที่ success แสดงว่ายังรอใบกำกับภาษี
-        if (!$hasValidTaxRecord) {
-            \Illuminate\Support\Facades\Log::info("Quote {$quotations->quote_id} ({$quotations->quote_number}) waiting for tax documents: no valid tax record found");
-            return true; // ยังรอใบกำกับภาษีโฮลเซลล์
-        }
-    }
-
-    // ตรวจสอบสถานะภาษีโฮลเซลล์จาก quoteCheckStatus
-    if (isset($quotations->quoteCheckStatus)) {
-        // ถ้า wholesale_tax_status ไม่ใช่ 'ได้รับแล้ว' แสดงว่ายังรอใบกำกับภาษีอยู่
-        if ((is_null($quotations->quoteCheckStatus->wholesale_tax_status) || 
-             trim($quotations->quoteCheckStatus->wholesale_tax_status) !== 'ได้รับแล้ว')) {
-             
-            // ต้องตรวจสอบว่ามีต้นทุนโฮลเซลล์หรือไม่ด้วย
-            $hasWholesaleCost = !empty($quotations->InputTaxVat) && $quotations->InputTaxVat->count() > 0;
-            if ($hasWholesaleCost) {
-                // มีต้นทุนโฮลเซลล์และยังไม่ได้รับใบกำกับภาษี = รอใบกำกับภาษีโฮลเซลล์
+        } else {
+            // fallback เช็คจาก quote_number
+            $status = getStatusWhosaleInputTax($quotations->quote_number);
+            if (strpos($status, 'รอใบกำกับภาษีโฮลเซลล์') !== false) {
+                \Illuminate\Support\Facades\Log::info("Quote {$quotations->quote_id} ({$quotations->quote_number}) filtered: waiting for wholesale tax documents (fallback)");
                 return true;
             }
         }
     }
     
-    // ตรวจสอบจาก quoteLogStatus เพิ่มเติม
-    if ($quoteLogStatus) {
-        // ถ้ามี InputTaxVat และ input_tax_status ไม่ใช่ 'success' แสดงว่ายังรอใบกำกับภาษี
-        if (!empty($quotations->InputTaxVat) && $quotations->InputTaxVat->count() > 0) {
-            if (is_null($quoteLogStatus->input_tax_status) || trim($quoteLogStatus->input_tax_status) !== 'success') {
-                return true;
-            }
-        }
-    }
-
-    // เช็ครอใบหัก ณ ที่จ่ายลูกค้า
+    // เช็ครอใบหัก ณ ที่จ่ายลูกค้า (เฉพาะอันนี้เท่านั้น)
     if ($quotations->quote_withholding_tax_status === 'Y' && $quoteLogStatus) {
         if (is_null($quoteLogStatus->input_tax_withholding_status) || 
             trim($quoteLogStatus->input_tax_withholding_status) !== 'success') {
@@ -194,7 +160,7 @@ function isWaitingForTaxDocuments($quoteLogStatus, $quotations)
         }
     }
 
-    // ถ้ามาถึงจุดนี้แสดงว่าไม่รอเอกสารภาษีใดๆ
+    // ถ้ามาถึงจุดนี้แสดงว่าไม่รอเอกสารภาษีที่สำคัญ
     return false;
 }
 }

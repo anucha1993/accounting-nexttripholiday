@@ -67,14 +67,8 @@ if (!function_exists('getStatusWhosaleInputTax')) {
                     ->where('input_tax_file', '!=', '')
                     ->get();
                 
-                $hasFile = false;
-                foreach ($records as $record) {
-                    $filePath = public_path($record->input_tax_file);
-                    if (file_exists($filePath)) {
-                        $hasFile = true;
-                        break;
-                    }
-                }
+                // เช็คจากฐานข้อมูลเท่านั้น ไม่เช็คไฟล์จริง
+                $hasFile = $records->count() > 0;
                 
                 \Illuminate\Support\Facades\Log::debug("getStatusWhosaleInputTax (null): QuoteID: {$quoteId}, hasFile: " . ($hasFile ? 'YES' : 'NO'));
                 
@@ -121,14 +115,8 @@ if (!function_exists('getStatusWhosaleInputTax')) {
                     ->where('input_tax_file', '!=', '')
                     ->get();
                 
-                $hasFile = false;
-                foreach ($records as $record) {
-                    $filePath = public_path($record->input_tax_file);
-                    if (file_exists($filePath)) {
-                        $hasFile = true;
-                        break;
-                    }
-                }
+                // เช็คจากฐานข้อมูลเท่านั้น ไม่เช็คไฟล์จริง
+                $hasFile = $records->count() > 0;
                 
                 \Illuminate\Support\Facades\Log::debug("getStatusWhosaleInputTax (object): QuoteID: {$quoteId}, hasFile: " . ($hasFile ? 'YES' : 'NO'));
                 
