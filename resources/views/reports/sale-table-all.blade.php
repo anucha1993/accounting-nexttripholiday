@@ -49,6 +49,7 @@
                 <th>กำไรเฉลี่ย:คน</th>
                  @endif
                 <th>CommissionGroup</th>
+                <th>Debug</th>
 
             </tr>
         </thead>
@@ -91,6 +92,7 @@
                             }
                         @endphp
                         {{ $sourceName ?: 'none' }}
+
                     </td>
                     <td>{{ $item->Salename->name }}</td>
                     <td>{{ $item->quote_pax_total }}</td>
@@ -134,6 +136,15 @@
                                 type: {{ $commission['type'] ?? 'null' }}
                             </span> --}}
                         @endif
+                    </td>
+                    <td>
+                         @php
+                                                    $badgeCount = getStatusBadgeCount($item->quoteCheckStatus, $item);
+                                                @endphp
+                                                @if ($badgeCount > 0)
+                                                <span class="text-danger">ยังไม่ได้ทำ {{ $badgeCount }} รายการ</span>
+                                             
+                                                @endif
                     </td>
 
                 </tr>

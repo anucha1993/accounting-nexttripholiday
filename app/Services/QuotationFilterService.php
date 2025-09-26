@@ -14,18 +14,18 @@ class QuotationFilterService
         set_time_limit(300); // 5 นาที
         ini_set('memory_limit', '512M'); // เพิ่ม memory limit
         
-        Log::info("QuotationFilterService::filter() called - Starting filter process");
-        Log::info("FILTER DEBUG: Looking for specific quotes");
+        // Log::info("QuotationFilterService::filter() called - Starting filter process");
+        // Log::info("FILTER DEBUG: Looking for specific quotes");
         
-        // เพิ่ม log เพื่อดูค่า parameters ที่ส่งเข้ามา
-        Log::info("Request parameters:", [
-            'date_start' => $request->input('date_start'),
-            'date_end' => $request->input('date_end'),
-            'sale_id' => $request->input('sale_id'),
-            'wholsale_id' => $request->input('wholsale_id'),
-            'country_id' => $request->input('country_id'),
-            'keyword' => $request->input('keyword')
-        ]);
+        // // เพิ่ม log เพื่อดูค่า parameters ที่ส่งเข้ามา
+        // Log::info("Request parameters:", [
+        //     'date_start' => $request->input('date_start'),
+        //     'date_end' => $request->input('date_end'),
+        //     'sale_id' => $request->input('sale_id'),
+        //     'wholsale_id' => $request->input('wholsale_id'),
+        //     'country_id' => $request->input('country_id'),
+        //     'keyword' => $request->input('keyword')
+        // ]);
         
         $user = Auth::user();
         $userRoles = $user->roles->pluck('name'); // แก้ไข getRoleNames()
@@ -33,14 +33,14 @@ class QuotationFilterService
         // ถ้ามีการค้นหาด้วย keyword ให้ตรวจสอบการมีอยู่ของ quote ก่อน
         if ($request->filled('keyword')) {
             $checkQuote = quotationModel::where('quote_number', 'LIKE', "%{$request->keyword}%")->first();
-            if ($checkQuote) {
-                Log::info("Found quote before status filter:", [
-                    'quote_number' => $checkQuote->quote_number,
-                    'quote_status' => $checkQuote->quote_status
-                ]);
-            } else {
-                Log::info("Quote not found in database: {$request->keyword}");
-            }
+            // if ($checkQuote) {
+            //     Log::info("Found quote before status filter:", [
+            //         'quote_number' => $checkQuote->quote_number,
+            //         'quote_status' => $checkQuote->quote_status
+            //     ]);
+            // } else {
+            //     Log::info("Quote not found in database: {$request->keyword}");
+            // }
         }
 
         $query = quotationModel::whereIn('quote_status', ['success', 'invoice']);
@@ -86,17 +86,17 @@ class QuotationFilterService
             });
         }
 
-        Log::info("SQL Query:", ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
+        // Log::info("SQL Query:", ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
 
         // ดึงข้อมูลก่อน eager loading เพื่อตรวจสอบ
         $rawResults = $query->get();
-        Log::info("Raw SQL Results:", $rawResults->map(function($q) {
-            return [
-                'quote_number' => $q->quote_number,
-                'quote_status' => $q->quote_status,
-                'quote_id' => $q->quote_id
-            ];
-        })->toArray());
+        // Log::info("Raw SQL Results:", $rawResults->map(function($q) {
+        //     return [
+        //         'quote_number' => $q->quote_number,
+        //         'quote_status' => $q->quote_status,
+        //         'quote_id' => $q->quote_id
+        //     ];
+        // })->toArray());
 
         // แก้ปัญหา N+1 Query โดยใช้ Eager Loading ครบถ้วน
         $quotations = $query->with([
@@ -175,14 +175,24 @@ class QuotationFilterService
         });
 
         return $processedQuotations->filter(function ($item) {
-            Log::debug("Checking quote {$item->quote_id} ({$item->quote_number}) in filter");
+            // Log::debug("Checking quote {$item->quote_id} ({$item->quote_number}) in filter");
             
             try {
                 // เช็คสถานะงานว่าเสร็จหรือยัง - ถ้ายังไม่เสร็จ ไม่ให้แสดงกำไร
-                if ($item->quote_number === 'QT25080005') {
-                    Log::debug("QT25080005 - Status check starting...");
-                    Log::debug("QT25080005 - wholesale_skip_status: " . ($item->quoteCheckStatus->wholesale_skip_status ?? 'NULL'));
-                    Log::debug("QT25080005 - withholding_tax_status: " . ($item->quoteCheckStatus->withholding_tax_status ?? 'NULL'));
+                // if ($item->quote_number === 'QT25080005') {
+                //     Log::debug("QT25080005 - Status check starting...");
+                //     Log::debug("QT25080005 - wholesale_skip_status: " . ($item->quoteCheckStatus->wholesale_skip_status ?? 'NULL'));
+                //     Log::debug("QT25080005 - withholding_tax_status: " . ($item->quoteCheckStatus->withholding_tax_status ?? 'NULL'));
+                // }
+
+                  if (function_exists('getStatusBadgeCount')) {
+                    $statusCount = getStatusBadgeCount($item->quoteCheckStatus, $item);
+                    // if ($item->quote_number === 'QT25080036') {
+                    //     Log::debug("QT25080005 - Badge count: " . $statusCount);
+                    // }
+                    if ($statusCount > 0) {
+                        return false; // มีงานที่ยังไม่เสร็จ ไม่แสดงกำไร
+                    }
                 }
 
                 // ตรวจสอบ wholesale_skip_status ก่อน getStatusBadgeCount
@@ -193,15 +203,7 @@ class QuotationFilterService
                     return true;
                 }
 
-                if (function_exists('getStatusBadgeCount')) {
-                    $statusCount = getStatusBadgeCount($item->quoteCheckStatus, $item);
-                    if ($item->quote_number === 'QT25080005') {
-                        Log::debug("QT25080005 - Badge count: " . $statusCount);
-                    }
-                    if ($statusCount > 0) {
-                        return false; // มีงานที่ยังไม่เสร็จ ไม่แสดงกำไร
-                    }
-                }
+              
 
                 // เช็คว่ายังรอเอกสารภาษีหรือไม่ - ตรวจสอบโดยตรงจากสถานะ
                 
@@ -216,17 +218,18 @@ class QuotationFilterService
                     if (is_null($item->quoteCheckStatus->withholding_tax_status) || 
                         trim($item->quoteCheckStatus->withholding_tax_status) === NULL
                     ) {
-                        Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered: waiting for withholding tax");
+                        // Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered: waiting for withholding tax");
                         return false;
                     }
                 
                 }
+                
 
                 // เช็คสถานะใบกำกับภาษีโฮลเซลล์โดยใช้ฟังก์ชัน getStatusWhosaleInputTax
                 if (function_exists('getStatusWhosaleInputTax')) {
                     $status = getStatusWhosaleInputTax($item->checkfileInputtax);
                     if (strpos($status, 'รอใบกำกับภาษีโฮลเซลล์') !== false) {
-                        Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered: has 'รอใบกำกับภาษีโฮลเซลล์' status");
+                        // Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered: has 'รอใบกำกับภาษีโฮลเซลล์' status");
                         return false;
                     }
                 }
@@ -312,7 +315,7 @@ class QuotationFilterService
                     if ($hasWholesaleTax) {
                         $status = getStatusWhosaleInputTax($item->quote_number);
                         if (strpos($status, 'รอใบกำกับภาษีโฮลเซลล์') !== false) {
-                            Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered by getStatusWhosaleInputTax status: รอใบกำกับภาษีโฮลเซลล์");
+                            // Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered by getStatusWhosaleInputTax status: รอใบกำกับภาษีโฮลเซลล์");
                             return false; // ยังรอใบกำกับภาษีโฮลเซลล์ ไม่แสดงยอดขาย
                         }
                     }

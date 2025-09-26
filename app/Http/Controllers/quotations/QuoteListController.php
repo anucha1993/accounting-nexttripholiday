@@ -149,47 +149,7 @@ class QuoteListController extends Controller
             });
         }
 
-        // // Filter เงื่อนไขสถานะชำระโฮลเซลล์ (searchPaymentWholesaleStatus) ด้วย where
-        // if (!empty($searchPaymentWholesaleStatus) && $searchPaymentWholesaleStatus !== 'all') {
-        //     $quotationsQuery = $quotationsQuery->where(function ($query) use ($searchPaymentWholesaleStatus) {
-        //         if ($searchPaymentWholesaleStatus == '5') {
-        //             $query->whereDoesntHave('paymentWholesale', function ($q) {
-        //                 $q->where('payment_wholesale_total', '>', 0);
-        //             });
-        //         } elseif ($searchPaymentWholesaleStatus == '1') {
-        //             $query->whereHas('paymentWholesale', function ($q) {
-        //                 $q->where('payment_wholesale_total', '>', 0);
-        //             });
-        //         } elseif ($searchPaymentWholesaleStatus == '2') {
-        //             $query->whereHas('paymentWholesale', function ($q) {
-        //                 $q->where('payment_wholesale_total', '>', 0);
-        //             });
-        //         }
-        //     });
-        // }
-
-        
-
-        // Filter เงื่อนไขสถานะลูกค้าชำระเงิน (searchCustomerPayment) ด้วย where
-        if (!empty($searchCustomerPayment) && $searchCustomerPayment !== 'all') {
-            // ไม่สามารถ filter ด้วย SQL ตรงๆ ได้ ต้อง filter ใน PHP เพราะใช้ helper
-        }
-
-        // Filter เงื่อนไข badge checklist (searchNotLogStatus) ด้วย where ถ้าเป็นไปได้
-        if (!empty($searchNotLogStatus) && $searchNotLogStatus !== 'all') {
-            // ไม่สามารถ filter ด้วย SQL ตรงๆ ได้ ต้อง filter ใน PHP เพราะใช้ helper
-        }
-
-        // Filter เงื่อนไขสถานะลูกค้าชำระเงินเกิน (searchPaymentOverpays) ด้วย where ถ้าเป็นไปได้
-        if (!empty($searchPaymentOverpays) && $searchPaymentOverpays !== 'all') {
-            // ไม่สามารถ filter ด้วย SQL ตรงๆ ได้ ต้อง filter ใน PHP เพราะใช้ helper
-        }
-
-        // Filter เงื่อนไขสถานะชำระเงินโฮลเซลเกิน (searchPaymentWholesaleOverpays) ด้วย where ถ้าเป็นไปได้
-        if (!empty($searchPaymentWholesaleOverpays) && $searchPaymentWholesaleOverpays !== 'all') {
-            // ไม่สามารถ filter ด้วย SQL ตรงๆ ได้ ต้อง filter ใน PHP เพราะใช้ helper
-        }
-
+    
         $quotationsQuery = $quotationsQuery->orderBy('created_at', 'desc');
 
         // ดึง status ทั้งหมดของ getQuoteStatusQuotePayment และ getStatusWithholdingTax (ก่อน paginate/filter)
@@ -249,6 +209,22 @@ class QuoteListController extends Controller
                 ->values();
             $quotations->setCollection($filtered);
         }
+          if (!empty($searchNotLogStatus) && $searchNotLogStatus == 'ยังไม่ได้รับใบกำกับภาษีโฮลเซลล์') {
+            $filtered = $quotations
+                ->getCollection()
+                ->filter(function ($quotation) use ($searchNotLogStatus) {
+                
+                    $statusText = trim(strip_tags(getStatusWhosaleInputTax($quotation->checkfileInputtax)));
+                    $badgeList = preg_split('/\s{2,}|(?<=\S) (?=\S)/u', $statusText);
+                    return in_array('รอใบกำกับภาษีโฮลเซลล์', array_map('trim', $badgeList));
+                })
+                ->values();
+            $quotations->setCollection($filtered);
+        }
+
+       
+
+
         if (!empty($searchPaymentOverpays) && $searchPaymentOverpays !== 'all') {
             $filtered = $quotations
                 ->getCollection()

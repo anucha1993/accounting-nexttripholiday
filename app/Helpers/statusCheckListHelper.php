@@ -95,16 +95,9 @@ function getStatusBadgeCount($quoteCheckStatus, $quotations)
 ) {
     $badges[] = 1;
 }
-      // ตรวจสอบใบกำกับภาษีโฮลเซลล์ - เพิ่มการตรวจสอบที่ละเอียดขึ้น
-      // ตรวจสอบว่ามีข้อมูลต้นทุนโฮลเซลล์หรือไม่
-      if ($quotations->InputTaxVat && $quotations->InputTaxVat->count() > 0) {
-          // ตรวจสอบว่าได้รับใบกำกับภาษีแล้วหรือไม่
-          if (is_null($quoteCheckStatus->wholesale_tax_status) || 
-              trim($quoteCheckStatus->wholesale_tax_status) !== 'ได้รับแล้ว') {
-              // ยังรอใบกำกับภาษีโฮลเซลล์
-              $badges[] = 1;
-          }
-      }
+      if (is_null($quoteCheckStatus->wholesale_tax_status) || trim($quoteCheckStatus->wholesale_tax_status) !== 'ได้รับแล้ว' && !empty($quotations->checkfileInputtax)) {
+        $badges[] = 1;
+    }
 
 
  
@@ -126,86 +119,25 @@ if (!function_exists('isWaitingForTaxDocuments')) {
  */
 function isWaitingForTaxDocuments($quoteLogStatus, $quotations)
 {
-    // ตรวจสอบว่ามีต้นทุนโฮลเซลล์หรือไม่ก่อน
-    $hasWholesaleCost = false;
-    if (!empty($quotations->InputTaxVat) && $quotations->InputTaxVat->count() > 0) {
-        foreach ($quotations->InputTaxVat as $taxRecord) {
-            if ($taxRecord->input_tax_type == 4) { // ประเภทโฮลเซล
-                $hasWholesaleCost = true;
-                break;
-            }
-        }
-    }
-    
-    // ถ้าไม่มีต้นทุนโฮลเซลล์ ไม่จำเป็นต้องรอเอกสารใดๆ
-    if (!$hasWholesaleCost) {
+    if (!$quoteLogStatus) {
         return false;
     }
-    
-    // ทดสอบก่อนว่ามีการใช้ฟังก์ชัน getStatusWhosaleInputTax ได้หรือไม่
-    $hasWholesaleStatus = function_exists('getStatusWhosaleInputTax');
-    if ($hasWholesaleStatus) {
-        $status = getStatusWhosaleInputTax($quotations->quote_number);
-        // ถ้ามีสถานะ "รอใบกำกับภาษีโฮลเซลล์" ไม่ว่าจะมีไฟล์หรือไม่ก็ตาม
-        if (strpos($status, 'รอใบกำกับภาษีโฮลเซลล์') !== false) {
-            \Illuminate\Support\Facades\Log::info("Quote {$quotations->quote_id} ({$quotations->quote_number}) filtered: has 'รอใบกำกับภาษีโฮลเซลล์' status");
-            return true; // ยังรอใบกำกับภาษีโฮลเซลล์ ไม่ควรแสดงในรายงาน
-        }
-    }
-    
-    // ตรวจสอบจากไฟล์ input_tax_file และต้องเป็น type 4
-    if (!empty($quotations->InputTaxVat) && $quotations->InputTaxVat->count() > 0) {
-        // เช็คว่ามี type 4 ที่ success หรือไม่
-        $hasValidTaxRecord = false;
-        foreach ($quotations->InputTaxVat as $taxRecord) {
-            if ($taxRecord->input_tax_status === 'success' && $taxRecord->input_tax_type == 4) {
-                $hasValidTaxRecord = true;
-                break;
-            }
-        }
-        
-        // ถ้าไม่มี record type 4 ที่ success แสดงว่ายังรอใบกำกับภาษี
-        if (!$hasValidTaxRecord) {
-            \Illuminate\Support\Facades\Log::info("Quote {$quotations->quote_id} ({$quotations->quote_number}) waiting for tax documents: no valid tax record found");
-            return true; // ยังรอใบกำกับภาษีโฮลเซลล์
-        }
-    }
 
-    // ตรวจสอบสถานะภาษีโฮลเซลล์จาก quoteCheckStatus
-    if (isset($quotations->quoteCheckStatus)) {
-        // ถ้า wholesale_tax_status ไม่ใช่ 'ได้รับแล้ว' แสดงว่ายังรอใบกำกับภาษีอยู่
-        if ((is_null($quotations->quoteCheckStatus->wholesale_tax_status) || 
-             trim($quotations->quoteCheckStatus->wholesale_tax_status) !== 'ได้รับแล้ว')) {
-             
-            // ต้องตรวจสอบว่ามีต้นทุนโฮลเซลล์หรือไม่ด้วย
-            $hasWholesaleCost = !empty($quotations->InputTaxVat) && $quotations->InputTaxVat->count() > 0;
-            if ($hasWholesaleCost) {
-                // มีต้นทุนโฮลเซลล์และยังไม่ได้รับใบกำกับภาษี = รอใบกำกับภาษีโฮลเซลล์
-                return true;
-            }
-        }
-    }
-    
-    // ตรวจสอบจาก quoteLogStatus เพิ่มเติม
-    if ($quoteLogStatus) {
-        // ถ้ามี InputTaxVat และ input_tax_status ไม่ใช่ 'success' แสดงว่ายังรอใบกำกับภาษี
-        if (!empty($quotations->InputTaxVat) && $quotations->InputTaxVat->count() > 0) {
-            if (is_null($quoteLogStatus->input_tax_status) || trim($quoteLogStatus->input_tax_status) !== 'success') {
-                return true;
-            }
-        }
+    // เช็ครอใบกำกับภาษีโฮลเซลล์
+    $waitingWholesaleTax = false;
+    if (!empty($quotations->checkfileInputtax)) {
+        $waitingWholesaleTax = (is_null($quoteLogStatus->input_tax_status) || 
+                               trim($quoteLogStatus->input_tax_status) !== 'success');
     }
 
     // เช็ครอใบหัก ณ ที่จ่ายลูกค้า
-    if ($quotations->quote_withholding_tax_status === 'Y' && $quoteLogStatus) {
-        if (is_null($quoteLogStatus->input_tax_withholding_status) || 
-            trim($quoteLogStatus->input_tax_withholding_status) !== 'success') {
-            return true;
-        }
+    $waitingCustomerWithholding = false;
+    if ($quotations->quote_withholding_tax_status === 'Y') {
+        $waitingCustomerWithholding = (is_null($quoteLogStatus->input_tax_withholding_status) || 
+                                     trim($quoteLogStatus->input_tax_withholding_status) !== 'success');
     }
 
-    // ถ้ามาถึงจุดนี้แสดงว่าไม่รอเอกสารภาษีใดๆ
-    return false;
+    return $waitingWholesaleTax || $waitingCustomerWithholding;
 }
 }
 
