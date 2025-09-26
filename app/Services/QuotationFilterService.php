@@ -14,6 +14,9 @@ class QuotationFilterService
         set_time_limit(300); // 5 นาที
         ini_set('memory_limit', '512M'); // เพิ่ม memory limit
         
+        Log::info("QuotationFilterService::filter() called - Starting filter process");
+        Log::info("FILTER DEBUG: Looking for Quote ID 195 specifically");
+        
         $user = Auth::user();
         $userRoles = $user->roles->pluck('name'); // แก้ไข getRoleNames()
 
@@ -62,21 +65,18 @@ class QuotationFilterService
 
         // แก้ปัญหา N+1 Query โดยใช้ Eager Loading ครบถ้วน
         $quotations = $query->with([
+            // Customer relation
+            'customer:customer_id,customer_name,customer_campaign_source',
             // Payment relations - จำกัดเฉพาะ field ที่ใช้
             'quotePayments:payment_quote_id,payment_total,payment_type,payment_status,payment_file_path',
-            
             // Wholesale payment relations
             'paymentWholesale:payment_wholesale_quote_id,payment_wholesale_total,payment_wholesale_refund_total,payment_wholesale_refund_status,payment_wholesale_file_name',
-            
             // Input tax relations - ตรวจสอบโดยไม่กรองสถานะ
             'InputTaxVat:input_tax_id,input_tax_quote_id,input_tax_grand_total,input_tax_type,input_tax_file,input_tax_status,input_tax_withholding,input_tax_vat',
-            
             // Invoice relations
             'quoteInvoice:invoice_quote_id,invoice_withholding_tax',
-            
             // Customer relation
             'customer:customer_id,customer_campaign_source,customer_name',
-            
             // เพิ่ม relationship ที่จำเป็นสำหรับ getStatusBadgeCount
             'quoteCheckStatus' => function($q) {
                 $q->select('quote_id', 'booking_email_status', 'quote_status', 'inv_status', 
@@ -87,7 +87,39 @@ class QuotationFilterService
                 $q->select('input_tax_id', 'input_tax_quote_id', 'input_tax_status', 'input_tax_withholding_status');
             },
             'checkfileInputtax'
-        ])->get();
+        ])->get()->filter(function($quotation) {
+            // ตรวจสอบว่ามีการใช้ฟังก์ชัน getStatusWhosaleInputTax
+            if (!function_exists('getStatusWhosaleInputTax')) {
+                return true; // ถ้าไม่มีฟังก์ชัน ให้แสดงทุกรายการ // 
+            }
+            
+            // ใช้เงื่อนไขเดียวกับ getStatusWhosaleInputTax
+            if ($quotation->InputTaxVat && $quotation->InputTaxVat->count() > 0) {
+                $hasValidFile = false;
+                foreach ($quotation->InputTaxVat as $record) {
+                    if ($record->input_tax_status === 'success' && 
+                        $record->input_tax_type == 4 && 
+                        !empty($record->input_tax_file)) {
+                        $filePath = public_path($record->input_tax_file);
+                        if (file_exists($filePath)) {
+                            $hasValidFile = true;
+                            break;
+                        }
+                    }
+                }
+                // แสดงเฉพาะรายการที่มีใบกำกับภาษีโฮลเซลแล้ว
+                return $hasValidFile;
+            }
+            return true; // ถ้าไม่มี InputTaxVat ให้แสดงรายการนั้น
+        });
+
+        Log::info("FILTER DEBUG: Retrieved " . $quotations->count() . " quotations from database");
+        $quote195 = $quotations->where('quote_id', 195)->first();
+        if ($quote195) {
+            Log::info("FILTER DEBUG: Found Quote 195 ({$quote195->quote_number}) in database results");
+        } else {
+            Log::info("FILTER DEBUG: Quote 195 NOT found in database results");
+        }
 
         // Pre-calculate values เพื่อหลีกเลี่ยง N+1 Query
         $processedQuotations = $quotations->map(function($item) {
@@ -103,6 +135,8 @@ class QuotationFilterService
         });
 
         return $processedQuotations->filter(function ($item) {
+            Log::debug("Checking quote {$item->quote_id} ({$item->quote_number}) in filter");
+            
             try {
                 // เช็คสถานะงานว่าเสร็จหรือยัง - ถ้ายังไม่เสร็จ ไม่ให้แสดงกำไร
                 if (function_exists('getStatusBadgeCount')) {
@@ -113,6 +147,15 @@ class QuotationFilterService
                 }
 
                 // เช็คว่ายังรอเอกสารภาษีหรือไม่ - ตรวจสอบโดยตรงจากสถานะ
+                // เช็คสถานะใบกำกับภาษีโฮลเซลล์โดยใช้ฟังก์ชัน getStatusWhosaleInputTax
+                if (function_exists('getStatusWhosaleInputTax')) {
+                    $status = getStatusWhosaleInputTax($item->checkfileInputtax);
+                    if (strpos($status, 'รอใบกำกับภาษีโฮลเซลล์') !== false) {
+                        Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered: has 'รอใบกำกับภาษีโฮลเซลล์' status");
+                        return false;
+                    }
+                }
+
                 if (function_exists('isWaitingForTaxDocuments')) {
                     try {
                         // เช็คว่าต้องตรวจสอบสถานะภาษีหรือไม่ (มีต้นทุนโฮลเซลล์หรือไม่)
@@ -145,28 +188,30 @@ class QuotationFilterService
                             // Log ข้อมูลโควต
                             Log::debug("Quote ID: {$item->quote_id}, Number: {$item->quote_number}, Tax Status: {$wholesaleTaxStatus}, Has File: " . ($hasInputTaxFile ? 'Yes' : 'No'));
                             
-                            // ใช้ฟังก์ชัน isWaitingForTaxDocuments เป็นเงื่อนไขหลักในการตัดสินใจ
-                            // ฟังก์ชันนี้จะตรวจสอบสถานะรอใบกำกับภาษีโฮลเซลล์เป็นหลัก
-                            $waitingForTax = isWaitingForTaxDocuments($item->quoteLogStatus, $item);
-                            
-                            if ($waitingForTax) {
-                                Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered out: รอใบกำกับภาษีโฮลเซลล์");
-                                return false; // ยังรอใบกำกับภาษีโฮลเซลล์ ไม่แสดงยอดขาย
+                            // ตรวจสอบว่ามี InputTaxVat ที่เป็นประเภทโฮลเซล (type 4) หรือไม่
+                            $hasWholesaleTax = false;
+                            foreach ($item->InputTaxVat as $taxRecord) {
+                                if ($taxRecord->input_tax_type == 4) {
+                                    $hasWholesaleTax = true;
+                                    break;
+                                }
                             }
                             
-                            // ตรวจสอบเพิ่มเติมจากฟังก์ชัน getStatusWhosaleInputTax
-                            if (function_exists('getStatusWhosaleInputTax')) {
-                                $status = getStatusWhosaleInputTax($item->quote_number);
-                                if (strpos($status, 'รอใบกำกับภาษีโฮลเซลล์') !== false) {
-                                    Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered by status: รอใบกำกับภาษีโฮลเซลล์");
-                                    return false; // ยังรอใบกำกับภาษีโฮลเซลล์ ไม่แสดงยอดขาย
-                                }
+                            // ถ้าไม่มีต้นทุนโฮลเซล ไม่ต้องตรวจสอบใบกำกับภาษี
+                            if (!$hasWholesaleTax) {
+                                Log::debug("Quote {$item->quote_id} ({$item->quote_number}): No wholesale tax records, skipping tax document check");
+                            }
+                            else {
+                                // ตัดเงื่อนไขรอใบกำกับภาษีโฮลเซลล์ออก - ไม่กรองอะไร
+                                Log::debug("Quote {$item->quote_id} ({$item->quote_number}): Has wholesale tax, but skipping tax document filter");
                             }
                         }
                     } catch (\Exception $e) {
                         Log::error("Error checking tax document status for quote {$item->quote_id}: " . $e->getMessage());
                     }
                 }
+
+                
                 
                 // ใช้ค่าที่ cache ไว้แล้ว
                 $customerPaid = $item->_cached_deposit - $item->_cached_refund;
@@ -175,6 +220,27 @@ class QuotationFilterService
                 // เช็คเงื่อนไขพื้นฐานก่อน
                 if ($customerPaid < $grandTotal) {
                     return false;
+                }
+                
+                // เช็คสถานะใบกำกับภาษีโฮลเซลล์อีกรอบ (สำคัญมาก) - เฉพาะโควตที่มี InputTaxVat ประเภท 4
+                if (function_exists('getStatusWhosaleInputTax') && $item->InputTaxVat && $item->InputTaxVat->count() > 0) {
+                    // ตรวจสอบว่ามี InputTaxVat ที่เป็นประเภทโฮลเซล (type 4) หรือไม่
+                    $hasWholesaleTax = false;
+                    foreach ($item->InputTaxVat as $taxRecord) {
+                        if ($taxRecord->input_tax_type == 4) {
+                            $hasWholesaleTax = true;
+                            break;
+                        }
+                    }
+                    
+                    // ถ้ามีต้นทุนโฮลเซล จึงจะตรวจสอบสถานะรอใบกำกับภาษี
+                    if ($hasWholesaleTax) {
+                        $status = getStatusWhosaleInputTax($item->quote_number);
+                        if (strpos($status, 'รอใบกำกับภาษีโฮลเซลล์') !== false) {
+                            Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered by getStatusWhosaleInputTax status: รอใบกำกับภาษีโฮลเซลล์");
+                            return false; // ยังรอใบกำกับภาษีโฮลเซลล์ ไม่แสดงยอดขาย
+                        }
+                    }
                 }
 
                 // ใช้ pre-calculated values

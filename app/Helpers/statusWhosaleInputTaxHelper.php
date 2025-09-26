@@ -7,19 +7,25 @@ if (!function_exists('getStatusWhosaleInputTax')) {
         if (is_string($inputTax)) {
             $quoteId = $inputTax;
             
-            // กรณีพิเศษ - บังคับให้ QT25090717 มีสถานะ "รอใบกำกับภาษีโฮลเซลล์"
-            if ($quoteId === 'QT25090717') {
-                \Illuminate\Support\Facades\Log::info("Force status for QT25090717: รอใบกำกับภาษีโฮลเซลล์");
-                return '<span class="badge rounded-pill bg-warning text-black">รอใบกำกับภาษีโฮลเซลล์</span>';
-            }
-            
-            // ดึงข้อมูลอย่างชัดเจนด้วย Query Builder
-            $hasFile = \Illuminate\Support\Facades\DB::table('input_tax')
+            // ดึงข้อมูลจาก DB และต้องเป็น type 4 (โฮลเซล) และมีไฟล์จริงในระบบ
+            $records = \Illuminate\Support\Facades\DB::table('input_tax')
                 ->where('input_tax_quote_number', $quoteId)
                 ->where('input_tax_status', 'success')
+                ->where('input_tax_type', 4) // ต้องเป็นประเภทโฮลเซล
                 ->whereNotNull('input_tax_file')
                 ->where('input_tax_file', '!=', '')
-                ->exists();
+                ->get();
+            
+            $hasFile = false;
+            foreach ($records as $record) {
+                $filePath = public_path($record->input_tax_file);
+                if (file_exists($filePath)) {
+                    $hasFile = true;
+                    break;
+                }
+            }
+            
+            \Illuminate\Support\Facades\Log::debug("getStatusWhosaleInputTax (string): QuoteID: {$quoteId}, hasFile: " . ($hasFile ? 'YES' : 'NO'));
             
             \Illuminate\Support\Facades\Log::debug("getStatusWhosaleInputTax (string): QuoteID: {$quoteId}, hasFile: " . ($hasFile ? 'YES' : 'NO'));
             

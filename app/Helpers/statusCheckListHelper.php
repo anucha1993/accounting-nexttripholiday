@@ -126,10 +126,20 @@ if (!function_exists('isWaitingForTaxDocuments')) {
  */
 function isWaitingForTaxDocuments($quoteLogStatus, $quotations)
 {
-    // กรณีพิเศษ - บังคับให้ QT25090717 มีสถานะ "รอใบกำกับภาษีโฮลเซลล์"
-    if (isset($quotations->quote_number) && $quotations->quote_number === 'QT25090717') {
-        \Illuminate\Support\Facades\Log::info("Force QT25090717 to be filtered from reports: waiting for tax documents");
-        return true; // บังคับให้ไม่แสดงใน sales report
+    // ตรวจสอบว่ามีต้นทุนโฮลเซลล์หรือไม่ก่อน
+    $hasWholesaleCost = false;
+    if (!empty($quotations->InputTaxVat) && $quotations->InputTaxVat->count() > 0) {
+        foreach ($quotations->InputTaxVat as $taxRecord) {
+            if ($taxRecord->input_tax_type == 4) { // ประเภทโฮลเซล
+                $hasWholesaleCost = true;
+                break;
+            }
+        }
+    }
+    
+    // ถ้าไม่มีต้นทุนโฮลเซลล์ ไม่จำเป็นต้องรอเอกสารใดๆ
+    if (!$hasWholesaleCost) {
+        return false;
     }
     
     // ทดสอบก่อนว่ามีการใช้ฟังก์ชัน getStatusWhosaleInputTax ได้หรือไม่

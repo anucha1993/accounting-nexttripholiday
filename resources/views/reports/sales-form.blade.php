@@ -436,7 +436,7 @@
                                 <input type="hidden" name="date_end" value="{{ $request->date_end }}">
                             </div>
 
-                            <div class="col-md-2">
+                            {{-- <div class="col-md-2">
                                 <label class="form-label"><i class="fas fa-flag me-1"></i>สถานะ</label>
                                 <select name="status" class="form-select">
                                     <option value="">ทั้งหมด</option>
@@ -463,7 +463,7 @@
                                     <option @if ($request->column_name === 'customer_texid') selected @endif value="customer_texid">
                                         เลขประจำตัวผู้เสียภาษี</option>
                                 </select>
-                            </div>
+                            </div> --}}
 
 
                             <div class="col-md-2">
