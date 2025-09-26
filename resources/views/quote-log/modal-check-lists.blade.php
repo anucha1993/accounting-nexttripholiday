@@ -216,6 +216,7 @@
                 {{ optional($quoteLog)->withholding_tax_updated_at ? Carbon::parse($quoteLog->withholding_tax_updated_at)->format('d-m-Y : H:m:s') : '' }}
                 โดย {{ optional($quoteLog)->withholding_tax_created_at ?? 'ไม่ทราบ' }}
             </small>
+            
             <ul >
                 <li class="list-group-item">
                 <input type="checkbox" class="form-check-input me-2" id="wholesale_skip_status"

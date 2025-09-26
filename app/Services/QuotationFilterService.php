@@ -15,12 +15,35 @@ class QuotationFilterService
         ini_set('memory_limit', '512M'); // เพิ่ม memory limit
         
         Log::info("QuotationFilterService::filter() called - Starting filter process");
-        Log::info("FILTER DEBUG: Looking for Quote ID 195 specifically");
+        Log::info("FILTER DEBUG: Looking for specific quotes");
+        
+        // เพิ่ม log เพื่อดูค่า parameters ที่ส่งเข้ามา
+        Log::info("Request parameters:", [
+            'date_start' => $request->input('date_start'),
+            'date_end' => $request->input('date_end'),
+            'sale_id' => $request->input('sale_id'),
+            'wholsale_id' => $request->input('wholsale_id'),
+            'country_id' => $request->input('country_id'),
+            'keyword' => $request->input('keyword')
+        ]);
         
         $user = Auth::user();
         $userRoles = $user->roles->pluck('name'); // แก้ไข getRoleNames()
 
-        $query = quotationModel::where('quote_status', 'success');
+        // ถ้ามีการค้นหาด้วย keyword ให้ตรวจสอบการมีอยู่ของ quote ก่อน
+        if ($request->filled('keyword')) {
+            $checkQuote = quotationModel::where('quote_number', 'LIKE', "%{$request->keyword}%")->first();
+            if ($checkQuote) {
+                Log::info("Found quote before status filter:", [
+                    'quote_number' => $checkQuote->quote_number,
+                    'quote_status' => $checkQuote->quote_status
+                ]);
+            } else {
+                Log::info("Quote not found in database: {$request->keyword}");
+            }
+        }
+
+        $query = quotationModel::whereIn('quote_status', ['success', 'invoice']);
 
         if ($userRoles->contains('sale')) {
             $query->where('quote_sale', $user->sale_id);
@@ -63,6 +86,18 @@ class QuotationFilterService
             });
         }
 
+        Log::info("SQL Query:", ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
+
+        // ดึงข้อมูลก่อน eager loading เพื่อตรวจสอบ
+        $rawResults = $query->get();
+        Log::info("Raw SQL Results:", $rawResults->map(function($q) {
+            return [
+                'quote_number' => $q->quote_number,
+                'quote_status' => $q->quote_status,
+                'quote_id' => $q->quote_id
+            ];
+        })->toArray());
+
         // แก้ปัญหา N+1 Query โดยใช้ Eager Loading ครบถ้วน
         $quotations = $query->with([
             // Customer relation
@@ -88,8 +123,19 @@ class QuotationFilterService
             },
             'checkfileInputtax'
         ])->get()->filter(function($quotation) {
+            Log::debug("Filtering quote: {$quotation->quote_number}", [
+                'quote_id' => $quotation->quote_id,
+                'status' => $quotation->quote_status,
+                'has_wholesale_skip_status' => isset($quotation->quoteCheckStatus) ? 'yes' : 'no',
+                'wholesale_skip_status' => isset($quotation->quoteCheckStatus) ? $quotation->quoteCheckStatus->wholesale_skip_status : 'N/A',
+                'has_InputTaxVat' => $quotation->InputTaxVat ? 'yes' : 'no',
+                'InputTaxVat_count' => $quotation->InputTaxVat ? $quotation->InputTaxVat->count() : 0,
+                'quoteCheckStatus_full' => isset($quotation->quoteCheckStatus) ? json_encode($quotation->quoteCheckStatus) : 'null'
+            ]);
+
             // ตรวจสอบว่ามีการใช้ฟังก์ชัน getStatusWhosaleInputTax
             if (!function_exists('getStatusWhosaleInputTax')) {
+                Log::debug("getStatusWhosaleInputTax function not found for quote: {$quotation->quote_number}");
                 return true; // ถ้าไม่มีฟังก์ชัน ให้แสดงทุกรายการ // 
             }
             
@@ -113,13 +159,7 @@ class QuotationFilterService
             return true; // ถ้าไม่มี InputTaxVat ให้แสดงรายการนั้น
         });
 
-        Log::info("FILTER DEBUG: Retrieved " . $quotations->count() . " quotations from database");
-        $quote195 = $quotations->where('quote_id', 195)->first();
-        if ($quote195) {
-            Log::info("FILTER DEBUG: Found Quote 195 ({$quote195->quote_number}) in database results");
-        } else {
-            Log::info("FILTER DEBUG: Quote 195 NOT found in database results");
-        }
+     
 
         // Pre-calculate values เพื่อหลีกเลี่ยง N+1 Query
         $processedQuotations = $quotations->map(function($item) {
@@ -139,8 +179,25 @@ class QuotationFilterService
             
             try {
                 // เช็คสถานะงานว่าเสร็จหรือยัง - ถ้ายังไม่เสร็จ ไม่ให้แสดงกำไร
+                if ($item->quote_number === 'QT25080005') {
+                    Log::debug("QT25080005 - Status check starting...");
+                    Log::debug("QT25080005 - wholesale_skip_status: " . ($item->quoteCheckStatus->wholesale_skip_status ?? 'NULL'));
+                    Log::debug("QT25080005 - withholding_tax_status: " . ($item->quoteCheckStatus->withholding_tax_status ?? 'NULL'));
+                }
+
+                // ตรวจสอบ wholesale_skip_status ก่อน getStatusBadgeCount
+                if (isset($item->quoteCheckStatus) && $item->quoteCheckStatus->wholesale_skip_status === 'ไม่ต้องการออก') {
+                    if ($item->quote_number === 'QT25080005') {
+                        Log::debug("QT25080005 - Skipping badge count check due to wholesale_skip_status");
+                    }
+                    return true;
+                }
+
                 if (function_exists('getStatusBadgeCount')) {
                     $statusCount = getStatusBadgeCount($item->quoteCheckStatus, $item);
+                    if ($item->quote_number === 'QT25080005') {
+                        Log::debug("QT25080005 - Badge count: " . $statusCount);
+                    }
                     if ($statusCount > 0) {
                         return false; // มีงานที่ยังไม่เสร็จ ไม่แสดงกำไร
                     }
@@ -148,18 +205,21 @@ class QuotationFilterService
 
                 // เช็คว่ายังรอเอกสารภาษีหรือไม่ - ตรวจสอบโดยตรงจากสถานะ
                 
-                // ตรวจสอบเงื่อนไขใบหัก ณ ที่จ่าย
+                //ตรวจสอบเงื่อนไขใบหัก ณ ที่จ่าย
                 if (isset($item->quoteCheckStatus)) {
-                    if (
-                        (is_null($item->quoteCheckStatus->wholesale_skip_status) || 
-                         $item->quoteCheckStatus->wholesale_skip_status !== 'ไม่ต้องการออก')
-                        && 
-                        (is_null($item->quoteCheckStatus->withholding_tax_status) || 
-                         trim($item->quoteCheckStatus->withholding_tax_status) === 'ยังไม่ได้ออก')
+                    // ถ้า wholesale_skip_status ไม่ใช่ null และเป็น 'ไม่ต้องการออก' ให้แสดงรายการนี้
+                    if ($item->quoteCheckStatus->wholesale_skip_status === 'ไม่ต้องการออก') {
+                        return true;
+                    }
+                    
+                    // ถ้าไม่มีสถานะ หรือ สถานะเป็น 'ยังไม่ได้ออก' ให้กรองออก
+                    if (is_null($item->quoteCheckStatus->withholding_tax_status) || 
+                        trim($item->quoteCheckStatus->withholding_tax_status) === NULL
                     ) {
                         Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered: waiting for withholding tax");
                         return false;
                     }
+                
                 }
 
                 // เช็คสถานะใบกำกับภาษีโฮลเซลล์โดยใช้ฟังก์ชัน getStatusWhosaleInputTax
