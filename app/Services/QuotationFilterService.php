@@ -147,6 +147,21 @@ class QuotationFilterService
                 }
 
                 // เช็คว่ายังรอเอกสารภาษีหรือไม่ - ตรวจสอบโดยตรงจากสถานะ
+                
+                // ตรวจสอบเงื่อนไขใบหัก ณ ที่จ่าย
+                if (isset($item->quoteCheckStatus)) {
+                    if (
+                        (is_null($item->quoteCheckStatus->wholesale_skip_status) || 
+                         $item->quoteCheckStatus->wholesale_skip_status !== 'ไม่ต้องการออก')
+                        && 
+                        (is_null($item->quoteCheckStatus->withholding_tax_status) || 
+                         trim($item->quoteCheckStatus->withholding_tax_status) === 'ยังไม่ได้ออก')
+                    ) {
+                        Log::info("Quote {$item->quote_id} ({$item->quote_number}) filtered: waiting for withholding tax");
+                        return false;
+                    }
+                }
+
                 // เช็คสถานะใบกำกับภาษีโฮลเซลล์โดยใช้ฟังก์ชัน getStatusWhosaleInputTax
                 if (function_exists('getStatusWhosaleInputTax')) {
                     $status = getStatusWhosaleInputTax($item->checkfileInputtax);
