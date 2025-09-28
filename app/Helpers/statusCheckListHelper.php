@@ -49,9 +49,10 @@ function getStatusBadge($quoteCheckStatus, $quotations)
     $badges[] = '<span class="badge rounded-pill bg-danger">ยังไม่ได้ออกใบหัก.ณ.ที่จ่ายโฮลเซลล์</span>';
 }
 
-     if ($quotations->payment > 0 && $quotations->quote_status !== 'cancel') {
+     // ตรวจสอบว่ามีการชำระเงินหรือไม่
+     if (($quotations->GetDeposit() > 0 || ($quotations->payment && $quotations->payment->payment_total > 0)) && $quotations->quote_status !== 'cancel') {
             return implode(' ', $badges);
-        }
+     }
 
    
 }
@@ -101,9 +102,10 @@ function getStatusBadgeCount($quoteCheckStatus, $quotations)
 
 
  
-     if ($quotations->payment > 0 && $quotations->quote_status !== 'cancel') {
+     // ตรวจสอบว่ามีการชำระเงินหรือไม่
+     if (($quotations->GetDeposit() > 0 || ($quotations->payment && $quotations->payment->payment_total > 0)) && $quotations->quote_status !== 'cancel') {
          return count($badges);
-    }
+     }
 
   
 }

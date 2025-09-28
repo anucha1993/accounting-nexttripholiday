@@ -284,11 +284,34 @@ public function getTotalInputTaxVatWithholding()
     }
     public function GetDeposit()
     {
-        return $this->payment()->where('payment_status', '!=', 'cancel')->where('payment_type', '!=', 'refund')->get()->sum('payment_total');
+        if ($this->relationLoaded('quotePayments')) {
+            return $this->quotePayments
+                ->where('payment_status', '!=', 'cancel')
+                ->where('payment_type', '!=', 'refund')
+                ->sum('payment_total');
+        }
+        return $this->payment()
+            ->where('payment_status', '!=', 'cancel')
+            ->where('payment_type', '!=', 'refund')
+            ->get()
+            ->sum('payment_total');
     }
+    
     public function Refund()
     {
-        return $this->payment()->where('payment_status', '!=', 'cancel')->where('payment_type', '=', 'refund')->where('payment_file_path', '!=', null)->get()->sum('payment_total');
+        if ($this->relationLoaded('quotePayments')) {
+            return $this->quotePayments
+                ->where('payment_status', '!=', 'cancel')
+                ->where('payment_type', 'refund')
+                ->whereNotNull('payment_file_path')
+                ->sum('payment_total');
+        }
+        return $this->payment()
+            ->where('payment_status', '!=', 'cancel')
+            ->where('payment_type', '=', 'refund')
+            ->where('payment_file_path', '!=', null)
+            ->get()
+            ->sum('payment_total');
     }
 
     // // Accessor เพื่อดึงข้อมูล country public function GetDeposit()

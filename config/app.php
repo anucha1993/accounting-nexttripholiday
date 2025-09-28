@@ -169,6 +169,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\AppServiceProvider::class,
+        App\Providers\QueryLogServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         
     ])->toArray(),

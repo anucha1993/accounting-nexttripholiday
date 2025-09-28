@@ -1,0 +1,8 @@
+[2025-09-27 09:05:26] local.ERROR: Command "serb" is not defined. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"serb\" is not defined. at /Users/ap.dev/Desktop/Projects/accounting-nexttripholiday/vendor/symfony/console/Application.php:737)
+[stacktrace]
+#0 /Users/ap.dev/Desktop/Projects/accounting-nexttripholiday/vendor/symfony/console/Application.php(266): Symfony\\Component\\Console\\Application->find('serb')
+#1 /Users/ap.dev/Desktop/Projects/accounting-nexttripholiday/vendor/symfony/console/Application.php(175): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#2 /Users/ap.dev/Desktop/Projects/accounting-nexttripholiday/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(201): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#3 /Users/ap.dev/Desktop/Projects/accounting-nexttripholiday/artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#4 {main}
+"} 

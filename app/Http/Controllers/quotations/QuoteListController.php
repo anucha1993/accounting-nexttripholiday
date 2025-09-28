@@ -24,6 +24,9 @@ class QuoteListController extends Controller
 
     public function index(Request $request)
     {
+        set_time_limit(600); // 10 นาที
+        ini_set('memory_limit', '1024M');
+        
         $perPage = $request->input('per_page', 50);
 
         if ($request->has('search_keyword') || $request->has('search_period_start') || $request->has('search_not_check_list') || $request->has('search_period_end') || $request->has('search_booking_start') || $request->has('search_booking_end')) {
@@ -61,7 +64,127 @@ class QuoteListController extends Controller
         $userRoles = $user->getRoleNames();
 
 
-        $quotationsQuery = quotationModel::with('Salename', 'quoteCustomer', 'quoteWholesale', 'paymentWholesale', 'quoteInvoice', 'quoteLogStatus', 'airline', 'quoteCountry');
+        $quotationsQuery = quotationModel::with([
+            'Salename:id,name',
+            'quoteCustomer:customer_id,customer_name,customer_campaign_source',
+            'quoteWholesale:id,wholesale_name_th',
+            'quoteInvoice',
+            'quoteLogStatus',
+            'airline:id,travel_name',
+            'quoteCountry:id,country_name_th',
+            'creditNote',
+            'debitNote',
+            // Payments with optimized loading including sum calculations
+            'quotePayments' => function($query) {
+                $query->select([
+                    'payments.payment_id',
+                    'payments.payment_quote_id',
+                    'payments.payment_total',
+                    'payments.payment_type',
+                    'payments.payment_status',
+                    'payments.payment_file_path',
+                    DB::raw('SUM(CASE WHEN payment_status != "cancel" THEN payment_total ELSE 0 END) as total_payments')
+                ])
+                ->where(function($q) {
+                    $q->where('payment_status', '!=', 'cancel')
+                      ->where(function($sq) {
+                          $sq->where('payment_type', '!=', 'refund')
+                            ->orWhere(function($ssq) {
+                                $ssq->where('payment_type', 'refund')
+                                   ->whereNotNull('payment_file_path');
+                            });
+                      });
+                })
+                ->groupBy([
+                    'payments.payment_id',
+                    'payments.payment_quote_id',
+                    'payments.payment_total',
+                    'payments.payment_type',
+                    'payments.payment_status',
+                    'payments.payment_file_path'
+                ]);
+            },
+            // Payment Wholesale with optimized loading and eager loading
+            'paymentWholesale' => function($query) {
+                $query->select([
+                    'payment_wholesale_id',
+                    'payment_wholesale_quote_id',
+                    'payment_wholesale_file_name',
+                    'payment_wholesale_refund_status',
+                    'payment_wholesale_total',
+                    'payment_wholesale_refund_total'
+                ])
+                ->where(function($q) {
+                    $q->where('payment_wholesale_file_name', '!=', '')
+                      ->orWhere('payment_wholesale_refund_status', 'success')
+                      ->orWhere('payment_wholesale_refund_status', '!=', 'success');
+                })
+                ->groupBy([
+                    'payment_wholesale_id',
+                    'payment_wholesale_quote_id',
+                    'payment_wholesale_file_name',
+                    'payment_wholesale_refund_status',
+                    'payment_wholesale_total',
+                    'payment_wholesale_refund_total'
+                ]);
+            },
+            // Input Tax with optimized loading
+            'InputTaxVat' => function($query) {
+                $query->select([
+                    'input_tax_id',
+                    'input_tax_quote_id', 
+                    'input_tax_quote_number',
+                    'input_tax_type',
+                    'input_tax_status',
+                    'input_tax_file',
+                    'input_tax_grand_total',
+                    'input_tax_withholding',
+                    'input_tax_vat'
+                ])
+                ->where('input_tax_status', 'success')
+                ->whereIn('input_tax_type', [2, 4, 5, 6, 7])
+                ->groupBy([
+                    'input_tax_id',
+                    'input_tax_quote_id', 
+                    'input_tax_quote_number',
+                    'input_tax_type',
+                    'input_tax_status',
+                    'input_tax_file',
+                    'input_tax_grand_total',
+                    'input_tax_withholding',
+                    'input_tax_vat'
+                ]);
+            },
+            // Quote Log Status with optimized loading
+            'quoteLog' => function($query) {
+                $query->select(
+                    'quote_id',
+                    'booking_email_status',
+                    'invoice_status', 
+                    'slip_status',
+                    'passport_status',
+                    'appointment_status',
+                    'withholding_tax_status',
+                    'wholesale_tax_status'
+                );
+            },
+            'checkfileInputtax'
+        ])->select([
+            'quote_id',
+            'quote_number',
+            'quote_date',
+            'quote_date_start',
+            'quote_sale',
+            'quote_wholesale',
+            'quote_country',
+            'quote_airline',
+            'quote_pax_total',
+            'quote_grand_total',
+            'quote_tour_name',
+            'quote_tour_name1',
+            'quote_booking',
+            'created_at'
+        ]);
 
         if ($searchKeyword) {
             $quotationsQuery = $quotationsQuery->where(function ($q) use ($searchKeyword) {
@@ -256,7 +379,10 @@ class QuoteListController extends Controller
         $SumTotal = $quotations->sum('quote_grand_total');
 
         $SumPaymentTotal = $quotations->getCollection()->sum(function($quotation) {
-    return $quotation->GetDeposit() - $quotation->Refund();
+    // แปลงผลลัพธ์เป็นตัวเลขก่อนนำมาคำนวณ
+    $deposit = is_numeric($quotation->GetDeposit()) ? $quotation->GetDeposit() : 0;
+    $refund = is_numeric($quotation->Refund()) ? $quotation->Refund() : 0;
+    return $deposit - $refund;
 });
         
 
