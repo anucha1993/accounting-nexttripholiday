@@ -33,12 +33,12 @@
                     </select>
                     
                 </div>
-                <div class="col-md-3 mt-3" id="payment-in-date">
-                    <label>วันที่ชำะเงิน/วันที่คืนเงิน</label>
-                    <input type="datetime-local" name="payment_in_date" class="form-control" value="{{date('Y-m-d\TH:i')}}">
-                </div>
+              
 
             </div>
+
+             
+
             {{-- โอนเงินเข้าบัญชี  transfer-money --}}
             <div class="row mt-3" id="transfer-money" style="display: none">
                 <div class="col-md-3 ">
@@ -93,6 +93,11 @@
                     <input type="text" class="form-control" name="payment_credit_slip_number" placeholder="เลขที่สลิป">
                 </div>
             </div>
+
+             <div class="col-md-3 mt-3" id="payment-in-date">
+                    <label>วันที่ชำะเงิน/วันที่คืนเงิน</label>
+                    <input type="datetime-local" name="payment_in_date" class="form-control" >
+                </div>
 
             <div class="row mt-3" id="payment-file">
                 <div class="col-md-3">

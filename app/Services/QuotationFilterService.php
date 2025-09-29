@@ -44,7 +44,6 @@ class QuotationFilterService
         }
 
         $query = quotationModel::whereIn('quote_status', ['success', 'invoice']);
-
         if ($userRoles->contains('sale')) {
             $query->where('quote_sale', $user->sale_id);
         }
@@ -108,8 +107,8 @@ class QuotationFilterService
             'paymentWholesale:payment_wholesale_quote_id,payment_wholesale_total,payment_wholesale_refund_total,payment_wholesale_refund_status,payment_wholesale_file_name',
             // Input tax relations - ตรวจสอบโดยไม่กรองสถานะ
             'InputTaxVat:input_tax_id,input_tax_quote_id,input_tax_grand_total,input_tax_type,input_tax_file,input_tax_status,input_tax_withholding,input_tax_vat',
-            // Invoice relations
-            'quoteInvoice:invoice_quote_id,invoice_withholding_tax',
+            // Invoice relations - เพิ่มฟิลด์ที่จำเป็นสำหรับตรวจสอบสถานะใบหัก ณ ที่จ่าย
+            'quoteInvoice:invoice_id,invoice_quote_id,invoice_withholding_tax,invoice_withholding_tax_status,invoice_image',
             // Customer relation
             'customer:customer_id,customer_campaign_source,customer_name',
             // เพิ่ม relationship ที่จำเป็นสำหรับ getStatusBadgeCount
@@ -175,15 +174,17 @@ class QuotationFilterService
         });
 
         return $processedQuotations->filter(function ($item) {
-            // Log::debug("Checking quote {$item->quote_id} ({$item->quote_number}) in filter");
+            // Debug log สำหรับ QT25090576
+            if ($item->quote_number === 'QT25090576') {
+                Log::info("DEBUG QT25090576 - Starting filter process:", [
+                    'quote_number' => $item->quote_number,
+                    'quote_id' => $item->quote_id,
+                    'quote_status' => $item->quote_status
+                ]);
+            }
             
             try {
-                // เช็คสถานะงานว่าเสร็จหรือยัง - ถ้ายังไม่เสร็จ ไม่ให้แสดงกำไร
-                // if ($item->quote_number === 'QT25080005') {
-                //     Log::debug("QT25080005 - Status check starting...");
-                //     Log::debug("QT25080005 - wholesale_skip_status: " . ($item->quoteCheckStatus->wholesale_skip_status ?? 'NULL'));
-                //     Log::debug("QT25080005 - withholding_tax_status: " . ($item->quoteCheckStatus->withholding_tax_status ?? 'NULL'));
-                // }
+               
 
                   if (function_exists('getStatusBadgeCount')) {
                     $statusCount = getStatusBadgeCount($item->quoteCheckStatus, $item);
@@ -194,26 +195,26 @@ class QuotationFilterService
                         return false; // มีงานที่ยังไม่เสร็จ ไม่แสดงกำไร
                     }
                 }
-
-                // ตรวจสอบ wholesale_skip_status ก่อน getStatusBadgeCount
-                if (isset($item->quoteCheckStatus) && $item->quoteCheckStatus->wholesale_skip_status === 'ไม่ต้องการออก') {
-                    if ($item->quote_number === 'QT25080005') {
-                        Log::debug("QT25080005 - Skipping badge count check due to wholesale_skip_status");
+                // *** ตรวจสอบสถานะ "รอใบหัก จากลูกค้า" ก่อนเสมอ (ไม่สนใจ wholesale_skip_status) ***
+                if (function_exists('getStatusWithholdingTax')) {
+                    // ตรวจสอบจาก quoteInvoice (เป็น single object ไม่ใช่ collection)
+                    if ($item->quoteInvoice) {
+                        $withholdingStatus = getStatusWithholdingTax($item->quoteInvoice);
+                        // ถ้าพบสถานะ "รอใบหัก จากลูกค้า" ให้กรองรายการนี้ออก (ไม่สนใจ wholesale_skip_status)
+                        if (strpos($withholdingStatus, 'รอใบหัก จากลูกค้า') !== false) {
+                            return false;
+                        }
                     }
+                }
+                // ตรวจสอบ wholesale_skip_status หลังจากเช็ค withholding tax แล้ว
+                if (isset($item->quoteCheckStatus) && $item->quoteCheckStatus->wholesale_skip_status === 'ไม่ต้องการออก') {
                     return true;
                 }
-
-              
 
                 // เช็คว่ายังรอเอกสารภาษีหรือไม่ - ตรวจสอบโดยตรงจากสถานะ
                 
                 //ตรวจสอบเงื่อนไขใบหัก ณ ที่จ่าย
                 if (isset($item->quoteCheckStatus)) {
-                    // ถ้า wholesale_skip_status ไม่ใช่ null และเป็น 'ไม่ต้องการออก' ให้แสดงรายการนี้
-                    if ($item->quoteCheckStatus->wholesale_skip_status === 'ไม่ต้องการออก') {
-                        return true;
-                    }
-                    
                     // ถ้าไม่มีสถานะ หรือ สถานะเป็น 'ยังไม่ได้ออก' ให้กรองออก
                     if (is_null($item->quoteCheckStatus->withholding_tax_status) || 
                         trim($item->quoteCheckStatus->withholding_tax_status) === NULL
@@ -223,7 +224,6 @@ class QuotationFilterService
                     }
                 
                 }
-                
 
                 // เช็คสถานะใบกำกับภาษีโฮลเซลล์โดยใช้ฟังก์ชัน getStatusWhosaleInputTax
                 if (function_exists('getStatusWhosaleInputTax')) {
@@ -353,7 +353,7 @@ class QuotationFilterService
         if (!$item->quotePayments || $item->quotePayments->isEmpty()) {
             return 0;
         }
-        
+    
         return $item->quotePayments->where('payment_status', '!=', 'cancel')
                                   ->where('payment_type', '!=', 'refund')
                                   ->sum('payment_total');

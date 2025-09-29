@@ -14,6 +14,7 @@ class SaleReportExport implements FromCollection, WithHeadings, WithMapping, Wit
 {
     protected $data;
     protected $mode;
+    protected $runNo = 0;
     protected $campaignSource;
 
     public function __construct($data, $mode = 'all', $campaignSource = null)
@@ -99,6 +100,7 @@ class SaleReportExport implements FromCollection, WithHeadings, WithMapping, Wit
     public function headings(): array
     {
         return [
+            'No.',
             'Quotes',
             'ช่วงเวลาเดินทาง',
             'โฮลเซลล์',
@@ -141,15 +143,17 @@ class SaleReportExport implements FromCollection, WithHeadings, WithMapping, Wit
             if (isset($item->customer->customer_campaign_source) && 
                 !empty($item->customer->customer_campaign_source) &&
                 $this->campaignSource) {
-                $source = $this->campaignSource->firstWhere('id', $item->customer->customer_campaign_source);
+                $source = $this->campaignSource->firstWhere('campaign_source_id', $item->customer->customer_campaign_source);
                 $sourceName = $source ? $source->campaign_source_name : '';
             }
+
         } catch (\Exception $e) {
             // ถ้าเกิด error ให้ส่งค่าว่างกลับไป
             return array_fill(0, 19, '');
         }
 
         return [
+            $this->runNo += 1,
             $item->quote_number,
             date('d/m/Y', strtotime($item->quote_date_start)) . '-' . date('d/m/Y', strtotime($item->quote_date_end)),
             $item->quoteWholesale->code ?? '',

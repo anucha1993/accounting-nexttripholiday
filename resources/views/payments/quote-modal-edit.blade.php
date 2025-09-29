@@ -35,11 +35,7 @@
                     </select>
                 </div> 
 
-                <div class="col-md-3 mt-3">
-                    <label>วันที่ชำะเงิน</label>
-                    <input type="datetime-local" name="payment_in_date" class="form-control" value="{{$paymentModel->payment_in_date}}" required>
-                </div>
-
+              
             </div>
             {{-- โอนเงินเข้าบัญชี  transfer-money --}}
             <div class="row mt-3" id="transfer-money" style="display: none">
@@ -100,6 +96,10 @@
             </div>
             <br>
 
+             
+
+                
+
             <label for="">แนบไฟล์เอกสาร</label></br>
             @if ($paymentModel->payment_file_path)
             <a href="{{ asset('storage/' . $paymentModel->payment_file_path) }}"  onclick="openPdfPopup(this.href); return false;"><i
@@ -107,6 +107,12 @@
             @else
                 ไม่มีไฟล์แนบ
             @endif
+
+             <div class="col-md-3 mt-3">
+                    <label>วันที่ชำะเงิน</label>
+                    <input type="datetime-local" name="payment_in_date" class="form-control" value="{{$paymentModel->payment_in_date}}" required>
+                </div>
+                
         
             <div class="row mt-3">
                 <div class="col-md-3">

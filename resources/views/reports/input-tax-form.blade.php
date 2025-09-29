@@ -281,7 +281,7 @@
                     <div class="row text-center">
                         <div class="col-md-4">
                             <small class="text-muted d-block">จำนวนรายการ</small>
-                            <strong>{{ number_format($inputTaxs->count()) }}</strong>
+                            <strong>{{ number_format($inputTaxs->total()) }}</strong>
                         </div>
                         <div class="col-md-4">
                             <small class="text-muted d-block">มูลค่ารวม</small>
