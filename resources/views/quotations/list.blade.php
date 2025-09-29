@@ -103,7 +103,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="collapse hidden" id="searchCollapse">
+                <div id="searchCollapse" style="display: none;">
                     <form action="" class="border rounded p-3 bg-light mb-3">
                         <input type="hidden" name="search" value="Y">
                         <div class="row mb-3">
@@ -316,8 +316,7 @@
                     </form>
                 </div>
                 <div class="mb-3">
-                    <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#searchCollapse" aria-expanded="true">
+                    <button class="btn btn-outline-primary btn-sm" type="button" id="toggleSearchBtn">
                         <i class="fas fa-filter"></i> แสดง/ซ่อน ตัวกรอง
                     </button>
                 </div>
@@ -435,7 +434,17 @@
                                         </td>
                                         <td>
                                             <div class="d-flex flex-column">
+
+                                                 @canany(['quote.view', 'quote.edit'])
+                                                <a href="{{ route('quote.editNew', $item->quote_id) }}"
+                                                    class=" mb-1" data-bs-toggle="tooltip"
+                                                    title="จัดการข้อมูล">
                                                 <span class="text-primary">{{ $item->quote_number }}</span>
+                                                </a>
+                                            @endcanany
+
+
+                                               
                                                 <div>
                                                     @if ($item->quote_commission == 'N')
                                                         <span class="badge bg-danger badge-sm">N</span>
@@ -471,38 +480,28 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <div data-bs-toggle="tooltip" title="">
-                                                {{ mb_substr($item->quotecustomer?->customer_name, 0, 20) }}{{ mb_strlen($item->quotecustomer?->customer_name) > 20 ? '...' : '' }}
-                                            </div>
+                                            @if($item->customer_name)
+                                                <div data-bs-toggle="tooltip" title="{{ $item->customer_name }}">
+                                                    <small>{{ mb_substr($item->customer_name, 0, 20) }}{{ mb_strlen($item->customer_name) > 20 ? '...' : '' }}</small>
+                                                </div>
+                                            @else
+                                                <small class="text-muted">ไม่มีข้อมูลลูกค้า</small>
+                                            @endif
                                         </td>
                                         <td>
-                                            @php
-                                                $sourceName = '';
-                                                if (
-                                                    isset($item->quotecustomer->customer_campaign_source) &&
-                                                    !empty($item->quotecustomer->customer_campaign_source) &&
-                                                    isset($campaignSource)
-                                                ) {
-                                                    $source = $campaignSource->firstWhere(
-                                                        'campaign_source_id',
-                                                        $item->quotecustomer->customer_campaign_source,
-                                                    );
-                                                    $sourceName = $source ? $source->campaign_source_name : '';
-                                                }
-                                            @endphp
-                                            {{ $sourceName ?: 'none' }}
+                                            <small>{{ $item->campaign_source_name ?: 'none' }}</small>
                                         </td>
                                         <td class="text-center">
                                           {{ $item->quote_pax_total }}
                                         </td>
                                         <td>
-                                            <span>{{ $item->quoteCountry->country_name_th }}</span>
+                                            <span>{{ $item->quoteCountry->country_name_th ?? 'ไม่มีข้อมูล' }}</span>
                                         </td>
                                         <td class="text-center">
-                                          {{ $item->airline->code }}
+                                          {{ $item->airline->code ?? 'ไม่มีข้อมูล' }}
                                         </td>
                                         <td class="text-center">
-                                            {{ $item->quoteWholesale->code }}
+                                            {{ $item->quoteWholesale->code ?? 'ไม่มีข้อมูล' }}
                                         </td>
                                         <td>
                                             <div class="d-flex flex-wrap gap-1">
@@ -639,6 +638,12 @@
                 allowClear: true,
                 width: '100%'
             });
+            
+            // จัดการ toggle search form ด้วย slideToggle
+            $('#toggleSearchBtn').on('click', function() {
+                $('#searchCollapse').slideToggle(300);
+            });
+            
             $('select[name^="search_"]').on('change', function() {
                 if ($(this).val() !== 'all' && $(this).val() !== '') {
                     $(this).closest('form').submit();

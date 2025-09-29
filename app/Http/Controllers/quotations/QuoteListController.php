@@ -64,13 +64,17 @@ class QuoteListController extends Controller
         $userRoles = $user->getRoleNames();
 
 
-        $quotationsQuery = quotationModel::with([
+        $quotationsQuery = quotationModel::leftJoin('customer', 'customer.customer_id', '=', 'quotation.customer_id')
+                           ->leftJoin('campaign_source', 'campaign_source.campaign_source_id', '=', 'customer.customer_campaign_source')
+                           ->with([
             'Salename:id,name',
-            'quoteCustomer:customer_id,customer_name,customer_campaign_source',
-            'quoteWholesale:id,wholesale_name_th',
+            'quoteCustomer' => function($query) {
+                $query->select('customer_id', 'customer_name', 'customer_campaign_source');
+            },
+            'quoteWholesale:id,wholesale_name_th,code',
             'quoteInvoice',
             'quoteLogStatus',
-            'airline:id,travel_name',
+            'airline:id,code,travel_name',
             'quoteCountry:id,country_name_th',
             'creditNote',
             'debitNote',
@@ -170,20 +174,23 @@ class QuoteListController extends Controller
             },
             'checkfileInputtax'
         ])->select([
-            'quote_id',
-            'quote_number',
-            'quote_date',
-            'quote_date_start',
-            'quote_sale',
-            'quote_wholesale',
-            'quote_country',
-            'quote_airline',
-            'quote_pax_total',
-            'quote_grand_total',
-            'quote_tour_name',
-            'quote_tour_name1',
-            'quote_booking',
-            'created_at'
+            'quotation.quote_id',
+            'quotation.quote_number',
+            'quotation.quote_date',
+            'quotation.quote_date_start',
+            'quotation.quote_sale',
+            'quotation.quote_wholesale',
+            'quotation.quote_country',
+            'quotation.quote_airline',
+            'quotation.quote_pax_total',
+            'quotation.quote_grand_total',
+            'quotation.quote_tour_name',
+            'quotation.quote_tour_name1',
+            'quotation.quote_booking',
+            'quotation.created_at',
+            'customer.customer_name',
+            'customer.customer_campaign_source',
+            'campaign_source.campaign_source_name'
         ]);
 
         if ($searchKeyword) {
@@ -273,7 +280,7 @@ class QuoteListController extends Controller
         }
 
     
-        $quotationsQuery = $quotationsQuery->orderBy('created_at', 'desc');
+        $quotationsQuery = $quotationsQuery->orderBy('quotation.created_at', 'desc');
 
         // ดึง status ทั้งหมดของ getQuoteStatusQuotePayment และ getStatusWithholdingTax (ก่อน paginate/filter)
         $allQuoteStatusQuotePayment = $quotationsQuery
