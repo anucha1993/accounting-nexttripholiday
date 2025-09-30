@@ -270,8 +270,31 @@
                             @csrf
                             @method('post')
                             <input type="hidden" name="input_tax_ids" value="{{ $inputTaxs->pluck('input_tax_id') }}">
+                            <input type="hidden" name="export_all" value="1">
+                            @if(request()->filled(['date_start', 'date_end']))
+                            <input type="hidden" name="date_start" value="{{ request()->date_start }}">
+                            <input type="hidden" name="date_end" value="{{ request()->date_end }}">
+                            @endif
+                            @if(request()->filled('status'))
+                            <input type="hidden" name="status" value="{{ request()->status }}">
+                            @endif
+                            @if(request()->filled('seller_id'))
+                            <input type="hidden" name="seller_id" value="{{ request()->seller_id }}">
+                            @endif
+                            @if(request()->filled('document_number'))
+                            <input type="hidden" name="document_number" value="{{ request()->document_number }}">
+                            @endif
+                            @if(request()->filled('reference_number'))
+                            <input type="hidden" name="reference_number" value="{{ request()->reference_number }}">
+                            @endif
+                            @if(request()->filled('reference_number_doc'))
+                            <input type="hidden" name="reference_number_doc" value="{{ request()->reference_number_doc }}">
+                            @endif
+                            @if(request()->filled('wholesale_id'))
+                            <input type="hidden" name="wholesale_id" value="{{ request()->wholesale_id }}">
+                            @endif
                             <button type="submit" class="btn btn-sm btn-outline-success">
-                                <i class="fas fa-file-excel me-1"></i>Export Excel
+                                <i class="fas fa-file-excel me-1"></i>Export Excel (ทั้งหมด {{ number_format($inputTaxs->total()) }} รายการ)
                             </button>
 
                         </form>
