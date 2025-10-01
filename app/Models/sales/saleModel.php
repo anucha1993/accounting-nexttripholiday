@@ -15,10 +15,10 @@ class saleModel extends Model
         'name','email','phone','status'
     ];
 
-    protected static function booted()
-{
-    static::addGlobalScope('active', function ($query) {
-        $query->where('status', 'active');
-    });
-}
+//     protected static function booted()
+// {
+//     static::addGlobalScope('active', function ($query) {
+//         $query->where('status', 'active');
+//     });
+// }
 }

@@ -567,7 +567,7 @@
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            <span>{{ $item->Salename->name }}</span>
+                                            <span>{{ $item->Salename->name ?? 'ไม่พบข้อมูล' }}</span>
                                         </td>
                                         <td class="text-center">
                                             @canany(['quote.view', 'quote.edit'])
