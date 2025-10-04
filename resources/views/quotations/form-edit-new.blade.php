@@ -339,6 +339,7 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        {{-- @php dd($quotationModel); @endphp --}}
                                         <td class="label">สถานะ:</td>
                                         <td class="value">{!! getQuoteStatusPayment($quotationModel) !!}</td>
                                     </tr>

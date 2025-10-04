@@ -78,6 +78,8 @@ class QuoteListController extends Controller
             'quoteCountry:id,country_name_th',
             'creditNote',
             'debitNote',
+            'quotePayment',  // เพิ่มสำหรับ GetDeposit() และ Refund() methods
+            'payment',  // เพิ่มสำหรับ GetDeposit() และ Refund() methods
             // Payments with optimized loading including sum calculations
             'quotePayments' => function($query) {
                 $query->select([
@@ -187,7 +189,12 @@ class QuoteListController extends Controller
             'quotation.quote_tour_name',
             'quotation.quote_tour_name1',
             'quotation.quote_booking',
-            'quotation.created_at',
+            'quotation.quote_status',  // เพิ่มฟิลด์สำคัญสำหรับ Helper
+            'quotation.quote_commission',  // เพิ่มฟิลด์ commission
+            'quotation.quote_payment_type',  // สำหรับ statusPaymentHelper
+            'quotation.quote_payment_date',  // สำหรับ statusPaymentHelper
+            'quotation.quote_payment_date_full',  // สำหรับ statusPaymentHelper
+            'quotation.created_at',  // เพิ่มฟิลด์ created_at สำหรับ orderBy
             'customer.customer_name',
             'customer.customer_campaign_source',
             'campaign_source.campaign_source_name'

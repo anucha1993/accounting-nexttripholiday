@@ -505,7 +505,9 @@
                                         </td>
                                         <td>
                                             <div class="d-flex flex-wrap gap-1">
+                                                {{-- @php dd($item); @endphp --}}
                                                 {!! getQuoteStatusPayment($item) !!}
+
                                                 ชำระแล้ว: </br>{{ number_format($item->GetDeposit()-$item->Refund(), 2) }}
                                             </div>
                                         </td>
