@@ -229,8 +229,8 @@
                                 <select name="search_payment_overpays" class="form-select" style="width: 100%">
                                     <option {{ request('search_payment_overpays') == 'all' ? 'selected' : '' }}
                                         value="all">ทั้งหมด</option>
-                                    <option {{ request('search_payment_overpays') == 'รอคืนเงินลูกค้า' ? 'selected' : '' }}
-                                        value="รอคืนเงินลูกค้า">รอคืนเงินให้ลูกค้า</option>
+                                    <option {{ request('search_payment_overpays') == 'ยังไม่ได้คืนเงินลูกค้า' ? 'selected' : '' }}
+                                        value="ยังไม่ได้คืนเงินลูกค้า">รอคืนเงินให้ลูกค้า</option>
                                     <option
                                         {{ request('search_payment_overpays') == 'คืนเงินให้ลูกค้าแล้ว' ? 'selected' : '' }}
                                         value="คืนเงินให้ลูกค้าแล้ว">คืนเงินให้ลูกค้าแล้ว</option>

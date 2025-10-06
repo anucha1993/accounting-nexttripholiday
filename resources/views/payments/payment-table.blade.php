@@ -79,6 +79,7 @@
                         <tr>
                             <th style="width: 48px;">#</th>
                             <th>เลขที่ชำระ</th>
+                            <th>วันที่ทำรายการ</th>
                             <th>วันที่ชำระ</th>
                             <th>รายละเอียด</th>
                             <th class="text-end">จำนวนเงิน</th>
@@ -101,6 +102,7 @@
                             <tr class="{{ $item->payment_type === 'refund' ? 'table-danger' : '' }}">
                                 <td>{{ ++$key }}</td>
                                 <td>{{ $item->payment_number }}</td>
+                                 <td>{{ date('d-m-Y H:m:s', strtotime($item->created_at)) }}</td>
                                 <td>{{ date('d-m-Y H:m:s', strtotime($item->payment_in_date)) }}</td>
                                 <td>
                                     @if ($item->payment_method === 'cash')
