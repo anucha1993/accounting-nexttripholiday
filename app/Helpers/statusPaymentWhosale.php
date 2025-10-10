@@ -32,13 +32,18 @@ if (!function_exists('getStatusPaymentWhosale')) {
         // 5. ยอดที่ลูกค้าชำระมาแล้ว (ควรใช้ GetDeposit() แทน customer_paid)
         $customerPaid = $quotationModel->GetDeposit() ?? 0;
 
+        // ตั้งค่า tolerance สำหรับป้องกัน floating point precision issue
+        $tolerance = 0.01; // ความผิดพลาด 1 สตางค์
+
         // Debug: Log or dump key values for investigation
-        // \Log::debug('[DEBUG] getStatusPaymentWhosale', [
+        // Log::debug('[DEBUG] getStatusPaymentWhosale Quote ID: ' . $quotationModel->quote_id, [
         //     'depositTotal' => $depositTotal,
         //     'refundSuccessTotal' => $refundSuccessTotal,
         //     'refundPendingTotal' => $refundPendingTotal,
         //     'wholesaleCost' => $wholesaleCost,
         //     'customerPaid' => $customerPaid,
+        //     'comparison_depositTotal_vs_wholesaleCost' => $depositTotal . ' vs ' . $wholesaleCost,
+        //     'is_depositTotal_less_than_wholesaleCost' => ($depositTotal < $wholesaleCost) ? 'TRUE' : 'FALSE'
         // ]);
 
         // 📌 แสดงสถานะเฉพาะเมื่อมีการ "โอนเกิน" (refund)
@@ -53,9 +58,9 @@ if (!function_exists('getStatusPaymentWhosale')) {
             }
         }
 
-        // 6. ชำระเงินเกิน
-        if ($depositTotal > $wholesaleCost) {
-            // return '<span class="badge rounded-pill bg-danger">โอนเงินให้โฮลเซลล์เกิน</span>';
+        // 6. ชำระเงินเกิน - ใช้ tolerance สำหรับ floating point
+        $tolerance = 0.01; // ความผิดพลาด 1 สตางค์
+        if ($depositTotal > ($wholesaleCost + $tolerance)) {
             return '<span class="text-danger">โอนเงินให้โฮลเซลล์เกิน</span>';
         }
 
@@ -65,15 +70,13 @@ if (!function_exists('getStatusPaymentWhosale')) {
             return '<span class="text-warning">รอชำระมัดเงินจำโฮลเซลล์</span>';
         }
 
-        // 2. รอชำระเงินส่วนที่เหลือ (ยอดโอนโฮลเซลล์ > 0 แต่น้อยกว่าต้นทุน)
-        if ($depositTotal > 0 && $depositTotal < $wholesaleCost) {
-            // return '<span class="badge rounded-pill bg-info text-dark">รอชำระเงินส่วนที่เหลือ</span>';
+        // 2. รอชำระเงินส่วนที่เหลือ (ยอดโอนโฮลเซลล์ > 0 แต่น้อยกว่าต้นทุน) - ใช้ tolerance สำหรับ floating point
+        if ($depositTotal > 0 && ($depositTotal + $tolerance) < $wholesaleCost) {
             return '<span class="text-warning">รอชำระเงินส่วนที่เหลือ</span>';
         }
 
-        // 3. ชำระเงินครบแล้ว (ยอดโอนโฮลเซลล์ = ต้นทุน)
-        if ($depositTotal == $wholesaleCost && $wholesaleCost > 0) {
-            // return '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>';
+        // 3. ชำระเงินครบแล้ว (ยอดโอนโฮลเซลล์ = ต้นทุน หรือใกล้เคียงกัน)
+        if ($wholesaleCost > 0 && abs($depositTotal - $wholesaleCost) <= $tolerance) {
             return '<span class="text-success">ชำระเงินครบแล้ว</span>';
         }
 

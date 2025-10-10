@@ -7,6 +7,7 @@ if (!function_exists('getQuoteStatusPayment')) {
     {
         $now = Carbon::now();
         $status = '';
+        $tolerance = 0.01; // ความผิดพลาด 1 สตางค์สำหรับ floating point precision
         $paymentTotal = $quotationModel->quote_grand_total - $quotationModel->GetDeposit() + $quotationModel->Refund();
         $payment = $quotationModel->GetDeposit() - $quotationModel->Refund();
 
@@ -29,14 +30,18 @@ if (!function_exists('getQuoteStatusPayment')) {
                 $status = '<span class="text-success">ชำระเงินครบแล้ว</span>';
                 break;
 
-            // ชำระเงินเกิน
-            case $payment > $quotationModel->quote_grand_total:
-                // $status = '<span class="badge rounded-pill bg-info">ชำระเงินเกิน</span>';
+            // ชำระเงินครบ - ใช้ tolerance สำหรับ floating point precision  
+            case abs($payment - $quotationModel->quote_grand_total) <= $tolerance:
+                $status = '<span class="text-success">ชำระเงินครบแล้ว</span>';
+                break;
+                
+            // ชำระเงินเกิน - ใช้ tolerance สำหรับ floating point precision
+            case $payment > ($quotationModel->quote_grand_total + $tolerance):
                 $status = '<span class="text-info">ชำระเงินเกิน</span>';
                 break;
 
-            // ชำระเงินบางส่วน (จ่ายมัดจำแล้ว รอจ่ายเต็มจำนวน)
-            case $payment > 0 && $payment < $quotationModel->quote_grand_total:
+            // ชำระเงินบางส่วน (จ่ายมัดจำแล้ว รอจ่ายเต็มจำนวน) - ใช้ tolerance สำหรับ floating point precision
+            case $payment > 0 && $payment < ($quotationModel->quote_grand_total - $tolerance):
                 // เช็คเฉพาะวันครบกำหนดจ่าย "เต็มจำนวน" เท่านั้น
                 $paymentDate = $quotationModel->quote_payment_date_full;
                 if ($paymentDate && $now->gt(Carbon::parse($paymentDate))) {
@@ -78,52 +83,5 @@ if (!function_exists('getQuoteStatusPayment')) {
                 break;
         }
         return $status;
-
-        // // ตรวจสอบ payment_status ผ่านความสัมพันธ์ quotePayment
-        // if ($quotationModel->quotePayment && $quotationModel->quotePayment->payment_status === 'refund') {
-
-        //     $status = '<span class="badge rounded-pill bg-warning text-dark">รอคืนเงิน </span>';
-        // } elseif ($quotationModel->quote_status === 'cancel') {
-        //     $status = '<span class="badge rounded-pill bg-danger">ยกเลิกการสั่งซื้อ</span>';
-
-        // } elseif ($quotationModel->quote_status === 'success' || $quotationModel->quote_status === 'invoice') {
-
-        //     if ($paymentTotal == 0) {
-        //         $status = '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>';
-        //     } elseif ($quotationModel->payment > $quotationModel->quote_grand_total) {
-        //         $status = '<span class="badge rounded-pill bg-info">ชำระเงินเกิน</span>';
-        //     }else {
-
-        //     }
-        //     // $status = '<span class="badge rounded-pill bg-success">ชำระเงินครบแล้ว</span>'.$quotationModel->payment;
-        // } elseif ($quotationModel->payment > 0 && $quotationModel->payment < $quotationModel->quote_grand_total) {
-        //     // กรณีชำระเงินบางส่วน
-        //     $paymentDate = null;
-        //     if ($quotationModel->quote_payment_type === 'deposit') {
-        //         $paymentDate = $quotationModel->quote_payment_date;
-        //     } elseif ($quotationModel->quote_payment_type === 'full') {
-        //         $paymentDate = $quotationModel->quote_payment_date_full;
-        //     }
-        //     if ($paymentDate && $now->gt(Carbon::parse($paymentDate))) {
-        //         $status = '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
-        //     } else {
-        //         $status = '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
-        //     }
-        // } elseif ($quotationModel->quote_payment_type === 'deposit') {
-        //     if ($now->gt(Carbon::parse($quotationModel->quote_payment_date))) {
-        //         $status = '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
-        //     } else {
-        //         $status = '<span class="badge rounded-pill bg-warning text-dark">รอชำระเงินมัดจำ</span>';
-        //     }
-        // } elseif ($quotationModel->quote_payment_type === 'full') {
-        //     if ($now->gt(Carbon::parse($quotationModel->quote_payment_date_full))) {
-        //         $status = '<span class="badge rounded-pill bg-danger">เกินกำหนดชำระเงิน</span>';
-        //     } else {
-        //         $status = '<span class="badge rounded-pill bg-info">รอชำระเงินเต็มจำนวน</span>';
-        //     }
-        // } else {
-        //     $status = '<span class="badge rounded-pill bg-secondary">รอชำระเงิน</span>';
-        // }
-        // return $status;
     }
 }

@@ -437,9 +437,11 @@
                                                     href="{{ route('invoice.edit', ['invoiceModel' => $itemInvoice->invoice_id, 'mode' => 'edit']) }}">
                                                     <i class="fa fa-edit text-info"></i> แก้ไข</a>
 
-                                                    
-
-                                                @if ($itemInvoice->invoice_status === 'wait' && $quotationModel->quote_payment_status === 'success' && $paymentTotal == 0)
+                                                
+                                                @php
+                                                    $tolerance = 0.01; // ความผิดพลาด 1 สตางค์สำหรับ floating point precision
+                                                @endphp
+                                                @if ($itemInvoice->invoice_status === 'wait' && $quotationModel->quote_payment_status === 'success' && abs($paymentTotal) <= $tolerance)
                                                    @canany(['taxinvoice.create'])
                                                     <a class="dropdown-item"
                                                         href="{{ route('invoice.taxinvoice', $itemInvoice->invoice_id) }}"

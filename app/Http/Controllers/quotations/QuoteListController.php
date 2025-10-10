@@ -15,6 +15,13 @@ use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
 use App\Models\payments\paymentWholesaleModel;
 
+// Include helper functions
+require_once app_path('Helpers/statusPaymentHelper.php');
+require_once app_path('Helpers/statusPaymentWhosale.php');
+require_once app_path('Helpers/statusCheckListHelper.php');
+require_once app_path('Helpers/statusWithholdingTaxHelper.php');
+require_once app_path('Helpers/statusWhosaleInputTaxHelper.php');
+
 class QuoteListController extends Controller
 {
     public function __construct()
