@@ -187,7 +187,7 @@
                 
                               <div class="col-md-6">
                                   <label for="customerTaxId" class="form-label">เลขประจำตัวผู้เสียภาษี</label>
-                                  <input type="text" class="form-control" id="customerTaxId" placeholder="1234567890123" value="{{$document->customer ? $document->customer->customer_texid : $document->wholesale->textid }}">
+                                  <input type="text" class="form-control" id="customerTaxId" placeholder="0123456789012" value="{{$document->customer ? $document->customer->customer_texid : $document->wholesale->textid }}" maxlength="13" pattern="[0-9]{13}" inputmode="numeric">
                               </div>
                               <div class="col-md-6">
                                   <label for="withholdingForm" class="form-label">แบบฟอร์ม</label>

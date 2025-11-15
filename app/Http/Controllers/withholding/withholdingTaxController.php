@@ -162,7 +162,7 @@ class withholdingTaxController extends Controller
             'total_withholding_tax' => $totalWithholdingTax,
             'total_payable' => $totalPayable,
             'image_signture_id' => $request->image_signture_id,
-            'book_no' => date('Y-m'),
+            'book_no' => $request->document_date ? date('Y-m', strtotime($request->document_date)) : date('Y-m'),
             'document_no' => $documentNumberNo,
             'document_doc_date' => $request->document_doc_date,
             'wholesale_id' => $request->wholesale_id,

@@ -187,6 +187,7 @@ class QuoteListController extends Controller
             'quotation.quote_number',
             'quotation.quote_date',
             'quotation.quote_date_start',
+            'quotation.quote_date_end',
             'quotation.quote_sale',
             'quotation.quote_wholesale',
             'quotation.quote_country',
