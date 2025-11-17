@@ -468,7 +468,7 @@
                                <b>{{ $invoiceModel->quote->Salename->name }}</b></br>
                                 <p>___________________________</p>
                                 <p><b>Sale / Operation</b></p>
-                                <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p>
+                                <p><b>{{ thaidate('j M Y', $texreceipt->taxinvoice_date) }}</b></p>
                             </td>
                             <td style="border: none;"></td>
                             <td style="width: 276.6px; text-align: center;">
@@ -476,14 +476,14 @@
 			<b >{{$invoiceModel->created_by}}</b>
                                 <p>___________________________</p>
                                 <p><b>ผู้รับเงิน / Collector</b></p>
-                                <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p>
+                                <p><b>{{ thaidate('j M Y', $texreceipt->taxinvoice_date) }}</b></p>
                             </td>
                             <td style="border: none;"></td>
                             <td style="width: 277px; text-align: right; text-align: center;">
                                 <img src="{{URL::asset('signature/next_signature_01.png')}}" alt="Image" class="image" style="width: 120px; ">
                                 <p><b>ผู้มีอำนาจลงนาม/
 Authorized signature</b></p>
-                                <p><b>{{ thaidate('j F Y', $invoiceModel->invoice_date) }}</b></p>
+                                <p><b>{{ thaidate('j M Y', $texreceipt->taxinvoice_date) }}</b></p>
                             </td>
                         </tr>
                     </table>

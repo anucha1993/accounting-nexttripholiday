@@ -219,8 +219,7 @@
                         <td class="text-end">{{ number_format($item->input_tax_vat, 2) }}</td>
 
                         <td class="text-end text-danger">
-                          
-                            {{ $item->input_tax_grand_total }}
+                            {{ number_format($item->input_tax_grand_total, 2) }}
                         </td>
 
                         <td>
@@ -297,16 +296,6 @@
 
 
                             <td  class="text-danger text-end" colspan="1">
-                                {{-- DEBUG getTotalInputTaxVatType  : {{$quotationModel->getTotalInputTaxVatType()}} <br>
-                                DEBUG ภาษีซื้อ getTotalInputTaxVat  : {{$quotationModel->getTotalInputTaxVat()}} <br>
-                                DEBUG ภาษีซื้อภาษีหัก getTotalInputTaxVatWithholding  : {{$quotationModel->getTotalInputTaxVatWithholding()}} <br>
-                                DEBUG ภาษีขาย : {{$withholdingTaxAmount}} <br>
-                                DEBUG getTotalOtherCost : {{$quotationModel->getTotalOtherCost()}} <br>
-                                <br/>
-                                ------------------------
-                                DEBUG ภาษีซื้อ ยังไม่มีไฟล์ : {{ $quotationModel->getTotalInputTaxVatNULL() }} <br>
-                                DEBUG ภาษีซื้อ มีไฟล์ : {{ $quotationModel->getTotalInputTaxVatNotNULL() }} <br> --}}
-
                                 <b>
                                     @if (isset($inputTax) && count($inputTax) > 0)
                                         {{ number_format($quotationModel->getTotalOtherCost(), 2) }}

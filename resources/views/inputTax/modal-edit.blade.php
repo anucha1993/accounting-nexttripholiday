@@ -192,7 +192,8 @@
 
     $(document).ready(function() {
 
-        $('#service-total, #vat').on('keyup', function() {
+        // คำนวณเมื่อโหลดฟอร์มครั้งแรก
+        function calculateTotal() {
             var inputTaxType = $('#input_tax_type').val();
             let total = 0;
             let vat7 = 0;
@@ -200,22 +201,18 @@
 
             let serviceTotal = parseFloat($('#service-total').val()) || 0;
             let vat = parseFloat($('#vat').val()) || 0;
+            let withholding = parseFloat($('#withholding').val()) || 0;
 
-            if (inputTaxType === '1' || inputTaxType === '3') {
-                $('#total').val(serviceTotal.toFixed(2));
-            } else {
-                // คำนวณ VAT 7%
-                vat7 = serviceTotal * 0.07;
-                $('#vat').val(vat7.toFixed(2)); // อัปเดตค่า VAT ในช่อง input
+            // รวมทุกอย่าง = ค่าบริการ + ภาษี ณ ที่จ่าย + VAT
+            total = serviceTotal + withholding + vat;
+            $('#total').val(total.toFixed(2));
+        }
 
-                // คำนวณภาษี ณ ที่จ่าย (3%)
-                withholdingTotal = serviceTotal * 0.03;
-                $('#withholding').val(withholdingTotal.toFixed(2));
-                
-                // คำนวณผลรวมต้นทุน (รวมค่าบริการ ภาษี ณ ที่จ่าย และ VAT)
-                total = serviceTotal + withholdingTotal + vat7;
-                $('#total').val(total.toFixed(2)); // แก้ไข: ใส่ total แทน withholdingTotal
-            }
+        // เรียกคำนวณเมื่อโหลดฟอร์มครั้งแรก
+        calculateTotal();
+
+        $('#service-total, #vat, #withholding').on('keyup', function() {
+            calculateTotal();
         });
 
     });

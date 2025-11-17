@@ -177,6 +177,13 @@ class inputTaxController extends Controller
 
         // อัปเดตข้อมูลเพิ่มเติม
         $requestData['updated_by'] = Auth::user()->name;
+        
+        // คำนวณ input_tax_grand_total ให้ถูกต้อง
+        $serviceTotal = (float) ($request->input_tax_service_total ?? 0);
+        $withholding = (float) ($request->input_tax_withholding ?? 0);
+        $vat = (float) ($request->input_tax_vat ?? 0);
+        $requestData['input_tax_grand_total'] = $serviceTotal + $withholding + $vat;
+        
         // บันทึกการเปลี่ยนแปลงในฐานข้อมูล
         $inputTaxModel->update($requestData);
         
@@ -272,6 +279,13 @@ class inputTaxController extends Controller
         }
         // เพิ่มข้อมูลผู้สร้าง
         $requestData['created_by'] = Auth::user()->name;
+        
+        // คำนวณ input_tax_grand_total ให้ถูกต้อง
+        $serviceTotal = (float) ($request->input_tax_service_total ?? 0);
+        $withholding = (float) ($request->input_tax_withholding ?? 0);
+        $vat = (float) ($request->input_tax_vat ?? 0);
+        $requestData['input_tax_grand_total'] = $serviceTotal + $withholding + $vat;
+        
         // สร้างข้อมูลใหม่ใน inputTaxModel
        $inputTaxModel =  inputTaxModel::create($requestData);
 
