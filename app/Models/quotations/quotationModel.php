@@ -477,11 +477,29 @@ public function getTotalOtherCost()
     $invoice = $this->invoiceVat()->where('invoice_status', 'success')->first();
     
     if (!$invoice) {
-        // ถ้าไม่มี invoice ให้คืนเฉพาะภาษีหัก ณ ที่จ่าย (ซื้อ)
-        return $this->InputTaxVat()
+        // ถ้าไม่มี invoice ให้คำนวณเฉพาะภาษีซื้อ
+        // รวม VAT ทั้งหมด
+        $totalVat = $this->InputTaxVat()
+            ->where('input_tax_type', 0)
+            ->where('input_tax_status', 'success')
+            ->sum('input_tax_vat') ?? 0;
+        
+        // รวม Withholding ทั้งหมด
+        $totalWithholding = $this->InputTaxVat()
             ->where('input_tax_type', 0)
             ->where('input_tax_status', 'success')
             ->sum('input_tax_withholding') ?? 0;
+        
+        // หัก Withholding ของแถวที่มีไฟล์ออก 2 เท่า (เพราะต้องหักแทนที่จะบวก)
+        $withholdingWithFile = $this->InputTaxVat()
+            ->where('input_tax_type', 0)
+            ->where('input_tax_status', 'success')
+            ->whereNotNull('input_tax_file')
+            ->sum('input_tax_withholding') ?? 0;
+        
+        // สูตร: รวม VAT + รวม Withholding - (Withholding ที่มีไฟล์ × 2)
+        // เพราะ: VAT - Withholding = VAT + Withholding - (Withholding × 2)
+        return $totalVat + $totalWithholding - ($withholdingWithFile * 2);
     }
 
     // ตรวจสอบว่ามีการแนบใบหัก ณ ที่จ่าย (ลูกค้า) หรือไม่
@@ -493,22 +511,35 @@ public function getTotalOtherCost()
     // ภาษีหัก ณ ที่จ่าย (ขาย)
     $saleWht = $invoice->invoice_withholding_tax ?? 0;
     
-    // ภาษีหัก ณ ที่จ่าย (ซื้อ) - รวมทั้งหมด
-    $purchaseWht = $this->InputTaxVat()
+    // รวม VAT ทั้งหมด (ภาษีซื้อ)
+    $totalVat = $this->InputTaxVat()
+        ->where('input_tax_type', 0)
+        ->where('input_tax_status', 'success')
+        ->sum('input_tax_vat') ?? 0;
+    
+    // รวม Withholding ทั้งหมด (ภาษีซื้อ)
+    $totalWithholding = $this->InputTaxVat()
         ->where('input_tax_type', 0)
         ->where('input_tax_status', 'success')
         ->sum('input_tax_withholding') ?? 0;
     
+    // หัก Withholding ของแถวที่มีไฟล์ออก 2 เท่า
+    $withholdingWithFile = $this->InputTaxVat()
+        ->where('input_tax_type', 0)
+        ->where('input_tax_status', 'success')
+        ->whereNotNull('input_tax_file')
+        ->sum('input_tax_withholding') ?? 0;
+    
+    // คำนวณภาษีซื้อทั้งหมด
+    $purchaseTaxTotal = $totalVat + $totalWithholding - ($withholdingWithFile * 2);
+    
     // กรณี: ยังไม่แนบใบหัก ณ ที่จ่าย (invoice_image = NULL)
-    // ต้นทุน = ภาษีขาย(VAT) + ภาษีหัก ณ ที่จ่าย(ขาย) + ภาษีหัก ณ ที่จ่าย(ซื้อ)
     if (!$hasInvoiceFile) {
-        return $saleVat + $saleWht + $purchaseWht;
+        return $saleVat + $saleWht + $purchaseTaxTotal;
     }
     
     // กรณี: แนบใบหัก ณ ที่จ่ายแล้ว (invoice_image ≠ NULL)
-    // ต้นทุน = ภาษีขาย(VAT) + ภาษีหัก ณ ที่จ่าย(ซื้อ)
-    // ไม่นำ invoice_withholding_tax (ขาย) มาคำนวณ
-    return $saleVat + $purchaseWht;
+    return $saleVat + $purchaseTaxTotal;
 }
 
 

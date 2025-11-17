@@ -194,11 +194,10 @@
                 // คำนวณภาษี ณ ที่จ่าย (3%)
                 withholdingTotal = serviceTotal * 0.03;
                 $('#withholding').val(withholdingTotal.toFixed(2));
-                $('#total').val(withholdingTotal.toFixed(2));
                 
-                // คำนวณผลรวมต้นทุน (รวมค่าบริการ ภาษี ณ ที่จ่าย และ VAT)
-                total = serviceTotal + withholdingTotal + vat7;
-                // $('#total').val(total.toFixed(2)); // แก้ไข: ใส่ total แทน withholdingTotal
+                // คำนวณผลรวมต้นทุน: VAT + Withholding (เพราะเป็นการสร้างใหม่ ยังไม่มีไฟล์)
+                total = vat7 + withholdingTotal;
+                $('#total').val(total.toFixed(2));
             }
         });
 
