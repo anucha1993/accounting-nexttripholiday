@@ -432,9 +432,8 @@ public function checkfileInputtaxVat()
   $input_tax = $this->InputTaxVat()
         // ->where('input_tax_type', 0)
            ->where('input_tax_type', 0)
-            ->where('input_tax_status', 'success')
             // ->whereNotNull('input_tax_file')
-            ->sum('input_tax_withholding');  
+            ->sum('input_tax_grand_total');  
   return $input_tax ?? 0;
 }
 
@@ -474,38 +473,41 @@ public function checkfileInputtaxVat()
 
 public function getTotalOtherCost()
 {
-    // ดึง invoice ใบแรก
-    $invoice = $this->invoiceVat()->first();
+    // ดึง invoice ใบแรกที่ success
+    $invoice = $this->invoiceVat()->where('invoice_status', 'success')->first();
     
     if (!$invoice) {
-        // ถ้าไม่มี invoice ให้ดึงเฉพาะ input_tax_withholding
-        $totalCost = $this->InputTaxVat()
+        // ถ้าไม่มี invoice ให้คืนเฉพาะภาษีหัก ณ ที่จ่าย (ซื้อ)
+        return $this->InputTaxVat()
             ->where('input_tax_type', 0)
             ->where('input_tax_status', 'success')
-            ->sum('input_tax_withholding');
-        return $totalCost ?? 0;
+            ->sum('input_tax_withholding') ?? 0;
     }
 
+    // ตรวจสอบว่ามีการแนบใบหัก ณ ที่จ่าย (ลูกค้า) หรือไม่
     $hasInvoiceFile = !is_null($invoice->invoice_image);
-
-    // ดึง input_tax_withholding (ภาษีซื้อ)
+    
+    // ภาษี VAT (ขาย)
+    $saleVat = $invoice->invoice_vat ?? 0;
+    
+    // ภาษีหัก ณ ที่จ่าย (ขาย)
+    $saleWht = $invoice->invoice_withholding_tax ?? 0;
+    
+    // ภาษีหัก ณ ที่จ่าย (ซื้อ) - รวมทั้งหมด
     $purchaseWht = $this->InputTaxVat()
         ->where('input_tax_type', 0)
         ->where('input_tax_status', 'success')
-        ->sum('input_tax_withholding');
+        ->sum('input_tax_withholding') ?? 0;
     
-    $saleVat = $invoice->invoice_vat ?? 0;
-    $saleWht = $invoice->invoice_withholding_tax ?? 0;
-
     // กรณี: ยังไม่แนบใบหัก ณ ที่จ่าย (invoice_image = NULL)
     // ต้นทุน = ภาษีขาย(VAT) + ภาษีหัก ณ ที่จ่าย(ขาย) + ภาษีหัก ณ ที่จ่าย(ซื้อ)
     if (!$hasInvoiceFile) {
         return $saleVat + $saleWht + $purchaseWht;
     }
-
+    
     // กรณี: แนบใบหัก ณ ที่จ่ายแล้ว (invoice_image ≠ NULL)
     // ต้นทุน = ภาษีขาย(VAT) + ภาษีหัก ณ ที่จ่าย(ซื้อ)
-    // ไม่นำ invoice_withholding_tax มาคำนวณ
+    // ไม่นำ invoice_withholding_tax (ขาย) มาคำนวณ
     return $saleVat + $purchaseWht;
 }
 
