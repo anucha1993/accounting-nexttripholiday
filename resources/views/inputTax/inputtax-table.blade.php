@@ -219,8 +219,7 @@
                         <td class="text-end">{{ number_format($item->input_tax_vat, 2) }}</td>
 
                         <td class="text-end text-danger">
-                          
-                            {{ $item->input_tax_grand_total }}
+                            {{ number_format($item->input_tax_grand_total, 2) }}
                         </td>
 
                         <td>

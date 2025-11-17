@@ -336,3 +336,680 @@
 [stacktrace]
 #0 {main}
 "} 
+[2025-11-17 17:05:56] local.ERROR: syntax error, unexpected token "}", expecting ";" {"userId":4,"exception":"[object] (ParseError(code: 0): syntax error, unexpected token \"}\", expecting \";\" at C:\\laragon\\www\\accounting-nexttripholiday\\app\\Models\\quotations\\quotationModel.php:507)
+[stacktrace]
+#0 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\composer\\ClassLoader.php(427): Composer\\Autoload\\{closure}('C:\\\\laragon\\\\www\\\\...')
+#1 [internal function]: Composer\\Autoload\\ClassLoader->loadClass('App\\\\Models\\\\quot...')
+#2 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Support\\Reflector.php(161): enum_exists('App\\\\Models\\\\quot...')
+#3 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\RouteSignatureParameters.php(31): Illuminate\\Support\\Reflector::isParameterBackedEnumWithStringBackingType(Object(ReflectionParameter))
+#4 [internal function]: Illuminate\\Routing\\RouteSignatureParameters::Illuminate\\Routing\\{closure}(Object(ReflectionParameter))
+#5 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\RouteSignatureParameters.php(31): array_filter(Array, Object(Closure))
+#6 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php(537): Illuminate\\Routing\\RouteSignatureParameters::fromAction(Array, Array)
+#7 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ImplicitRouteBinding.php(80): Illuminate\\Routing\\Route->signatureParameters(Array)
+#8 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ImplicitRouteBinding.php(28): Illuminate\\Routing\\ImplicitRouteBinding::resolveBackedEnumsForRoute(Object(Illuminate\\Routing\\Route), Array)
+#9 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(959): Illuminate\\Routing\\ImplicitRouteBinding::resolveForRoute(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Routing\\Route))
+#10 [internal function]: Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Routing\\Route), Object(Closure))
+#11 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(961): call_user_func(Object(Closure), Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Routing\\Route), Object(Closure))
+#12 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\SubstituteBindings.php(41): Illuminate\\Routing\\Router->substituteImplicitBindings(Object(Illuminate\\Routing\\Route))
+#13 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#14 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Auth\\Middleware\\Authenticate.php(57): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#15 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Auth\\Middleware\\Authenticate->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#16 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken.php(78): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#17 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#18 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Middleware\\ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#19 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#20 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#21 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest(Object(Illuminate\\Http\\Request), Object(Illuminate\\Session\\Store), Object(Closure))
+#22 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Session\\Middleware\\StartSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#23 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#24 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#25 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\EncryptCookies.php(67): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#26 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#27 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#28 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(805): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#29 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(784): Illuminate\\Routing\\Router->runRouteWithinStack(Object(Illuminate\\Routing\\Route), Object(Illuminate\\Http\\Request))
+#30 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(748): Illuminate\\Routing\\Router->runRoute(Object(Illuminate\\Http\\Request), Object(Illuminate\\Routing\\Route))
+#31 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(737): Illuminate\\Routing\\Router->dispatchToRoute(Object(Illuminate\\Http\\Request))
+#32 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(200): Illuminate\\Routing\\Router->dispatch(Object(Illuminate\\Http\\Request))
+#33 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}(Object(Illuminate\\Http\\Request))
+#34 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#35 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#36 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#37 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#38 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TrimStrings.php(40): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#39 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#40 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#41 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#42 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance.php(99): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#43 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#44 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#45 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Http\\Middleware\\HandleCors->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#46 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\TrustProxies.php(39): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#47 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Http\\Middleware\\TrustProxies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#48 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#49 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(175): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#50 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(144): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#51 C:\\laragon\\www\\accounting-nexttripholiday\\public\\index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#52 {main}
+"} 
+[2025-11-17 17:08:30] local.ERROR: syntax error, unexpected integer "00", expecting ")" {"view":{"view":"C:\\laragon\\www\\accounting-nexttripholiday\\resources\\views\\inputTax\\inputtax-table.blade.php","data":{"errors":"<pre class=sf-dump id=sf-dump-663718803 data-indent-pad=\"  \"><span class=sf-dump-note>Illuminate\\Support\\ViewErrorBag</span> {<a class=sf-dump-ref>#1413</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">bags</span>: []
+</samp>}
+</pre><script>Sfdump(\"sf-dump-663718803\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","quotationModel":"<pre class=sf-dump id=sf-dump-784262510 data-indent-pad=\"  \"><span class=sf-dump-note>App\\Models\\quotations\\quotationModel</span> {<a class=sf-dump-ref>#1439</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">connection</span>: \"<span class=sf-dump-str title=\"5 characters\">mysql</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">table</span>: \"<span class=sf-dump-str title=\"9 characters\">quotation</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">primaryKey</span>: \"<span class=sf-dump-str title=\"8 characters\">quote_id</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">keyType</span>: \"<span class=sf-dump-str title=\"3 characters\">int</span>\"
+  +<span class=sf-dump-public title=\"Public property\">incrementing</span>: <span class=sf-dump-const>true</span>
+  #<span class=sf-dump-protected title=\"Protected property\">with</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">withCount</span>: []
+  +<span class=sf-dump-public title=\"Public property\">preventsLazyLoading</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">perPage</span>: <span class=sf-dump-num>15</span>
+  +<span class=sf-dump-public title=\"Public property\">exists</span>: <span class=sf-dump-const>true</span>
+  +<span class=sf-dump-public title=\"Public property\">wasRecentlyCreated</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">attributes</span>: <span class=sf-dump-note>array:54</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>quote_id</span>\" => <span class=sf-dump-num>555</span>
+    \"<span class=sf-dump-key>quote_number</span>\" => \"<span class=sf-dump-str title=\"10 characters\">QT25090547</span>\"
+    \"<span class=sf-dump-key>customer_id</span>\" => <span class=sf-dump-num>548</span>
+    \"<span class=sf-dump-key>quote_tour_name</span>\" => \"<span class=sf-dump-str title=\"94 characters\">NT24120103 - ZGHKG-2516EK - &#3607;&#3633;&#3623;&#3619;&#3660;&#3630;&#3656;&#3629;&#3591;&#3585;&#3591; &#3604;&#3636;&#3626;&#3609;&#3637;&#3618;&#3660;&#3649;&#3621;&#3609;&#3604;&#3660; &#3652;&#3627;&#3623;&#3657;&#3614;&#3619;&#3632; &#3648;&#3607;&#3637;&#3656;&#3618;&#3623;&#3648;&#3605;&#3655;&#3617;&#3607;&#3640;&#3585;&#3623;&#3633;&#3609; (&#3619;&#3623;&#3617;&#3610;&#3633;&#3605;&#3619;&#3604;&#3636;&#3626;&#3609;&#3637;&#3618;&#3660;)</span>\"
+    \"<span class=sf-dump-key>quote_tour_name1</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>quote_date_start</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-10-17</span>\"
+    \"<span class=sf-dump-key>quote_date_end</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-10-19</span>\"
+    \"<span class=sf-dump-key>quote_airline</span>\" => <span class=sf-dump-num>397</span>
+    \"<span class=sf-dump-key>quote_country</span>\" => <span class=sf-dump-num>98</span>
+    \"<span class=sf-dump-key>quote_wholesale</span>\" => <span class=sf-dump-num>3</span>
+    \"<span class=sf-dump-key>quote_tour</span>\" => \"<span class=sf-dump-str title=\"10 characters\">NT24120103</span>\"
+    \"<span class=sf-dump-key>quote_tour_code</span>\" => \"<span class=sf-dump-str title=\"12 characters\">HK1710250222</span>\"
+    \"<span class=sf-dump-key>quote_date</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-09-06</span>\"
+    \"<span class=sf-dump-key>quote_booking</span>\" => \"<span class=sf-dump-str title=\"10 characters\">BK25090547</span>\"
+    \"<span class=sf-dump-key>quote_booking_create</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-09-06</span>\"
+    \"<span class=sf-dump-key>quote_sale</span>\" => <span class=sf-dump-num>3</span>
+    \"<span class=sf-dump-key>quote_status</span>\" => \"<span class=sf-dump-str title=\"7 characters\">success</span>\"
+    \"<span class=sf-dump-key>quote_numday</span>\" => \"<span class=sf-dump-str title=\"11 characters\">3 &#3623;&#3633;&#3609; 2 &#3588;&#3639;&#3609;</span>\"
+    \"<span class=sf-dump-key>quote_note</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>vat_type</span>\" => \"<span class=sf-dump-str title=\"7 characters\">exclude</span>\"
+    \"<span class=sf-dump-key>payment_before_date</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>payment_type</span>\" => \"<span class=sf-dump-str title=\"4 characters\">full</span>\"
+    \"<span class=sf-dump-key>deposit</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>payment_date</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>quote_pax_total</span>\" => <span class=sf-dump-num>2</span>
+    \"<span class=sf-dump-key>total_qty</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>payment</span>\" => \"<span class=sf-dump-str title=\"8 characters\">46266.16</span>\"
+    \"<span class=sf-dump-key>quote_payment_type</span>\" => \"<span class=sf-dump-str title=\"7 characters\">deposit</span>\"
+    \"<span class=sf-dump-key>quote_payment_date</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-07 13:00:00</span>\"
+    \"<span class=sf-dump-key>quote_payment_price</span>\" => \"<span class=sf-dump-str title=\"8 characters\">10000.00</span>\"
+    \"<span class=sf-dump-key>quote_payment_total</span>\" => \"<span class=sf-dump-str title=\"8 characters\">20000.00</span>\"
+    \"<span class=sf-dump-key>quote_payment_date_full</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-17 13:00:00</span>\"
+    \"<span class=sf-dump-key>quote_payment_total_full</span>\" => \"<span class=sf-dump-str title=\"8 characters\">26266.16</span>\"
+    \"<span class=sf-dump-key>quote_payment_extra</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>quote_vat_exempted_amount</span>\" => \"<span class=sf-dump-str title=\"4 characters\">0.00</span>\"
+    \"<span class=sf-dump-key>quote_pre_tax_amount</span>\" => \"<span class=sf-dump-str title=\"8 characters\">43239.40</span>\"
+    \"<span class=sf-dump-key>quote_discount</span>\" => \"<span class=sf-dump-str title=\"4 characters\">0.00</span>\"
+    \"<span class=sf-dump-key>quote_pre_vat_amount</span>\" => \"<span class=sf-dump-str title=\"8 characters\">43239.40</span>\"
+    \"<span class=sf-dump-key>quote_vat</span>\" => \"<span class=sf-dump-str title=\"7 characters\">3026.76</span>\"
+    \"<span class=sf-dump-key>quote_include_vat</span>\" => \"<span class=sf-dump-str title=\"8 characters\">46266.16</span>\"
+    \"<span class=sf-dump-key>quote_grand_total</span>\" => \"<span class=sf-dump-str title=\"8 characters\">46266.16</span>\"
+    \"<span class=sf-dump-key>quote_withholding_tax</span>\" => \"<span class=sf-dump-str title=\"7 characters\">1297.18</span>\"
+    \"<span class=sf-dump-key>quote_withholding_tax_status</span>\" => \"<span class=sf-dump-str>Y</span>\"
+    \"<span class=sf-dump-key>created_by</span>\" => \"<span class=sf-dump-str title=\"15 characters\">&#3623;&#3633;&#3609;&#3623;&#3636;&#3626;&#3634; &#3592;&#3636;&#3605;&#3619;&#3609;&#3629;&#3585;</span>\"
+    \"<span class=sf-dump-key>updated_by</span>\" => \"<span class=sf-dump-str title=\"15 characters\">&#3623;&#3633;&#3609;&#3623;&#3636;&#3626;&#3634; &#3592;&#3636;&#3605;&#3619;&#3609;&#3629;&#3585;</span>\"
+    \"<span class=sf-dump-key>created_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-06 09:57:39</span>\"
+    \"<span class=sf-dump-key>updated_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-19 14:14:12</span>\"
+    \"<span class=sf-dump-key>quote_cancel_note</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>quote_payment_status</span>\" => \"<span class=sf-dump-str title=\"7 characters\">success</span>\"
+    \"<span class=sf-dump-key>wholesale_payment_status</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>wholesale_payment_total</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>tb_booking_form</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>quote_commission</span>\" => \"<span class=sf-dump-str>Y</span>\"
+    \"<span class=sf-dump-key>quote_note_commission</span>\" => <span class=sf-dump-const>null</span>
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">original</span>: <span class=sf-dump-note>array:54</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>quote_id</span>\" => <span class=sf-dump-num>555</span>
+    \"<span class=sf-dump-key>quote_number</span>\" => \"<span class=sf-dump-str title=\"10 characters\">QT25090547</span>\"
+    \"<span class=sf-dump-key>customer_id</span>\" => <span class=sf-dump-num>548</span>
+    \"<span class=sf-dump-key>quote_tour_name</span>\" => \"<span class=sf-dump-str title=\"94 characters\">NT24120103 - ZGHKG-2516EK - &#3607;&#3633;&#3623;&#3619;&#3660;&#3630;&#3656;&#3629;&#3591;&#3585;&#3591; &#3604;&#3636;&#3626;&#3609;&#3637;&#3618;&#3660;&#3649;&#3621;&#3609;&#3604;&#3660; &#3652;&#3627;&#3623;&#3657;&#3614;&#3619;&#3632; &#3648;&#3607;&#3637;&#3656;&#3618;&#3623;&#3648;&#3605;&#3655;&#3617;&#3607;&#3640;&#3585;&#3623;&#3633;&#3609; (&#3619;&#3623;&#3617;&#3610;&#3633;&#3605;&#3619;&#3604;&#3636;&#3626;&#3609;&#3637;&#3618;&#3660;)</span>\"
+    \"<span class=sf-dump-key>quote_tour_name1</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>quote_date_start</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-10-17</span>\"
+    \"<span class=sf-dump-key>quote_date_end</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-10-19</span>\"
+    \"<span class=sf-dump-key>quote_airline</span>\" => <span class=sf-dump-num>397</span>
+    \"<span class=sf-dump-key>quote_country</span>\" => <span class=sf-dump-num>98</span>
+    \"<span class=sf-dump-key>quote_wholesale</span>\" => <span class=sf-dump-num>3</span>
+    \"<span class=sf-dump-key>quote_tour</span>\" => \"<span class=sf-dump-str title=\"10 characters\">NT24120103</span>\"
+    \"<span class=sf-dump-key>quote_tour_code</span>\" => \"<span class=sf-dump-str title=\"12 characters\">HK1710250222</span>\"
+    \"<span class=sf-dump-key>quote_date</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-09-06</span>\"
+    \"<span class=sf-dump-key>quote_booking</span>\" => \"<span class=sf-dump-str title=\"10 characters\">BK25090547</span>\"
+    \"<span class=sf-dump-key>quote_booking_create</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-09-06</span>\"
+    \"<span class=sf-dump-key>quote_sale</span>\" => <span class=sf-dump-num>3</span>
+    \"<span class=sf-dump-key>quote_status</span>\" => \"<span class=sf-dump-str title=\"7 characters\">success</span>\"
+    \"<span class=sf-dump-key>quote_numday</span>\" => \"<span class=sf-dump-str title=\"11 characters\">3 &#3623;&#3633;&#3609; 2 &#3588;&#3639;&#3609;</span>\"
+    \"<span class=sf-dump-key>quote_note</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>vat_type</span>\" => \"<span class=sf-dump-str title=\"7 characters\">exclude</span>\"
+    \"<span class=sf-dump-key>payment_before_date</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>payment_type</span>\" => \"<span class=sf-dump-str title=\"4 characters\">full</span>\"
+    \"<span class=sf-dump-key>deposit</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>payment_date</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>quote_pax_total</span>\" => <span class=sf-dump-num>2</span>
+    \"<span class=sf-dump-key>total_qty</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>payment</span>\" => \"<span class=sf-dump-str title=\"8 characters\">46266.16</span>\"
+    \"<span class=sf-dump-key>quote_payment_type</span>\" => \"<span class=sf-dump-str title=\"7 characters\">deposit</span>\"
+    \"<span class=sf-dump-key>quote_payment_date</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-07 13:00:00</span>\"
+    \"<span class=sf-dump-key>quote_payment_price</span>\" => \"<span class=sf-dump-str title=\"8 characters\">10000.00</span>\"
+    \"<span class=sf-dump-key>quote_payment_total</span>\" => \"<span class=sf-dump-str title=\"8 characters\">20000.00</span>\"
+    \"<span class=sf-dump-key>quote_payment_date_full</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-17 13:00:00</span>\"
+    \"<span class=sf-dump-key>quote_payment_total_full</span>\" => \"<span class=sf-dump-str title=\"8 characters\">26266.16</span>\"
+    \"<span class=sf-dump-key>quote_payment_extra</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>quote_vat_exempted_amount</span>\" => \"<span class=sf-dump-str title=\"4 characters\">0.00</span>\"
+    \"<span class=sf-dump-key>quote_pre_tax_amount</span>\" => \"<span class=sf-dump-str title=\"8 characters\">43239.40</span>\"
+    \"<span class=sf-dump-key>quote_discount</span>\" => \"<span class=sf-dump-str title=\"4 characters\">0.00</span>\"
+    \"<span class=sf-dump-key>quote_pre_vat_amount</span>\" => \"<span class=sf-dump-str title=\"8 characters\">43239.40</span>\"
+    \"<span class=sf-dump-key>quote_vat</span>\" => \"<span class=sf-dump-str title=\"7 characters\">3026.76</span>\"
+    \"<span class=sf-dump-key>quote_include_vat</span>\" => \"<span class=sf-dump-str title=\"8 characters\">46266.16</span>\"
+    \"<span class=sf-dump-key>quote_grand_total</span>\" => \"<span class=sf-dump-str title=\"8 characters\">46266.16</span>\"
+    \"<span class=sf-dump-key>quote_withholding_tax</span>\" => \"<span class=sf-dump-str title=\"7 characters\">1297.18</span>\"
+    \"<span class=sf-dump-key>quote_withholding_tax_status</span>\" => \"<span class=sf-dump-str>Y</span>\"
+    \"<span class=sf-dump-key>created_by</span>\" => \"<span class=sf-dump-str title=\"15 characters\">&#3623;&#3633;&#3609;&#3623;&#3636;&#3626;&#3634; &#3592;&#3636;&#3605;&#3619;&#3609;&#3629;&#3585;</span>\"
+    \"<span class=sf-dump-key>updated_by</span>\" => \"<span class=sf-dump-str title=\"15 characters\">&#3623;&#3633;&#3609;&#3623;&#3636;&#3626;&#3634; &#3592;&#3636;&#3605;&#3619;&#3609;&#3629;&#3585;</span>\"
+    \"<span class=sf-dump-key>created_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-06 09:57:39</span>\"
+    \"<span class=sf-dump-key>updated_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-19 14:14:12</span>\"
+    \"<span class=sf-dump-key>quote_cancel_note</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>quote_payment_status</span>\" => \"<span class=sf-dump-str title=\"7 characters\">success</span>\"
+    \"<span class=sf-dump-key>wholesale_payment_status</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>wholesale_payment_total</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>tb_booking_form</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>quote_commission</span>\" => \"<span class=sf-dump-str>Y</span>\"
+    \"<span class=sf-dump-key>quote_note_commission</span>\" => <span class=sf-dump-const>null</span>
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">changes</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">casts</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">classCastCache</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">attributeCastCache</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">dateFormat</span>: <span class=sf-dump-const>null</span>
+  #<span class=sf-dump-protected title=\"Protected property\">appends</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">dispatchesEvents</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">observables</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">relations</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">touches</span>: []
+  +<span class=sf-dump-public title=\"Public property\">timestamps</span>: <span class=sf-dump-const>true</span>
+  +<span class=sf-dump-public title=\"Public property\">usesUniqueIds</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">hidden</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">visible</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">fillable</span>: <span class=sf-dump-note>array:52</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => \"<span class=sf-dump-str title=\"12 characters\">quote_number</span>\"
+    <span class=sf-dump-index>1</span> => \"<span class=sf-dump-str title=\"11 characters\">customer_id</span>\"
+    <span class=sf-dump-index>2</span> => \"<span class=sf-dump-str title=\"15 characters\">quote_tour_name</span>\"
+    <span class=sf-dump-index>3</span> => \"<span class=sf-dump-str title=\"16 characters\">quote_tour_name1</span>\"
+    <span class=sf-dump-index>4</span> => \"<span class=sf-dump-str title=\"16 characters\">quote_date_start</span>\"
+    <span class=sf-dump-index>5</span> => \"<span class=sf-dump-str title=\"14 characters\">quote_date_end</span>\"
+    <span class=sf-dump-index>6</span> => \"<span class=sf-dump-str title=\"13 characters\">quote_airline</span>\"
+    <span class=sf-dump-index>7</span> => \"<span class=sf-dump-str title=\"13 characters\">quote_country</span>\"
+    <span class=sf-dump-index>8</span> => \"<span class=sf-dump-str title=\"15 characters\">quote_wholesale</span>\"
+    <span class=sf-dump-index>9</span> => \"<span class=sf-dump-str title=\"17 characters\">quote_tour_number</span>\"
+    <span class=sf-dump-index>10</span> => \"<span class=sf-dump-str title=\"15 characters\">quote_tour_code</span>\"
+    <span class=sf-dump-index>11</span> => \"<span class=sf-dump-str title=\"10 characters\">quote_tour</span>\"
+    <span class=sf-dump-index>12</span> => \"<span class=sf-dump-str title=\"10 characters\">quote_date</span>\"
+    <span class=sf-dump-index>13</span> => \"<span class=sf-dump-str title=\"13 characters\">quote_booking</span>\"
+    <span class=sf-dump-index>14</span> => \"<span class=sf-dump-str title=\"10 characters\">quote_sale</span>\"
+    <span class=sf-dump-index>15</span> => \"<span class=sf-dump-str title=\"12 characters\">quote_numday</span>\"
+    <span class=sf-dump-index>16</span> => \"<span class=sf-dump-str title=\"12 characters\">quote_status</span>\"
+    <span class=sf-dump-index>17</span> => \"<span class=sf-dump-str title=\"10 characters\">quote_note</span>\"
+    <span class=sf-dump-index>18</span> => \"<span class=sf-dump-str title=\"8 characters\">vat_type</span>\"
+    <span class=sf-dump-index>19</span> => \"<span class=sf-dump-str title=\"19 characters\">payment_before_date</span>\"
+    <span class=sf-dump-index>20</span> => \"<span class=sf-dump-str title=\"12 characters\">payment_type</span>\"
+    <span class=sf-dump-index>21</span> => \"<span class=sf-dump-str title=\"7 characters\">deposit</span>\"
+    <span class=sf-dump-index>22</span> => \"<span class=sf-dump-str title=\"12 characters\">payment_date</span>\"
+    <span class=sf-dump-index>23</span> => \"<span class=sf-dump-str title=\"9 characters\">total_qty</span>\"
+    <span class=sf-dump-index>24</span> => \"<span class=sf-dump-str title=\"15 characters\">quote_pax_total</span>\"
+    <span class=sf-dump-index>25</span> => \"<span class=sf-dump-str title=\"24 characters\">wholesale_payment_status</span>\"
+    <span class=sf-dump-index>26</span> => \"<span class=sf-dump-str title=\"23 characters\">wholesale_payment_total</span>\"
+    <span class=sf-dump-index>27</span> => \"<span class=sf-dump-str title=\"7 characters\">payment</span>\"
+    <span class=sf-dump-index>28</span> => \"<span class=sf-dump-str title=\"18 characters\">quote_payment_type</span>\"
+    <span class=sf-dump-index>29</span> => \"<span class=sf-dump-str title=\"18 characters\">quote_payment_date</span>\"
+    <span class=sf-dump-index>30</span> => \"<span class=sf-dump-str title=\"23 characters\">quote_payment_date_full</span>\"
+    <span class=sf-dump-index>31</span> => \"<span class=sf-dump-str title=\"19 characters\">quote_payment_price</span>\"
+    <span class=sf-dump-index>32</span> => \"<span class=sf-dump-str title=\"19 characters\">quote_payment_extra</span>\"
+    <span class=sf-dump-index>33</span> => \"<span class=sf-dump-str title=\"24 characters\">quote_payment_total_full</span>\"
+    <span class=sf-dump-index>34</span> => \"<span class=sf-dump-str title=\"19 characters\">quote_payment_total</span>\"
+    <span class=sf-dump-index>35</span> => \"<span class=sf-dump-str title=\"25 characters\">quote_vat_exempted_amount</span>\"
+    <span class=sf-dump-index>36</span> => \"<span class=sf-dump-str title=\"20 characters\">quote_pre_tax_amount</span>\"
+    <span class=sf-dump-index>37</span> => \"<span class=sf-dump-str title=\"14 characters\">quote_discount</span>\"
+    <span class=sf-dump-index>38</span> => \"<span class=sf-dump-str title=\"20 characters\">quote_pre_vat_amount</span>\"
+    <span class=sf-dump-index>39</span> => \"<span class=sf-dump-str title=\"9 characters\">quote_vat</span>\"
+    <span class=sf-dump-index>40</span> => \"<span class=sf-dump-str title=\"17 characters\">quote_include_vat</span>\"
+    <span class=sf-dump-index>41</span> => \"<span class=sf-dump-str title=\"17 characters\">quote_grand_total</span>\"
+    <span class=sf-dump-index>42</span> => \"<span class=sf-dump-str title=\"21 characters\">quote_withholding_tax</span>\"
+    <span class=sf-dump-index>43</span> => \"<span class=sf-dump-str title=\"28 characters\">quote_withholding_tax_status</span>\"
+    <span class=sf-dump-index>44</span> => \"<span class=sf-dump-str title=\"20 characters\">quote_booking_create</span>\"
+    <span class=sf-dump-index>45</span> => \"<span class=sf-dump-str title=\"10 characters\">created_by</span>\"
+    <span class=sf-dump-index>46</span> => \"<span class=sf-dump-str title=\"10 characters\">updated_by</span>\"
+    <span class=sf-dump-index>47</span> => \"<span class=sf-dump-str title=\"17 characters\">quote_cancel_note</span>\"
+    <span class=sf-dump-index>48</span> => \"<span class=sf-dump-str title=\"20 characters\">quote_payment_status</span>\"
+    <span class=sf-dump-index>49</span> => \"<span class=sf-dump-str title=\"15 characters\">tb_booking_form</span>\"
+    <span class=sf-dump-index>50</span> => \"<span class=sf-dump-str title=\"16 characters\">quote_commission</span>\"
+    <span class=sf-dump-index>51</span> => \"<span class=sf-dump-str title=\"21 characters\">quote_note_commission</span>\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">guarded</span>: <span class=sf-dump-note>array:1</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => \"<span class=sf-dump-str>*</span>\"
+  </samp>]
+</samp>}
+</pre><script>Sfdump(\"sf-dump-784262510\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","inputTax":"<pre class=sf-dump id=sf-dump-545620764 data-indent-pad=\"  \"><span class=sf-dump-note>Illuminate\\Database\\Eloquent\\Collection</span> {<a class=sf-dump-ref>#1446</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">items</span>: <span class=sf-dump-note>array:1</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => <span class=\"sf-dump-note sf-dump-ellipsization\" title=\"App\\Models\\inputTax\\inputTaxModel
+\"><span class=\"sf-dump-ellipsis sf-dump-ellipsis-note\">App\\Models\\inputTax</span><span class=\"sf-dump-ellipsis sf-dump-ellipsis-note\">\\</span><span class=\"sf-dump-ellipsis-tail\">inputTaxModel</span></span> {<a class=sf-dump-ref>#1436</a><samp data-depth=3 class=sf-dump-compact>
+      #<span class=sf-dump-protected title=\"Protected property\">connection</span>: \"<span class=sf-dump-str title=\"5 characters\">mysql</span>\"
+      #<span class=sf-dump-protected title=\"Protected property\">table</span>: \"<span class=sf-dump-str title=\"9 characters\">input_tax</span>\"
+      #<span class=sf-dump-protected title=\"Protected property\">primaryKey</span>: \"<span class=sf-dump-str title=\"12 characters\">input_tax_id</span>\"
+      #<span class=sf-dump-protected title=\"Protected property\">keyType</span>: \"<span class=sf-dump-str title=\"3 characters\">int</span>\"
+      +<span class=sf-dump-public title=\"Public property\">incrementing</span>: <span class=sf-dump-const>true</span>
+      #<span class=sf-dump-protected title=\"Protected property\">with</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">withCount</span>: []
+      +<span class=sf-dump-public title=\"Public property\">preventsLazyLoading</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">perPage</span>: <span class=sf-dump-num>15</span>
+      +<span class=sf-dump-public title=\"Public property\">exists</span>: <span class=sf-dump-const>true</span>
+      +<span class=sf-dump-public title=\"Public property\">wasRecentlyCreated</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">attributes</span>: <span class=sf-dump-note>array:23</span> [ &#8230;23]
+      #<span class=sf-dump-protected title=\"Protected property\">original</span>: <span class=sf-dump-note>array:23</span> [ &#8230;23]
+      #<span class=sf-dump-protected title=\"Protected property\">changes</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">casts</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">classCastCache</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">attributeCastCache</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">dateFormat</span>: <span class=sf-dump-const>null</span>
+      #<span class=sf-dump-protected title=\"Protected property\">appends</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">dispatchesEvents</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">observables</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">relations</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">touches</span>: []
+      +<span class=sf-dump-public title=\"Public property\">timestamps</span>: <span class=sf-dump-const>true</span>
+      +<span class=sf-dump-public title=\"Public property\">usesUniqueIds</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">hidden</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">visible</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">fillable</span>: <span class=sf-dump-note>array:21</span> [ &#8230;21]
+      #<span class=sf-dump-protected title=\"Protected property\">guarded</span>: <span class=sf-dump-note>array:1</span> [ &#8230;1]
+    </samp>}
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+</samp>}
+</pre><script>Sfdump(\"sf-dump-545620764\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","invoiceModel":"<pre class=sf-dump id=sf-dump-1540592560 data-indent-pad=\"  \"><span class=sf-dump-note>Illuminate\\Database\\Eloquent\\Collection</span> {<a class=sf-dump-ref>#1445</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">items</span>: <span class=sf-dump-note>array:1</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => <span class=\"sf-dump-note sf-dump-ellipsization\" title=\"App\\Models\\invoices\\taxinvoiceModel
+\"><span class=\"sf-dump-ellipsis sf-dump-ellipsis-note\">App\\Models\\invoices</span><span class=\"sf-dump-ellipsis sf-dump-ellipsis-note\">\\</span><span class=\"sf-dump-ellipsis-tail\">taxinvoiceModel</span></span> {<a class=sf-dump-ref>#1444</a><samp data-depth=3 class=sf-dump-compact>
+      #<span class=sf-dump-protected title=\"Protected property\">connection</span>: \"<span class=sf-dump-str title=\"5 characters\">mysql</span>\"
+      #<span class=sf-dump-protected title=\"Protected property\">table</span>: \"<span class=sf-dump-str title=\"11 characters\">taxinvoices</span>\"
+      #<span class=sf-dump-protected title=\"Protected property\">primaryKey</span>: \"<span class=sf-dump-str title=\"13 characters\">taxinvoice_id</span>\"
+      #<span class=sf-dump-protected title=\"Protected property\">keyType</span>: \"<span class=sf-dump-str title=\"3 characters\">int</span>\"
+      +<span class=sf-dump-public title=\"Public property\">incrementing</span>: <span class=sf-dump-const>true</span>
+      #<span class=sf-dump-protected title=\"Protected property\">with</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">withCount</span>: []
+      +<span class=sf-dump-public title=\"Public property\">preventsLazyLoading</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">perPage</span>: <span class=sf-dump-num>15</span>
+      +<span class=sf-dump-public title=\"Public property\">exists</span>: <span class=sf-dump-const>true</span>
+      +<span class=sf-dump-public title=\"Public property\">wasRecentlyCreated</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">attributes</span>: <span class=sf-dump-note>array:30</span> [ &#8230;30]
+      #<span class=sf-dump-protected title=\"Protected property\">original</span>: <span class=sf-dump-note>array:30</span> [ &#8230;30]
+      #<span class=sf-dump-protected title=\"Protected property\">changes</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">casts</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">classCastCache</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">attributeCastCache</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">dateFormat</span>: <span class=sf-dump-const>null</span>
+      #<span class=sf-dump-protected title=\"Protected property\">appends</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">dispatchesEvents</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">observables</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">relations</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">touches</span>: []
+      +<span class=sf-dump-public title=\"Public property\">timestamps</span>: <span class=sf-dump-const>true</span>
+      +<span class=sf-dump-public title=\"Public property\">usesUniqueIds</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">hidden</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">visible</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">fillable</span>: <span class=sf-dump-note>array:9</span> [ &#8230;9]
+      #<span class=sf-dump-protected title=\"Protected property\">guarded</span>: <span class=sf-dump-note>array:1</span> [ &#8230;1]
+    </samp>}
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+</samp>}
+</pre><script>Sfdump(\"sf-dump-1540592560\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","invoice":"<pre class=sf-dump id=sf-dump-328004048 data-indent-pad=\"  \"><span class=sf-dump-note>App\\Models\\invoices\\invoiceModel</span> {<a class=sf-dump-ref>#1441</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">connection</span>: \"<span class=sf-dump-str title=\"5 characters\">mysql</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">table</span>: \"<span class=sf-dump-str title=\"8 characters\">invoices</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">primaryKey</span>: \"<span class=sf-dump-str title=\"10 characters\">invoice_id</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">keyType</span>: \"<span class=sf-dump-str title=\"3 characters\">int</span>\"
+  +<span class=sf-dump-public title=\"Public property\">incrementing</span>: <span class=sf-dump-const>true</span>
+  #<span class=sf-dump-protected title=\"Protected property\">with</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">withCount</span>: []
+  +<span class=sf-dump-public title=\"Public property\">preventsLazyLoading</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">perPage</span>: <span class=sf-dump-num>15</span>
+  +<span class=sf-dump-public title=\"Public property\">exists</span>: <span class=sf-dump-const>true</span>
+  +<span class=sf-dump-public title=\"Public property\">wasRecentlyCreated</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">attributes</span>: <span class=sf-dump-note>array:30</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>invoice_id</span>\" => <span class=sf-dump-num>476</span>
+    \"<span class=sf-dump-key>invoice_number</span>\" => \"<span class=sf-dump-str title=\"12 characters\">IVN2509-0105</span>\"
+    \"<span class=sf-dump-key>invoice_date</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-09-06</span>\"
+    \"<span class=sf-dump-key>invoice_quote_id</span>\" => <span class=sf-dump-num>555</span>
+    \"<span class=sf-dump-key>invoice_quote_number</span>\" => \"<span class=sf-dump-str title=\"10 characters\">QT25090547</span>\"
+    \"<span class=sf-dump-key>invoice_booking</span>\" => \"<span class=sf-dump-str title=\"10 characters\">BK25090547</span>\"
+    \"<span class=sf-dump-key>invoice_sale</span>\" => <span class=sf-dump-num>3</span>
+    \"<span class=sf-dump-key>customer_id</span>\" => <span class=sf-dump-num>548</span>
+    \"<span class=sf-dump-key>invoice_vat_exempted_amount</span>\" => \"<span class=sf-dump-str title=\"4 characters\">0.00</span>\"
+    \"<span class=sf-dump-key>invoice_pre_tax_amount</span>\" => \"<span class=sf-dump-str title=\"8 characters\">43239.40</span>\"
+    \"<span class=sf-dump-key>invoice_discount</span>\" => \"<span class=sf-dump-str title=\"4 characters\">0.00</span>\"
+    \"<span class=sf-dump-key>invoice_pre_vat_amount</span>\" => \"<span class=sf-dump-str title=\"8 characters\">43239.40</span>\"
+    \"<span class=sf-dump-key>invoice_vat</span>\" => \"<span class=sf-dump-str title=\"7 characters\">3026.76</span>\"
+    \"<span class=sf-dump-key>invoice_include_vat</span>\" => \"<span class=sf-dump-str title=\"8 characters\">46266.16</span>\"
+    \"<span class=sf-dump-key>invoice_grand_total</span>\" => \"<span class=sf-dump-str title=\"8 characters\">46266.16</span>\"
+    \"<span class=sf-dump-key>invoice_withholding_tax</span>\" => \"<span class=sf-dump-str title=\"7 characters\">1297.18</span>\"
+    \"<span class=sf-dump-key>invoice_withholding_tax_status</span>\" => \"<span class=sf-dump-str>Y</span>\"
+    \"<span class=sf-dump-key>invoice_status</span>\" => \"<span class=sf-dump-str title=\"7 characters\">success</span>\"
+    \"<span class=sf-dump-key>invoice_note</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>invoice_vat_type</span>\" => \"<span class=sf-dump-str title=\"7 characters\">exclude</span>\"
+    \"<span class=sf-dump-key>created_by</span>\" => \"<span class=sf-dump-str title=\"15 characters\">&#3623;&#3633;&#3609;&#3623;&#3636;&#3626;&#3634; &#3592;&#3636;&#3605;&#3619;&#3609;&#3629;&#3585;</span>\"
+    \"<span class=sf-dump-key>updated_by</span>\" => \"<span class=sf-dump-str title=\"15 characters\">&#3623;&#3633;&#3609;&#3623;&#3636;&#3626;&#3634; &#3592;&#3636;&#3605;&#3619;&#3609;&#3629;&#3585;</span>\"
+    \"<span class=sf-dump-key>created_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-06 10:04:10</span>\"
+    \"<span class=sf-dump-key>updated_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-19 14:14:17</span>\"
+    \"<span class=sf-dump-key>deposit</span>\" => \"<span class=sf-dump-str title=\"4 characters\">0.00</span>\"
+    \"<span class=sf-dump-key>invoice_cancel_note</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>invoice_image</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>revised</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>revision_reason</span>\" => \"<span class=sf-dump-str title=\"21 characters\">&#3649;&#3585;&#3657;&#3652;&#3586;&#3586;&#3657;&#3629;&#3617;&#3641;&#3621;&#3651;&#3610;&#3649;&#3592;&#3657;&#3591;&#3627;&#3609;&#3637;&#3657;</span>\"
+    \"<span class=sf-dump-key>revision_date</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-06 10:57:23</span>\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">original</span>: <span class=sf-dump-note>array:30</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>invoice_id</span>\" => <span class=sf-dump-num>476</span>
+    \"<span class=sf-dump-key>invoice_number</span>\" => \"<span class=sf-dump-str title=\"12 characters\">IVN2509-0105</span>\"
+    \"<span class=sf-dump-key>invoice_date</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-09-06</span>\"
+    \"<span class=sf-dump-key>invoice_quote_id</span>\" => <span class=sf-dump-num>555</span>
+    \"<span class=sf-dump-key>invoice_quote_number</span>\" => \"<span class=sf-dump-str title=\"10 characters\">QT25090547</span>\"
+    \"<span class=sf-dump-key>invoice_booking</span>\" => \"<span class=sf-dump-str title=\"10 characters\">BK25090547</span>\"
+    \"<span class=sf-dump-key>invoice_sale</span>\" => <span class=sf-dump-num>3</span>
+    \"<span class=sf-dump-key>customer_id</span>\" => <span class=sf-dump-num>548</span>
+    \"<span class=sf-dump-key>invoice_vat_exempted_amount</span>\" => \"<span class=sf-dump-str title=\"4 characters\">0.00</span>\"
+    \"<span class=sf-dump-key>invoice_pre_tax_amount</span>\" => \"<span class=sf-dump-str title=\"8 characters\">43239.40</span>\"
+    \"<span class=sf-dump-key>invoice_discount</span>\" => \"<span class=sf-dump-str title=\"4 characters\">0.00</span>\"
+    \"<span class=sf-dump-key>invoice_pre_vat_amount</span>\" => \"<span class=sf-dump-str title=\"8 characters\">43239.40</span>\"
+    \"<span class=sf-dump-key>invoice_vat</span>\" => \"<span class=sf-dump-str title=\"7 characters\">3026.76</span>\"
+    \"<span class=sf-dump-key>invoice_include_vat</span>\" => \"<span class=sf-dump-str title=\"8 characters\">46266.16</span>\"
+    \"<span class=sf-dump-key>invoice_grand_total</span>\" => \"<span class=sf-dump-str title=\"8 characters\">46266.16</span>\"
+    \"<span class=sf-dump-key>invoice_withholding_tax</span>\" => \"<span class=sf-dump-str title=\"7 characters\">1297.18</span>\"
+    \"<span class=sf-dump-key>invoice_withholding_tax_status</span>\" => \"<span class=sf-dump-str>Y</span>\"
+    \"<span class=sf-dump-key>invoice_status</span>\" => \"<span class=sf-dump-str title=\"7 characters\">success</span>\"
+    \"<span class=sf-dump-key>invoice_note</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>invoice_vat_type</span>\" => \"<span class=sf-dump-str title=\"7 characters\">exclude</span>\"
+    \"<span class=sf-dump-key>created_by</span>\" => \"<span class=sf-dump-str title=\"15 characters\">&#3623;&#3633;&#3609;&#3623;&#3636;&#3626;&#3634; &#3592;&#3636;&#3605;&#3619;&#3609;&#3629;&#3585;</span>\"
+    \"<span class=sf-dump-key>updated_by</span>\" => \"<span class=sf-dump-str title=\"15 characters\">&#3623;&#3633;&#3609;&#3623;&#3636;&#3626;&#3634; &#3592;&#3636;&#3605;&#3619;&#3609;&#3629;&#3585;</span>\"
+    \"<span class=sf-dump-key>created_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-06 10:04:10</span>\"
+    \"<span class=sf-dump-key>updated_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-19 14:14:17</span>\"
+    \"<span class=sf-dump-key>deposit</span>\" => \"<span class=sf-dump-str title=\"4 characters\">0.00</span>\"
+    \"<span class=sf-dump-key>invoice_cancel_note</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>invoice_image</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>revised</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>revision_reason</span>\" => \"<span class=sf-dump-str title=\"21 characters\">&#3649;&#3585;&#3657;&#3652;&#3586;&#3586;&#3657;&#3629;&#3617;&#3641;&#3621;&#3651;&#3610;&#3649;&#3592;&#3657;&#3591;&#3627;&#3609;&#3637;&#3657;</span>\"
+    \"<span class=sf-dump-key>revision_date</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-06 10:57:23</span>\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">changes</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">casts</span>: <span class=sf-dump-note>array:3</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>revised</span>\" => \"<span class=sf-dump-str title=\"7 characters\">boolean</span>\"
+    \"<span class=sf-dump-key>revision_date</span>\" => \"<span class=sf-dump-str title=\"8 characters\">datetime</span>\"
+    \"<span class=sf-dump-key>invoice_date</span>\" => \"<span class=sf-dump-str title=\"4 characters\">date</span>\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">classCastCache</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">attributeCastCache</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">dateFormat</span>: <span class=sf-dump-const>null</span>
+  #<span class=sf-dump-protected title=\"Protected property\">appends</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">dispatchesEvents</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">observables</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">relations</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">touches</span>: []
+  +<span class=sf-dump-public title=\"Public property\">timestamps</span>: <span class=sf-dump-const>true</span>
+  +<span class=sf-dump-public title=\"Public property\">usesUniqueIds</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">hidden</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">visible</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">fillable</span>: <span class=sf-dump-note>array:28</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => \"<span class=sf-dump-str title=\"10 characters\">invoice_id</span>\"
+    <span class=sf-dump-index>1</span> => \"<span class=sf-dump-str title=\"14 characters\">invoice_number</span>\"
+    <span class=sf-dump-index>2</span> => \"<span class=sf-dump-str title=\"12 characters\">invoice_date</span>\"
+    <span class=sf-dump-index>3</span> => \"<span class=sf-dump-str title=\"16 characters\">invoice_quote_id</span>\"
+    <span class=sf-dump-index>4</span> => \"<span class=sf-dump-str title=\"20 characters\">invoice_quote_number</span>\"
+    <span class=sf-dump-index>5</span> => \"<span class=sf-dump-str title=\"15 characters\">invoice_booking</span>\"
+    <span class=sf-dump-index>6</span> => \"<span class=sf-dump-str title=\"12 characters\">invoice_sale</span>\"
+    <span class=sf-dump-index>7</span> => \"<span class=sf-dump-str title=\"11 characters\">customer_id</span>\"
+    <span class=sf-dump-index>8</span> => \"<span class=sf-dump-str title=\"27 characters\">invoice_vat_exempted_amount</span>\"
+    <span class=sf-dump-index>9</span> => \"<span class=sf-dump-str title=\"22 characters\">invoice_pre_tax_amount</span>\"
+    <span class=sf-dump-index>10</span> => \"<span class=sf-dump-str title=\"16 characters\">invoice_discount</span>\"
+    <span class=sf-dump-index>11</span> => \"<span class=sf-dump-str title=\"22 characters\">invoice_pre_vat_amount</span>\"
+    <span class=sf-dump-index>12</span> => \"<span class=sf-dump-str title=\"11 characters\">invoice_vat</span>\"
+    <span class=sf-dump-index>13</span> => \"<span class=sf-dump-str title=\"19 characters\">invoice_include_vat</span>\"
+    <span class=sf-dump-index>14</span> => \"<span class=sf-dump-str title=\"19 characters\">invoice_grand_total</span>\"
+    <span class=sf-dump-index>15</span> => \"<span class=sf-dump-str title=\"23 characters\">invoice_withholding_tax</span>\"
+    <span class=sf-dump-index>16</span> => \"<span class=sf-dump-str title=\"30 characters\">invoice_withholding_tax_status</span>\"
+    <span class=sf-dump-index>17</span> => \"<span class=sf-dump-str title=\"14 characters\">invoice_status</span>\"
+    <span class=sf-dump-index>18</span> => \"<span class=sf-dump-str title=\"12 characters\">invoice_note</span>\"
+    <span class=sf-dump-index>19</span> => \"<span class=sf-dump-str title=\"16 characters\">invoice_vat_type</span>\"
+    <span class=sf-dump-index>20</span> => \"<span class=sf-dump-str title=\"7 characters\">deposit</span>\"
+    <span class=sf-dump-index>21</span> => \"<span class=sf-dump-str title=\"10 characters\">created_by</span>\"
+    <span class=sf-dump-index>22</span> => \"<span class=sf-dump-str title=\"10 characters\">updated_by</span>\"
+    <span class=sf-dump-index>23</span> => \"<span class=sf-dump-str title=\"19 characters\">invoice_cancel_note</span>\"
+    <span class=sf-dump-index>24</span> => \"<span class=sf-dump-str title=\"13 characters\">invoice_image</span>\"
+    <span class=sf-dump-index>25</span> => \"<span class=sf-dump-str title=\"7 characters\">revised</span>\"
+    <span class=sf-dump-index>26</span> => \"<span class=sf-dump-str title=\"15 characters\">revision_reason</span>\"
+    <span class=sf-dump-index>27</span> => \"<span class=sf-dump-str title=\"13 characters\">revision_date</span>\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">guarded</span>: <span class=sf-dump-note>array:1</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => \"<span class=sf-dump-str>*</span>\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">dates</span>: <span class=sf-dump-note>array:4</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => \"<span class=sf-dump-str title=\"12 characters\">invoice_date</span>\"
+    <span class=sf-dump-index>1</span> => \"<span class=sf-dump-str title=\"13 characters\">revision_date</span>\"
+    <span class=sf-dump-index>2</span> => \"<span class=sf-dump-str title=\"10 characters\">created_at</span>\"
+    <span class=sf-dump-index>3</span> => \"<span class=sf-dump-str title=\"10 characters\">updated_at</span>\"
+  </samp>]
+</samp>}
+</pre><script>Sfdump(\"sf-dump-328004048\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","document":"<pre class=sf-dump id=sf-dump-667128015 data-indent-pad=\"  \"><span class=sf-dump-note>App\\Models\\withholding\\WithholdingTaxDocument</span> {<a class=sf-dump-ref>#1434</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">connection</span>: \"<span class=sf-dump-str title=\"5 characters\">mysql</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">table</span>: \"<span class=sf-dump-str title=\"25 characters\">withholding_tax_documents</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">primaryKey</span>: \"<span class=sf-dump-str title=\"2 characters\">id</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">keyType</span>: \"<span class=sf-dump-str title=\"3 characters\">int</span>\"
+  +<span class=sf-dump-public title=\"Public property\">incrementing</span>: <span class=sf-dump-const>true</span>
+  #<span class=sf-dump-protected title=\"Protected property\">with</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">withCount</span>: []
+  +<span class=sf-dump-public title=\"Public property\">preventsLazyLoading</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">perPage</span>: <span class=sf-dump-num>15</span>
+  +<span class=sf-dump-public title=\"Public property\">exists</span>: <span class=sf-dump-const>true</span>
+  +<span class=sf-dump-public title=\"Public property\">wasRecentlyCreated</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">attributes</span>: <span class=sf-dump-note>array:20</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>id</span>\" => <span class=sf-dump-num>172</span>
+    \"<span class=sf-dump-key>document_number</span>\" => \"<span class=sf-dump-str title=\"13 characters\">WT202509-0085</span>\"
+    \"<span class=sf-dump-key>ref_number</span>\" => \"<span class=sf-dump-str title=\"14 characters\">QT2509-0017450</span>\"
+    \"<span class=sf-dump-key>customer_id</span>\" => <span class=sf-dump-num>548</span>
+    \"<span class=sf-dump-key>document_date</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-09-23</span>\"
+    \"<span class=sf-dump-key>withholding_form</span>\" => \"<span class=sf-dump-str title=\"8 characters\">&#3616;.&#3591;.&#3604;.53</span>\"
+    \"<span class=sf-dump-key>total_amount</span>\" => \"<span class=sf-dump-str title=\"7 characters\">1869.16</span>\"
+    \"<span class=sf-dump-key>total_withholding_tax</span>\" => \"<span class=sf-dump-str title=\"5 characters\">56.07</span>\"
+    \"<span class=sf-dump-key>total_payable</span>\" => \"<span class=sf-dump-str title=\"7 characters\">1813.09</span>\"
+    \"<span class=sf-dump-key>created_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-23 10:20:37</span>\"
+    \"<span class=sf-dump-key>updated_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-23 10:20:37</span>\"
+    \"<span class=sf-dump-key>withholding_branch</span>\" => \"<span class=sf-dump-str title=\"12 characters\">&#3626;&#3635;&#3609;&#3633;&#3585;&#3591;&#3634;&#3609;&#3651;&#3627;&#3597;&#3656;</span>\"
+    \"<span class=sf-dump-key>withholding_note</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>image_signture_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>book_no</span>\" => \"<span class=sf-dump-str title=\"7 characters\">2025-09</span>\"
+    \"<span class=sf-dump-key>document_no</span>\" => \"<span class=sf-dump-str title=\"4 characters\">0082</span>\"
+    \"<span class=sf-dump-key>quote_id</span>\" => <span class=sf-dump-num>555</span>
+    \"<span class=sf-dump-key>wholesale_id</span>\" => <span class=sf-dump-num>3</span>
+    \"<span class=sf-dump-key>ref_input_tax</span>\" => <span class=sf-dump-num>1240</span>
+    \"<span class=sf-dump-key>document_doc_date</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-09-23</span>\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">original</span>: <span class=sf-dump-note>array:20</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>id</span>\" => <span class=sf-dump-num>172</span>
+    \"<span class=sf-dump-key>document_number</span>\" => \"<span class=sf-dump-str title=\"13 characters\">WT202509-0085</span>\"
+    \"<span class=sf-dump-key>ref_number</span>\" => \"<span class=sf-dump-str title=\"14 characters\">QT2509-0017450</span>\"
+    \"<span class=sf-dump-key>customer_id</span>\" => <span class=sf-dump-num>548</span>
+    \"<span class=sf-dump-key>document_date</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-09-23</span>\"
+    \"<span class=sf-dump-key>withholding_form</span>\" => \"<span class=sf-dump-str title=\"8 characters\">&#3616;.&#3591;.&#3604;.53</span>\"
+    \"<span class=sf-dump-key>total_amount</span>\" => \"<span class=sf-dump-str title=\"7 characters\">1869.16</span>\"
+    \"<span class=sf-dump-key>total_withholding_tax</span>\" => \"<span class=sf-dump-str title=\"5 characters\">56.07</span>\"
+    \"<span class=sf-dump-key>total_payable</span>\" => \"<span class=sf-dump-str title=\"7 characters\">1813.09</span>\"
+    \"<span class=sf-dump-key>created_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-23 10:20:37</span>\"
+    \"<span class=sf-dump-key>updated_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-09-23 10:20:37</span>\"
+    \"<span class=sf-dump-key>withholding_branch</span>\" => \"<span class=sf-dump-str title=\"12 characters\">&#3626;&#3635;&#3609;&#3633;&#3585;&#3591;&#3634;&#3609;&#3651;&#3627;&#3597;&#3656;</span>\"
+    \"<span class=sf-dump-key>withholding_note</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>image_signture_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>book_no</span>\" => \"<span class=sf-dump-str title=\"7 characters\">2025-09</span>\"
+    \"<span class=sf-dump-key>document_no</span>\" => \"<span class=sf-dump-str title=\"4 characters\">0082</span>\"
+    \"<span class=sf-dump-key>quote_id</span>\" => <span class=sf-dump-num>555</span>
+    \"<span class=sf-dump-key>wholesale_id</span>\" => <span class=sf-dump-num>3</span>
+    \"<span class=sf-dump-key>ref_input_tax</span>\" => <span class=sf-dump-num>1240</span>
+    \"<span class=sf-dump-key>document_doc_date</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-09-23</span>\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">changes</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">casts</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">classCastCache</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">attributeCastCache</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">dateFormat</span>: <span class=sf-dump-const>null</span>
+  #<span class=sf-dump-protected title=\"Protected property\">appends</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">dispatchesEvents</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">observables</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">relations</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">touches</span>: []
+  +<span class=sf-dump-public title=\"Public property\">timestamps</span>: <span class=sf-dump-const>true</span>
+  +<span class=sf-dump-public title=\"Public property\">usesUniqueIds</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">hidden</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">visible</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">fillable</span>: <span class=sf-dump-note>array:17</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => \"<span class=sf-dump-str title=\"8 characters\">quote_id</span>\"
+    <span class=sf-dump-index>1</span> => \"<span class=sf-dump-str title=\"15 characters\">document_number</span>\"
+    <span class=sf-dump-index>2</span> => \"<span class=sf-dump-str title=\"10 characters\">ref_number</span>\"
+    <span class=sf-dump-index>3</span> => \"<span class=sf-dump-str title=\"11 characters\">customer_id</span>\"
+    <span class=sf-dump-index>4</span> => \"<span class=sf-dump-str title=\"13 characters\">document_date</span>\"
+    <span class=sf-dump-index>5</span> => \"<span class=sf-dump-str title=\"16 characters\">withholding_form</span>\"
+    <span class=sf-dump-index>6</span> => \"<span class=sf-dump-str title=\"12 characters\">total_amount</span>\"
+    <span class=sf-dump-index>7</span> => \"<span class=sf-dump-str title=\"21 characters\">total_withholding_tax</span>\"
+    <span class=sf-dump-index>8</span> => \"<span class=sf-dump-str title=\"13 characters\">total_payable</span>\"
+    <span class=sf-dump-index>9</span> => \"<span class=sf-dump-str title=\"18 characters\">withholding_branch</span>\"
+    <span class=sf-dump-index>10</span> => \"<span class=sf-dump-str title=\"16 characters\">withholding_note</span>\"
+    <span class=sf-dump-index>11</span> => \"<span class=sf-dump-str title=\"17 characters\">image_signture_id</span>\"
+    <span class=sf-dump-index>12</span> => \"<span class=sf-dump-str title=\"7 characters\">book_no</span>\"
+    <span class=sf-dump-index>13</span> => \"<span class=sf-dump-str title=\"11 characters\">document_no</span>\"
+    <span class=sf-dump-index>14</span> => \"<span class=sf-dump-str title=\"12 characters\">wholesale_id</span>\"
+    <span class=sf-dump-index>15</span> => \"<span class=sf-dump-str title=\"13 characters\">ref_input_tax</span>\"
+    <span class=sf-dump-index>16</span> => \"<span class=sf-dump-str title=\"17 characters\">document_doc_date</span>\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">guarded</span>: <span class=sf-dump-note>array:1</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => \"<span class=sf-dump-str>*</span>\"
+  </samp>]
+</samp>}
+</pre><script>Sfdump(\"sf-dump-667128015\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+"}},"userId":4,"exception":"[object] (Spatie\\LaravelIgnition\\Exceptions\\ViewException(code: 0): syntax error, unexpected integer \"00\", expecting \")\" at C:\\laragon\\www\\accounting-nexttripholiday\\resources\\views\\inputTax\\inputtax-table.blade.php:222)
+[stacktrace]
+#0 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(124): Illuminate\\Filesystem\\Filesystem::Illuminate\\Filesystem\\{closure}()
+#1 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(58): Illuminate\\Filesystem\\Filesystem->getRequire('C:\\\\laragon\\\\www\\\\...', Array)
+#2 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(72): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('C:\\\\laragon\\\\www\\\\...', Array)
+#3 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(207): Illuminate\\View\\Engines\\CompilerEngine->get('C:\\\\laragon\\\\www\\\\...', Array)
+#4 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(190): Illuminate\\View\\View->getContents()
+#5 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(159): Illuminate\\View\\View->renderContents()
+#6 C:\\laragon\\www\\accounting-nexttripholiday\\app\\Http\\Controllers\\inputTax\\inputTaxController.php(455): Illuminate\\View\\View->render()
+#7 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Controller.php(54): App\\Http\\Controllers\\inputTax\\inputTaxController->table(Object(App\\Models\\quotations\\quotationModel))
+#8 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ControllerDispatcher.php(43): Illuminate\\Routing\\Controller->callAction('table', Array)
+#9 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php(259): Illuminate\\Routing\\ControllerDispatcher->dispatch(Object(Illuminate\\Routing\\Route), Object(App\\Http\\Controllers\\inputTax\\inputTaxController), 'table')
+#10 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php(205): Illuminate\\Routing\\Route->runController()
+#11 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(806): Illuminate\\Routing\\Route->run()
+#12 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}(Object(Illuminate\\Http\\Request))
+#13 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\SubstituteBindings.php(50): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#14 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#15 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken.php(78): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#16 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#17 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Middleware\\ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#18 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#19 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#20 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest(Object(Illuminate\\Http\\Request), Object(Illuminate\\Session\\Store), Object(Closure))
+#21 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Session\\Middleware\\StartSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#22 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#23 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#24 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\EncryptCookies.php(67): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#25 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#26 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#27 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(805): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#28 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(784): Illuminate\\Routing\\Router->runRouteWithinStack(Object(Illuminate\\Routing\\Route), Object(Illuminate\\Http\\Request))
+#29 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(748): Illuminate\\Routing\\Router->runRoute(Object(Illuminate\\Http\\Request), Object(Illuminate\\Routing\\Route))
+#30 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(737): Illuminate\\Routing\\Router->dispatchToRoute(Object(Illuminate\\Http\\Request))
+#31 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(200): Illuminate\\Routing\\Router->dispatch(Object(Illuminate\\Http\\Request))
+#32 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}(Object(Illuminate\\Http\\Request))
+#33 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#34 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#35 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#36 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#37 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TrimStrings.php(40): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#38 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#39 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#40 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#41 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance.php(99): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#42 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#43 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#44 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Http\\Middleware\\HandleCors->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#45 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\TrustProxies.php(39): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#46 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Http\\Middleware\\TrustProxies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#47 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#48 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(175): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#49 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(144): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#50 C:\\laragon\\www\\accounting-nexttripholiday\\public\\index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#51 {main}
+
+[previous exception] [object] (ParseError(code: 0): syntax error, unexpected integer \"00\", expecting \")\" at C:\\laragon\\www\\accounting-nexttripholiday\\storage\\framework\\views\\395ef5fc88ed9af160c7931e24c0128a.php:225)
+[stacktrace]
+#0 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(124): Illuminate\\Filesystem\\Filesystem::Illuminate\\Filesystem\\{closure}()
+#1 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(58): Illuminate\\Filesystem\\Filesystem->getRequire('C:\\\\laragon\\\\www\\\\...', Array)
+#2 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(72): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('C:\\\\laragon\\\\www\\\\...', Array)
+#3 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(207): Illuminate\\View\\Engines\\CompilerEngine->get('C:\\\\laragon\\\\www\\\\...', Array)
+#4 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(190): Illuminate\\View\\View->getContents()
+#5 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(159): Illuminate\\View\\View->renderContents()
+#6 C:\\laragon\\www\\accounting-nexttripholiday\\app\\Http\\Controllers\\inputTax\\inputTaxController.php(455): Illuminate\\View\\View->render()
+#7 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Controller.php(54): App\\Http\\Controllers\\inputTax\\inputTaxController->table(Object(App\\Models\\quotations\\quotationModel))
+#8 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ControllerDispatcher.php(43): Illuminate\\Routing\\Controller->callAction('table', Array)
+#9 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php(259): Illuminate\\Routing\\ControllerDispatcher->dispatch(Object(Illuminate\\Routing\\Route), Object(App\\Http\\Controllers\\inputTax\\inputTaxController), 'table')
+#10 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php(205): Illuminate\\Routing\\Route->runController()
+#11 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(806): Illuminate\\Routing\\Route->run()
+#12 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}(Object(Illuminate\\Http\\Request))
+#13 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\SubstituteBindings.php(50): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#14 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#15 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken.php(78): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#16 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#17 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Middleware\\ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#18 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#19 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#20 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest(Object(Illuminate\\Http\\Request), Object(Illuminate\\Session\\Store), Object(Closure))
+#21 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Session\\Middleware\\StartSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#22 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#23 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#24 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\EncryptCookies.php(67): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#25 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#26 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#27 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(805): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#28 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(784): Illuminate\\Routing\\Router->runRouteWithinStack(Object(Illuminate\\Routing\\Route), Object(Illuminate\\Http\\Request))
+#29 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(748): Illuminate\\Routing\\Router->runRoute(Object(Illuminate\\Http\\Request), Object(Illuminate\\Routing\\Route))
+#30 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(737): Illuminate\\Routing\\Router->dispatchToRoute(Object(Illuminate\\Http\\Request))
+#31 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(200): Illuminate\\Routing\\Router->dispatch(Object(Illuminate\\Http\\Request))
+#32 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}(Object(Illuminate\\Http\\Request))
+#33 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#34 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#35 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#36 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#37 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TrimStrings.php(40): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#38 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#39 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#40 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#41 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance.php(99): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#42 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#43 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#44 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Http\\Middleware\\HandleCors->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#45 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\TrustProxies.php(39): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#46 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Http\\Middleware\\TrustProxies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#47 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#48 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(175): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#49 C:\\laragon\\www\\accounting-nexttripholiday\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(144): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#50 C:\\laragon\\www\\accounting-nexttripholiday\\public\\index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#51 {main}
+"} 
