@@ -72,7 +72,7 @@
 
             <div class="col-md-12 mb-3">
                 <label for="">ผลรวมต้นทุน</label>
-              <input type="number" name="input_tax_grand_total" step="0.01" min="0" value="{{ $inputTaxModel->input_tax_grand_total ?? 0 }}" class="form-control" placeholder="0.0" id="total">
+                <input type="number" name="input_tax_grand_total" step="0.01" min="0" value="{{ $inputTaxModel->input_tax_grand_total ?? 0 }}" class="form-control" placeholder="0.0" id="total">
             </div>
 
             <div class="col-md-12" id="tax-input" style="display: none">
@@ -191,31 +191,21 @@
     });
 
     $(document).ready(function() {
-
-        $('#service-total, #vat').on('keyup', function() {
+        // คำนวณ VAT และ Withholding อัตโนมัติเมื่อแก้ไขค่าบริการ
+        $('#service-total').on('keyup', function() {
             var inputTaxType = $('#input_tax_type').val();
-            let total = 0;
-            let vat7 = 0;
-            let withholdingTotal = 0;
+            let serviceTotal = parseFloat($(this).val()) || 0;
 
-            let serviceTotal = parseFloat($('#service-total').val()) || 0;
-            let vat = parseFloat($('#vat').val()) || 0;
-
-            if (inputTaxType === '1' || inputTaxType === '3') {
-                $('#total').val(serviceTotal.toFixed(2));
-            } else {
+            if (inputTaxType === '0') {
                 // คำนวณ VAT 7%
-                vat7 = serviceTotal * 0.07;
-                $('#vat').val(vat7.toFixed(2)); // อัปเดตค่า VAT ในช่อง input
+                let vat7 = serviceTotal * 0.07;
+                $('#vat').val(vat7.toFixed(2));
 
                 // คำนวณภาษี ณ ที่จ่าย (3%)
-                withholdingTotal = serviceTotal * 0.03;
+                let withholdingTotal = serviceTotal * 0.03;
                 $('#withholding').val(withholdingTotal.toFixed(2));
-                
-                // คำนวณผลรวมต้นทุน (รวมค่าบริการ ภาษี ณ ที่จ่าย และ VAT)
-                total = serviceTotal + withholdingTotal + vat7;
-                $('#total').val(total.toFixed(2)); // แก้ไข: ใส่ total แทน withholdingTotal
             }
+            // ผลรวมต้นทุน ให้ผู้ใช้กรอกเอง ไม่คำนวณอัตโนมัติ
         });
 
     });

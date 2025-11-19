@@ -178,26 +178,9 @@ class inputTaxController extends Controller
         // อัปเดตข้อมูลเพิ่มเติม
         $requestData['updated_by'] = Auth::user()->name;
         
-        // คำนวณ input_tax_grand_total ให้ถูกต้อง
-        $inputTaxType = (int) ($request->input_tax_type ?? $inputTaxModel->input_tax_type);
-        
-        // ถ้าเป็น wholesale (type 2,4,5,6,7) ให้ใช้ค่าที่ส่งมาจากฟอร์มโดยตรง
-        if (in_array($inputTaxType, [2, 4, 5, 6, 7])) {
-            // ใช้ค่าที่ส่งมาจากฟอร์ม (ไม่ต้องคำนวณใหม่)
-            if ($request->has('input_tax_grand_total')) {
-                $requestData['input_tax_grand_total'] = (float) $request->input_tax_grand_total;
-            }
-        } else {
-            // สำหรับภาษีซื้อ (type 0) หรืออื่นๆ ให้คำนวณจาก VAT และ Withholding
-            $serviceTotal = (float) ($request->input_tax_service_total ?? 0);
-            $withholding = (float) ($request->input_tax_withholding ?? 0);
-            $vat = (float) ($request->input_tax_vat ?? 0);
-            
-            // ตรวจสอบว่ามีไฟล์แนบหรือไม่
-            $hasFile = !empty($inputTaxModel->input_tax_file) || !empty($request->file);
-            
-            // ถ้ามีไฟล์: VAT - Withholding, ถ้าไม่มี: VAT + Withholding
-            $requestData['input_tax_grand_total'] = $hasFile ? ($vat - $withholding) : ($vat + $withholding);
+        // ใช้ค่า input_tax_grand_total ที่ผู้ใช้กรอกมาจากฟอร์มโดยตรง
+        if ($request->has('input_tax_grand_total')) {
+            $requestData['input_tax_grand_total'] = (float) $request->input_tax_grand_total;
         }
         
         // บันทึกการเปลี่ยนแปลงในฐานข้อมูล
