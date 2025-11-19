@@ -178,7 +178,8 @@ class inputTaxController extends Controller
         // อัปเดตข้อมูลเพิ่มเติม
         $requestData['updated_by'] = Auth::user()->name;
         
-        // ใช้ค่า input_tax_grand_total ที่ผู้ใช้กรอกมาจากฟอร์มโดยตรง
+        // ใช้ค่า input_tax_grand_total ที่ผู้ใช้กรอกมาจากฟอร์ม
+        // (อาจเป็นค่าที่คำนวณอัตโนมัติหรือแก้ไขเองก็ได้)
         if ($request->has('input_tax_grand_total')) {
             $requestData['input_tax_grand_total'] = (float) $request->input_tax_grand_total;
         }
