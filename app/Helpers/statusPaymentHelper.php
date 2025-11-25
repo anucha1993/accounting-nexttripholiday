@@ -12,8 +12,8 @@ if (!function_exists('getQuoteStatusPayment')) {
         $payment = $quotationModel->GetDeposit() - $quotationModel->Refund();
 
         switch (true) {
-            // คืนเงิน
-            case $quotationModel->quotePayment && $quotationModel->quotePayment->payment_status === 'refund':
+            // คืนเงิน - ตรวจสอบว่ามี payment_type = refund ที่ยังไม่มีไฟล์แนบ (ยังไม่ได้คืนเงินจริง)
+            case $quotationModel->quotePayments()->where('payment_type', 'refund')->where('payment_status', '!=', 'cancel')->whereNull('payment_file_path')->exists():
                 // $status = '<span class="badge rounded-pill bg-warning text-dark">รอคืนเงิน </span>';
                  $status = '<span class="text-warning">รอคืนเงิน </span>';
                 break;
