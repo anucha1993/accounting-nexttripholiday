@@ -377,7 +377,7 @@ class QuoteListController extends Controller
                     if ($searchPaymentOverpays === 'รอใบหัก จากลูกค้า') {
                         $statusText = trim(strip_tags(getStatusWithholdingTax($quotation->quoteInvoice)));
                     } else {
-                        $statusText = trim(strip_tags(getQuoteStatusQuotePayment($quotation)));
+                        $statusText = trim(strip_tags(getQuoteStatusPayment($quotation)));
                     }
                     return $statusText == $searchPaymentOverpays;
                 })

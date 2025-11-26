@@ -1,6 +1,6 @@
 <div class="modal-body">
     <div class="header">
-        <h5>ยกเลิก คืนยอดเงินโฮลเซลล์s # {{$paymentWholesaleModel->payment_wholesale_number}}</h5>
+        <h5>ยกเลิก คืนยอดเงินโฮลเซลล์ # {{$paymentWholesaleModel->payment_wholesale_number}}</h5>
     </div>
     <form action="{{ route('paymentWholesale.updateRefund',$paymentWholesaleModel->payment_wholesale_id) }}" enctype="multipart/form-data" method="post" id="whosalePayment">
         @csrf

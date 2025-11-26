@@ -190,7 +190,10 @@ class paymentWholesaleController extends Controller
                 $hasRefundSlip = true;
             }
         }
-        $request->merge(['payment_wholesale_refund_status' => 'success']);
+        
+        // กำหนดสถานะการคืนเงิน
+        $refundStatus = $hasRefundSlip ? 'success' : 'wait';
+        $request->merge(['payment_wholesale_refund_status' => $refundStatus]);
         $paymentWholesaleModel->update($request->all());
         
         // แจ้งเตือนการคืนเงิน (เฉพาะถ้ามี refund type)

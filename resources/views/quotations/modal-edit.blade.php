@@ -504,6 +504,23 @@
                                 <select name="quote_country" class="form-select select2" id="country"
                                     style="width: 100%" required>
                                     <option value="">--เลือกประเทศที่เดินทาง--</option>
+                                    
+                                    {{-- ตรวจสอบว่าประเทศที่เลือกไว้ยังมีอยู่หรือไม่ --}}
+                                    @php
+                                        $currentCountryExists = false;
+                                        if(isset($quotationModel) && $quotationModel->quote_country) {
+                                            $currentCountryExists = $country->contains('id', $quotationModel->quote_country);
+                                        }
+                                    @endphp
+                                    
+                                    {{-- แสดงประเทศที่ถูกลบ (ถ้ามี) --}}
+                                    @if(isset($quotationModel) && $quotationModel->quote_country && !$currentCountryExists)
+                                        <option value="{{ $quotationModel->quote_country }}" selected style="color: #dc3545; background-color: #f8d7da;">
+                                            ⚠️ ประเทศถูกลบแล้ว (ID: {{ $quotationModel->quote_country }})
+                                        </option>
+                                    @endif
+                                    
+                                    {{-- แสดงประเทศที่ยังมีอยู่ --}}
                                     @foreach ($country as $item)
                                         <option value="{{ $item->id }}"
                                             {{ isset($quotationModel) && $quotationModel->quote_country == $item->id ? 'selected' : '' }}>
@@ -517,18 +534,53 @@
                                 <select name="quote_wholesale" class="form-select select2" style="width: 100%"
                                     id="wholesale" required>
                                     <option value="">--เลือกโฮลเซลล์--</option>
+                                    
+                                    {{-- ตรวจสอบว่าโฮลเซลล์ที่เลือกไว้ยังมีอยู่หรือไม่ --}}
+                                    @php
+                                        $currentWholesaleExists = false;
+                                        if(isset($quotationModel) && $quotationModel->quote_wholesale) {
+                                            $currentWholesaleExists = $wholesale->contains('id', $quotationModel->quote_wholesale);
+                                        }
+                                    @endphp
+                                    
+                                    {{-- แสดงโฮลเซลล์ที่ถูกลบ (ถ้ามี) --}}
+                                    @if(isset($quotationModel) && $quotationModel->quote_wholesale && !$currentWholesaleExists)
+                                        <option value="{{ $quotationModel->quote_wholesale }}" selected style="color: #dc3545; background-color: #f8d7da;">
+                                            ⚠️ โฮลเซลล์ถูกลบแล้ว (ID: {{ $quotationModel->quote_wholesale }})
+                                        </option>
+                                    @endif
+                                    
+                                    {{-- แสดงโฮลเซลล์ที่ยังมีอยู่ --}}
                                     @foreach ($wholesale as $item)
                                         <option value="{{ $item->id }}"
                                             {{ isset($quotationModel) && $quotationModel->quote_wholesale == $item->id ? 'selected' : '' }}>
                                             {{ $item->code }}-{{ $item->wholesale_name_th }}</option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </div> 
+                            
                             <div class="col-md-3">
                                 <label>สายการบิน:</label>
                                 <select name="quote_airline" class="form-select select2" style="width: 100%"
                                     id="airline" required>
                                     <option value="">--เลือกสายการบิน--</option>
+                                    
+                                    {{-- ตรวจสอบว่าสายการบินที่เลือกไว้ยังมีอยู่หรือไม่ --}}
+                                    @php
+                                        $currentAirlineExists = false;
+                                        if(isset($quotationModel) && $quotationModel->quote_airline) {
+                                            $currentAirlineExists = $airline->contains('id', $quotationModel->quote_airline);
+                                        }
+                                    @endphp
+                                    
+                                    {{-- แสดงสายการบินที่ถูกลบ (ถ้ามี) --}}
+                                    @if(isset($quotationModel) && $quotationModel->quote_airline && !$currentAirlineExists)
+                                        <option value="{{ $quotationModel->quote_airline }}" selected style="color: #dc3545; background-color: #f8d7da;">
+                                            ⚠️ สายการบินถูกลบแล้ว (ID: {{ $quotationModel->quote_airline }})
+                                        </option>
+                                    @endif
+                                    
+                                    {{-- แสดงสายการบินที่ยังมีอยู่ --}}
                                     @foreach ($airline as $item)
                                         <option value="{{ $item->id }}"
                                             {{ isset($quotationModel) && $quotationModel->quote_airline == $item->id ? 'selected' : '' }}>

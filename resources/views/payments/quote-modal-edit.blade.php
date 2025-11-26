@@ -45,7 +45,7 @@
                         <option value="">--กรุณาเลือก--</option>
 
                         @forelse ($bankCompany as $item)
-                        <option @if($paymentModel->payment_bank_number = $item->bank_company_id) selected @endif value="{{$item->bank_company_id}}">{{$item->bank_company_name}}</option>
+                        <option @if($paymentModel->payment_bank_number == $item->bank_company_id) selected @endif value="{{$item->bank_company_id}}">{{$item->bank_company_name}}</option>
                         @empty
                             
                         @endforelse
@@ -71,7 +71,7 @@
                 <select name="payment_bank" id="bank" class="form-select">
                     <option value="">--กรุณาเลือก--</option>
                         @forelse ($bank as $item)
-                        <option @if($paymentModel->payment_bank = $item->bank_id) selected @endif value="{{$item->bank_id}}">{{$item->bank_name}}</option>
+                        <option @if($paymentModel->payment_bank == $item->bank_id) selected @endif value="{{$item->bank_id}}">{{$item->bank_name}}</option>
                         @empty
                             
                         @endforelse
@@ -87,6 +87,7 @@
                 <input type="date" class="form-control" name="payment_check_date" value="{{$paymentModel->payment_check_date}}">
                </div>
             </div>
+
             {{-- บัตรเครดิต credit --}}
             <div class="row mt-3" id="credit" style="display: none">
                 <div class="col-md-3">
@@ -96,9 +97,6 @@
             </div>
             <br>
 
-             
-
-                
 
             <label for="">แนบไฟล์เอกสาร</label></br>
             @if ($paymentModel->payment_file_path)
@@ -119,8 +117,6 @@
                     <label for="">แนบไฟล์ใหม่</label></br>
                     <input type="file" name="payment_file">
                 </div>
-
-                
             </div>
 
             <div class="row">
