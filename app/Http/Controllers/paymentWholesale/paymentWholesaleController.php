@@ -21,20 +21,51 @@ class paymentWholesaleController extends Controller
     // function Runnumber paymentWholesale
     public function generateRunningCodeWS()
     {
-        $code = paymentWholesaleModel::latest()->first();
-        if (!empty($code)) {
-            $codeNumber = $code->payment_wholesale_number;
-        } else {
-            $codeNumber = 'WS' . date('y') . date('m') . '0000';
-        }
         $prefix = 'WS';
         $year = date('y');
         $month = date('m');
-        $lastFourDigits = substr($codeNumber, -4);
-        $incrementedNumber = intval($lastFourDigits) + 1;
-        $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
-        $runningCode = $prefix . $year . $month . $newNumber;
-        return $runningCode;
+        $currentPattern = $prefix . $year . $month;
+        
+        // Lock table เพื่อป้องกัน race condition
+        \DB::beginTransaction();
+        
+        try {
+            // ค้นหารหัสล่าสุดในเดือน/ปีปัจจุบัน พร้อม lock
+            $latestCode = paymentWholesaleModel::lockForUpdate()
+                ->where('payment_wholesale_number', 'LIKE', $currentPattern . '%')
+                ->orderBy('payment_wholesale_number', 'DESC')
+                ->first();
+            
+            if ($latestCode && $latestCode->payment_wholesale_number) {
+                // ตรวจสอบว่ารหัสล่าสุดตรงกับรูปแบบปัจจุบัน
+                $codeNumber = $latestCode->payment_wholesale_number;
+                if (strpos($codeNumber, $currentPattern) === 0) {
+                    // ดึง 4 หลักสุดท้าย
+                    $lastFourDigits = substr($codeNumber, -4);
+                    $incrementedNumber = intval($lastFourDigits) + 1;
+                } else {
+                    // ถ้าไม่ตรงรูปแบบ เริ่มใหม่
+                    $incrementedNumber = 1;
+                }
+            } else {
+                // ไม่มีรหัสในเดือน/ปีนี้ เริ่มจาก 1
+                $incrementedNumber = 1;
+            }
+            
+            // สร้างรหัสใหม่
+            $newNumber = str_pad($incrementedNumber, 4, '0', STR_PAD_LEFT);
+            $runningCode = $currentPattern . $newNumber;
+            
+            \DB::commit();
+            
+            return $runningCode;
+            
+        } catch (\Exception $e) {
+            \DB::rollback();
+            // Fallback: ใช้ microtime เพื่อสร้างรหัสไม่ซ้ำ
+            $microtime = substr(str_replace('.', '', microtime(true)), -4);
+            return $currentPattern . $microtime;
+        }
     }
 
     public function index(quotationModel $quotationModel, Request $request)

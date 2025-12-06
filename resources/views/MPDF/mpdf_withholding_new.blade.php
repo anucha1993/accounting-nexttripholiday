@@ -312,7 +312,7 @@
     </div>
 
     <div class="text-book">
-        <span><b>{{$WithholdingTaxDocument->book_no}}</b>&nbsp;</span>
+        <span><b>{{date('Y-m',strtotime($WithholdingTaxDocument->document_date))}}</b>&nbsp;</span>
     </div>
     <div class="text-doc-no">
      <span><b>{{ substr($WithholdingTaxDocument->document_number, -4) }}</b>&nbsp;</span>
