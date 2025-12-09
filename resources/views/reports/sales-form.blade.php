@@ -506,9 +506,11 @@
                                     data-placeholder="เลือกเซลล์ผู้ขาย">
                                     <option value="">ทั้งหมด</option>
                                     @forelse ($sales as $item)
+                                        @if($item)
                                         <option value="{{ $item->id }}"
                                             @if ($request->sale_id == $item->id) selected @endif>{{ $item->name }}
                                         </option>
+                                        @endif
                                     @empty
                                     @endforelse
                                 </select>
@@ -520,7 +522,7 @@
                                     data-placeholder="เลือกที่มา">
                                     <option value="">ทั้งหมด</option>
                                     @foreach ($campaignSource as $source)
-                                        <option value="{{ $source->campaign_source_id }}"
+                                        <option value="{{ $source->campaign_source_id }}" 
                                             @if ($request->campaign_source_id == $source->campaign_source_id) selected @endif>
                                             {{ $source->campaign_source_name }}
                                         </option>

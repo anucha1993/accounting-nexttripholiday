@@ -225,7 +225,7 @@ public function getTotalInputTaxVatWithholding()
 
     public function Salename()
     {
-        return $this->belongsTo(saleModel::class, 'quote_sale', 'id');
+        return $this->belongsTo(saleModel::class, 'quote_sale', 'id')->withoutGlobalScope('active');
     }
 
     // ความสัมพันธ์กับ CustomerModel

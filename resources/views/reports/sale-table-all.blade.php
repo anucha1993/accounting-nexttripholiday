@@ -95,7 +95,7 @@
                         {{ $sourceName ?: 'none' }}
 
                     </td>
-                    <td>{{ $item->Salename->name }}</td>
+                    <td>{{ $item->Salename->name ?? '-' }}</td>
                     <td>{{ $item->quote_pax_total }}</td>
 
                      @if(!Auth::user()->getRoleNames()->contains('sale'))

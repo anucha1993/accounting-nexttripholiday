@@ -258,10 +258,10 @@ class quoteController extends Controller
 
     public function editNew(quotationModel $quotationModel, Request $request)
     {
-        $sale = saleModel::select('name', 'id')
+        $sale = saleModel::withoutGlobalScope('active')
+                ->select('name', 'id')
                 ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
                 ->where('id', $quotationModel->quote_sale)
-                ->where('status', 'active')
                 ->first();
 
         

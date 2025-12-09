@@ -239,7 +239,7 @@
                                     </tr>
                                     <tr>
                                         <td class="label">พนักงานขาย:</td>
-                                        <td class="value">{{ $sale->name }}</td>
+                                        <td class="value">{{ $quotationModel->Salename->name ?? '-' }}</td>
                                     </tr>
                                     <tr>
                                         <td class="label">วันที่เสนอราคา:</td>
