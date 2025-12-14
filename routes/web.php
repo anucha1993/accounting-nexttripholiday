@@ -31,6 +31,7 @@ use App\Http\Controllers\customers\customerController;
 use App\Http\Controllers\FPDF\FPDF_QuotatioController;
 use App\Http\Controllers\report\quoteReportController;
 use App\Http\Controllers\reports\saleReportController;
+use App\Http\Controllers\reports\internal\internalSaleReportController;
 use App\Http\Controllers\DebitNote\DebitNoteController;
 use App\Http\Controllers\exports\QuoteExportController;
 use App\Http\Controllers\exports\salesExportController;
@@ -368,6 +369,8 @@ Route::get('/report/receipt/form',[receiptReportController::class,'index'])->nam
 Route::get('/report/saletax/form',[saleTaxReportController::class,'index'])->name('report.saletax');
 Route::get('/report/sales/form',[saleReportController::class,'index'])->name('report.sales');
 Route::get('/report/sales/export',[saleReportController::class,'export'])->name('reports.sales.export');
+Route::get('/report/internal-sales/form',[internalSaleReportController::class,'index'])->name('report.internal-sales');
+Route::get('/report/internal-sales/export',[internalSaleReportController::class,'export'])->name('reports.internal-sales.export');
 Route::get('/report/payment-wholesale/form',[paymentWholesaleReportController::class,'index'])->name('report.payment-wholesale');
 Route::get('/report/payment-wholesale/export', [paymentWholesaleReportController::class, 'exportExcel'])->name('report.payment-wholesale.export');
 
