@@ -458,10 +458,10 @@
                                         <span class="hide-menu">รายงานยอดขาย</span>
                                     </a>
                                     @endcan
-                                    @can('report.salesreport.view')
+                                    @can('report.internal.sales')
                                     <a href="{{ route('report.internal-sales') }}" class="sidebar-link">
                                         <i class="mdi mdi-comment-processing-outline"></i>
-                                        <span class="hide-menu">รายงานยอดขาย(ภายใน)</span>
+                                        <span class="hide-menu">รายงานยอดขาย(สำหรับบริษัท)</span>
                                     </a>
                                     @endcan
                                     @can('report.wholesalepayment.view')

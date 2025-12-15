@@ -4,17 +4,17 @@ namespace App\Http\Controllers\reports\internal;
 
 use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
-use App\Models\quotations\quotationModel;
-use App\Models\inputTax\inputTaxModel;
+use App\Exports\SaleReportExport;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\SaleReportExport;
+use App\Models\inputTax\inputTaxModel;
 use App\Models\wholesale\wholesaleModel;
-use App\Services\QuotationFilterService;
+use App\Models\quotations\quotationModel;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Services\internalQuotationFilterService;
 
 class internalSaleReportController extends Controller
 {
@@ -26,11 +26,11 @@ class internalSaleReportController extends Controller
         
         $mode = $request->commission_mode ?? 'all';
         
-        // ใช้ QuotationFilterService เท่านั้น
+        // ใช้ internalQuotationFilterService เท่านั้น
         try {
-            $quotationSuccess = QuotationFilterService::filter($request);
+            $quotationSuccess = internalQuotationFilterService::filter($request);
         } catch (\Exception $e) {
-            Log::error("QuotationFilterService failed in export: " . $e->getMessage());
+            Log::error("internalQuotationFilterService failed in export: " . $e->getMessage());
             throw $e; // ไม่มี fallback แล้ว
         }
 
@@ -91,11 +91,11 @@ class internalSaleReportController extends Controller
                 ->get();
         }
 
-        // ใช้ QuotationFilterService เท่านั้น
+        // ใช้ internalQuotationFilterService เท่านั้น
         try {
-            $quotationSuccess = QuotationFilterService::filter($request);
+            $quotationSuccess = internalQuotationFilterService::filter($request);
         } catch (\Exception $e) {
-            Log::error("QuotationFilterService failed: " . $e->getMessage());
+            Log::error("internalQuotationFilterService failed: " . $e->getMessage());
             throw $e; // ไม่มี fallback แล้ว
         }
         
@@ -117,7 +117,7 @@ class internalSaleReportController extends Controller
                 ];
             })->values();
 
-            return view('reports.internal-sales.internal-sales-form', compact('saleGroups', 'request', 'wholesales', 'country', 'sales', 'campaignSource', 'mode', 'hasSearch'));
+            return view('reports-internal.internal-sales-form', compact('saleGroups', 'request', 'wholesales', 'country', 'sales', 'campaignSource', 'mode', 'hasSearch'));
         }
 
         // --------- QT หรือ ALL → ทำ Pagination จาก Collection ----------
@@ -150,7 +150,7 @@ class internalSaleReportController extends Controller
         // ส่งตัวแปรชื่อเดิมให้ Blade ใช้ต่อได้
         $quotationSuccess = $paginated;
 
-        return view('reports.internal-sales.internal-sales-form', compact('quotationSuccess', 'request', 'wholesales', 'country', 'sales', 'campaignSource', 'mode', 'hasSearch'));
+        return view('reports-internal.internal-sales-form', compact('quotationSuccess', 'request', 'wholesales', 'country', 'sales', 'campaignSource', 'mode', 'hasSearch'));
     }
 
     /**
