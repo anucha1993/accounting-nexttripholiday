@@ -14,15 +14,19 @@ class internalQuotationFilterService
         set_time_limit(300); // 5 นาที
         ini_set('memory_limit', '512M'); // เพิ่ม memory limit
         
-      
-        
         $user = Auth::user();
-        $userRoles = $user->roles->pluck('name'); // แก้ไข getRoleNames()
+        
+        // ตรวจสอบว่า user login หรือไม่
+        if (!$user) {
+            Log::warning('internalQuotationFilterService: User not authenticated');
+            return collect([]); // คืนค่า empty collection
+        }
+        
+        $userRoles = $user->roles ? $user->roles->pluck('name') : collect([]);
 
         // ถ้ามีการค้นหาด้วย keyword ให้ตรวจสอบการมีอยู่ของ quote ก่อน
         if ($request->filled('keyword')) {
             $checkQuote = quotationModel::where('quote_number', 'LIKE', "%{$request->keyword}%")->first();
-           
         }
 
         $query = quotationModel::whereIn('quote_status', ['success', 'invoice']);
@@ -103,14 +107,18 @@ class internalQuotationFilterService
                     return false;
                 }
 
-                // เงื่อนไข 2: ชำระเงินโฮลเซลล์ครบ (ถ้ามีต้นทุนโฮลเซลล์)
-                if ($inputtaxTotal > 0) {
-                    // มีต้นทุนโฮลเซลล์ - ต้องชำระครบ
-                    return abs($wholesalePaidNet - $inputtaxTotal) < 0.01;
+                // เงื่อนไข 2: ต้องมีต้นทุนโฮลเซลล์แล้ว (ไม่ใช่ 0)
+                if ($inputtaxTotal <= 0) {
+                    return false; // ยังไม่มีต้นทุน = ยังไม่เสร็จ
                 }
 
-                // ไม่มีต้นทุนโฮลเซลล์ - เพียงลูกค้าชำระครบ
-                return true;
+                // เงื่อนไข 3: ยอดชำระโฮลเซลล์ต้องไม่ใช่ 0
+                if ($wholesalePaidNet <= 0) {
+                    return false; // ยังไม่ชำระเลย
+                }
+
+                // เงื่อนไข 4: ชำระเงินโฮลเซลล์ครบ
+                return abs($wholesalePaidNet - $inputtaxTotal) < 0.01;
                 
             } catch (\Exception $e) {
                 Log::warning("QuotationFilterService error for quote_id: " . $item->quote_id . " - " . $e->getMessage());

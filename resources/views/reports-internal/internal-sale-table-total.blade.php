@@ -12,7 +12,7 @@
                  <th>ที่มา</th>
                  <th>เซลล์ผู้ขาย</th>
                  <th>PAX</th>
-                   @if(!Auth::user()->getRoleNames()->contains('sale'))
+                   @if(Auth::check() && !Auth::user()->getRoleNames()->contains('sale'))
                  <th>ค่าบริการ</th>
                  <th>ส่วนลด</th>
                  <th>ยอดรวมสุทธิ</th>
@@ -81,7 +81,7 @@
                      <td>{{ $sources }}</td>
                      <td>{{ $saleName }}</td>
                      <td>{{ $paxSum }}</td>
-                        @if(!Auth::user()->getRoleNames()->contains('sale'))
+                        @if(Auth::check() && !Auth::user()->getRoleNames()->contains('sale'))
                      <td>{{ number_format($group['items']->sum(function($item) { return $item->quote_grand_total + $item->quote_discount; }), 2) }}</td>
                      <td>{{ number_format($group['items']->sum('quote_discount'), 2) }}</td>
                      <td>{{ number_format($group['items']->sum('quote_grand_total'), 2) }}</td>
@@ -109,7 +109,7 @@
             <tr>
                 <th colspan="9">รวม</th>
                 <th>{{ $saleGroups->sum('pax_sum') }}</th>
-                  @if(!Auth::user()->getRoleNames()->contains('sale'))
+                  @if(Auth::check() && !Auth::user()->getRoleNames()->contains('sale'))
                 <th>{{ number_format($saleGroups->sum(function($group) { return $group['items']->sum(function($item) { return $item->quote_grand_total + $item->quote_discount; }); }), 2) }}</th>
                 <th>{{ number_format($saleGroups->sum(function($group) { return $group['items']->sum('quote_discount'); }), 2) }}</th>
                 <th>{{ number_format($saleGroups->sum(function($group) { return $group['items']->sum('quote_grand_total'); }), 2) }}</th>

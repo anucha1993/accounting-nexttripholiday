@@ -79,7 +79,14 @@ class internalSaleReportController extends Controller
         $country        = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
 
         $user = Auth::user();
-        $userRoles = $user->roles->pluck('name'); // แทน getRoleNames()
+        
+        // ตรวจสอบว่า user login และมี roles
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'กรุณาเข้าสู่ระบบก่อน');
+        }
+        
+        $userRoles = $user->roles ? $user->roles->pluck('name') : collect([]);
+        
         if ($userRoles->contains('sale')) {
             $sales = saleModel::select('name', 'id')
                 ->where('id', $user->sale_id)

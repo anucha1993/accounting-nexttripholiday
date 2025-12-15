@@ -37,7 +37,7 @@
                 <th>ที่มา</th>
                 <th>เซลล์ผู้ขาย</th>
                 <th>PAX</th>
-                  @if(!Auth::user()->getRoleNames()->contains('sale'))
+                  @if(Auth::check() && !Auth::user()->getRoleNames()->contains('sale'))
                 <th>ค่าบริการ</th>
                 <th>ส่วนลด</th>
                 <th>ยอดรวมสุทธิ</th>
