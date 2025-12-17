@@ -103,7 +103,7 @@ class internalQuotationFilterService
                 $wholesalePaidNet = $item->_cached_wholesale_paid - $item->_cached_wholesale_refund;
 
                 // Debug log
-                if ($item->quote_number == 'QT25101551') {
+                if (in_array($item->quote_number, ['QT25101551', 'QT25122911'])) {
                     Log::info("DEBUG {$item->quote_number}:", [
                         'customerPaid' => $customerPaid,
                         'grandTotal' => $grandTotal,
@@ -112,7 +112,14 @@ class internalQuotationFilterService
                         'wholesaleRefund' => $item->_cached_wholesale_refund,
                         'wholesalePaidNet' => $wholesalePaidNet,
                         'InputTaxVatNew_count' => $item->InputTaxVatNew ? $item->InputTaxVatNew->count() : 0,
-                        'InputTaxVatNew_data' => $item->InputTaxVatNew ? $item->InputTaxVatNew->toArray() : []
+                        'InputTaxVatNew_types' => $item->InputTaxVatNew ? $item->InputTaxVatNew->pluck('input_tax_type', 'input_tax_grand_total')->toArray() : [],
+                        'getWholesalePaidNet' => $item->getWholesalePaidNet(),
+                        'getTotalOtherCost' => $item->getTotalOtherCost(),
+                        'getTotalCostAll' => $item->getTotalCostAll(),
+                        'condition_1_customer_paid_full' => ($customerPaid >= $grandTotal),
+                        'condition_2_has_inputtax' => ($inputtaxTotal > 0),
+                        'condition_3_wholesale_paid' => ($wholesalePaidNet > 0),
+                        'will_show' => 'checking...'
                     ]);
                 }
 
@@ -121,17 +128,18 @@ class internalQuotationFilterService
                     return false;
                 }
 
-                // เงื่อนไข 2: ชำระเงินโฮลเซลล์ครบ (ถ้ามีต้นทุนโฮลเซลล์)
-                if ($inputtaxTotal > 0) {
-                    // มีต้นทุนโฮลเซลล์ - ต้องชำระครบและไม่ใช่ 0
-                    if ($wholesalePaidNet <= 0) {
-                        return false; // ยังไม่ชำระเลย
-                    }
-                    return abs($wholesalePaidNet - $inputtaxTotal) < 0.01;
+                // เงื่อนไข 2: ต้องมีต้นทุนโฮลเซลล์ (ถ้าไม่มีแสดงว่ายังไม่บันทึกต้นทุน)
+                if ($inputtaxTotal <= 0) {
+                    return false; // ยังไม่บันทึกต้นทุนโฮลเซลล์
                 }
 
-                // ไม่มีต้นทุนโฮลเซลล์ - เพียงลูกค้าชำระครบ
-                return true;
+                // เงื่อนไข 3: ชำระเงินโฮลเซลล์ครบ
+                if ($wholesalePaidNet <= 0) {
+                    return false; // ยังไม่ชำระเลย
+                }
+                
+                // เช็คว่าชำระครบพอดีหรือไม่
+                return abs($wholesalePaidNet - $inputtaxTotal) < 0.01;
                 
             } catch (\Exception $e) {
                 Log::warning("QuotationFilterService error for quote_id: " . $item->quote_id . " - " . $e->getMessage());
