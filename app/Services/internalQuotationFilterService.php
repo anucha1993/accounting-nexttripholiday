@@ -76,7 +76,7 @@ class internalQuotationFilterService
             'customer:customer_id,customer_name,customer_campaign_source',
             'quotePayments:payment_quote_id,payment_total,payment_type,payment_status,payment_file_path',
             'paymentWholesale:payment_wholesale_quote_id,payment_wholesale_total,payment_wholesale_refund_total,payment_wholesale_refund_status,payment_wholesale_file_name',
-            'InputTaxVat:input_tax_id,input_tax_quote_id,input_tax_grand_total,input_tax_type'
+            'InputTaxVatNew:input_tax_id,input_tax_quote_id,input_tax_grand_total,input_tax_type'
         ])->get();
 
      
@@ -102,23 +102,36 @@ class internalQuotationFilterService
                 $inputtaxTotal = $item->_cached_inputtax_total;
                 $wholesalePaidNet = $item->_cached_wholesale_paid - $item->_cached_wholesale_refund;
 
+                // Debug log
+                if ($item->quote_number == 'QT25101551') {
+                    Log::info("DEBUG {$item->quote_number}:", [
+                        'customerPaid' => $customerPaid,
+                        'grandTotal' => $grandTotal,
+                        'inputtaxTotal' => $inputtaxTotal,
+                        'wholesalePaid' => $item->_cached_wholesale_paid,
+                        'wholesaleRefund' => $item->_cached_wholesale_refund,
+                        'wholesalePaidNet' => $wholesalePaidNet,
+                        'InputTaxVatNew_count' => $item->InputTaxVatNew ? $item->InputTaxVatNew->count() : 0,
+                        'InputTaxVatNew_data' => $item->InputTaxVatNew ? $item->InputTaxVatNew->toArray() : []
+                    ]);
+                }
+
                 // เงื่อนไข 1: ลูกค้าชำระเงินครบ
                 if ($customerPaid < $grandTotal) {
                     return false;
                 }
 
-                // เงื่อนไข 2: ต้องมีต้นทุนโฮลเซลล์แล้ว (ไม่ใช่ 0)
-                if ($inputtaxTotal <= 0) {
-                    return false; // ยังไม่มีต้นทุน = ยังไม่เสร็จ
+                // เงื่อนไข 2: ชำระเงินโฮลเซลล์ครบ (ถ้ามีต้นทุนโฮลเซลล์)
+                if ($inputtaxTotal > 0) {
+                    // มีต้นทุนโฮลเซลล์ - ต้องชำระครบและไม่ใช่ 0
+                    if ($wholesalePaidNet <= 0) {
+                        return false; // ยังไม่ชำระเลย
+                    }
+                    return abs($wholesalePaidNet - $inputtaxTotal) < 0.01;
                 }
 
-                // เงื่อนไข 3: ยอดชำระโฮลเซลล์ต้องไม่ใช่ 0
-                if ($wholesalePaidNet <= 0) {
-                    return false; // ยังไม่ชำระเลย
-                }
-
-                // เงื่อนไข 4: ชำระเงินโฮลเซลล์ครบ
-                return abs($wholesalePaidNet - $inputtaxTotal) < 0.01;
+                // ไม่มีต้นทุนโฮลเซลล์ - เพียงลูกค้าชำระครบ
+                return true;
                 
             } catch (\Exception $e) {
                 Log::warning("QuotationFilterService error for quote_id: " . $item->quote_id . " - " . $e->getMessage());
@@ -185,14 +198,18 @@ class internalQuotationFilterService
 
     /**
      * คำนวณต้นทุนโฮลเซลล์รวม
+     * สูตร: $GetDepositWholesale + $inputtaxTotalWholesale() - $wholesalePayment
+     * หมายเหตุ: $wholesalePayment คือ ยอดที่ชำระแล้ว ดังนั้นต้นทุนที่เหลือ = ต้นทุนรวม - ยอดชำระ + ยอดชำระ = ต้นทุนรวม
+     * แต่เพื่อให้ตรงกับการแสดงผล เราใช้ inputtaxTotalWholesale เป็นต้นทุนรวม
      */
     private static function calculateInputtaxTotal($item)
     {
-        if (!$item->InputTaxVat || $item->InputTaxVat->isEmpty()) {
+        if (!$item->InputTaxVatNew || $item->InputTaxVatNew->isEmpty()) {
             return 0;
         }
         
-        return $item->InputTaxVat->whereIn('input_tax_type', [2, 4, 5, 6, 7])
+        // ต้นทุนโฮลเซลล์รวม (จากใบกำกับภาษี)
+        return $item->InputTaxVatNew->whereIn('input_tax_type', [2, 4, 5, 6, 7])
                                 ->sum('input_tax_grand_total');
     }
 
