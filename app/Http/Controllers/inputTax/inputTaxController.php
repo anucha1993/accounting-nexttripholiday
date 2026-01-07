@@ -124,57 +124,6 @@ class inputTaxController extends Controller
             }
         }
 
-
-        // ถ้ามีการแนบไฟล์ต้นทุนโฮลเซล
-    if ($request->hasFile('input_tax_file')) {
-       
-        $notificationService = new NotificationService();
-        
-        // สร้าง URL สำหรับลิงก์ในการแจ้งเตือน
-        $quoteUrl = route('quote.editNew', $quotationModel->quote_id);
-        
-        // ข้อความแจ้งเตือน
-        $wholesaleName = $quotationModel->quoteWholesale ? $quotationModel->quoteWholesale->wholesale_name_th : 'ไม่ระบุ';
-        //$amount = number_format($request->input_tax_service_total, 2);
-        $amount = number_format($quotationModel->inputtaxTotalWholesale(), 2);
-        $quoteNumber = $quotationModel->quote_number;
-        $saleName = $quotationModel->Salename->name;
-
-        // 1. แจ้งบัญชีว่ามีการแนบไฟล์ต้นทุนโฮลเซล
-        $msgAcc = "มีการแนบเอกสารต้นทุนโฮลเซล {$wholesaleName} จำนวนเงิน: {$amount} บาท ".
-                 "เลขที่ใบเสนอราคา #{$quoteNumber} | Sale: {$saleName}";
-        $notificationService->sendToAccounting(
-            $msgAcc, 
-            $quoteUrl, 
-            $quotationModel->quote_id, 
-            'wholesale-cost'
-        );
-    }
-
-    // ถ้ามีการแก้ไขไฟล์ต้นทุนโฮลเซล
-    if ($requestData) {
-        $notificationService = new NotificationService();
-        
-        $quoteUrl = route('quote.editNew', $quotationModel->quote_id);
-        
-        // ข้อความแจ้งเตือนการแก้ไข
-        $wholesaleName = $quotationModel->quoteWholesale ? $quotationModel->quoteWholesale->wholesale_name_th : 'ไม่ระบุ';
-        $amount = number_format($quotationModel->inputtaxTotalWholesale(), 2);
-        $quoteNumber = $quotationModel->quote_number;
-        $saleName = $quotationModel->Salename->name;
-        
-        $msgAcc = "มีการแก้ไขเอกสารต้นทุนโฮลเซล {$wholesaleName} จำนวนเงิน: {$amount} บาท ".
-                 "เลขที่ใบเสนอราคา #{$quoteNumber} | Sale: {$saleName}";
-        
-        $notificationService->sendToAccounting(
-            $msgAcc, 
-            $quoteUrl, 
-            $quotationModel->quote_id, 
-            'wholesale-cost-update'
-        );
-    }
-
-
         // อัปเดตข้อมูลเพิ่มเติม
         $requestData['updated_by'] = Auth::user()->name;
         
@@ -186,6 +135,39 @@ class inputTaxController extends Controller
         
         // บันทึกการเปลี่ยนแปลงในฐานข้อมูล
         $inputTaxModel->update($requestData);
+
+        // ส่ง notification หลังจาก update แล้ว
+        $notificationService = new NotificationService();
+        $quoteUrl = route('quote.editNew', $quotationModel->quote_id);
+        
+        // ข้อความแจ้งเตือน - ใช้ข้อมูลที่ update แล้ว
+        $wholesaleName = $quotationModel->quoteWholesale ? $quotationModel->quoteWholesale->wholesale_name_th : 'ไม่ระบุ';
+        $amount = number_format($request->input_tax_grand_total, 2); // ใช้ยอดจาก request ที่พึ่ง update
+        $quoteNumber = $quotationModel->quote_number;
+        $saleName = $quotationModel->Salename->name;
+
+        // ถ้ามีการแนบไฟล์ต้นทุนโฮลเซล
+        if ($request->hasFile('input_tax_file')) {
+            $msgAcc = "มีการแนบเอกสารต้นทุนโฮลเซล {$wholesaleName} จำนวนเงิน: {$amount} บาท ".
+                     "เลขที่ใบเสนอราคา #{$quoteNumber} | Sale: {$saleName}";
+            $notificationService->sendToAccounting(
+                $msgAcc, 
+                $quoteUrl, 
+                $quotationModel->quote_id, 
+                'wholesale-cost'
+            );
+        } else {
+            // ถ้าไม่มีไฟล์ แต่มีการแก้ไขข้อมูล
+            $msgAcc = "มีการแก้ไขเอกสารต้นทุนโฮลเซล {$wholesaleName} จำนวนเงิน: {$amount} บาท ".
+                     "เลขที่ใบเสนอราคา #{$quoteNumber} | Sale: {$saleName}";
+            
+            $notificationService->sendToAccounting(
+                $msgAcc, 
+                $quoteUrl, 
+                $quotationModel->quote_id, 
+                'wholesale-cost-update'
+            );
+        }
         
         $serviceTotal = 0;
         $serviceTotal = $request->input_tax_service_total * 0.03;
@@ -280,23 +262,10 @@ class inputTaxController extends Controller
         // เพิ่มข้อมูลผู้สร้าง
         $requestData['created_by'] = Auth::user()->name;
         
-        // คำนวณ input_tax_grand_total ให้ถูกต้องตามประเภท
-        $inputTaxType = $request->input_tax_type;
-        $serviceTotal = (float) ($request->input_tax_service_total ?? 0);
-        $withholding = (float) ($request->input_tax_withholding ?? 0);
-        $vat = (float) ($request->input_tax_vat ?? 0);
-        
-        // ตรวจสอบว่ามีไฟล์แนบหรือไม่
-        $hasFile = !empty($filePath);
-        
-        if ($inputTaxType == '1' || $inputTaxType == '3') {
-            // Type 1 (ต้นทุนอื่นๆ) และ Type 3 (ค่าธรรมเนียมรูดบัตร)
-            // ใช้ยอดค่าบริการโดยตรง
-            $requestData['input_tax_grand_total'] = $serviceTotal;
-        } else {
-            // Type 0 (ภาษีซื้อ)
-            // ถ้ามีไฟล์: VAT - Withholding, ถ้าไม่มี: VAT + Withholding
-            $requestData['input_tax_grand_total'] = $hasFile ? ($vat - $withholding) : ($vat + $withholding);
+        // ใช้ค่า input_tax_grand_total ที่คำนวณมาจาก JavaScript ในฟอร์มโดยตรง
+        // ไม่ต้องคำนวณใหม่เพราะฟอร์มคำนวณมาให้แล้ว
+        if ($request->has('input_tax_grand_total')) {
+            $requestData['input_tax_grand_total'] = (float) $request->input_tax_grand_total;
         }
         
         // สร้างข้อมูลใหม่ใน inputTaxModel
@@ -309,14 +278,14 @@ class inputTaxController extends Controller
        // สร้าง URL สำหรับลิงก์ในการแจ้งเตือน
        $quoteUrl = route('quote.editNew', $quotationModel->quote_id);
        
-       // ข้อความแจ้งเตือน
+       // ข้อความแจ้งเตือน - ใช้ยอดจาก grand_total ที่เพิ่งสร้าง
        $wholesaleName = $quotationModel->quoteWholesale ? $quotationModel->quoteWholesale->wholesale_name_th : 'ไม่ระบุ';
-       $amount = number_format($quotationModel->inputtaxTotalWholesale(), 2);
+       $amount = number_format($requestData['input_tax_grand_total'], 2); // ใช้ยอดที่เพิ่งบันทึก
        $quoteNumber = $quotationModel->quote_number;
        $saleName = $quotationModel->Salename->name;
 
        // ถ้ามีการแนบไฟล์ต้นทุนโฮลเซล
-       if ($request->hasFile('input_tax_file')) {
+       if ($request->hasFile('file')) {
            // แจ้งบัญชีว่ามีการเพิ่มเอกสารต้นทุนโฮลเซลใหม่ (พร้อมไฟล์)
            $msgAcc = "มีการเพิ่มเอกสารต้นทุนโฮลเซล {$wholesaleName} จำนวนเงิน: {$amount} บาท ".
                     "เลขที่ใบเสนอราคา #{$quoteNumber} | Sale: {$saleName}";

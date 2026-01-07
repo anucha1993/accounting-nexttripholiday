@@ -14,11 +14,13 @@
                     <option value="3">ค่าธรรมเนียมรูดบัตร</option>
                 </select>
             </div>
+
               <div class="col-md-6" style="display: none" id="withholding-show">
             {{-- @if ($document)
             <a href="{{ route('withholding.edit', $document->id) }}">ออกใบหัก ณ ที่จ่ายแล้ว <i
                 class="fa fa-edit text-info"></i> {{$document->document_number}}</a>
             @else --}}
+            
             @if (!$document)
             <label for="">ต้องการออกใบหัก ณ ที่จ่ายหรือไม่</label>
             <br>

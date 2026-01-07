@@ -46,36 +46,34 @@ if (!function_exists('getStatusPaymentWhosale')) {
         //     'is_depositTotal_less_than_wholesaleCost' => ($depositTotal < $wholesaleCost) ? 'TRUE' : 'FALSE'
         // ]);
 
-        // 📌 แสดงสถานะเฉพาะเมื่อมีการ "โอนเกิน" (refund)
-        if ($depositTotal > 0 && $refundSuccessTotal + $refundPendingTotal > 0) {
-            if ($refundPendingTotal <= 0 && $refundSuccessTotal > 0) {
-                // return '<span class="badge rounded-pill bg-success">โฮลเซลล์คืนเงินแล้ว</span>';
-                return '<span class="text-success">โฮลเซลล์คืนเงินแล้ว</span>';
-            }
-            if ($refundPendingTotal > 0) {
-                // return '<span class="badge rounded-pill bg-warning text-dark">รอโฮลเซลล์คืนเงิน</span>';
-                return '<span class="text-warning">รอโฮลเซลล์คืนเงิน</span>';
-            }
-        }
-
-        // 6. ชำระเงินเกิน - ใช้ tolerance สำหรับ floating point
-        $tolerance = 0.01; // ความผิดพลาด 1 สตางค์
-        if ($depositTotal > ($wholesaleCost + $tolerance)) {
-            return '<span class="text-danger">โอนเงินให้โฮลเซลล์เกิน</span>';
-        }
+        // ตรวจสอบสถานะการชำระเงินก่อน แล้วค่อยดู refund status
 
         // 1. รอชำระเงินมัดจำ (ยอดโอนโฮลเซลล์ = 0 และลูกค้าชำระมาแล้ว)
         if ($depositTotal == 0 && $customerPaid > 0) {
-            //return '<span class="badge rounded-pill bg-warning text-dark">รอชำระมัดเงินจำโฮลเซลล์</span>';
             return '<span class="text-warning">รอชำระมัดเงินจำโฮลเซลล์</span>';
         }
 
-        // 2. รอชำระเงินส่วนที่เหลือ (ยอดโอนโฮลเซลล์ > 0 แต่น้อยกว่าต้นทุน) - ใช้ tolerance สำหรับ floating point
+        // 2. รอชำระเงินส่วนที่เหลือ (ยอดโอนโฮลเซลล์ > 0 แต่น้อยกว่าต้นทุน)
         if ($depositTotal > 0 && ($depositTotal + $tolerance) < $wholesaleCost) {
             return '<span class="text-warning">รอชำระเงินส่วนที่เหลือ</span>';
         }
 
-        // 3. ชำระเงินครบแล้ว (ยอดโอนโฮลเซลล์ = ต้นทุน หรือใกล้เคียงกัน)
+        // 3. ชำระเงินเกิน - แสดงสถานะ refund
+        if ($depositTotal > ($wholesaleCost + $tolerance)) {
+            // ถ้ามี refund แสดงสถานะ refund
+            if ($refundSuccessTotal + $refundPendingTotal > 0) {
+                if ($refundPendingTotal <= 0 && $refundSuccessTotal > 0) {
+                    return '<span class="text-success">โฮลเซลล์คืนเงินแล้ว</span>';
+                }
+                if ($refundPendingTotal > 0) {
+                    return '<span class="text-warning">รอโฮลเซลล์คืนเงิน</span>';
+                }
+            }
+            // ถ้ายังไม่มี refund แสดงว่าโอนเกิน
+            return '<span class="text-danger">โอนเงินให้โฮลเซลล์เกิน</span>';
+        }
+
+        // 4. ชำระเงินครบแล้ว (ยอดโอนโฮลเซลล์ = ต้นทุน หรือใกล้เคียงกัน)
         if ($wholesaleCost > 0 && abs($depositTotal - $wholesaleCost) <= $tolerance) {
             return '<span class="text-success">ชำระเงินครบแล้ว</span>';
         }
