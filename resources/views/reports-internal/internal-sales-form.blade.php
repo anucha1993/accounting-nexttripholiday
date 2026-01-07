@@ -567,7 +567,7 @@
                 {{-- <button class="btn btn-outline-success" onclick="exportTableToExcel(this)">
                     <i class="fas fa-file-excel me-1"></i>Convert to Excel
                 </button> --}}
-                <a href="{{ route('reports.sales.export', request()->query()) }}" class="btn btn-success">
+                <a href="{{ route('reports.internal-sales.export', request()->query()) }}" class="btn btn-success">
                         <i class="fas fa-file-excel"></i> Export to Excel
                     </a>
                 

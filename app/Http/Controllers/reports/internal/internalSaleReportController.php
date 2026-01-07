@@ -5,6 +5,7 @@ namespace App\Http\Controllers\reports\internal;
 use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
 use App\Exports\SaleReportExport;
+use App\Exports\InternalSaleReportExport;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -66,7 +67,7 @@ class internalSaleReportController extends Controller
         $filename = 'internal_sale_report_' . $mode . '_' . date('Y-m-d') . '.xlsx';
         $campaignSource = DB::table('campaign_source')->get();
 
-        return Excel::download(new SaleReportExport(collect($exportData), $mode, $campaignSource), $filename);
+        return Excel::download(new InternalSaleReportExport(collect($exportData), $mode, $campaignSource), $filename);
     }
 
     public function index(Request $request)
@@ -93,9 +94,10 @@ class internalSaleReportController extends Controller
                 ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
                 ->get();
         } else {
-            $sales = saleModel::select('name', 'id')
-                ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
-                ->get();
+           $sales = saleModel::withInactive()
+    ->select('name', 'id')
+    ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+    ->get();
         }
 
         // ใช้ internalQuotationFilterService เท่านั้น

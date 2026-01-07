@@ -85,7 +85,7 @@ class inputTaxReportController extends Controller
         // paginate เฉพาะหน้าปัจจุบัน
         $inputTaxs = $inputTaxQuery->paginate(50);
 
-        $sellers = saleModel::select('name', 'id')
+        $sellers =saleModel::withInactive()->select('name', 'id')
             ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
             ->get();
             

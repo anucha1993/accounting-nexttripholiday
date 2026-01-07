@@ -86,9 +86,10 @@ class saleReportController extends Controller
                 ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
                 ->get();
         } else {
-            $sales = saleModel::select('name', 'id')
-                ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
-                ->get();
+           $sales = saleModel::withInactive()
+    ->select('name', 'id')
+    ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+    ->get();
         }
 
         // ใช้ QuotationFilterService เท่านั้น

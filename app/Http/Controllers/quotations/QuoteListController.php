@@ -60,9 +60,11 @@ class QuoteListController extends Controller
         // dd($searchNotLogStatus);
         // dd($searchPaymentWholesaleStatus);
 
-        $sales = saleModel::select('name', 'id')
-            ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
-            ->get();
+  
+$sales = saleModel::withInactive()
+    ->select('name', 'id')
+    ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+    ->get();
         $airlines = DB::connection('mysql2')->table('tb_travel_type')->where('status', 'on')->get();
         $country = countryModel::get();
         $wholesales = wholesaleModel::get();

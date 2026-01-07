@@ -16,12 +16,12 @@ class saleModel extends Model
     ];
 
     // Global Scope: กรองเฉพาะ sale ที่ active (ใช้สำหรับ dropdown)
-    protected static function booted()
-    {
-        static::addGlobalScope('active', function ($query) {
-            $query->where('status', 'active');
-        });
-    }
+    // protected static function booted()
+    // {
+    //     static::addGlobalScope('active', function ($query) {
+    //         $query->where('status', 'active');
+    //     });
+    // }
     
     /**
      * ดึงข้อมูล Sale ทั้งหมด รวมถึงที่ถูกปิด (inactive)

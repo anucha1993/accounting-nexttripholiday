@@ -471,18 +471,23 @@ public function checkfileInputtaxVat()
 
 // }
 
-// ปรับปรุงฟังก์ชัน getTotalOtherCost วันที่ 20/11/2025
+// ปรับปรุงฟังก์ชัน getTotalOtherCost วันที่ 23/12/2025
 public function getTotalOtherCost()
 {
     // ดึง invoice ใบแรกที่ success
     $invoice = $this->invoiceVat()->where('invoice_status', 'success')->first();
     
+    // ต้นทุนอื่นๆ (Type 1) และค่าธรรมเนียมรูดบัตร (Type 3)
+    $otherCosts = $this->getTotalInputTaxVatType();
+    
     if (!$invoice) {
-        // ถ้าไม่มี invoice ให้รวม input_tax_grand_total ของภาษีซื้อทั้งหมด
-        return $this->InputTaxVat()
+        // ถ้าไม่มี invoice ให้รวม input_tax_grand_total ของภาษีซื้อทั้งหมด + ต้นทุนอื่นๆ
+        $purchaseTax = $this->InputTaxVat()
             ->where('input_tax_type', 0)
             ->where('input_tax_status', 'success')
             ->sum('input_tax_grand_total') ?? 0;
+        
+        return $purchaseTax + $otherCosts;
     }
 
     // ตรวจสอบว่ามีการแนบใบหัก ณ ที่จ่าย (ลูกค้า) หรือไม่
@@ -516,17 +521,15 @@ public function getTotalOtherCost()
     $purchaseTotal = $purchaseTotalNoFile + $purchaseTotalWithFile;
     
     // กรณี: ยังไม่แนบใบหัก ณ ที่จ่าย (invoice_image = NULL)
-    // ต้นทุน = ภาษี VAT(ขาย) + หัก ณ ที่จ่าย(ขาย) + ยอดรวมภาษีซื้อ
+    // ต้นทุน = ภาษี VAT(ขาย) + หัก ณ ที่จ่าย(ขาย) + ยอดรวมภาษีซื้อ + ต้นทุนอื่นๆ
     if (!$hasInvoiceFile) {
-        // return $this->getWithholdingTaxAmountAttribute()- $purchaseTotal;
-        return $saleVat + $saleWht + $purchaseTotal;
+        return $saleVat + $saleWht + $purchaseTotal + $otherCosts;
     }
     
     // กรณี: แนบใบหัก ณ ที่จ่ายแล้ว (invoice_image ≠ NULL)
-    // ต้นทุน = ภาษี VAT(ขาย) + ยอดรวมภาษีซื้อ
+    // ต้นทุน = ภาษี VAT(ขาย) + ยอดรวมภาษีซื้อ + ต้นทุนอื่นๆ
     // ไม่นำ invoice_withholding_tax (ขาย) มาคำนวณ
-     //return $saleVat
-    return $saleVat + $purchaseTotal;
+    return $saleVat + $purchaseTotal + $otherCosts;
 }
 
 

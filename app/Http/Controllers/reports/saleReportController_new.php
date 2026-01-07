@@ -4,9 +4,12 @@ namespace App\Http\Controllers\reports;
 
 use Illuminate\Http\Request;
 use App\Models\sales\saleModel;
+use App\Models\quotations\quotationModel;
+use App\Models\inputTax\inputTaxModel;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SaleReportExport;
 use App\Models\wholesale\wholesaleModel;
@@ -17,8 +20,19 @@ class saleReportController extends Controller
 {
     public function export(Request $request)
     {
+        // เพิ่ม time limit สำหรับ export
+        set_time_limit(600); // 10 นาที
+        ini_set('memory_limit', '1024M');
+        
         $mode = $request->commission_mode ?? 'all';
-        $quotationSuccess = QuotationFilterService::filter($request); // <- ได้เป็น Collection
+        
+        // ใช้ QuotationFilterService เท่านั้น
+        try {
+            $quotationSuccess = QuotationFilterService::filter($request);
+        } catch (\Exception $e) {
+            Log::error("QuotationFilterService failed in export: " . $e->getMessage());
+            throw $e; // ไม่มี fallback แล้ว
+        }
 
         if ($mode === 'total') {
             $quotationSuccess = $quotationSuccess->filter(function ($item) {
@@ -65,20 +79,25 @@ class saleReportController extends Controller
         $country        = DB::connection('mysql2')->table('tb_country')->where('status', 'on')->get();
 
         $user = Auth::user();
-        $userRoles = $user->getRoleNames();
+        $userRoles = $user->roles->pluck('name'); // แทน getRoleNames()
         if ($userRoles->contains('sale')) {
-            $sales = saleModel::select('name', 'id')
-                ->where('id', $user->sale_id)
-                ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
-                ->get();
+         $sales = saleModel::withInactive()
+    ->select('name', 'id')
+    ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
+    ->get();
         } else {
             $sales = saleModel::select('name', 'id')
                 ->whereNotIn('name', ['admin', 'Admin Liw', 'Admin'])
                 ->get();
         }
 
-        // ได้เป็น Collection
-        $quotationSuccess = QuotationFilterService::filter($request);
+        // ใช้ QuotationFilterService เท่านั้น
+        try {
+            $quotationSuccess = QuotationFilterService::filter($request);
+        } catch (\Exception $e) {
+            Log::error("QuotationFilterService failed: " . $e->getMessage());
+            throw $e; // ไม่มี fallback แล้ว
+        }
         
         // ตรวจสอบว่ามีการค้นหาหรือไม่
         $hasSearch = $this->hasSearchCriteria($request);
@@ -136,10 +155,11 @@ class saleReportController extends Controller
 
     /**
      * ตรวจสอบว่ามีการค้นหาหรือไม่
+     * ไม่นับฟิลด์ที่เป็นการเลือกประเภทการแสดงผล เช่น commission_mode, per_page, page
      */
     private function hasSearchCriteria(Request $request)
     {
-        // ตรวจสอบว่ามีการกรอกข้อมูลในฟิลด์ใดฟิลด์หนึ่งหรือไม่
+        // ฟิลด์ที่ถือเป็นการค้นหาจริงๆ (ไม่รวมการเลือกประเภทการแสดงผล)
         $searchFields = [
             'date_start', 'date_end', 'quote_country', 'quote_wholesale', 
             'quote_sale', 'customer_campaign_source', 'quote_number', 

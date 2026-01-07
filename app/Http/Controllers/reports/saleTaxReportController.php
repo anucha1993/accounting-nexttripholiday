@@ -28,7 +28,7 @@ class saleTaxReportController extends Controller
         $vatTotal = 0;
 
         // ดึงรายชื่อเซลทั้งหมด
-        $sellers = \App\Models\sales\saleModel::select('id', 'name')->get();
+        $sellers = \App\Models\sales\saleModel::withInactive()->select('id', 'name')->get();
 
         $taxinvoices = taxinvoiceModel::with(['invoice','taxinvoiceCustomer'])
             ->when($searchDateStart && $searchDateEnd, function ($query) use ($searchDateStart, $searchDateEnd) {

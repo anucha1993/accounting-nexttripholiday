@@ -280,7 +280,8 @@ class inputTaxController extends Controller
         // เพิ่มข้อมูลผู้สร้าง
         $requestData['created_by'] = Auth::user()->name;
         
-        // คำนวณ input_tax_grand_total ให้ถูกต้อง
+        // คำนวณ input_tax_grand_total ให้ถูกต้องตามประเภท
+        $inputTaxType = $request->input_tax_type;
         $serviceTotal = (float) ($request->input_tax_service_total ?? 0);
         $withholding = (float) ($request->input_tax_withholding ?? 0);
         $vat = (float) ($request->input_tax_vat ?? 0);
@@ -288,8 +289,15 @@ class inputTaxController extends Controller
         // ตรวจสอบว่ามีไฟล์แนบหรือไม่
         $hasFile = !empty($filePath);
         
-        // ถ้ามีไฟล์: VAT - Withholding, ถ้าไม่มี: VAT + Withholding
-        $requestData['input_tax_grand_total'] = $hasFile ? ($vat - $withholding) : ($vat + $withholding);
+        if ($inputTaxType == '1' || $inputTaxType == '3') {
+            // Type 1 (ต้นทุนอื่นๆ) และ Type 3 (ค่าธรรมเนียมรูดบัตร)
+            // ใช้ยอดค่าบริการโดยตรง
+            $requestData['input_tax_grand_total'] = $serviceTotal;
+        } else {
+            // Type 0 (ภาษีซื้อ)
+            // ถ้ามีไฟล์: VAT - Withholding, ถ้าไม่มี: VAT + Withholding
+            $requestData['input_tax_grand_total'] = $hasFile ? ($vat - $withholding) : ($vat + $withholding);
+        }
         
         // สร้างข้อมูลใหม่ใน inputTaxModel
        $inputTaxModel =  inputTaxModel::create($requestData);

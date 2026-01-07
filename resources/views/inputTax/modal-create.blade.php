@@ -76,8 +76,9 @@
 
             <div class="col-md-12 mb-3">
                 <label for="">ผลรวมต้นทุน</label>
-                <input type="number" name="input_tax_grand_total" min="0" step="0.01" class="form-control" placeholder="0.0"
-                    id="total">
+                <input type="text" class="form-control" id="total-display" value="0.00" readonly 
+                    style="background-color: #f8f9fa;">
+                <input type="hidden" name="input_tax_grand_total" id="total" value="0">
             </div>
 
             {{-- <div class="col-md-12 mb-3">
@@ -174,8 +175,9 @@
     
 
     $(document).ready(function() {
-
-        $('#service-total, #vat').on('keyup', function() {
+        
+        // ฟังก์ชันคำนวณต้นทุน
+        function calculateTotal() {
             var inputTaxType = $('#input_tax_type').val();
             let total = 0;
             let vat7 = 0;
@@ -185,11 +187,17 @@
             let vat = parseFloat($('#vat').val()) || 0;
 
             if (inputTaxType === '1' || inputTaxType === '3') {
-                // $('#total').val(serviceTotal.toFixed(2));
+                // สำหรับต้นทุนอื่นๆ และค่าธรรมเนียมรูดบัตร
+                $('#total').val(serviceTotal.toFixed(2));
+                $('#total-display').val(serviceTotal.toFixed(2));
+                // ล้างค่า VAT และ Withholding
+                $('#vat').val('0.00');
+                $('#withholding').val('0.00');
             } else {
+                // สำหรับภาษีซื้อ (Type 0)
                 // คำนวณ VAT 7%
                 vat7 = serviceTotal * 0.07;
-                $('#vat').val(vat7.toFixed(2)); // อัปเดตค่า VAT ในช่อง input
+                $('#vat').val(vat7.toFixed(2));
 
                 // คำนวณภาษี ณ ที่จ่าย (3%)
                 withholdingTotal = serviceTotal * 0.03;
@@ -198,8 +206,13 @@
                 // คำนวณผลรวมต้นทุน: VAT + Withholding (เพราะเป็นการสร้างใหม่ ยังไม่มีไฟล์)
                 total = vat7 + withholdingTotal;
                 $('#total').val(total.toFixed(2));
+                $('#total-display').val(total.toFixed(2));
             }
-        });
+        }
+
+        // เรียกใช้เมื่อมีการเปลี่ยนแปลงค่า
+        $('#service-total, #vat').on('keyup change', calculateTotal);
+        $('#input_tax_type').on('change', calculateTotal);
 
     });
 </script>
