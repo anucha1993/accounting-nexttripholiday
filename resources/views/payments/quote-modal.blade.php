@@ -88,9 +88,27 @@
             </div>
             {{-- บัตรเครดิต credit --}}
             <div class="row mt-3" id="credit" style="display: none">
+              
                 <div class="col-md-3">
                     <label for="">เลขที่สลิป</label>
                     <input type="text" class="form-control" name="payment_credit_slip_number" placeholder="เลขที่สลิป">
+                </div>
+                <div class="col-md-3">
+                    <label for="">ประเภทการรูดบัตร</label>
+                    <div class="mt-2">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="payment_credit_type" id="credit-charge-customer" value="charge_customer">
+                            <label class="form-check-label" for="credit-charge-customer">ชาร์จลูกค้า</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="payment_credit_type" id="credit-pro-swipe" value="pro_swipe" checked>
+                            <label class="form-check-label" for="credit-pro-swipe">โปร รูดบัตร</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3" id="credit-amount-wrapper">
+                    <label for="">จำนวนเงินรูดบัตร <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" name="payment_credit_amount" id="payment_credit_amount" placeholder="จำนวนเงิน" step="0.01" required>
                 </div>
             </div>
 
@@ -124,16 +142,44 @@
         if(paymentMethod === 'transfer-money') {
             $('#transfer-money').show();
             $('#check, #credit').hide();
+            // ลบ required จากช่องจำนวนเงินรูดบัตร
+            $('#payment_credit_amount').removeAttr('required');
         } else if(paymentMethod === 'check') {
             $('#check').show();
             $('#transfer-money, #credit').hide();
+            // ลบ required จากช่องจำนวนเงินรูดบัตร
+            $('#payment_credit_amount').removeAttr('required');
         } else if(paymentMethod === 'credit') {
             $('#credit').show();
             $('#transfer-money, #check').hide();
+            // ตรวจสอบประเภทการรูดบัตร
+            toggleCreditAmount();
         } else {
             $('#transfer-money, #check, #credit').hide(); // ซ่อนฟอร์มทั้งหมด
+            // ลบ required จากช่องจำนวนเงินรูดบัตร
+            $('#payment_credit_amount').removeAttr('required');
         }
     });
+
+    // ฟังก์ชันตรวจสอบประเภทการรูดบัตร
+    function toggleCreditAmount() {
+        var creditType = $('input[name="payment_credit_type"]:checked').val();
+        if(creditType === 'pro_swipe') {
+            $('#credit-amount-wrapper').show();
+            $('#payment_credit_amount').attr('required', true);
+        } else {
+            $('#credit-amount-wrapper').hide();
+            $('#payment_credit_amount').removeAttr('required');
+        }
+    }
+
+    // เรียกฟังก์ชันเมื่อเปลี่ยนประเภทการรูดบัตร
+    $('input[name="payment_credit_type"]').on('change', function() {
+        toggleCreditAmount();
+    });
+
+    // เรียกฟังก์ชันเมื่อโหลดหน้า (กรณีเลือกบัตรเครดิตแล้ว)
+    toggleCreditAmount();
 });
 
 $(document).ready(function () {

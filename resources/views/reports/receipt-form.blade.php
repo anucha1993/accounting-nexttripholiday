@@ -78,8 +78,19 @@
                                     <label for="">สถานะ</label>
                                     <select name="status" id="" class="form-select">
                                         <option value="">---กรุณาเลือก---</option>
-                                        <option value="success">สำเร็จ</option>
-                                        <option value="wait">รอแนบสลิป</option>
+                                        <option @if($request->status === 'success') selected @endif value="success">สำเร็จ</option>
+                                        <option @if($request->status === 'wait') selected @endif value="wait">รอแนบสลิป</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label for="">วิธีการชำระเงิน</label>
+                                    <select name="payment_method" class="form-select">
+                                        <option value="">---ทั้งหมด---</option>
+                                        <option @if($request->payment_method === 'cash') selected @endif value="cash">เงินสด</option>
+                                        <option @if($request->payment_method === 'transfer-money') selected @endif value="transfer-money">โอนเงิน</option>
+                                        <option @if($request->payment_method === 'check') selected @endif value="check">เช็คธนาคาร</option>
+                                        <option @if($request->payment_method === 'credit') selected @endif value="credit">บัตรเครดิต</option>
                                     </select>
                                 </div>
 
@@ -140,6 +151,9 @@
                     @endif
                     @if(request()->filled('status'))
                     <input type="hidden" name="status" value="{{ request()->status }}">
+                    @endif
+                    @if(request()->filled('payment_method'))
+                    <input type="hidden" name="payment_method" value="{{ request()->payment_method }}">
                     @endif
                     @if(request()->filled(['column_name', 'keyword']))
                     <input type="hidden" name="column_name" value="{{ request()->column_name }}">
@@ -228,6 +242,9 @@
 
                                 @if ($item->payment_method === 'credit')
                                     วิธีการชำระเงิน : บัตรเครดิต </br>
+                                    @if($item->payment_credit_type)
+                                        ประเภทการรูดบัตร : {{ $item->payment_credit_type === 'pro_swipe' ? 'โปร รูดบัตร' : 'ชาร์จลูกค้า' }} </br>
+                                    @endif
                                     เลขที่สลิป : {{ $item->payment_credit_slip_number }} </br>
                                     วันที่ :{{ date('d/m/Y : H:m', strtotime($item->payment_in_date)) }}</br>
                                 @endif

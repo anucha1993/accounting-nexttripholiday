@@ -23,6 +23,11 @@ class ReceiptReportController extends Controller
             $query->where('payment_status', $request->status);
         }
 
+        // Apply payment method filter
+        if ($request->filled('payment_method')) {
+            $query->where('payment_method', $request->payment_method);
+        }
+
         // Apply search filters
         if ($request->filled(['column_name', 'keyword'])) {
             $column = $request->column_name;

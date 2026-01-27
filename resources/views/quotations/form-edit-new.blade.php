@@ -151,11 +151,11 @@
             }
         }
     </style>
-    ิ
 
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-8 col-md-7">
+                
                 <!-- Quote Header -->
                 <div class="quote-header">
                     <div class="d-flex justify-content-between align-items-center">

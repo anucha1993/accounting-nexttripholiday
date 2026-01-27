@@ -51,6 +51,7 @@ class QuoteExport implements FromCollection, WithHeadings, WithMapping, WithColu
             'โปรแกรมทัวร์',
             'วันที่เดินทาง', 
             'ชื่อลูกค้า', 
+            'ที่มา', 
             'Pax', 
             'ประเทศ', 
             'สายการบิน', 
@@ -65,6 +66,7 @@ class QuoteExport implements FromCollection, WithHeadings, WithMapping, WithColu
     public function map($quotations): array
 {
     $latestPayment = $quotations->paymentWholesale()->latest('payment_wholesale_id')->first();
+    
 
     $paymentwhosale = 'รอชำระเงิน'; // กำหนดค่าเริ่มต้น
     
@@ -92,6 +94,7 @@ class QuoteExport implements FromCollection, WithHeadings, WithMapping, WithColu
             $quotations->quote_tour_name ? $quotations->quote_tour_name : $quotations->quote_tour_name1,
             date('d/m/Y', strtotime($quotations->quote_date_start)) . '-' . date('d/m/Y', strtotime($quotations->quote_date_end)),
             $quotations->quotecustomer->customer_name,
+            $quotations->quotecustomer->campaign_source->campaign_source_name ?: 'none',
             number_format($quotations->quote_pax_total,2),
             $quotations->quoteCountry->country_name_th,
             $quotations->airline->code,

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\invoices\taxinvoiceModel;
 use App\Models\wholesale\wholesaleModel;
 use App\Models\quotations\quotationModel;
+use App\Models\payments\paymentModel;
 use App\Models\withholding\WithholdingTaxItem;
 use App\Models\withholding\WithholdingTaxDocument;
 use App\Http\Controllers\uploadfiles\uploadfileQuoteController;
@@ -413,7 +414,21 @@ class inputTaxController extends Controller
             $invoiceModel = [];
         }
         $inputTax = inputTaxModel::where('input_tax_quote_id', $quotationModel->quote_id)->where('input_tax_wholesale_type','N')->get();
-        return View::make('inputTax.inputtax-table', compact('quotationModel', 'inputTax', 'invoiceModel', 'invoice','document'))->render();
+        
+        // ดึงข้อมูล payments ที่ใช้ โปร รูดบัตร
+        $proSwipePayments = paymentModel::where('payment_quote_id', $quotationModel->quote_id)
+            ->where('payment_credit_type', 'pro_swipe')
+            ->where('payment_status', '!=', 'cancel')
+            ->get();
+        
+        // กรองเฉพาะ payments ที่ยังไม่มี input tax ที่มีเลขที่เอกสารอ้างอิงตรงกับเลขที่สลิป
+        $inputTaxRefs = $inputTax->pluck('input_tax_ref')->filter()->toArray();
+        $proSwipePayments = $proSwipePayments->filter(function($payment) use ($inputTaxRefs) {
+            // ถ้าเลขที่สลิปตรงกับ input_tax_ref แสดงว่าเพิ่มต้นทุนแล้ว ไม่ต้องแจ้งเตือน
+            return !in_array($payment->payment_credit_slip_number, $inputTaxRefs);
+        });
+        
+        return View::make('inputTax.inputtax-table', compact('quotationModel', 'inputTax', 'invoiceModel', 'invoice','document', 'proSwipePayments'))->render();
     }
 
     public function tableWholesale(quotationModel $quotationModel)

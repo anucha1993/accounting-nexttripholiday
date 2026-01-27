@@ -44,6 +44,23 @@
         }
     </style>
     <div class="card info-card shadow-sm">
+        {{-- แจ้งเตือนการใช้ โปร รูดบัตร --}}
+        @if(isset($proSwipePayments) && $proSwipePayments->count() > 0)
+        <div class="alert alert-warning alert-dismissible fade show m-3" role="alert">
+            <i class="fas fa-credit-card me-2"></i>
+            <strong>แจ้งเตือน!</strong> มีการใช้ "โปร รูดบัตร" ในใบเสนอราคานี้:
+            <ul class="mb-0 mt-2">
+                @foreach($proSwipePayments as $payment)
+                <li>
+                    เลขที่ชำระเงิน: <strong>{{ $payment->payment_number }}</strong> 
+                    | จำนวนเงินรูดบัตร: <strong>{{ number_format($payment->payment_credit_amount, 2) }}</strong> บาท
+                    | วันที่: {{ date('d/m/Y', strtotime($payment->payment_in_date)) }}
+                </li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+        
         <div class="inputtax-table-header d-flex justify-content-between align-items-center">
             <span><i class="fa fa-calculator me-2"></i>รายการต้นทุน</span>
             <a href="javascript:void(0)" class="text-white" onclick="toggleAccordion('table-inputtax', 'toggle-arrow-inputtax')">

@@ -1383,7 +1383,7 @@
                 var paxTotal = 0;
                 var vatRate = 0.07;
                 var withholdingRows = [];
-                sumDiscount = 0;
+                sumDiscount = 0; 
 
                 // คำนวณรายการบริการ
                 $('#table-income > .row.item-row.table-income:visible').each(function() {
